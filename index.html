@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2F7D5D">
+<title>ภารกิจพันธุกรรม | เกมเรียนรู้ชีววิทยา ม.4</title>
+<style>
+:root{
+  --cream:#FFF6E6; --cream2:#FFFDF7; --cream3:#F7EAD3;
+  --green:#2F7D5D; --green-d:#215C44; --green-l:#5BAE85; --green-soft:#E4F2EA;
+  --orange:#E8792B; --orange-d:#C25E17; --orange-l:#FFB067; --orange-soft:#FDEBDC;
+  --ink:#3A2E22; --muted:#7C6B57; --line:#E6D6BB;
+  --ok:#2F7D5D; --bad:#C8452F; --bad-soft:#FBE4DF;
+  --r:18px; --shadow:0 4px 0 rgba(58,46,34,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Noto Sans Thai","Sarabun","Leelawadee UI","Tahoma",system-ui,-apple-system,sans-serif;
+  background:var(--cream); color:var(--ink); line-height:1.65; font-size:17px;
+  background-image:radial-gradient(circle at 12% 8%, #FFEBC7 0 22%, transparent 60%),
+                   radial-gradient(circle at 88% 92%, #E4F2EA 0 24%, transparent 62%);
+  background-attachment:fixed;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.app{max-width:760px;margin:0 auto;padding:14px 14px 40px}
+h1,h2,h3{margin:0 0 8px;line-height:1.35}
+h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.06rem}
+p{margin:0 0 10px}
+button{font-family:inherit;font-size:1rem;cursor:pointer}
+.hidden{display:none !important}
+
+/* ---------- header ---------- */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--green-d);font-size:1.12rem}
+.brand .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(150deg,var(--green-l),var(--green));
+  display:grid;place-items:center;font-size:20px;box-shadow:var(--shadow)}
+.spacer{flex:1}
+.chip{background:var(--cream2);border:2px solid var(--line);border-radius:999px;padding:6px 13px;font-weight:700;
+  font-size:.92rem;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.iconbtn{background:var(--cream2);border:2px solid var(--line);border-radius:14px;width:44px;height:44px;
+  display:grid;place-items:center;font-size:19px}
+.iconbtn:active{transform:translateY(1px)}
+
+/* ---------- cards / buttons ---------- */
+.card{background:var(--cream2);border:2px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.btn{display:block;width:100%;min-height:56px;border-radius:16px;border:none;padding:12px 16px;font-weight:800;
+  color:#fff;background:var(--green);box-shadow:0 4px 0 var(--green-d);margin-bottom:12px;transition:.06s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--green-d)}
+.btn.orange{background:var(--orange);box-shadow:0 4px 0 var(--orange-d)}
+.btn.ghost{background:var(--cream2);color:var(--green-d);border:2px solid var(--green-l);box-shadow:0 4px 0 #CFE3D8}
+.btn.small{min-height:48px;font-size:.96rem}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.btnrow>.btn{flex:1 1 46%;width:auto}
+
+/* ---------- level map ---------- */
+.map{display:flex;flex-direction:column;gap:12px}
+.node{display:flex;align-items:center;gap:13px;background:var(--cream2);border:2px solid var(--line);
+  border-radius:var(--r);padding:13px;box-shadow:var(--shadow);text-align:left;width:100%;color:var(--ink)}
+.node .badge{width:54px;height:54px;flex:0 0 54px;border-radius:16px;display:grid;place-items:center;font-size:25px;
+  background:var(--green-soft);border:2px solid var(--green-l)}
+.node.locked{opacity:.62;filter:grayscale(.5)}
+.node.boss .badge{background:var(--orange-soft);border-color:var(--orange-l)}
+.node .info{flex:1;text-align:left}
+.node .nm{font-weight:800;font-size:1.03rem}
+.node .sub{font-size:.86rem;color:var(--muted)}
+.stars{font-size:1rem;letter-spacing:1px;color:var(--orange)}
+.node .go{font-size:22px;color:var(--green)}
+
+/* ---------- HUD ---------- */
+.hud{position:sticky;top:0;z-index:20;background:rgba(255,246,230,.96);backdrop-filter:blur(6px);
+  padding:8px 0 10px;margin:-4px 0 12px;border-bottom:2px solid var(--line)}
+.hud .line1{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.hud .lvname{font-weight:800;font-size:.98rem;color:var(--green-d);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{height:12px;background:var(--cream3);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--green-l),var(--green));width:0;transition:.3s}
+
+/* ---------- task ---------- */
+.qhead{font-size:.85rem;font-weight:800;color:var(--orange-d);letter-spacing:.4px;margin-bottom:6px}
+.qtext{font-size:1.12rem;font-weight:700;margin-bottom:14px}
+.opt{display:block;width:100%;text-align:left;min-height:56px;background:var(--cream2);border:2px solid var(--line);
+  border-radius:16px;padding:12px 14px;margin-bottom:10px;font-weight:600;color:var(--ink);box-shadow:0 3px 0 rgba(58,46,34,.08)}
+.opt:active{transform:translateY(2px)}
+.opt.correct{background:var(--green-soft);border-color:var(--green);color:var(--green-d)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.opt.dim{opacity:.55}
+.opt .mk{float:left;font-weight:800;margin-right:10px;color:var(--orange-d)}
+
+.feedback{border-radius:16px;padding:13px 14px;margin:6px 0 12px;border:2px solid}
+.feedback.good{background:var(--green-soft);border-color:var(--green-l)}
+.feedback.bad{background:var(--bad-soft);border-color:#E9A899}
+.feedback .ttl{font-weight:800;margin-bottom:4px}
+.feedback .why{font-size:.97rem}
+.tipbox{margin-top:10px;background:#FFF3D9;border:2px dashed var(--orange-l);border-radius:14px;padding:10px 12px;font-size:.94rem}
+.tipbox b{color:var(--orange-d)}
+
+/* ---------- match ---------- */
+.matchwrap{display:flex;gap:9px}
+.mcol{flex:1;display:flex;flex-direction:column;gap:9px}
+.mitem{min-height:64px;background:var(--cream2);border:2px solid var(--line);border-radius:14px;padding:9px 10px;
+  font-size:.9rem;font-weight:700;color:var(--ink);text-align:left;line-height:1.4;box-shadow:0 3px 0 rgba(58,46,34,.07)}
+.mitem.sel{border-color:var(--orange);background:var(--orange-soft)}
+.mitem.done{background:var(--green-soft);border-color:var(--green-l);color:var(--green-d);opacity:.75;pointer-events:none}
+.mitem.shake{animation:sh .35s}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.mcol .hdr{font-size:.8rem;font-weight:800;color:var(--muted);text-align:center}
+
+/* ---------- label on image ---------- */
+.imgbox{position:relative;width:100%;background:var(--cream2);border:2px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.imgbox svg{display:block;width:100%;height:auto}
+.mark{position:absolute;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;
+  background:var(--orange);color:#fff;border:3px solid #fff;font-weight:800;display:grid;place-items:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);font-size:.95rem}
+.mark.sel{background:var(--ink);animation:pulse 1.1s infinite}
+.mark.done{background:var(--green)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(58,46,34,.5)}50%{box-shadow:0 0 0 9px rgba(58,46,34,0)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-b{background:var(--cream2);border:2px solid var(--line);border-radius:999px;padding:10px 15px;font-weight:700;
+  font-size:.94rem;color:var(--ink);min-height:48px;box-shadow:0 3px 0 rgba(58,46,34,.07)}
+.chip-b.done{background:var(--green-soft);border-color:var(--green-l);color:var(--green-d);opacity:.6;pointer-events:none}
+.chip-b.shake{animation:sh .35s}
+.answered{font-size:.9rem;color:var(--muted);margin:8px 0}
+.answered span{display:inline-block;background:var(--green-soft);border:1px solid var(--green-l);border-radius:999px;
+  padding:2px 10px;margin:3px 6px 0 0;color:var(--green-d);font-weight:700}
+
+/* ---------- punnett ---------- */
+.ptable{width:100%;border-collapse:separate;border-spacing:6px;margin:6px 0 12px}
+.ptable th{background:var(--orange-soft);border:2px solid var(--orange-l);border-radius:12px;padding:10px 4px;font-weight:800;color:var(--orange-d)}
+.ptable th.corner{background:transparent;border:none}
+.pcell{width:100%;min-height:58px;border-radius:12px;border:2px dashed var(--line);background:var(--cream2);
+  font-weight:800;font-size:1.02rem;color:var(--ink)}
+.pcell.sel{border-style:solid;border-color:var(--orange);background:var(--orange-soft)}
+.pcell.done{border-style:solid;background:var(--green-soft);border-color:var(--green);color:var(--green-d)}
+.pcell.shake{animation:sh .35s}
+.parents{display:flex;gap:8px;justify-content:center;margin-bottom:6px;flex-wrap:wrap}
+.parents .pp{background:var(--green-soft);border:2px solid var(--green-l);border-radius:12px;padding:6px 12px;font-weight:800;color:var(--green-d)}
+
+/* ---------- flashcards ---------- */
+.searchbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.searchbar input{flex:1 1 180px;min-height:50px;border-radius:14px;border:2px solid var(--line);background:var(--cream2);
+  padding:8px 14px;font-size:1rem;font-family:inherit;color:var(--ink)}
+.tagrow{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
+.tag{white-space:nowrap;border:2px solid var(--line);background:var(--cream2);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;color:var(--muted)}
+.tag.on{background:var(--green);border-color:var(--green);color:#fff}
+.fcard{background:var(--cream2);border:2px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow);text-align:left;width:100%;color:var(--ink)}
+.fcard .th{font-weight:800;font-size:1.06rem;color:var(--green-d)}
+.fcard .en{font-size:.9rem;color:var(--orange-d);font-weight:700}
+.fcard .def{margin-top:8px;font-size:.96rem;border-top:1px dashed var(--line);padding-top:8px}
+.fcard .hint{font-size:.84rem;color:var(--muted);margin-top:4px}
+
+/* ---------- result ---------- */
+.bigstars{font-size:2.6rem;text-align:center;letter-spacing:6px;color:var(--orange);margin:6px 0}
+.scorebig{text-align:center;font-size:2.1rem;font-weight:800;color:var(--green-d)}
+.center{text-align:center}
+ul.recap{margin:6px 0 0;padding-left:22px;padding-right:0}
+ul.recap li{margin-bottom:6px}
+.missbox{background:#FFF3D9;border:2px solid var(--orange-l);border-radius:14px;padding:12px;margin-top:10px}
+.missbox .m{border-bottom:1px dashed var(--orange-l);padding-bottom:8px;margin-bottom:8px;font-size:.94rem}
+.missbox .m:last-child{border:none;margin:0;padding:0}
+.cert{background:linear-gradient(160deg,#FFFDF7,#FFF0D4);border:4px double var(--green);border-radius:var(--r);padding:20px;text-align:center}
+.cert .nm{font-size:1.5rem;font-weight:800;color:var(--green-d);border-bottom:2px dotted var(--line);display:inline-block;padding:0 18px 4px;margin:10px 0}
+.foot{text-align:center;color:var(--muted);font-size:.82rem;margin-top:18px}
+.mini{font-size:.88rem;color:var(--muted)}
+.pill{display:inline-block;background:var(--green-soft);color:var(--green-d);border-radius:999px;padding:2px 10px;font-size:.82rem;font-weight:700;margin:0 0 6px 6px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand"><span class="logo">🧬</span><span>ภารกิจพันธุกรรม</span></div>
+    <div class="spacer"></div>
+    <div class="chip" id="starChip">⭐ 0/21</div>
+    <button class="iconbtn" id="soundBtn" title="เสียง">🔊</button>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <section id="screen-home">
+    <div class="card">
+      <h1>🌱 ภารกิจพันธุกรรม</h1>
+      <p class="mini">ชีววิทยา ม.4 เทอม 2 · เรื่อง การถ่ายทอดลักษณะทางพันธุกรรม (อิงขอบเขตเนื้อหา สสวท.)</p>
+      <p>ผจญภัย 6 ด่าน + ด่านบอสสถานการณ์จริง เก็บดาวให้ครบ 21 ดวง! เล่นซ้ำได้ไม่จำกัดเพื่อพัฒนาคะแนน</p>
+      <div class="btnrow">
+        <button class="btn small" id="btnPlay">▶ เริ่มผจญภัย</button>
+        <button class="btn small orange" id="btnCards">📇 การ์ดคำศัพท์</button>
+      </div>
+      <div class="btnrow">
+        <button class="btn small ghost" id="btnMis">⚠️ จุดที่มักเข้าใจผิด</button>
+        <button class="btn small ghost" id="btnHelp">❓ วิธีเล่น &amp; ขอบเขต</button>
+      </div>
+    </div>
+    <div class="map" id="map"></div>
+    <div class="card center" id="certSlot"></div>
+    <div class="foot">เล่นออฟไลน์ได้ 100% · คะแนนบันทึกในเครื่องของคุณเอง<br>
+      <button class="chip" id="btnReset" style="margin-top:8px">🗑 ล้างคะแนนทั้งหมด</button>
+    </div>
+  </section>
+
+  <!-- ============ PLAY ============ -->
+  <section id="screen-play" class="hidden">
+    <div class="hud">
+      <div class="line1">
+        <button class="iconbtn" id="btnQuit">✕</button>
+        <div class="lvname" id="hudName">ด่าน</div>
+        <div class="chip" id="hudScore">0 คะแนน</div>
+      </div>
+      <div class="bar"><i id="hudBar"></i></div>
+    </div>
+    <div id="taskHost"></div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="screen-result" class="hidden"><div id="resultHost"></div></section>
+
+  <!-- ============ CARDS ============ -->
+  <section id="screen-cards" class="hidden">
+    <div class="card">
+      <h2>📇 การ์ดคำศัพท์ ไทย–อังกฤษ</h2>
+      <p class="mini">แตะการ์ดเพื่อดู/ซ่อนคำนิยาม · ใช้ทบทวนก่อนสอบได้</p>
+      <div class="searchbar"><input id="cardSearch" placeholder="ค้นหาคำศัพท์ เช่น แอลลีล, allele"></div>
+      <div class="tagrow" id="cardTags"></div>
+    </div>
+    <div id="cardList"></div>
+    <button class="btn ghost" onclick="go('home')">← กลับหน้าหลัก</button>
+  </section>
+
+  <!-- ============ MISCONCEPTIONS ============ -->
+  <section id="screen-mis" class="hidden">
+    <div class="card">
+      <h2>⚠️ จุดที่นักเรียนมักเข้าใจผิด</h2>
+      <p class="mini">รวม 12 กับดักยอดฮิตของบทพันธุกรรม อ่านก่อนสอบช่วยได้เยอะ</p>
+    </div>
+    <div id="misList"></div>
+    <button class="btn ghost" onclick="go('home')">← กลับหน้าหลัก</button>
+  </section>
+
+  <!-- ============ HELP ============ -->
+  <section id="screen-help" class="hidden">
+    <div class="card">
+      <h2>❓ วิธีเล่น</h2>
+      <ul class="recap">
+        <li><b>เก็บดาว:</b> แต่ละด่านให้สูงสุด 3 ⭐ (ได้ ≥90% = 3⭐, ≥75% = 2⭐, ≥50% = 1⭐)</li>
+        <li><b>ปลดล็อก:</b> ต้องได้อย่างน้อย 1⭐ จึงจะเปิดด่านถัดไป · ด่านบอสเปิดเมื่อผ่านครบ 6 ด่าน</li>
+        <li><b>ตอบผิดไม่เป็นไร:</b> ทุกข้อมี “คำอธิบายเฉลย” และตอนจบด่านมีสรุปข้อที่พลาด</li>
+        <li><b>เล่นซ้ำได้:</b> ระบบเก็บคะแนนที่ดีที่สุดไว้เสมอ</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>📚 ขอบเขตเนื้อหา (สสวท. ม.4)</h2>
+      <ul class="recap" id="scopeList"></ul>
+      <p class="mini" style="margin-top:10px">อ้างอิงผลการเรียนรู้สาระชีววิทยา: สืบค้น อธิบาย และคำนวณการถ่ายทอดลักษณะทางพันธุกรรมตามกฎของเมนเดล รวมถึงลักษณะที่เป็นส่วนขยายของพันธุศาสตร์เมนเดล</p>
+    </div>
+    <button class="btn ghost" onclick="go('home')">← กลับหน้าหลัก</button>
+  </section>
+
+</div>
+
+<script>
+/* ==========================================================
+   ภารกิจพันธุกรรม — เกมประกอบการเรียนรู้ ชีววิทยา ม.4
+   ไฟล์เดียว ไม่พึ่ง CDN / อินเทอร์เน็ต
+   ========================================================== */
+
+/* ---------------- utils ---------------- */
+const $ = (s,r)=> (r||document).querySelector(s);
+const $$ = (s,r)=> Array.prototype.slice.call((r||document).querySelectorAll(s));
+function E(tag,cls,html){const n=document.createElement(tag); if(cls)n.className=cls; if(html!=null)n.innerHTML=html; return n;}
+function shuffle(a){a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
+
+/* ---------------- sound ---------------- */
+let AC=null, SOUND=true;
+function beep(freq,dur,type){
+  if(!SOUND) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(), g=AC.createGain();
+    o.type=type||'sine'; o.frequency.value=freq; g.gain.value=.07;
+    o.connect(g); g.connect(AC.destination); o.start();
+    g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime+dur);
+    o.stop(AC.currentTime+dur);
+  }catch(e){}
+}
+const sGood=()=>{beep(660,.12);setTimeout(()=>beep(880,.16),110)};
+const sBad =()=>{beep(220,.22,'triangle')};
+const sWin =()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*130))};
+
+/* ---------------- storage ---------------- */
+const KEY='genetics_quest_v1';
+let SAVE={stars:{},best:{},name:''};
+function load(){ try{const r=localStorage.getItem(KEY); if(r) SAVE=Object.assign(SAVE,JSON.parse(r));}catch(e){} }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(SAVE));}catch(e){} }
+load();
+
+/* ==========================================================
+   1) คลังคำศัพท์ ไทย–อังกฤษ
+   ========================================================== */
+const GLOSSARY=[
+ {th:'ยีน',en:'Gene',tag:'พื้นฐาน',def:'ช่วงหนึ่งของสาย DNA ที่ทำหน้าที่ควบคุมลักษณะทางพันธุกรรมหนึ่ง ๆ โดยเป็นรหัสสำหรับสร้างพอลิเพปไทด์หรือ RNA',hint:'ยีน 1 ยีนอยู่บนโครโมโซมที่ตำแหน่งเฉพาะเรียกว่า “โลคัส”'},
+ {th:'แอลลีล',en:'Allele',tag:'พื้นฐาน',def:'รูปแบบที่แตกต่างกันของยีนเดียวกัน อยู่ที่โลคัสเดียวกันบนโครโมโซมคู่เหมือน เช่น T (ต้นสูง) และ t (ต้นเตี้ย)',hint:'สิ่งมีชีวิตดิพลอยด์มีแอลลีลของแต่ละยีน 2 ตัว (จากพ่อ 1 แม่ 1)'},
+ {th:'โลคัส',en:'Locus',tag:'พื้นฐาน',def:'ตำแหน่งจำเพาะของยีนหนึ่ง ๆ บนโครโมโซม แอลลีลของยีนเดียวกันจะอยู่ที่โลคัสเดียวกันเสมอ'},
+ {th:'โครโมโซมคู่เหมือน',en:'Homologous chromosomes',tag:'พื้นฐาน',def:'โครโมโซมคู่ที่มีขนาด รูปร่าง และลำดับโลคัสของยีนเหมือนกัน ตัวหนึ่งมาจากพ่อ อีกตัวมาจากแม่'},
+ {th:'ออโตโซม',en:'Autosome',tag:'พื้นฐาน',def:'โครโมโซมร่างกาย 22 คู่ในมนุษย์ ที่ไม่เกี่ยวข้องกับการกำหนดเพศ'},
+ {th:'โครโมโซมเพศ',en:'Sex chromosome',tag:'ส่วนขยาย',def:'โครโมโซมคู่ที่ 23 ในมนุษย์ (XX = เพศหญิง, XY = เพศชาย) กำหนดเพศและมียีนบางชนิดอยู่ด้วย'},
+ {th:'จีโนไทป์',en:'Genotype',tag:'พื้นฐาน',def:'องค์ประกอบของแอลลีลที่สิ่งมีชีวิตมีอยู่ เขียนแทนด้วยสัญลักษณ์ เช่น TT, Tt, tt'},
+ {th:'ฟีโนไทป์',en:'Phenotype',tag:'พื้นฐาน',def:'ลักษณะที่ปรากฏให้เห็นหรือตรวจสอบได้ เช่น ต้นสูง เมล็ดสีเหลือง หมู่เลือด A ซึ่งเป็นผลจากจีโนไทป์ร่วมกับสิ่งแวดล้อม'},
+ {th:'ฮอมอไซกัส (พันธุ์แท้)',en:'Homozygous',tag:'พื้นฐาน',def:'มีแอลลีลของยีนนั้นเหมือนกันทั้งคู่ เช่น TT (ฮอมอไซกัสเด่น) หรือ tt (ฮอมอไซกัสด้อย)'},
+ {th:'เฮเทอโรไซกัส (พันธุ์ทาง)',en:'Heterozygous',tag:'พื้นฐาน',def:'มีแอลลีลของยีนนั้นต่างกัน เช่น Tt แสดงฟีโนไทป์ตามแอลลีลเด่น แต่ยังพาแอลลีลด้อยไปสู่รุ่นลูกได้'},
+ {th:'ลักษณะเด่น / แอลลีลเด่น',en:'Dominant',tag:'พื้นฐาน',def:'แอลลีลที่ข่มการแสดงออกของอีกแอลลีลเมื่ออยู่ด้วยกันในสภาพเฮเทอโรไซกัส เขียนแทนด้วยอักษรตัวใหญ่',hint:'“เด่น” ไม่ได้แปลว่าพบมากที่สุดหรือดีที่สุด!'},
+ {th:'ลักษณะด้อย / แอลลีลด้อย',en:'Recessive',tag:'พื้นฐาน',def:'แอลลีลที่แสดงออกได้เมื่ออยู่ในสภาพฮอมอไซกัสด้อยเท่านั้น (เช่น tt) เขียนแทนด้วยอักษรตัวเล็ก'},
+ {th:'รุ่นพ่อแม่',en:'P generation (Parental)',tag:'เมนเดล',def:'รุ่นพ่อแม่พันธุ์แท้ที่นำมาผสมกันเป็นรุ่นเริ่มต้นของการทดลอง'},
+ {th:'รุ่นลูก F1',en:'F1 generation',tag:'เมนเดล',def:'รุ่นลูกที่ได้จากการผสมรุ่น P ในการผสมมอโนไฮบริดจะแสดงลักษณะเด่นทั้งหมด'},
+ {th:'รุ่นหลาน F2',en:'F2 generation',tag:'เมนเดล',def:'รุ่นที่ได้จากการผสม F1 ด้วยกันเอง ปรากฏอัตราส่วนฟีโนไทป์ 3 : 1 ในการผสมมอโนไฮบริด'},
+ {th:'การผสมตัวเอง',en:'Self-pollination',tag:'เมนเดล',def:'การถ่ายละอองเรณูจากอับเรณูไปยังยอดเกสรเพศเมียของดอกเดียวกันหรือต้นเดียวกัน ถั่วลันเตาทำได้ตามธรรมชาติ'},
+ {th:'การผสมข้าม',en:'Cross-pollination',tag:'เมนเดล',def:'การถ่ายละอองเรณูจากต้นหนึ่งไปยังยอดเกสรเพศเมียของอีกต้นหนึ่ง เมนเดลทำโดยตัดอับเรณูออกก่อน'},
+ {th:'การผสมมอโนไฮบริด',en:'Monohybrid cross',tag:'เมนเดล',def:'การผสมที่พิจารณาลักษณะเดียว เช่น Tt × Tt ให้ฟีโนไทป์ 3 : 1 และจีโนไทป์ 1 : 2 : 1'},
+ {th:'การผสมไดไฮบริด',en:'Dihybrid cross',tag:'เมนเดล',def:'การผสมที่พิจารณาสองลักษณะพร้อมกัน เช่น TtYy × TtYy ให้ฟีโนไทป์ 9 : 3 : 3 : 1'},
+ {th:'ตารางพันเนตต์',en:'Punnett square',tag:'เมนเดล',def:'ตารางที่ใช้จับคู่เซลล์สืบพันธุ์ของพ่อและแม่ เพื่อหาจีโนไทป์และความน่าจะเป็นของรุ่นลูก'},
+ {th:'กฎแห่งการแยก',en:'Law of Segregation',tag:'เมนเดล',def:'แอลลีลคู่หนึ่งจะแยกออกจากกันไปสู่เซลล์สืบพันธุ์คนละเซลล์ ระหว่างไมโอซิส I ทำให้เซลล์สืบพันธุ์มีแอลลีลของยีนนั้นเพียง 1 แอลลีล'},
+ {th:'กฎแห่งการรวมกลุ่มอย่างอิสระ',en:'Law of Independent Assortment',tag:'เมนเดล',def:'แอลลีลของยีนต่างคู่ที่อยู่บนโครโมโซมต่างคู่กัน จะแยกและเข้ากลุ่มกันอย่างอิสระในการสร้างเซลล์สืบพันธุ์'},
+ {th:'การผสมเพื่อทดสอบ',en:'Test cross',tag:'เมนเดล',def:'การนำสิ่งมีชีวิตที่แสดงลักษณะเด่นแต่ไม่ทราบจีโนไทป์ ไปผสมกับฮอมอไซกัสด้อย (tt) เพื่อตรวจสอบว่าเป็น TT หรือ Tt',hint:'ถ้าลูกออกลักษณะด้อยแม้เพียงต้นเดียว แสดงว่าพ่อแม่ต้นนั้นเป็น Tt'},
+ {th:'เซลล์สืบพันธุ์',en:'Gamete',tag:'เมนเดล',def:'เซลล์ไข่หรือสเปิร์มที่มีโครโมโซมชุดเดียว (n) เกิดจากไมโอซิส'},
+ {th:'ไมโอซิส',en:'Meiosis',tag:'เมนเดล',def:'การแบ่งเซลล์เพื่อสร้างเซลล์สืบพันธุ์ ลดจำนวนโครโมโซมจาก 2n เป็น n เป็นพื้นฐานทางเซลล์วิทยาของกฎเมนเดล'},
+ {th:'ความน่าจะเป็น',en:'Probability',tag:'เมนเดล',def:'โอกาสการเกิดเหตุการณ์ ใช้กฎการคูณ (เกิดร่วมกัน) และกฎการบวก (เกิดอย่างใดอย่างหนึ่ง) ในการคำนวณอัตราส่วนรุ่นลูก'},
+ {th:'การข่มไม่สมบูรณ์',en:'Incomplete dominance',tag:'ส่วนขยาย',def:'แอลลีลเด่นข่มแอลลีลด้อยได้ไม่หมด ลูกผสมจึงแสดงลักษณะกึ่งกลางระหว่างพ่อแม่ เช่น ดอกลิ้นมังกรแดง × ขาว ได้ดอกสีชมพู'},
+ {th:'การข่มร่วมกัน',en:'Codominance',tag:'ส่วนขยาย',def:'แอลลีลทั้งสองแสดงออกได้เต็มที่พร้อมกันในเฮเทอโรไซกัส เช่น หมู่เลือด AB มีทั้งแอนติเจน A และ B'},
+ {th:'มัลติเปิลแอลลีล',en:'Multiple alleles',tag:'ส่วนขยาย',def:'ยีนหนึ่งมีแอลลีลมากกว่า 2 แบบในประชากร เช่น หมู่เลือด ABO มี Iᴬ, Iᴮ และ i แต่แต่ละคนมีได้เพียง 2 แอลลีล'},
+ {th:'ยีนบนโครโมโซมเพศ',en:'Sex-linked gene',tag:'ส่วนขยาย',def:'ยีนที่อยู่บนโครโมโซม X (หรือ Y) เช่น ยีนตาบอดสีและฮีโมฟีเลียอยู่บน X ทำให้พบในเพศชายมากกว่าเพศหญิง'},
+ {th:'พาหะ',en:'Carrier',tag:'ส่วนขยาย',def:'ผู้ที่มีแอลลีลด้อยของโรคอยู่ในสภาพเฮเทอโรไซกัส ไม่แสดงอาการ แต่ถ่ายทอดแอลลีลนั้นสู่ลูกได้'},
+ {th:'ลักษณะควบคุมด้วยหลายยีน',en:'Polygenic trait',tag:'ส่วนขยาย',def:'ลักษณะที่ควบคุมโดยยีนหลายคู่ร่วมกัน ทำให้ความแปรผันเป็นแบบต่อเนื่อง เช่น สีผิว ความสูง สติปัญญา'},
+ {th:'ยีนที่อยู่บนโครโมโซมเดียวกัน',en:'Linked genes',tag:'ส่วนขยาย',def:'ยีนที่อยู่บนโครโมโซมแท่งเดียวกัน มักถ่ายทอดไปด้วยกัน จึงไม่เป็นไปตามกฎการรวมกลุ่มอย่างอิสระ'},
+ {th:'พันธุประวัติ / เพดดิกรี',en:'Pedigree',tag:'ส่วนขยาย',def:'แผนภาพแสดงการถ่ายทอดลักษณะในครอบครัวหลายรุ่น ใช้สี่เหลี่ยมแทนเพศชาย วงกลมแทนเพศหญิง สัญลักษณ์ทึบแทนผู้แสดงลักษณะ'},
+ {th:'ลักษณะแปรผันไม่ต่อเนื่อง',en:'Discontinuous variation',tag:'พื้นฐาน',def:'ลักษณะที่แบ่งกลุ่มได้ชัดเจน ไม่มีขั้นกลาง เช่น หมู่เลือด ลักยิ้ม การห่อลิ้น มักควบคุมด้วยยีนน้อยคู่'},
+ {th:'ลักษณะแปรผันต่อเนื่อง',en:'Continuous variation',tag:'พื้นฐาน',def:'ลักษณะที่มีความแตกต่างกันเป็นลำดับต่อเนื่อง เช่น ความสูง น้ำหนัก สีผิว ควบคุมด้วยหลายยีนและได้รับอิทธิพลจากสิ่งแวดล้อม'}
+];
+
+/* ==========================================================
+   2) จุดที่มักเข้าใจผิด
+   ========================================================== */
+const MISCON=[
+ {w:'“ลักษณะเด่น” = ลักษณะที่พบมากที่สุดในประชากร',r:'ความเด่น–ด้อยบอกเพียงว่าแอลลีลใดข่มการแสดงออกของอีกแอลลีลเมื่ออยู่ด้วยกัน ไม่เกี่ยวกับความถี่หรือความดีของลักษณะ เช่น นิ้วเกิน (polydactyly) เป็นลักษณะเด่นแต่พบน้อยมาก'},
+ {w:'แอลลีลผสมกลมกลืนกันเหมือนผสมสี',r:'การถ่ายทอดเป็นแบบหน่วยแยก (particulate) แอลลีลไม่รวมเป็นเนื้อเดียวกัน หลักฐานคือลักษณะด้อยที่หายไปใน F1 กลับปรากฏใหม่ใน F2'},
+ {w:'F2 ได้ 3 : 1 แปลว่าลูก 4 ตัวจะเป็นเด่น 3 ด้อย 1 เสมอ',r:'3 : 1 เป็นอัตราส่วนความน่าจะเป็นทางสถิติ ต้องใช้จำนวนลูกมากจึงจะเข้าใกล้ค่านี้ ลูก 4 คนจริง ๆ อาจเป็นเด่นทั้งหมดก็ได้'},
+ {w:'ถ้าลูก 3 คนแรกเป็นโรคแล้ว คนที่ 4 ต้องปกติ',r:'การมีลูกแต่ละครั้งเป็นเหตุการณ์อิสระ โอกาสของลูกคนที่ 4 ยังคงเป็น 1/4 เท่าเดิม โอกาสไม่ได้ “ถูกใช้ไปแล้ว”'},
+ {w:'จีโนไทป์ Aa เป็นพันธุ์แท้เพราะแสดงลักษณะเด่น',r:'Aa เป็นเฮเทอโรไซกัส (พันธุ์ทาง) แม้ฟีโนไทป์เหมือน AA ทุกประการ แต่สร้างเซลล์สืบพันธุ์ได้ 2 แบบคือ A และ a'},
+ {w:'Test cross คือการผสมกับพันธุ์ทาง',r:'Test cross ต้องผสมกับ<b>ฮอมอไซกัสด้อย</b> (เช่น tt) เพราะให้เซลล์สืบพันธุ์แบบเดียว ผลลูกจึงสะท้อนจีโนไทป์ของอีกฝ่ายได้โดยตรง'},
+ {w:'การข่มไม่สมบูรณ์ทำให้แอลลีลหายไป',r:'ดอกสีชมพู (RR′) ยังมีทั้งสองแอลลีลครบ เมื่อผสม F1 กันเองจะได้ แดง : ชมพู : ขาว = 1 : 2 : 1 แอลลีลจึงยังแยกจากกันตามกฎของเมนเดล'},
+ {w:'การข่มไม่สมบูรณ์กับการข่มร่วมกันคืออย่างเดียวกัน',r:'ข่มไม่สมบูรณ์ให้ลักษณะ “กึ่งกลาง” (แดง+ขาว → ชมพู) แต่ข่มร่วมกันแสดงลักษณะทั้งสอง “เต็มที่พร้อมกัน” (Iᴬ Iᴮ → หมู่เลือด AB มีทั้งแอนติเจน A และ B)'},
+ {w:'หมู่เลือด ABO มีแค่ 2 แอลลีล',r:'มี 3 แอลลีลคือ Iᴬ, Iᴮ, i (มัลติเปิลแอลลีล) ให้จีโนไทป์ได้ 6 แบบ และฟีโนไทป์ 4 หมู่ โดยแต่ละคนมีแอลลีลได้เพียง 2 ตัวเท่านั้น'},
+ {w:'ผู้ชายเป็น “พาหะ” ของตาบอดสีได้',r:'เพศชายมีโครโมโซม X เพียงแท่งเดียว (Xᶜ Y) จึงแสดงอาการทันทีเมื่อมีแอลลีลด้อยบน X ไม่มีสภาพพาหะ ส่วนพาหะเป็นได้เฉพาะเพศหญิง (Xᶜ Xᶜ′)'},
+ {w:'ยีน 2 คู่ใด ๆ ก็รวมกลุ่มอย่างอิสระเสมอ',r:'กฎการรวมกลุ่มอย่างอิสระใช้ได้เมื่อยีนอยู่บนโครโมโซมต่างคู่กัน ถ้าเป็นยีนบนโครโมโซมเดียวกัน (linked genes) จะถ่ายทอดไปด้วยกัน อัตราส่วนจะเบี่ยงเบนจาก 9 : 3 : 3 : 1'},
+ {w:'ฟีโนไทป์ขึ้นกับจีโนไทป์เพียงอย่างเดียว',r:'ฟีโนไทป์ = จีโนไทป์ + อิทธิพลของสิ่งแวดล้อม เช่น ความสูงขึ้นกับโภชนาการ สีขนกระต่ายหิมาลายันขึ้นกับอุณหภูมิ'}
+];
+
+/* ==========================================================
+   3) ภาพ SVG สำหรับด่านป้ายชื่อ
+   ========================================================== */
+const SVGS={};
+
+/* เส้นชี้ (leader line) วาดไว้ในภาพ ปลายเส้นคือจุดที่หมายเลขวางอยู่ริมภาพ
+   จึงไม่มีหมายเลขทับโครงสร้างที่ต้องการให้นักเรียนสังเกต */
+SVGS.chromosome=`<svg viewBox="0 0 400 300" role="img" aria-label="โครโมโซมคู่เหมือนและแอลลีล">
+ <rect width="400" height="300" fill="#FFFDF7"/>
+ <line x1="72" y1="112" x2="330" y2="112" stroke="#C9B48F" stroke-width="2" stroke-dasharray="7 6"/>
+ <g>
+  <rect x="120" y="55" width="40" height="200" rx="20" fill="#5BAE85" stroke="#215C44" stroke-width="3"/>
+  <path d="M120 145 q20 12 40 0 v22 q-20 -12 -40 0 z" fill="#FFFDF7"/>
+  <circle cx="140" cy="156" r="9" fill="#FFF6E6" stroke="#215C44" stroke-width="3"/>
+  <rect x="120" y="98" width="40" height="28" fill="#215C44"/>
+  <text x="140" y="118" font-size="19" font-weight="bold" fill="#FFF6E6" text-anchor="middle">T</text>
+ </g>
+ <g>
+  <rect x="240" y="55" width="40" height="200" rx="20" fill="#FFB067" stroke="#C25E17" stroke-width="3"/>
+  <path d="M240 145 q20 12 40 0 v22 q-20 -12 -40 0 z" fill="#FFFDF7"/>
+  <circle cx="260" cy="156" r="9" fill="#FFF6E6" stroke="#C25E17" stroke-width="3"/>
+  <rect x="240" y="98" width="40" height="28" fill="#C25E17"/>
+  <text x="260" y="118" font-size="19" font-weight="bold" fill="#FFF6E6" text-anchor="middle">t</text>
+ </g>
+ <g stroke="#8A7862" stroke-width="2.5" fill="none">
+  <path d="M140 46 q60 -20 120 0"/>
+  <path d="M200 42 v-8"/>
+  <path d="M78 230 L130 128"/>
+  <path d="M322 230 L272 128"/>
+  <path d="M198 206 L153 160"/>
+ </g>
+ <g fill="#8A7862">
+  <circle cx="130" cy="128" r="4"/><circle cx="272" cy="128" r="4"/><circle cx="153" cy="160" r="4"/>
+  <circle cx="74" cy="112" r="4"/>
+ </g>
+ <text x="200" y="288" font-size="13" fill="#7C6B57" text-anchor="middle">โครโมโซมของต้นถั่วต้นหนึ่ง — จีโนไทป์ Tt</text>
+</svg>`;
+
+SVGS.flower=`<svg viewBox="0 0 400 320" role="img" aria-label="โครงสร้างดอกถั่วลันเตา">
+ <rect width="400" height="320" fill="#FFFDF7"/>
+ <ellipse cx="200" cy="118" rx="94" ry="64" fill="#F3D9E6" stroke="#C79BB1" stroke-width="3"/>
+ <ellipse cx="138" cy="172" rx="44" ry="29" fill="#F8E6EE" stroke="#C79BB1" stroke-width="3"/>
+ <ellipse cx="262" cy="172" rx="44" ry="29" fill="#F8E6EE" stroke="#C79BB1" stroke-width="3"/>
+ <ellipse cx="200" cy="232" rx="72" ry="42" fill="#FBEFF4" stroke="#C79BB1" stroke-width="3"/>
+ <g stroke="#C9A227" stroke-width="4.5" fill="none">
+   <path d="M188 210 C178 192 172 168 174 150"/>
+   <path d="M198 210 C194 190 192 168 196 152"/>
+ </g>
+ <ellipse cx="172" cy="142" rx="13" ry="9" fill="#E0B321" stroke="#9C7A0F" stroke-width="2.5" transform="rotate(-25 172 142)"/>
+ <ellipse cx="196" cy="145" rx="13" ry="9" fill="#E0B321" stroke="#9C7A0F" stroke-width="2.5" transform="rotate(-12 196 145)"/>
+ <path d="M212 214 C232 192 240 170 242 154" stroke="#4E9E75" stroke-width="6" fill="none"/>
+ <circle cx="244" cy="144" r="12" fill="#2F7D5D" stroke="#215C44" stroke-width="3"/>
+ <ellipse cx="200" cy="236" rx="42" ry="25" fill="#CFE8D9" stroke="#2F7D5D" stroke-width="3.5"/>
+ <circle cx="185" cy="236" r="6" fill="#FFF6E6" stroke="#2F7D5D" stroke-width="2"/>
+ <circle cx="201" cy="238" r="6" fill="#FFF6E6" stroke="#2F7D5D" stroke-width="2"/>
+ <circle cx="217" cy="234" r="6" fill="#FFF6E6" stroke="#2F7D5D" stroke-width="2"/>
+ <g stroke="#8A7862" stroke-width="2.5" fill="none">
+  <path d="M58 62 L146 104"/>
+  <path d="M58 150 L160 143"/>
+  <path d="M58 245 L184 194"/>
+  <path d="M340 86 L252 138"/>
+  <path d="M340 232 L238 240"/>
+ </g>
+ <g fill="#8A7862">
+  <circle cx="146" cy="104" r="4"/><circle cx="160" cy="143" r="4"/><circle cx="184" cy="194" r="4"/>
+  <circle cx="252" cy="138" r="4"/><circle cx="238" cy="240" r="4"/>
+ </g>
+ <text x="200" y="308" font-size="13" fill="#7C6B57" text-anchor="middle">ดอกถั่วลันเตา (ผ่าให้เห็นเกสรภายใน)</text>
+</svg>`;
+
+SVGS.pedigree=`<svg viewBox="0 0 400 300" role="img" aria-label="แผนภาพพันธุประวัติ">
+ <rect width="400" height="300" fill="#FFFDF7"/>
+ <rect x="110" y="60" width="46" height="46" fill="#FFFDF7" stroke="#3A2E22" stroke-width="3.5"/>
+ <circle cx="250" cy="83" r="24" fill="#FFFDF7" stroke="#3A2E22" stroke-width="3.5"/>
+ <line x1="156" y1="83" x2="226" y2="83" stroke="#3A2E22" stroke-width="3.5"/>
+ <line x1="191" y1="83" x2="191" y2="140" stroke="#3A2E22" stroke-width="3.5"/>
+ <line x1="105" y1="140" x2="285" y2="140" stroke="#3A2E22" stroke-width="3.5"/>
+ <line x1="105" y1="140" x2="105" y2="168" stroke="#3A2E22" stroke-width="3.5"/>
+ <line x1="195" y1="140" x2="195" y2="167" stroke="#3A2E22" stroke-width="3.5"/>
+ <line x1="285" y1="140" x2="285" y2="168" stroke="#3A2E22" stroke-width="3.5"/>
+ <rect x="82" y="168" width="46" height="46" fill="#3A2E22" stroke="#3A2E22" stroke-width="3.5"/>
+ <circle cx="195" cy="191" r="24" fill="#FFFDF7" stroke="#3A2E22" stroke-width="3.5"/>
+ <path d="M195 167 A24 24 0 0 1 195 215 Z" fill="#3A2E22"/>
+ <rect x="262" y="168" width="46" height="46" fill="#FFFDF7" stroke="#3A2E22" stroke-width="3.5"/>
+ <g stroke="#8A7862" stroke-width="2.5" fill="none">
+  <path d="M66 52 L116 68"/>
+  <path d="M334 52 L266 68"/>
+  <path d="M60 132 L172 86"/>
+  <path d="M46 246 L86 212"/>
+  <path d="M200 258 L196 217"/>
+ </g>
+ <g fill="#8A7862">
+  <circle cx="116" cy="68" r="4"/><circle cx="266" cy="68" r="4"/><circle cx="172" cy="86" r="4"/>
+  <circle cx="86" cy="212" r="4"/><circle cx="196" cy="217" r="4"/>
+ </g>
+ <text x="330" y="196" font-size="13" fill="#7C6B57" text-anchor="middle">รุ่นลูก</text>
+ <text x="340" y="120" font-size="13" fill="#7C6B57" text-anchor="middle">รุ่นพ่อแม่</text>
+</svg>`;
+
+/* ==========================================================
+   4) เนื้อหาด่าน
+   ========================================================== */
+const LEVELS=[
+{
+ id:1, icon:'🌱', name:'ด่าน 1 · ห้องเรียนสวนถั่ว', sub:'คำศัพท์และแนวคิดพื้นฐาน',
+ goal:'อธิบายความหมายของยีน แอลลีล จีโนไทป์ ฟีโนไทป์ และความสัมพันธ์กับโครโมโซม',
+ tasks:[
+  {t:'match', title:'จับคู่คำศัพท์กับความหมายให้ถูกต้อง',
+   pairs:[
+    ['ยีน (Gene)','ช่วงหนึ่งของ DNA ที่ควบคุมลักษณะทางพันธุกรรม'],
+    ['แอลลีล (Allele)','รูปแบบที่ต่างกันของยีนเดียวกัน อยู่ที่โลคัสเดียวกัน'],
+    ['จีโนไทป์ (Genotype)','องค์ประกอบของแอลลีลที่มีอยู่ เช่น Tt'],
+    ['ฟีโนไทป์ (Phenotype)','ลักษณะที่ปรากฏให้เห็น เช่น ต้นสูง'],
+    ['ฮอมอไซกัส (Homozygous)','มีแอลลีลเหมือนกันทั้งคู่ เช่น TT หรือ tt'],
+    ['เฮเทอโรไซกัส (Heterozygous)','มีแอลลีลต่างกัน เช่น Tt']
+   ]},
+  {t:'label', title:'ลากป้ายชื่อไปยังตำแหน่งที่ถูกต้องบนโครโมโซมคู่เหมือน', svg:'chromosome',
+   spots:[
+    {x:50,y:9,label:'โครโมโซมคู่เหมือน',why:'โครโมโซม 2 แท่งนี้มีขนาด รูปร่าง และลำดับโลคัสเหมือนกัน แท่งหนึ่งมาจากพ่อ อีกแท่งมาจากแม่'},
+    {x:13,y:37,label:'โลคัส (ตำแหน่งของยีน)',why:'เส้นประชี้ให้เห็นว่ายีนเดียวกันอยู่ที่ตำแหน่งตรงกันบนโครโมโซมทั้งสองแท่ง เรียกตำแหน่งนี้ว่าโลคัส'},
+    {x:18,y:81,label:'แอลลีลเด่น T',why:'แถบสีเข้มบนโครโมโซมแท่งซ้ายคือแอลลีล T (ต้นสูง) ซึ่งเป็นแอลลีลเด่น'},
+    {x:82,y:81,label:'แอลลีลด้อย t',why:'แถบบนโครโมโซมแท่งขวาคือแอลลีล t (ต้นเตี้ย) เป็นแอลลีลด้อย จีโนไทป์รวมจึงเป็น Tt'},
+    {x:51,y:72,label:'เซนโทรเมียร์',why:'บริเวณคอดของโครโมโซม เป็นจุดยึดของเส้นใยสปินเดิลขณะแบ่งเซลล์'}
+   ]},
+  {t:'quiz', q:'ต้นถั่วลันเตาต้นหนึ่งมีจีโนไทป์ Tt และมีลำต้นสูง ข้อใดกล่าวถูกต้อง',
+   ch:['เป็นพันธุ์ทาง แสดงลักษณะสูง แต่ยังส่งแอลลีล t ให้รุ่นลูกได้','เป็นพันธุ์แท้ เพราะแสดงลักษณะเด่น','แอลลีล t สลายไปแล้วจึงไม่มีผลใด ๆ','ต้องมีความสูงน้อยกว่าต้น TT ประมาณครึ่งหนึ่ง'], a:0,
+   why:'Tt เป็นเฮเทอโรไซกัส (พันธุ์ทาง) แสดงฟีโนไทป์ตามแอลลีลเด่นคือต้นสูง แต่เมื่อสร้างเซลล์สืบพันธุ์ แอลลีล T และ t จะแยกจากกัน ทำให้ครึ่งหนึ่งของเซลล์สืบพันธุ์มีแอลลีล t',
+   tip:'ในกรณีข่มสมบูรณ์ TT กับ Tt มีฟีโนไทป์เหมือนกันทุกประการ ไม่ได้ “สูงครึ่งเดียว”'},
+  {t:'quiz', q:'ข้อใดคือความหมายที่ถูกต้องของ “ลักษณะเด่น”',
+   ch:['ลักษณะที่พบมากที่สุดในประชากร','ลักษณะที่แข็งแรงและดีต่อการอยู่รอดมากกว่า','ลักษณะที่ปรากฏออกมาเมื่ออยู่ในสภาพเฮเทอโรไซกัส','ลักษณะที่ควบคุมด้วยยีนจำนวนมากที่สุด'], a:2,
+   why:'ความเด่น–ด้อยเป็นความสัมพันธ์ระหว่างแอลลีล 2 ตัวในการแสดงออก แอลลีลเด่นคือแอลลีลที่ข่มแอลลีลอีกตัวและปรากฏออกมาแม้มีเพียง 1 แอลลีล (สภาพ Aa)',
+   tip:'นิ้วเกินและโรคฮันติงตันเป็นลักษณะเด่นแต่พบน้อยมาก ส่วนหมู่เลือด O ที่มาจากแอลลีลด้อยกลับพบมากที่สุดในไทย — “เด่น” จึงไม่เกี่ยวกับความถี่'},
+  {t:'quiz', q:'สิ่งมีชีวิต 2 ต้นมีฟีโนไทป์เหมือนกัน (ต้นสูงทั้งคู่) แต่จีโนไทป์อาจต่างกันได้หรือไม่',
+   ch:['ไม่ได้ ฟีโนไทป์เหมือนกันต้องมีจีโนไทป์เหมือนกันเสมอ','ได้ อาจเป็น TT หรือ Tt ก็ได้','ได้ อาจเป็น TT หรือ tt ก็ได้','ได้เฉพาะกรณีที่เป็นฝาแฝดเท่านั้น'], a:1,
+   why:'ในลักษณะที่มีการข่มสมบูรณ์ ทั้ง TT และ Tt ต่างแสดงฟีโนไทป์เด่นเหมือนกัน ส่วน tt จะแสดงลักษณะด้อยจึงเป็นไปไม่ได้ในกรณีนี้ ต้องใช้ test cross ช่วยแยกว่าเป็น TT หรือ Tt'}
+ ],
+ recap:['ยีนคือช่วงของ DNA บนโครโมโซม ตำแหน่งของยีนเรียกว่าโลคัส','สิ่งมีชีวิตดิพลอยด์มีแอลลีลของแต่ละยีน 2 ตัว จากพ่อและแม่ฝ่ายละ 1','จีโนไทป์คือแอลลีลที่มี ฟีโนไทป์คือลักษณะที่ปรากฏ','TT/tt = ฮอมอไซกัส (พันธุ์แท้), Tt = เฮเทอโรไซกัส (พันธุ์ทาง)'],
+ mis:'“เด่น” ไม่ได้แปลว่าพบมากหรือดีกว่า แต่หมายถึงแอลลีลที่ข่มการแสดงออกของอีกแอลลีลได้'
+},
+{
+ id:2, icon:'🌸', name:'ด่าน 2 · สวนของเมนเดล', sub:'การทดลองและวิธีการทางวิทยาศาสตร์',
+ goal:'อธิบายเหตุผลที่เมนเดลเลือกถั่วลันเตา วิธีผสมพันธุ์ และความหมายของรุ่น P, F1, F2',
+ tasks:[
+  {t:'label', title:'ระบุส่วนประกอบของดอกถั่วลันเตาที่เกี่ยวข้องกับการสืบพันธุ์', svg:'flower',
+   spots:[
+    {x:12,y:47,label:'อับเรณู (สร้างละอองเรณู)',why:'อับเรณูเป็นส่วนปลายของเกสรเพศผู้ที่สร้างละอองเรณู ซึ่งภายในมีเซลล์สืบพันธุ์เพศผู้ เมนเดลจะตัดส่วนนี้ทิ้งเมื่อต้องการผสมข้าม'},
+    {x:12,y:78,label:'ก้านชูอับเรณู',why:'ก้านชูอับเรณูทำหน้าที่ชูอับเรณูขึ้นมา รวมกันเรียกว่าเกสรเพศผู้ (stamen)'},
+    {x:87,y:25,label:'ยอดเกสรเพศเมีย',why:'ยอดเกสรเพศเมียเป็นบริเวณที่รับละอองเรณู เมนเดลใช้พู่กันป้ายละอองเรณูจากต้นพ่อพันธุ์ลงตรงนี้'},
+    {x:87,y:72,label:'รังไข่ (เจริญเป็นฝัก)',why:'ภายในรังไข่มีออวุลซึ่งมีเซลล์ไข่ เมื่อปฏิสนธิแล้วออวุลเจริญเป็นเมล็ด และรังไข่เจริญเป็นฝักถั่ว'},
+    {x:12,y:17,label:'กลีบดอก',why:'กลีบดอกถั่วลันเตาห่อหุ้มเกสรไว้มิดชิด ทำให้เกิดการผสมตัวเองตามธรรมชาติและป้องกันละอองเรณูจากภายนอก'}
+   ]},
+  {t:'quiz', q:'เพราะเหตุใดเมนเดลจึงเลือกถั่วลันเตามาใช้ในการทดลอง',
+   ch:['เพราะถั่วลันเตามีโครโมโซมเพียง 2 แท่ง จึงศึกษาง่าย','เพราะปลูกง่าย อายุสั้น ให้ลูกจำนวนมาก มีลักษณะที่แตกต่างชัดเจน 2 แบบ และควบคุมการผสมพันธุ์ได้','เพราะถั่วลันเตาไม่มีการกลายพันธุ์เลย','เพราะถั่วลันเตาสืบพันธุ์แบบไม่อาศัยเพศ ลูกจึงเหมือนพ่อแม่ทุกประการ'], a:1,
+   why:'ถั่วลันเตามีอายุสั้น ให้ลูกรุ่นละมาก ๆ (ทำให้ข้อมูลทางสถิติน่าเชื่อถือ) มีลักษณะที่แยกได้ชัดเจนเป็น 2 แบบ 7 ลักษณะ ปลูกง่าย และโครงสร้างดอกเอื้อให้ผสมตัวเองได้เอง แต่ผู้ทดลองก็บังคับให้ผสมข้ามได้',
+   tip:'ถั่วลันเตามีโครโมโซม 7 คู่ ไม่ใช่ 2 แท่ง และมีการกลายพันธุ์ได้เช่นเดียวกับสิ่งมีชีวิตอื่น'},
+  {t:'quiz', q:'ในการผสมข้าม เมนเดลต้องตัดอับเรณูของต้นแม่พันธุ์ทิ้งก่อนดอกบาน เพราะเหตุใด',
+   ch:['เพื่อให้ดอกมีขนาดใหญ่ขึ้น','เพื่อป้องกันการผสมตัวเอง ทำให้แน่ใจว่าละอองเรณูมาจากต้นพ่อพันธุ์ที่กำหนดเท่านั้น','เพื่อเร่งให้เกิดการปฏิสนธิเร็วขึ้น','เพื่อทำให้เกิดลักษณะใหม่ในรุ่นลูก'], a:1,
+   why:'ถ้าไม่ตัดอับเรณูออก ดอกถั่วลันเตาจะผสมตัวเอง ทำให้ไม่ทราบว่าลูกที่ได้มาจากพ่อพันธุ์ใด การควบคุมตัวแปรนี้ทำให้ผลการทดลองเชื่อถือได้'},
+  {t:'quiz', q:'เมนเดลผสมถั่วต้นสูงพันธุ์แท้กับต้นเตี้ยพันธุ์แท้ ได้ F1 ต้นสูงทั้งหมด เมื่อปล่อยให้ F1 ผสมกันเอง ได้ F2 เป็นต้นสูง 787 ต้น ต้นเตี้ย 277 ต้น ข้อสรุปใดถูกต้องที่สุด',
+   ch:['แอลลีลต้นเตี้ยเกิดการกลายพันธุ์ขึ้นใหม่ใน F2','แอลลีลต้นเตี้ยไม่ได้หายไปใน F1 เพียงแต่ถูกข่มไว้ แล้วปรากฏอีกครั้งใน F2 ในอัตราส่วนประมาณ 3 : 1','ลักษณะของพ่อแม่ผสมกลมกลืนกันแล้วแยกออกใหม่','F1 ทุกต้นเป็นพันธุ์แท้ต้นสูง'], a:1,
+   why:'F1 ทุกต้นมีจีโนไทป์ Tt แอลลีล t ยังคงอยู่ครบเพียงแต่ถูก T ข่มไว้ เมื่อ F1 ผสมกันเอง แอลลีล t มีโอกาสมาพบกันเป็น tt ประมาณ 1/4 จึงได้ 787 : 277 ≈ 3 : 1',
+   tip:'นี่คือหลักฐานสำคัญที่หักล้างแนวคิด “การถ่ายทอดแบบผสมกลมกลืน” (blending inheritance)'},
+  {t:'quiz', q:'ข้อใดจับคู่รุ่นในการทดลองได้ถูกต้อง',
+   ch:['P = รุ่นพ่อแม่พันธุ์แท้ที่นำมาผสม, F1 = รุ่นลูก, F2 = รุ่นที่ได้จากการผสม F1 กันเอง','P = รุ่นลูกรุ่นแรก, F1 = รุ่นพ่อแม่, F2 = รุ่นปู่ย่า','P = รุ่นพืชป่า, F1 = รุ่นที่กลายพันธุ์, F2 = รุ่นที่คงที่','P = รุ่นที่ผสมตัวเอง, F1 = รุ่นที่ผสมข้าม, F2 = รุ่นที่ตายไป'], a:0,
+   why:'P (Parental) คือรุ่นพ่อแม่พันธุ์แท้ F1 (First filial) คือรุ่นลูกที่ได้จาก P และ F2 คือรุ่นที่ได้จากการผสม F1 กันเองหรือปล่อยให้ F1 ผสมตัวเอง'}
+ ],
+ recap:['เมนเดลเลือกถั่วลันเตาเพราะอายุสั้น ลูกดก ลักษณะชัดเจน และควบคุมการผสมได้','ตัดอับเรณูก่อนดอกบาน = ควบคุมไม่ให้ผสมตัวเอง','P → F1 → F2 คือลำดับรุ่นในการทดลอง','F2 อัตราส่วน ≈ 3 : 1 พิสูจน์ว่าแอลลีลด้อยไม่ได้สูญหายไปใน F1'],
+ mis:'การถ่ายทอดลักษณะไม่ใช่การ “ผสมสี” — แอลลีลยังคงเป็นหน่วยอิสระ จึงกลับมาปรากฏใหม่ได้ใน F2'
+},
+{
+ id:3, icon:'🧩', name:'ด่าน 3 · จัดหมวดจีโนไทป์', sub:'แยกจีโนไทป์–ฟีโนไทป์ และชนิดของคู่แอลลีล',
+ goal:'จำแนกจีโนไทป์แบบฮอมอไซกัส/เฮเทอโรไซกัส และแยกความแตกต่างระหว่างจีโนไทป์กับฟีโนไทป์',
+ tasks:[
+  {t:'sort', title:'จัดจีโนไทป์ต่อไปนี้เข้าหมวดให้ถูกต้อง', cats:['ฮอมอไซกัสเด่น','เฮเทอโรไซกัส','ฮอมอไซกัสด้อย'],
+   items:[
+    {text:'TT',cat:0,why:'แอลลีลเหมือนกันและเป็นตัวใหญ่ทั้งคู่ = ฮอมอไซกัสเด่น (พันธุ์แท้ลักษณะเด่น)'},
+    {text:'Rr',cat:1,why:'แอลลีลต่างกัน (ตัวใหญ่คู่กับตัวเล็ก) = เฮเทอโรไซกัส หรือพันธุ์ทาง'},
+    {text:'yy',cat:2,why:'แอลลีลด้อยเหมือนกันทั้งคู่ = ฮอมอไซกัสด้อย จึงแสดงลักษณะด้อยออกมา'},
+    {text:'AA',cat:0,why:'แอลลีลเด่นเหมือนกันทั้งคู่ สร้างเซลล์สืบพันธุ์ได้แบบเดียวคือ A'},
+    {text:'Bb',cat:1,why:'พันธุ์ทาง แสดงลักษณะเด่น แต่สร้างเซลล์สืบพันธุ์ได้ 2 แบบคือ B และ b'},
+    {text:'dd',cat:2,why:'ฮอมอไซกัสด้อย เป็นจีโนไทป์เดียวที่ทำให้ลักษณะด้อยปรากฏในกรณีข่มสมบูรณ์'},
+    {text:'GG',cat:0,why:'ฮอมอไซกัสเด่น ฟีโนไทป์เหมือน Gg ทุกประการ แต่จีโนไทป์ต่างกัน'},
+    {text:'Ee',cat:1,why:'เฮเทอโรไซกัส — จีโนไทป์นี้เองที่ทำให้เกิดอัตราส่วน 3 : 1 ในรุ่นถัดไป'}
+   ]},
+  {t:'sort', title:'ข้อความต่อไปนี้เป็นการบอก “จีโนไทป์” หรือ “ฟีโนไทป์”', cats:['จีโนไทป์','ฟีโนไทป์'],
+   items:[
+    {text:'Aa',cat:0,why:'เขียนด้วยสัญลักษณ์แอลลีล = การบอกองค์ประกอบทางพันธุกรรม จึงเป็นจีโนไทป์'},
+    {text:'เมล็ดกลม สีเหลือง',cat:1,why:'เป็นลักษณะที่มองเห็นหรือตรวจสอบได้ จึงเป็นฟีโนไทป์'},
+    {text:'ttyy',cat:0,why:'สัญลักษณ์แอลลีล 2 คู่ = จีโนไทป์ของสองลักษณะ'},
+    {text:'ดอกสีม่วง',cat:1,why:'สีดอกเป็นลักษณะที่ปรากฏ = ฟีโนไทป์'},
+    {text:'หมู่เลือด AB',cat:1,view:1,why:'หมู่เลือดที่ตรวจได้จากเลือดคือฟีโนไทป์ ส่วนจีโนไทป์ที่ให้ผลนี้คือ IᴬIᴮ'},
+    {text:'Iᴬi',cat:0,why:'เขียนด้วยสัญลักษณ์แอลลีล = จีโนไทป์ (ฟีโนไทป์ที่ได้คือหมู่เลือด A)'}
+   ]},
+  {t:'quiz', q:'ต้นถั่วเมล็ดกลม (R = กลม เด่นกว่า r = ย่น) ต้นหนึ่งไม่ทราบจีโนไทป์ ควรทำอย่างไรจึงจะรู้ว่าเป็น RR หรือ Rr',
+   ch:['ผสมกับต้นเมล็ดกลมพันธุ์แท้ (RR)','ผสมกับต้นเมล็ดกลมพันธุ์ทาง (Rr)','ผสมกับต้นเมล็ดย่น (rr) แล้วดูลูกที่ได้','ปล่อยให้ผสมตัวเองแล้วนับเฉพาะลูกเมล็ดกลม'], a:2,
+   why:'นี่คือ test cross การผสมกับฮอมอไซกัสด้อย (rr) ซึ่งให้เซลล์สืบพันธุ์แบบเดียวคือ r ถ้าต้นนั้นเป็น RR ลูกจะกลมทั้งหมด แต่ถ้าเป็น Rr ลูกจะกลม : ย่น ≈ 1 : 1',
+   tip:'จำให้แม่น: test cross ต้องใช้ “ฮอมอไซกัสด้อย” ไม่ใช่พันธุ์ทาง'},
+  {t:'quiz', q:'ถ้าจีโนไทป์ของต้นหนึ่งคือ AaBb (ยีน 2 คู่นี้อยู่บนโครโมโซมต่างคู่กัน) ต้นนี้สร้างเซลล์สืบพันธุ์ได้กี่แบบ',
+   ch:['2 แบบ','4 แบบ','8 แบบ','16 แบบ'], a:1,
+   why:'ใช้สูตร 2ⁿ เมื่อ n = จำนวนคู่แอลลีลที่เป็นเฮเทอโรไซกัส ในที่นี้ n = 2 จึงได้ 2² = 4 แบบ คือ AB, Ab, aB และ ab',
+   tip:'ถ้าเป็น AaBB จะมีคู่เฮเทอโรไซกัสเพียง 1 คู่ ได้เซลล์สืบพันธุ์ 2 แบบเท่านั้น (AB, aB)'}
+ ],
+ recap:['ฮอมอไซกัส = แอลลีลเหมือนกัน (TT, tt) · เฮเทอโรไซกัส = แอลลีลต่างกัน (Tt)','จีโนไทป์เขียนด้วยสัญลักษณ์แอลลีล ส่วนฟีโนไทป์คือลักษณะที่ปรากฏ','Test cross = ผสมกับฮอมอไซกัสด้อย เพื่อตรวจสอบจีโนไทป์','จำนวนชนิดเซลล์สืบพันธุ์ = 2ⁿ (n = จำนวนคู่เฮเทอโรไซกัส)'],
+ mis:'Aa ไม่ใช่พันธุ์แท้ แม้ฟีโนไทป์จะเหมือน AA ทุกประการ'
+},
+{
+ id:4, icon:'⬛', name:'ด่าน 4 · ตารางพันเนตต์', sub:'กฎแห่งการแยกและการผสมมอโนไฮบริด',
+ goal:'ใช้ตารางพันเนตต์หาอัตราส่วนจีโนไทป์และฟีโนไทป์ของรุ่นลูก และอธิบายกฎแห่งการแยก',
+ tasks:[
+  {t:'punnett', title:'เติมตารางพันเนตต์ของการผสม Tt × Tt (T = ต้นสูง เด่นกว่า t = ต้นเตี้ย)',
+   p1:{label:'ต้นแม่ Tt',g:['T','t']}, p2:{label:'ต้นพ่อ Tt',g:['T','t']},
+   options:['TT','Tt','tt'], answers:[['TT','Tt'],['Tt','tt']],
+   hint:'จับคู่แอลลีลจากหัวแถวกับหัวคอลัมน์ แล้วเขียนตัวใหญ่ไว้หน้า',
+   follow:[
+    {q:'จากตาราง อัตราส่วนจีโนไทป์ของรุ่นลูกเป็นเท่าใด',ch:['1 TT : 2 Tt : 1 tt','3 TT : 1 tt','1 TT : 1 tt','2 TT : 2 tt'],a:0,
+     why:'ใน 4 ช่องได้ TT 1 ช่อง, Tt 2 ช่อง (จากคนละทิศทาง) และ tt 1 ช่อง จึงเป็น 1 : 2 : 1'},
+    {q:'อัตราส่วนฟีโนไทป์ของรุ่นลูกเป็นเท่าใด',ch:['ต้นสูง : ต้นเตี้ย = 1 : 1','ต้นสูง : ต้นเตี้ย = 3 : 1','ต้นสูง : ต้นเตี้ย = 2 : 2','ต้นสูงทั้งหมด'],a:1,
+     why:'TT และ Tt (รวม 3 ส่วน) แสดงลักษณะต้นสูงเหมือนกัน ส่วน tt (1 ส่วน) แสดงต้นเตี้ย จึงได้ 3 : 1'}
+   ]},
+  {t:'quiz', q:'กฎแห่งการแยก (Law of Segregation) ของเมนเดล อธิบายด้วยเหตุการณ์ใดในระดับเซลล์',
+   ch:['การแยกของโครโมโซมคู่เหมือนออกจากกันในระยะแอนาเฟส I ของไมโอซิส','การแยกของซิสเตอร์โครมาทิดในไมโทซิส','การจำลอง DNA ในระยะอินเตอร์เฟส','การรวมตัวของเซลล์ไข่กับสเปิร์มขณะปฏิสนธิ'], a:0,
+   why:'แอลลีลคู่หนึ่งอยู่บนโครโมโซมคู่เหมือน เมื่อโครโมโซมคู่เหมือนแยกออกจากกันในแอนาเฟส I ของไมโอซิส แอลลีลทั้งสองจึงแยกไปอยู่คนละเซลล์สืบพันธุ์ ทำให้เซลล์สืบพันธุ์แต่ละเซลล์มีแอลลีลของยีนนั้นเพียง 1 แอลลีล'},
+  {t:'quiz', q:'ผสมถั่วต้นสูงพันธุ์ทาง (Tt) กับต้นเตี้ย (tt) จะได้รุ่นลูกที่มีฟีโนไทป์อย่างไร',
+   ch:['สูงทั้งหมด','สูง : เตี้ย = 3 : 1','สูง : เตี้ย = 1 : 1','เตี้ยทั้งหมด'], a:2,
+   why:'Tt ให้เซลล์สืบพันธุ์ T และ t อย่างละครึ่ง ส่วน tt ให้ t อย่างเดียว ลูกจึงเป็น Tt (สูง) ครึ่งหนึ่ง และ tt (เตี้ย) อีกครึ่งหนึ่ง = 1 : 1',
+   tip:'อัตราส่วน 1 : 1 นี่แหละคือสัญญาณว่าพ่อแม่ฝ่ายที่แสดงลักษณะเด่นเป็นพันธุ์ทาง'},
+  {t:'quiz', q:'พ่อแม่ที่เป็นพาหะของโรคทางพันธุกรรมแบบด้อย (Aa × Aa) มีลูกแล้ว 3 คน เป็นโรคทั้ง 3 คน โอกาสที่ลูกคนที่ 4 จะเป็นโรคเท่ากับเท่าใด',
+   ch:['0 เพราะครบโควตาแล้ว','1/4 เท่าเดิม','1/8 เพราะโอกาสลดลงเรื่อย ๆ','1 เพราะครอบครัวนี้มีแนวโน้มเป็นโรค'], a:1,
+   why:'การมีลูกแต่ละครั้งเป็นเหตุการณ์อิสระต่อกัน โอกาสที่ลูกจะได้รับ a จากทั้งพ่อและแม่คือ 1/2 × 1/2 = 1/4 ทุกครั้งไม่ว่าลูกคนก่อน ๆ จะเป็นอย่างไร',
+   tip:'อัตราส่วน 3 : 1 เป็นค่าคาดหมายทางสถิติเมื่อมีลูกจำนวนมาก ไม่ใช่การรับประกันจำนวนลูกในครอบครัวเดียว'},
+  {t:'quiz', q:'ผสม TT × tt ได้ F1 ทั้งหมดเป็น Tt เมื่อนำ F1 ไปผสมกับต้น tt จะได้ผลอย่างไร',
+   ch:['ลูกสูงทั้งหมด','ลูกสูง : เตี้ย = 1 : 1','ลูกสูง : เตี้ย = 3 : 1','ลูกเตี้ยทั้งหมด'], a:1,
+   why:'การผสม Tt × tt คือ test cross (หรือ backcross กับพ่อแม่ที่เป็นด้อย) ให้ลูก Tt : tt = 1 : 1 จึงเป็นวิธีตรวจสอบจีโนไทป์ที่ได้ผลชัดเจน'}
+ ],
+ recap:['ตารางพันเนตต์: หัวแถว/หัวคอลัมน์คือชนิดเซลล์สืบพันธุ์ ไม่ใช่จีโนไทป์ของพ่อแม่','Tt × Tt → จีโนไทป์ 1 : 2 : 1 และฟีโนไทป์ 3 : 1','Tt × tt → 1 : 1 (ใช้เป็น test cross ได้)','กฎแห่งการแยกอธิบายด้วยการแยกของโครโมโซมคู่เหมือนในไมโอซิส I'],
+ mis:'อัตราส่วน 3 : 1 คือความน่าจะเป็น ไม่ใช่การรับประกันว่าลูก 4 คนจะออกมาเป็นเด่น 3 ด้อย 1'
+},
+{
+ id:5, icon:'🎲', name:'ด่าน 5 · ไดไฮบริดและความน่าจะเป็น', sub:'กฎการรวมกลุ่มอย่างอิสระ',
+ goal:'คำนวณอัตราส่วนของการผสมสองลักษณะ และใช้กฎการคูณความน่าจะเป็นแทนการวาดตาราง 16 ช่อง',
+ tasks:[
+  {t:'punnett', title:'เติมตาราง test cross ของ TtYy × ttyy (T = สูง, Y = เมล็ดสีเหลือง)',
+   p1:{label:'TtYy',g:['TY','Ty','tY','ty']}, p2:{label:'ttyy',g:['ty']},
+   options:['TtYy','Ttyy','ttYy','ttyy'], answers:[['TtYy'],['Ttyy'],['ttYy'],['ttyy']],
+   hint:'นำแอลลีลจากหัวแถวมารวมกับ t และ y จากหัวคอลัมน์ แล้วเรียงยีนคู่เดียวกันไว้ด้วยกัน',
+   follow:[
+    {q:'อัตราส่วนฟีโนไทป์ที่ได้จาก test cross นี้คือข้อใด',ch:['9 : 3 : 3 : 1','1 : 1 : 1 : 1','3 : 1','1 : 2 : 1'],a:1,
+     why:'เพราะ ttyy ให้เซลล์สืบพันธุ์แบบเดียว ผลลูกจึงสะท้อนสัดส่วนเซลล์สืบพันธุ์ของ TtYy โดยตรง คือ TY : Ty : tY : ty = 1 : 1 : 1 : 1 ซึ่งเป็นหลักฐานยืนยันกฎการรวมกลุ่มอย่างอิสระ'}
+   ]},
+  {t:'quiz', q:'ผสม TtYy × TtYy (ยีนอยู่ต่างคู่โครโมโซม) จะได้อัตราส่วนฟีโนไทป์ของรุ่นลูกเป็นเท่าใด',
+   ch:['9 : 3 : 3 : 1','1 : 2 : 1','3 : 1','1 : 1 : 1 : 1'], a:0,
+   why:'พิจารณาทีละลักษณะ: Tt × Tt ให้สูง : เตี้ย = 3 : 1 และ Yy × Yy ให้เหลือง : เขียว = 3 : 1 เมื่อยีนรวมกลุ่มอย่างอิสระ นำมาคูณกันได้ (3:1)(3:1) = 9 : 3 : 3 : 1'},
+  {t:'quiz', q:'จากการผสม TtYy × TtYy โอกาสที่ลูกจะมีจีโนไทป์ ttyy เท่ากับเท่าใด',
+   ch:['1/4','1/8','1/16','9/16'], a:2,
+   why:'ใช้กฎการคูณ: โอกาสได้ tt = 1/4 และโอกาสได้ yy = 1/4 เมื่อสองเหตุการณ์เป็นอิสระต่อกัน จึงได้ 1/4 × 1/4 = 1/16',
+   tip:'กฎการคูณช่วยให้ไม่ต้องวาดตาราง 16 ช่อง โดยเฉพาะเมื่อพิจารณา 3 ลักษณะขึ้นไป'},
+  {t:'quiz', q:'จากการผสม TtYy × TtYy โอกาสที่ลูกจะมีฟีโนไทป์ “ต้นสูง เมล็ดสีเขียว” เท่ากับเท่าใด',
+   ch:['3/16','9/16','1/16','3/4'], a:0,
+   why:'โอกาสต้นสูง (T_) = 3/4 และโอกาสเมล็ดสีเขียว (yy) = 1/4 คูณกันได้ 3/4 × 1/4 = 3/16 ตรงกับตัวเลข 3 ในอัตราส่วน 9 : 3 : 3 : 1'},
+  {t:'quiz', q:'กฎแห่งการรวมกลุ่มอย่างอิสระใช้ไม่ได้ในกรณีใด',
+   ch:['เมื่อยีนทั้งสองอยู่บนโครโมโซมแท่งเดียวกันและอยู่ใกล้กันมาก','เมื่อพ่อแม่เป็นพันธุ์ทางทั้งคู่','เมื่อลักษณะนั้นเป็นลักษณะด้อย','เมื่อจำนวนลูกมีมากกว่า 100'], a:0,
+   why:'ยีนที่อยู่บนโครโมโซมแท่งเดียวกัน (linked genes) มีแนวโน้มถ่ายทอดไปด้วยกัน จึงไม่รวมกลุ่มอย่างอิสระ ทำให้อัตราส่วนเบี่ยงเบนจาก 9 : 3 : 3 : 1 (ยกเว้นเกิดครอสซิงโอเวอร์ซึ่งสร้างเซลล์สืบพันธุ์แบบใหม่ในสัดส่วนน้อย)',
+   tip:'เมนเดลโชคดีที่ 7 ลักษณะที่ศึกษาให้ผลเหมือนอยู่ต่างคู่โครโมโซม จึงพบอัตราส่วน 9 : 3 : 3 : 1 ชัดเจน'},
+  {t:'sort', title:'อัตราส่วนต่อไปนี้เกิดจากการผสมแบบใด (พิจารณาแบบข่มสมบูรณ์)', cats:['ผสมลักษณะเดียว (monohybrid)','ผสมสองลักษณะ (dihybrid)'],
+   items:[
+    {text:'3 : 1',cat:0,why:'อัตราส่วนฟีโนไทป์คลาสสิกของ Aa × Aa ซึ่งพิจารณาลักษณะเดียว'},
+    {text:'9 : 3 : 3 : 1',cat:1,why:'มาจาก AaBb × AaBb คือ (3:1) × (3:1) พิจารณาสองลักษณะพร้อมกัน'},
+    {text:'1 : 2 : 1',cat:0,why:'อัตราส่วนจีโนไทป์ของ Aa × Aa (AA : Aa : aa)'},
+    {text:'1 : 1 : 1 : 1',cat:1,why:'มาจาก test cross ของไดไฮบริด AaBb × aabb แสดงเซลล์สืบพันธุ์ 4 แบบในสัดส่วนเท่ากัน'}
+   ]}
+ ],
+ recap:['ยีน 2 คู่บนโครโมโซมต่างคู่กัน → คำนวณแยกทีละลักษณะแล้วคูณกัน','AaBb × AaBb → 9 : 3 : 3 : 1 · AaBb × aabb → 1 : 1 : 1 : 1','กฎการคูณ: P(เกิดร่วมกัน) = P(A) × P(B) เมื่อเป็นอิสระต่อกัน','ยีนบนโครโมโซมเดียวกัน (linked) ไม่เป็นไปตามกฎการรวมกลุ่มอย่างอิสระ'],
+ mis:'9 : 3 : 3 : 1 ใช้ได้เฉพาะกรณีข่มสมบูรณ์ ยีนอยู่ต่างคู่โครโมโซม และพ่อแม่เป็นเฮเทอโรไซกัสทั้งสองลักษณะ'
+},
+{
+ id:6, icon:'🌈', name:'ด่าน 6 · นอกเหนือกฎเมนเดล', sub:'ส่วนขยายของพันธุศาสตร์เมนเดล',
+ goal:'อธิบายการข่มไม่สมบูรณ์ การข่มร่วมกัน มัลติเปิลแอลลีล ยีนบนโครโมโซมเพศ และลักษณะหลายยีน',
+ tasks:[
+  {t:'quiz', q:'ผสมดอกลิ้นมังกรสีแดงพันธุ์แท้ (RR) กับสีขาวพันธุ์แท้ (R′R′) ได้ F1 สีชมพูทั้งหมด เมื่อผสม F1 กันเอง F2 จะเป็นอย่างไร',
+   ch:['ชมพูทั้งหมด','แดง : ชมพู : ขาว = 1 : 2 : 1','แดง : ขาว = 3 : 1','ชมพู : ขาว = 3 : 1'], a:1,
+   why:'นี่คือการข่มไม่สมบูรณ์ F1 (RR′) แสดงลักษณะกึ่งกลาง เมื่อผสมกันเองแอลลีลยังแยกตามกฎของเมนเดลตามปกติ จึงได้ RR : RR′ : R′R′ = 1 : 2 : 1 ซึ่งตรงกับฟีโนไทป์ แดง : ชมพู : ขาว เพราะจีโนไทป์แต่ละแบบให้ฟีโนไทป์ต่างกันหมด',
+   tip:'ในการข่มไม่สมบูรณ์ อัตราส่วนฟีโนไทป์จะเท่ากับอัตราส่วนจีโนไทป์เสมอ (ไม่ใช่ 3 : 1)'},
+  {t:'quiz', q:'ข้อใดคือความแตกต่างระหว่างการข่มไม่สมบูรณ์กับการข่มร่วมกัน',
+   ch:['ข่มไม่สมบูรณ์ให้ลักษณะกึ่งกลาง ส่วนข่มร่วมกันแสดงลักษณะของทั้งสองแอลลีลเต็มที่พร้อมกัน','ข่มไม่สมบูรณ์เกิดในพืชเท่านั้น ส่วนข่มร่วมกันเกิดในสัตว์เท่านั้น','ข่มไม่สมบูรณ์ทำให้แอลลีลหนึ่งหายไป ส่วนข่มร่วมกันไม่หาย','ทั้งสองแบบเหมือนกันทุกประการ'], a:0,
+   why:'ข่มไม่สมบูรณ์: แดง × ขาว → ชมพู (ลักษณะใหม่กึ่งกลาง) ส่วนข่มร่วมกัน: IᴬIᴮ → หมู่เลือด AB ที่มีทั้งแอนติเจน A และ B ปรากฏพร้อมกันเต็มที่ ไม่ใช่ลักษณะกลาง'},
+  {t:'quiz', q:'หมู่เลือดระบบ ABO ควบคุมด้วยแอลลีล Iᴬ, Iᴮ และ i ข้อใดถูกต้อง',
+   ch:['มีจีโนไทป์ได้ 6 แบบ และฟีโนไทป์ 4 หมู่ โดยแต่ละคนมีแอลลีลได้เพียง 2 แอลลีล','แต่ละคนมีแอลลีลได้ 3 แอลลีลพร้อมกัน','หมู่เลือด O เกิดจากแอลลีลเด่น','หมู่เลือด AB เกิดจากการข่มไม่สมบูรณ์'], a:0,
+   why:'แม้ประชากรจะมี 3 แอลลีล (มัลติเปิลแอลลีล) แต่แต่ละคนซึ่งเป็นดิพลอยด์มีได้เพียง 2 แอลลีล จีโนไทป์ที่เป็นไปได้คือ IᴬIᴬ, Iᴬi (หมู่ A), IᴮIᴮ, Iᴮi (หมู่ B), IᴬIᴮ (หมู่ AB) และ ii (หมู่ O) รวม 6 แบบ 4 ฟีโนไทป์',
+   tip:'Iᴬ กับ Iᴮ ข่มร่วมกัน ส่วน i เป็นแอลลีลด้อยต่อทั้งคู่ หมู่เลือด O จึงต้องเป็น ii เท่านั้น'},
+  {t:'quiz', q:'หญิงพาหะตาบอดสี (XᶜXᶜ′ โดย c′ = แอลลีลตาบอดสี) แต่งงานกับชายสายตาปกติ (XᶜY) โอกาสที่ลูกชายของทั้งคู่จะตาบอดสีเป็นเท่าใด',
+   ch:['ลูกชายทุกคนตาบอดสี','1/2 ของลูกชาย','1/4 ของลูกชาย','ลูกชายปกติทุกคน'], a:1,
+   why:'ลูกชายได้ Y จากพ่อและได้ X จากแม่เท่านั้น แม่เป็นพาหะจึงให้ X ปกติหรือ X ที่มีแอลลีลตาบอดสีอย่างละครึ่ง ลูกชายจึงมีโอกาสตาบอดสี 1/2 (คิดจากลูกทั้งหมดเป็น 1/4) ส่วนลูกสาวจะไม่ตาบอดสีเลยแต่มีโอกาสเป็นพาหะ 1/2',
+   tip:'เพศชายมี X แท่งเดียว จึงไม่มีสภาพ “พาหะ” ของยีนด้อยบน X — มีแอลลีลด้อยเมื่อใดก็แสดงอาการทันที'},
+  {t:'quiz', q:'ข้อใดเป็นลักษณะที่ควบคุมด้วยยีนหลายคู่ (polygenic trait)',
+   ch:['หมู่เลือดระบบ ABO','การห่อลิ้นได้–ไม่ได้','สีผิวและความสูงของมนุษย์','ตาบอดสี'], a:2,
+   why:'สีผิวและความสูงควบคุมด้วยยีนหลายคู่ที่เสริมผลกันและได้รับอิทธิพลจากสิ่งแวดล้อม จึงมีความแปรผันแบบต่อเนื่อง (continuous variation) ต่างจากหมู่เลือดหรือการห่อลิ้นที่แบ่งกลุ่มได้ชัดเจน'},
+  {t:'sort', title:'จัดปรากฏการณ์ต่อไปนี้ให้ตรงกับรูปแบบการถ่ายทอด', cats:['ข่มไม่สมบูรณ์','ข่มร่วมกัน','ยีนบนโครโมโซมเพศ','หลายยีน'],
+   items:[
+    {text:'ดอกลิ้นมังกรแดง × ขาว ได้ดอกสีชมพู',cat:0,why:'ลูกผสมแสดงลักษณะกึ่งกลางระหว่างพ่อแม่ = การข่มไม่สมบูรณ์'},
+    {text:'คนหมู่เลือด AB มีทั้งแอนติเจน A และ B บนผิวเซลล์',cat:1,why:'ทั้งสองแอลลีลแสดงออกเต็มที่พร้อมกัน = การข่มร่วมกัน'},
+    {text:'โรคฮีโมฟีเลียพบในเพศชายมากกว่าเพศหญิงมาก',cat:2,why:'ยีนอยู่บนโครโมโซม X เพศชายมี X แท่งเดียวจึงแสดงอาการง่ายกว่า'},
+    {text:'สีผิวมนุษย์มีเฉดต่อเนื่องตั้งแต่อ่อนถึงเข้ม',cat:3,why:'ความแปรผันต่อเนื่องเป็นลักษณะเด่นของลักษณะที่ควบคุมด้วยยีนหลายคู่'},
+    {text:'ตาบอดสีถ่ายทอดจากแม่พาหะสู่ลูกชาย',cat:2,why:'ยีนตาบอดสีอยู่บนโครโมโซม X ลูกชายได้ X จากแม่เท่านั้น'},
+    {text:'วัวขนแดง × ขนขาว ได้ลูกที่มีทั้งขนแดงและขนขาวแทรกกันเป็นสีโรน',cat:1,why:'เห็นขนทั้งสองสีแยกกันชัดเจนบนตัวเดียวกัน = ข่มร่วมกัน (ไม่ใช่สีกลางแบบชมพู)'}
+   ]},
+  {t:'label', title:'ระบุความหมายของสัญลักษณ์ในแผนภาพพันธุประวัติ (pedigree)', svg:'pedigree',
+   spots:[
+    {x:15,y:15,label:'เพศชาย',why:'ในแผนภาพพันธุประวัติ ใช้รูปสี่เหลี่ยมแทนเพศชายเสมอ'},
+    {x:85,y:15,label:'เพศหญิง',why:'ใช้รูปวงกลมแทนเพศหญิง'},
+    {x:13,y:46,label:'เส้นแสดงการแต่งงาน',why:'เส้นแนวนอนที่เชื่อมชายกับหญิงคือเส้นสมรส ส่วนเส้นที่ลากลงมาแล้วแตกเป็นแนวนอนคือเส้นแสดงลูกในรุ่นถัดไป'},
+    {x:10,y:85,label:'ผู้ที่แสดงลักษณะ (เป็นโรค)',why:'สัญลักษณ์ทึบทั้งรูปหมายถึงผู้ที่แสดงลักษณะนั้นออกมา ในที่นี้คือลูกชายที่เป็นโรค'},
+    {x:50,y:89,label:'พาหะ',why:'สัญลักษณ์ที่ทึบครึ่งเดียวใช้แทนพาหะ คือผู้มีแอลลีลด้อยแต่ไม่แสดงอาการ'}
+   ]}
+ ],
+ recap:['ข่มไม่สมบูรณ์ → ลูกผสมมีลักษณะกึ่งกลาง F2 = 1 : 2 : 1','ข่มร่วมกัน → แสดงลักษณะทั้งสองแอลลีลพร้อมกัน เช่น หมู่เลือด AB','มัลติเปิลแอลลีล → ยีนหนึ่งมีมากกว่า 2 แอลลีลในประชากร แต่ละคนมีได้ 2','ยีนบนโครโมโซม X → ลักษณะด้อยพบในเพศชายมากกว่า','ลักษณะหลายยีน → ความแปรผันต่อเนื่อง เช่น สีผิว ความสูง'],
+ mis:'ผู้ชายไม่มีสภาพ “พาหะ” ของยีนด้อยบนโครโมโซม X เพราะมี X เพียงแท่งเดียว'
+},
+{
+ id:7, icon:'🏆', boss:true, name:'ด่านบอส · คลินิกพันธุศาสตร์', sub:'สถานการณ์จริง: ให้คำปรึกษาทางพันธุกรรม',
+ goal:'ประยุกต์ความรู้เรื่องการถ่ายทอดลักษณะทางพันธุกรรมเพื่อวิเคราะห์กรณีจริงและสื่อสารความน่าจะเป็นอย่างถูกต้อง',
+ tasks:[
+  {t:'punnett', title:'เคสที่ 1 · คู่สามีภรรยาหมู่เลือด A (Iᴬi) และหมู่เลือด B (Iᴮi) มาปรึกษาว่าลูกจะมีหมู่เลือดใดได้บ้าง',
+   p1:{label:'ภรรยา Iᴬi',g:['Iᴬ','i']}, p2:{label:'สามี Iᴮi',g:['Iᴮ','i']},
+   options:['IᴬIᴮ','Iᴬi','Iᴮi','ii'], answers:[['IᴬIᴮ','Iᴬi'],['Iᴮi','ii']],
+   hint:'Iᴬ และ Iᴮ ข่มร่วมกัน ส่วน i เป็นแอลลีลด้อย',
+   follow:[
+    {q:'จากตาราง ลูกของคู่นี้อาจมีหมู่เลือดใดได้บ้าง',ch:['A และ B เท่านั้น','AB เท่านั้น','A, B, AB และ O','A, B และ O แต่ไม่มี AB'],a:2,
+     why:'จีโนไทป์ที่ได้คือ IᴬIᴮ (หมู่ AB), Iᴬi (หมู่ A), Iᴮi (หมู่ B) และ ii (หมู่ O) อย่างละ 1/4 คู่นี้จึงมีลูกได้ครบทั้ง 4 หมู่ ซึ่งเป็นเคสคลาสสิกที่คนมักเข้าใจผิดว่าพ่อแม่ A กับ B ไม่มีทางมีลูกหมู่ O'},
+    {q:'โอกาสที่ลูกคนหนึ่งของคู่นี้จะมีหมู่เลือด O เท่ากับเท่าใด',ch:['0','1/4','1/2','3/4'],a:1,
+     why:'หมู่เลือด O ต้องเป็น ii คือได้แอลลีล i จากทั้งพ่อและแม่ = 1/2 × 1/2 = 1/4'}
+   ]},
+  {t:'quiz', q:'เคสที่ 2 · หญิงคนหนึ่งมีพ่อตาบอดสี ส่วนตัวเธอเองสายตาปกติ เธอแต่งงานกับชายสายตาปกติ ข้อใดถูกต้อง',
+   ch:['เธอต้องเป็นพาหะแน่นอน และลูกชายมีโอกาสตาบอดสี 1/2','เธอไม่มีทางเป็นพาหะ เพราะสายตาปกติ','ลูกสาวทุกคนจะตาบอดสี','ลูกทุกคนจะตาบอดสี'], a:0,
+   why:'ลูกสาวได้โครโมโซม X จากพ่อ 1 แท่งเสมอ เมื่อพ่อตาบอดสี (Xᶜ′Y) เธอจึงได้ Xᶜ′ มาแน่นอน แต่เพราะสายตาปกติ อีกแท่งจึงเป็น X ปกติ เธอจึงเป็นพาหะแน่นอน ลูกชายของเธอมีโอกาสได้รับ Xᶜ′ = 1/2',
+   tip:'พ่อไม่ถ่ายทอดยีนบนโครโมโซม X ให้ลูกชาย (ลูกชายได้ Y จากพ่อ) ลักษณะบน X จึงมักข้ามรุ่นจากตายายมาสู่หลานชาย'},
+  {t:'quiz', q:'เคสที่ 3 · สามีและภรรยาต่างเป็นพาหะของธาลัสซีเมีย (ยีนด้อยบนออโตโซม: Aa × Aa) โอกาสที่ลูกจะเป็นโรคคือเท่าใด',
+   ch:['0','1/4','1/2','3/4'], a:1,
+   why:'ทั้งคู่เป็น Aa ลูกจึงมีโอกาสได้ aa = 1/2 × 1/2 = 1/4 เป็นพาหะ (Aa) 1/2 และปกติไม่เป็นพาหะ (AA) 1/4 เมื่อคิดจากลูกทั้งหมด',
+   tip:'ข้อสอบมักถามต่อว่า “ถ้าลูกไม่เป็นโรค โอกาสที่เขาจะเป็นพาหะเท่าใด” คำตอบคือ 2/3 เพราะตัดกรณี aa ออกไป เหลือ AA : Aa = 1 : 2'},
+  {t:'quiz', q:'เคสที่ 4 · ครอบครัวหนึ่งมีลูกเป็นธาลัสซีเมียแล้ว 2 คน พ่อแม่ถามว่า “ลูกคนที่ 3 น่าจะปลอดภัยแล้วใช่ไหม” คำตอบที่ถูกต้องคือข้อใด',
+   ch:['ใช่ เพราะโอกาสถูกใช้ไปกับลูก 2 คนแรกแล้ว','ไม่ใช่ โอกาสที่ลูกคนที่ 3 จะเป็นโรคยังคงเป็น 1/4 เพราะการตั้งครรภ์แต่ละครั้งเป็นอิสระต่อกัน','ไม่ใช่ โอกาสจะเพิ่มเป็น 1/2 เพราะพ่อแม่มีแนวโน้มสูง','ตอบไม่ได้ ต้องรอตรวจหลังคลอดเท่านั้น'], a:1,
+   why:'การปฏิสนธิแต่ละครั้งเป็นเหตุการณ์อิสระทางสถิติ โอกาสยังคงเป็น 1/4 ทุกครั้ง อย่างไรก็ตามสามารถตรวจวินิจฉัยก่อนคลอดหรือตรวจคัดกรองพาหะเพื่อวางแผนครอบครัวได้',
+   tip:'นี่คือความเข้าใจผิดที่พบบ่อยที่สุดในการให้คำปรึกษาทางพันธุกรรม (gambler’s fallacy)'},
+  {t:'quiz', q:'เคสที่ 5 · เกษตรกรมีต้นมะเขือเทศผลสีแดง (R = แดง เด่นกว่า r = เหลือง) ต้องการรู้ว่าเป็นพันธุ์แท้หรือไม่ ก่อนนำไปขยายพันธุ์ ควรแนะนำอย่างไร',
+   ch:['ผสมกับต้นผลสีแดงด้วยกัน ถ้าลูกแดงหมดแสดงว่าพันธุ์แท้','ผสมกับต้นผลสีเหลือง (rr) ถ้าลูกมีผลสีเหลืองปนแม้ต้นเดียวแสดงว่าเป็น Rr','ดูจากขนาดผล ถ้าผลใหญ่แสดงว่าพันธุ์แท้','นำไปปลูกในดินที่ต่างกันแล้วเปรียบเทียบสี'], a:1,
+   why:'การทำ test cross กับ rr ให้ผลชี้ขาด: ถ้าต้นนั้นเป็น RR ลูกจะแดงทั้งหมด แต่ถ้าเป็น Rr ลูกจะแดง : เหลือง ≈ 1 : 1 ส่วนการผสมกับต้นแดงด้วยกันอาจได้ลูกแดงหมดทั้งที่เป็น Rr ก็ได้ จึงสรุปไม่ได้',
+   tip:'สีของผลเป็นลักษณะแปรผันไม่ต่อเนื่อง ควบคุมด้วยยีน ไม่ได้ขึ้นกับดินปลูก'},
+  {t:'quiz', q:'เคสที่ 6 · ผู้รับคำปรึกษาถามว่า “ทำไมลูกของเราหน้าตาไม่เหมือนใครในบ้านเลย” คำอธิบายใดเหมาะสมที่สุดในเชิงพันธุศาสตร์',
+   ch:['ลักษณะหลายอย่างควบคุมด้วยยีนหลายคู่ร่วมกับสิ่งแวดล้อม และการรวมกลุ่มของแอลลีลในเซลล์สืบพันธุ์เกิดได้หลายรูปแบบ ลูกจึงมีลักษณะหลากหลายได้','เกิดการกลายพันธุ์รุนแรงจึงหน้าตาต่างไป','ต้องเกิดจากความผิดพลาดของโรงพยาบาลเท่านั้น','ลักษณะทางพันธุกรรมถ่ายทอดจากแม่เพียงฝ่ายเดียว'], a:0,
+   why:'รูปหน้าเป็นลักษณะที่ควบคุมด้วยยีนหลายคู่ (polygenic) เมื่อรวมกับการแยกและรวมกลุ่มอย่างอิสระของแอลลีลในไมโอซิส ครอสซิงโอเวอร์ และอิทธิพลของสิ่งแวดล้อม จึงเกิดความหลากหลายในรุ่นลูกได้มาก ทั้งยังอาจปรากฏลักษณะด้อยที่ปู่ย่าตายายเคยเป็นพาหะไว้',
+   tip:'การให้คำปรึกษาทางพันธุกรรมควรสื่อสารด้วย “ความน่าจะเป็น” และข้อมูลหลักฐาน ไม่ใช่การตัดสินหรือคาดเดา'}
+ ],
+ recap:['พ่อหมู่ A × แม่หมู่ B (ทั้งคู่เป็นพันธุ์ทาง) มีลูกได้ครบทั้ง 4 หมู่ รวมทั้งหมู่ O','ลูกสาวของพ่อที่ตาบอดสีเป็นพาหะแน่นอน','พาหะ × พาหะ (ยีนด้อยออโตโซม) → เป็นโรค 1/4, พาหะ 1/2 ของลูกทั้งหมด','การตั้งครรภ์แต่ละครั้งเป็นเหตุการณ์อิสระ โอกาสไม่ลดลงตามจำนวนลูกที่เป็นโรคแล้ว','Test cross ใช้ตรวจสอบพันธุ์แท้ก่อนขยายพันธุ์ในงานเกษตร'],
+ mis:'อย่าสรุปว่า “เคยเป็นแล้วครั้งหน้าจะไม่เป็น” — ความน่าจะเป็นทางพันธุกรรมไม่มีความจำ'
+}
+];
+
+const SCOPE=[
+ 'ยีน แอลลีล โลคัส โครโมโซมคู่เหมือน จีโนไทป์ และฟีโนไทป์',
+ 'การทดลองของเมนเดลกับถั่วลันเตา และรุ่น P / F1 / F2',
+ 'กฎแห่งการแยก และกฎแห่งการรวมกลุ่มอย่างอิสระ',
+ 'การใช้ตารางพันเนตต์และกฎความน่าจะเป็นในการผสมมอโนไฮบริดและไดไฮบริด',
+ 'การผสมเพื่อทดสอบ (test cross) และการหาจีโนไทป์',
+ 'ส่วนขยายของพันธุศาสตร์เมนเดล: ข่มไม่สมบูรณ์ ข่มร่วมกัน มัลติเปิลแอลลีล ยีนบนโครโมโซมเพศ และลักษณะหลายยีน',
+ 'การอ่านแผนภาพพันธุประวัติ และการประยุกต์กับโรคทางพันธุกรรมในมนุษย์'
+];
+
+/* ==========================================================
+   5) ระบบเกม
+   ========================================================== */
+const MAXSTARS = LEVELS.length*3;
+let G=null;
+
+function go(name){
+  ['home','play','result','cards','mis','help'].forEach(function(s){
+    var el=document.getElementById('screen-'+s); if(el) el.classList.add('hidden');
+  });
+  document.getElementById('screen-'+name).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function totalStars(){ return LEVELS.reduce(function(s,l){return s+(SAVE.stars[l.id]||0)},0); }
+function unlocked(lv){
+  if(lv.id===1) return true;
+  if(lv.boss) return LEVELS.filter(function(l){return !l.boss}).every(function(l){return (SAVE.stars[l.id]||0)>=1});
+  return (SAVE.stars[lv.id-1]||0)>=1;
+}
+function starStr(n){ var s=''; for(var i=0;i<3;i++) s += i<n?'★':'☆'; return s; }
+
+function renderHome(){
+  document.getElementById('starChip').textContent='⭐ '+totalStars()+'/'+MAXSTARS;
+  var map=document.getElementById('map'); map.innerHTML='';
+  LEVELS.forEach(function(lv){
+    var open=unlocked(lv), st=SAVE.stars[lv.id]||0, best=SAVE.best[lv.id];
+    var b=E('button','node'+(open?'':' locked')+(lv.boss?' boss':''));
+    b.innerHTML='<div class="badge">'+(open?lv.icon:'🔒')+'</div>'+
+      '<div class="info"><div class="nm">'+lv.name+'</div>'+
+      '<div class="sub">'+lv.sub+'</div>'+
+      '<div class="stars">'+starStr(st)+(best!=null?' <span class="mini">· ดีที่สุด '+best+'%</span>':'')+'</div></div>'+
+      '<div class="go">'+(open?'▶':'')+'</div>';
+    b.onclick=function(){
+      if(!open){ alert(lv.boss?'ด่านบอสจะเปิดเมื่อผ่านครบทั้ง 6 ด่าน (อย่างน้อยด่านละ 1 ดาว)':'ต้องได้อย่างน้อย 1 ดาวจากด่านก่อนหน้าจึงจะปลดล็อกด่านนี้'); return; }
+      startLevel(lv.id);
+    };
+    map.appendChild(b);
+  });
+  var cs=document.getElementById('certSlot');
+  if((SAVE.stars[7]||0)>=1){
+    cs.classList.remove('hidden');
+    cs.innerHTML='<div class="cert"><div style="font-size:34px">🏅</div><h3>เกียรติบัตรนักพันธุศาสตร์รุ่นเยาว์</h3>'+
+      '<div class="nm" id="certName">'+(SAVE.name||'(ใส่ชื่อของคุณ)')+'</div>'+
+      '<p class="mini">ผ่านภารกิจครบทุกด่าน เก็บดาวได้ '+totalStars()+'/'+MAXSTARS+' ดวง</p></div>';
+    document.getElementById('certName').onclick=function(){
+      var n=prompt('ใส่ชื่อ–นามสกุลของคุณ', SAVE.name||''); if(n!=null){ SAVE.name=n.trim(); save(); renderHome(); }
+    };
+  } else { cs.classList.add('hidden'); }
+}
+
+function startLevel(id){
+  var lv=LEVELS.filter(function(l){return l.id===id})[0];
+  G={lv:lv, i:0, score:0, max:0, miss:[]};
+  document.getElementById('hudName').textContent=lv.name;
+  go('play'); renderTask();
+}
+function updHud(){
+  document.getElementById('hudScore').textContent=G.score+' คะแนน';
+  document.getElementById('hudBar').style.width=(G.i/G.lv.tasks.length*100)+'%';
+}
+function renderTask(){
+  updHud();
+  var host=document.getElementById('taskHost'); host.innerHTML='';
+  var t=G.lv.tasks[G.i];
+  ({quiz:rQuiz, match:rMatch, sort:rSort, label:rLabel, punnett:rPunnett})[t.t](t,host);
+  window.scrollTo(0,0);
+}
+function nextTask(earned,max){
+  G.score+=Math.round(earned); G.max+=max; G.i++;
+  if(G.i>=G.lv.tasks.length) finishLevel(); else renderTask();
+}
+function nextBtn(host,fn,txt){
+  var b=E('button','btn orange',txt||'ต่อไป →'); b.onclick=fn; host.appendChild(b);
+}
+function stepHead(host,txt){
+  host.appendChild(E('div','qhead','ข้อ '+(G.i+1)+' / '+G.lv.tasks.length+' · '+txt));
+}
+function fbBox(ok,correctText,why,tip){
+  var d=E('div','feedback '+(ok?'good':'bad'));
+  var h='<div class="ttl">'+(ok?'✅ ถูกต้อง!':'❌ ยังไม่ถูก')+'</div>';
+  if(correctText) h+='<div class="why"><b>เฉลย:</b> '+correctText+'</div>';
+  if(why) h+='<div class="why" style="margin-top:6px">'+why+'</div>';
+  d.innerHTML=h;
+  if(tip){ var t=E('div','tipbox','<b>⚠️ จุดที่มักเข้าใจผิด:</b> '+tip); d.appendChild(t); }
+  return d;
+}
+
+/* ---------- ประเภทที่ 1: ควิซ ---------- */
+function rQuiz(t,host,onDone){
+  var PTS=10;
+  stepHead(host,'ควิซ');
+  host.appendChild(E('div','qtext',t.q));
+  var wrap=E('div');
+  var done=false;
+  t.ch.forEach(function(c,idx){
+    var b=E('button','opt','<span class="mk">'+'กขคง'[idx]+'</span>'+c);
+    b.onclick=function(){
+      if(done) return; done=true;
+      var ok = idx===t.a;
+      $$('.opt',wrap).forEach(function(o,j){
+        o.classList.add(j===t.a?'correct':(j===idx?'wrong':'dim'));
+      });
+      ok?sGood():sBad();
+      if(!ok) G.miss.push({q:t.q, ans:t.ch[t.a], why:t.why});
+      var fb=fbBox(ok, t.ch[t.a], t.why, t.tip);
+      host.appendChild(fb);
+      if(onDone) nextBtn(host,function(){onDone(ok?PTS:0,PTS)});
+      else nextBtn(host,function(){nextTask(ok?PTS:0,PTS)});
+      fb.scrollIntoView({behavior:'smooth',block:'center'});
+    };
+    wrap.appendChild(b);
+  });
+  host.appendChild(wrap);
+}
+
+/* ---------- ประเภทที่ 2: จับคู่ ---------- */
+function rMatch(t,host){
+  var PER=8, max=t.pairs.length*PER, earned=0, solved=0, wrongCount=0;
+  stepHead(host,'จับคู่');
+  host.appendChild(E('div','qtext',t.title));
+  host.appendChild(E('div','mini','แตะคำศัพท์ทางซ้าย แล้วแตะความหมายทางขวาที่คู่กัน'));
+  var wrap=E('div','matchwrap');
+  var colR=E('div','mcol'), colL=E('div','mcol');
+  colR.appendChild(E('div','hdr','คำศัพท์'));
+  colL.appendChild(E('div','hdr','ความหมาย'));
+  var order=shuffle(t.pairs.map(function(p,i){return i}));
+  var orderL=shuffle(t.pairs.map(function(p,i){return i}));
+  var selA=null;
+  var status=E('div','answered','จับคู่แล้ว 0/'+t.pairs.length);
+
+  function mk(txt,idx,side){
+    var b=E('button','mitem',txt);
+    b.dataset.idx=idx; b.dataset.side=side;
+    b.onclick=function(){
+      if(side==='r'){
+        $$('.mitem',colR).forEach(function(x){x.classList.remove('sel')});
+        b.classList.add('sel'); selA=b;
+      } else {
+        if(!selA){ b.classList.add('shake'); setTimeout(function(){b.classList.remove('shake')},350); return; }
+        if(selA.dataset.idx===b.dataset.idx){
+          selA.classList.add('done'); selA.classList.remove('sel'); b.classList.add('done');
+          solved++; earned+=PER; sGood();
+          status.textContent='จับคู่แล้ว '+solved+'/'+t.pairs.length;
+          selA=null;
+          if(solved===t.pairs.length){
+            earned=Math.max(0, earned - wrongCount*3);
+            var fb=fbBox(true,null,'จับคู่ครบทุกคู่แล้ว! '+(wrongCount?('มีการเลือกผิด '+wrongCount+' ครั้ง (หัก '+(wrongCount*3)+' คะแนน)'):'ไม่ผิดเลยแม้แต่ครั้งเดียว 🎉'));
+            host.appendChild(fb);
+            nextBtn(host,function(){nextTask(earned,max)});
+            fb.scrollIntoView({behavior:'smooth',block:'center'});
+          }
+        } else {
+          wrongCount++; sBad();
+          b.classList.add('shake'); selA.classList.add('shake');
+          var s=selA;
+          setTimeout(function(){b.classList.remove('shake'); s.classList.remove('shake')},350);
+        }
+      }
+    };
+    return b;
+  }
+  order.forEach(function(i){ colR.appendChild(mk(t.pairs[i][0],i,'r')); });
+  orderL.forEach(function(i){ colL.appendChild(mk(t.pairs[i][1],i,'l')); });
+  wrap.appendChild(colR); wrap.appendChild(colL);
+  host.appendChild(wrap); host.appendChild(status);
+}
+
+/* ---------- ประเภทที่ 3: จัดหมวด ---------- */
+function rSort(t,host){
+  var PER=8, max=t.items.length*PER, earned=0, k=0;
+  var items=shuffle(t.items);
+  stepHead(host,'จัดหมวด');
+  host.appendChild(E('div','qtext',t.title));
+  var body=E('div'); host.appendChild(body);
+  function step(){
+    body.innerHTML='';
+    if(k>=items.length){
+      var fb=fbBox(true,null,'จัดหมวดครบแล้ว ได้ '+Math.round(earned)+'/'+max+' คะแนน');
+      body.appendChild(fb); nextBtn(body,function(){nextTask(earned,max)});
+      return;
+    }
+    var it=items[k];
+    body.appendChild(E('div','mini','รายการที่ '+(k+1)+' / '+items.length));
+    var card=E('div','card center');
+    card.innerHTML='<div style="font-size:1.35rem;font-weight:800;color:var(--green-d)">'+it.text+'</div>';
+    body.appendChild(card);
+    var done=false;
+    var opts=E('div');
+    t.cats.forEach(function(c,ci){
+      var b=E('button','opt','<span class="mk">'+(ci+1)+'</span>'+c);
+      b.onclick=function(){
+        if(done) return; done=true;
+        var ok= ci===it.cat;
+        $$('.opt',opts).forEach(function(o,j){ o.classList.add(j===it.cat?'correct':(j===ci?'wrong':'dim')); });
+        if(ok){ earned+=PER; sGood(); } else { sBad(); G.miss.push({q:'จัดหมวด: '+it.text, ans:t.cats[it.cat], why:it.why}); }
+        body.appendChild(fbBox(ok, t.cats[it.cat], it.why));
+        k++;
+        nextBtn(body,step, k>=items.length?'ดูสรุป →':'ถัดไป →');
+      };
+      opts.appendChild(b);
+    });
+    body.appendChild(opts);
+  }
+  step();
+}
+
+/* ---------- ประเภทที่ 4: ป้ายชื่อบนภาพ ---------- */
+function rLabel(t,host){
+  var PER=10, max=t.spots.length*PER, earned=0, solved=0, wrongCount=0;
+  stepHead(host,'ป้ายชื่อบนภาพ');
+  host.appendChild(E('div','qtext',t.title));
+  host.appendChild(E('div','mini','แตะหมายเลขบนภาพ (หรือใช้หมายเลขที่กำลังกะพริบ) แล้วเลือกป้ายชื่อด้านล่าง'));
+  var box=E('div','imgbox', SVGS[t.svg]);
+  var cur=null, marks=[];
+  t.spots.forEach(function(sp,i){
+    var m=E('button','mark',String(i+1));
+    m.style.left=sp.x+'%'; m.style.top=sp.y+'%';
+    m.onclick=function(){ if(m.classList.contains('done'))return; select(i); };
+    marks.push(m); box.appendChild(m);
+  });
+  host.appendChild(box);
+  var fbSlot=E('div');
+  var chips=E('div','chips');
+  var chipEls=[];
+  shuffle(t.spots.map(function(s,i){return i})).forEach(function(i){
+    var c=E('button','chip-b',t.spots[i].label);
+    c.dataset.idx=i;
+    c.onclick=function(){ pick(i,c); };
+    chipEls.push(c); chips.appendChild(c);
+  });
+  var status=E('div','answered','ตอบแล้ว 0/'+t.spots.length+' ');
+  host.appendChild(chips); host.appendChild(status); host.appendChild(fbSlot);
+
+  function select(i){
+    cur=i;
+    marks.forEach(function(m,j){ if(!m.classList.contains('done')) m.classList.toggle('sel', j===i); });
+  }
+  function autoSelect(){
+    for(var i=0;i<marks.length;i++) if(!marks[i].classList.contains('done')){ select(i); return; }
+  }
+  function pick(idx,chip){
+    if(cur==null){ autoSelect(); }
+    if(cur==null) return;
+    fbSlot.innerHTML='';
+    if(idx===cur){
+      marks[cur].classList.remove('sel'); marks[cur].classList.add('done');
+      chip.classList.add('done'); solved++; earned+=PER; sGood();
+      var sp=t.spots[cur];
+      status.innerHTML='ตอบแล้ว '+solved+'/'+t.spots.length+' <span>'+(cur+1)+'. '+sp.label+'</span>';
+      fbSlot.appendChild(fbBox(true,null,sp.why));
+      cur=null;
+      if(solved===t.spots.length){
+        earned=Math.max(0, earned - wrongCount*4);
+        fbSlot.appendChild(fbBox(true,null,'ระบุครบทุกตำแหน่งแล้ว '+(wrongCount?('(ตอบผิด '+wrongCount+' ครั้ง หัก '+(wrongCount*4)+' คะแนน)'):'โดยไม่ผิดเลย 🎉')));
+        nextBtn(fbSlot,function(){nextTask(earned,max)});
+        fbSlot.scrollIntoView({behavior:'smooth',block:'center'});
+      } else { autoSelect(); }
+    } else {
+      wrongCount++; sBad();
+      chip.classList.add('shake'); setTimeout(function(){chip.classList.remove('shake')},350);
+      fbSlot.appendChild(fbBox(false,null,'ลองใหม่อีกครั้ง — ป้ายนี้ยังไม่ตรงกับตำแหน่งหมายเลข '+(cur+1)+' ลองสังเกตว่าโครงสร้างนั้นอยู่ส่วนใดของภาพ'));
+    }
+  }
+  autoSelect();
+}
+
+/* ---------- ประเภทที่ 5: ตารางพันเนตต์ ---------- */
+function rPunnett(t,host){
+  var rows=t.p1.g.length, cols=t.p2.g.length;
+  var cells=rows*cols, PER=10;
+  var maxGrid=cells*PER, earnedGrid=0, solved=0, wrongCount=0;
+  stepHead(host,'ตารางพันเนตต์');
+  host.appendChild(E('div','qtext',t.title));
+  var pr=E('div','parents','<div class="pp">'+t.p1.label+'</div><div class="pp">×</div><div class="pp">'+t.p2.label+'</div>');
+  host.appendChild(pr);
+  host.appendChild(E('div','mini','แตะช่องว่างในตาราง แล้วเลือกจีโนไทป์ที่ถูกต้องจากปุ่มด้านล่าง'));
+
+  var tbl=E('table','ptable');
+  var head=E('tr'); head.appendChild(E('th','corner',''));
+  t.p2.g.forEach(function(g){ head.appendChild(E('th',null,g)); });
+  tbl.appendChild(head);
+  var cellEls=[];
+  for(var r=0;r<rows;r++){
+    (function(r){
+      var tr=E('tr');
+      tr.appendChild(E('th',null,t.p1.g[r]));
+      cellEls[r]=[];
+      for(var c=0;c<cols;c++){
+        (function(c){
+          var td=E('td');
+          var b=E('button','pcell','?');
+          b.onclick=function(){ if(b.classList.contains('done'))return; select(r,c); };
+          td.appendChild(b); tr.appendChild(td); cellEls[r][c]=b;
+        })(c);
+      }
+      tbl.appendChild(tr);
+    })(r);
+  }
+  host.appendChild(tbl);
+  if(t.hint) host.appendChild(E('div','tipbox','<b>คำใบ้:</b> '+t.hint));
+
+  var chips=E('div','chips');
+  shuffle(t.options).forEach(function(o){
+    var c=E('button','chip-b',o);
+    c.onclick=function(){ pick(o,c); };
+    chips.appendChild(c);
+  });
+  host.appendChild(chips);
+  var fbSlot=E('div'); host.appendChild(fbSlot);
+  var curR=null,curC=null;
+
+  function select(r,c){
+    curR=r; curC=c;
+    for(var i=0;i<rows;i++) for(var j=0;j<cols;j++)
+      if(!cellEls[i][j].classList.contains('done')) cellEls[i][j].classList.toggle('sel', i===r&&j===c);
+  }
+  function autoSelect(){
+    for(var i=0;i<rows;i++) for(var j=0;j<cols;j++)
+      if(!cellEls[i][j].classList.contains('done')){ select(i,j); return; }
+    curR=null;
+  }
+  function pick(val,chip){
+    if(curR==null) return;
+    fbSlot.innerHTML='';
+    var want=t.answers[curR][curC];
+    if(val===want){
+      var b=cellEls[curR][curC];
+      b.textContent=val; b.classList.remove('sel'); b.classList.add('done');
+      solved++; earnedGrid+=PER; sGood();
+      if(solved===cells){
+        earnedGrid=Math.max(0, earnedGrid - wrongCount*4);
+        fbSlot.appendChild(fbBox(true,null,'เติมตารางครบแล้ว! '+(wrongCount?('ตอบผิด '+wrongCount+' ครั้ง (หัก '+(wrongCount*4)+' คะแนน)'):'ไม่ผิดเลย 🎉')+' ต่อไปมาวิเคราะห์ผลกัน'));
+        nextBtn(fbSlot,followUp,'วิเคราะห์ผล →');
+        fbSlot.scrollIntoView({behavior:'smooth',block:'center'});
+      } else autoSelect();
+    } else {
+      wrongCount++; sBad();
+      chip.classList.add('shake'); cellEls[curR][curC].classList.add('shake');
+      var cc=cellEls[curR][curC];
+      setTimeout(function(){chip.classList.remove('shake'); cc.classList.remove('shake')},350);
+      fbSlot.appendChild(fbBox(false,null,'ช่องนี้เกิดจากการรวมเซลล์สืบพันธุ์ <b>'+t.p1.g[curR]+'</b> จากหัวแถว กับ <b>'+t.p2.g[curC]+'</b> จากหัวคอลัมน์ ลองรวมแอลลีลใหม่อีกครั้ง'));
+    }
+  }
+  var fi=0, fEarned=0, fMax=(t.follow||[]).length*10;
+  function followUp(){
+    host.innerHTML='';
+    var fq=t.follow[fi];
+    stepHead(host,'วิเคราะห์ผลจากตาราง');
+    var mini=E('table','ptable');
+    var h2=E('tr'); h2.appendChild(E('th','corner',''));
+    t.p2.g.forEach(function(g){h2.appendChild(E('th',null,g))}); mini.appendChild(h2);
+    for(var r=0;r<rows;r++){
+      var tr=E('tr'); tr.appendChild(E('th',null,t.p1.g[r]));
+      for(var c=0;c<cols;c++){ var td=E('td'); var d=E('div','pcell done',t.answers[r][c]); d.style.display='grid'; d.style.placeItems='center'; td.appendChild(d); tr.appendChild(td); }
+      mini.appendChild(tr);
+    }
+    host.appendChild(mini);
+    host.appendChild(E('div','qtext',fq.q));
+    var wrap=E('div'), done=false;
+    fq.ch.forEach(function(c,idx){
+      var b=E('button','opt','<span class="mk">'+'กขคง'[idx]+'</span>'+c);
+      b.onclick=function(){
+        if(done)return; done=true;
+        var ok=idx===fq.a;
+        $$('.opt',wrap).forEach(function(o,j){o.classList.add(j===fq.a?'correct':(j===idx?'wrong':'dim'))});
+        ok?sGood():sBad();
+        if(ok) fEarned+=10; else G.miss.push({q:fq.q,ans:fq.ch[fq.a],why:fq.why});
+        host.appendChild(fbBox(ok,fq.ch[fq.a],fq.why,fq.tip));
+        fi++;
+        if(fi<t.follow.length) nextBtn(host,followUp);
+        else nextBtn(host,function(){ nextTask(earnedGrid+fEarned, maxGrid+fMax); });
+      };
+      wrap.appendChild(b);
+    });
+    host.appendChild(wrap);
+    window.scrollTo(0,0);
+  }
+  autoSelect();
+}
+
+/* ---------- จบด่าน ---------- */
+function finishLevel(){
+  var pct = G.max? Math.round(G.score/G.max*100) : 0;
+  var st = pct>=90?3 : pct>=75?2 : pct>=50?1 : 0;
+  var lv=G.lv;
+  if(st > (SAVE.stars[lv.id]||0)) SAVE.stars[lv.id]=st;
+  if(pct > (SAVE.best[lv.id]||0)) SAVE.best[lv.id]=pct;
+  save();
+  if(st>=2) sWin(); else sGood();
+
+  var h=document.getElementById('resultHost'); h.innerHTML='';
+  var c=E('div','card center');
+  c.innerHTML='<h2>'+(st>=2?'🎉 เยี่ยมมาก!':(st===1?'👍 ผ่านแล้ว!':'💪 ลองอีกครั้งนะ'))+'</h2>'+
+    '<div class="bigstars">'+starStr(st)+'</div>'+
+    '<div class="scorebig">'+pct+'%</div>'+
+    '<p class="mini">ได้ '+G.score+' จาก '+G.max+' คะแนน · '+lv.name+'</p>'+
+    (st===0?'<p class="mini" style="color:var(--bad)">ต้องได้ตั้งแต่ 50% ขึ้นไปจึงจะปลดล็อกด่านถัดไป</p>':'');
+  h.appendChild(c);
+
+  if(G.miss.length){
+    var m=E('div','card');
+    m.innerHTML='<h3>📌 ทบทวนข้อที่พลาด ('+G.miss.length+' ข้อ)</h3>';
+    var box=E('div','missbox');
+    G.miss.forEach(function(x){
+      box.appendChild(E('div','m','<b>'+x.q+'</b><br>เฉลย: <b style="color:var(--green-d)">'+x.ans+'</b><br><span class="mini">'+x.why+'</span>'));
+    });
+    m.appendChild(box); h.appendChild(m);
+  }
+
+  var r=E('div','card');
+  r.innerHTML='<span class="pill">สรุปสิ่งที่ได้เรียนรู้</span><h3>'+lv.sub+'</h3><ul class="recap">'+
+    lv.recap.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+
+    '<div class="tipbox" style="margin-top:12px"><b>⚠️ จุดที่มักเข้าใจผิด:</b> '+lv.mis+'</div>';
+  h.appendChild(r);
+
+  var btns=E('div');
+  var nx=LEVELS.filter(function(l){return l.id===lv.id+1})[0];
+  if(st>=1 && nx){
+    var b1=E('button','btn','ไปด่านต่อไป: '+nx.name+' →'); b1.onclick=function(){startLevel(nx.id)}; btns.appendChild(b1);
+  }
+  var b2=E('button','btn orange','🔁 เล่นด่านนี้อีกครั้ง'); b2.onclick=function(){startLevel(lv.id)}; btns.appendChild(b2);
+  var b3=E('button','btn ghost','🗺 กลับแผนที่ด่าน'); b3.onclick=function(){renderHome();go('home')}; btns.appendChild(b3);
+  h.appendChild(btns);
+  go('result');
+}
+
+/* ---------- การ์ดคำศัพท์ ---------- */
+var cardFilter='ทั้งหมด', cardQ='';
+function renderCards(){
+  var tags=['ทั้งหมด'].concat(GLOSSARY.map(function(g){return g.tag}).filter(function(v,i,a){return a.indexOf(v)===i}));
+  var tr=document.getElementById('cardTags'); tr.innerHTML='';
+  tags.forEach(function(tg){
+    var b=E('button','tag'+(tg===cardFilter?' on':''),tg);
+    b.onclick=function(){ cardFilter=tg; renderCards(); };
+    tr.appendChild(b);
+  });
+  var list=document.getElementById('cardList'); list.innerHTML='';
+  var q=cardQ.trim().toLowerCase();
+  var data=GLOSSARY.filter(function(g){
+    var okTag = cardFilter==='ทั้งหมด' || g.tag===cardFilter;
+    var okQ = !q || (g.th+' '+g.en+' '+g.def).toLowerCase().indexOf(q)>=0;
+    return okTag&&okQ;
+  });
+  if(!data.length){ list.appendChild(E('div','card center','ไม่พบคำศัพท์ที่ค้นหา')); return; }
+  data.forEach(function(g){
+    var b=E('button','fcard');
+    b.innerHTML='<div class="th">'+g.th+'</div><div class="en">'+g.en+'</div><div class="hint">แตะเพื่อดูคำนิยาม</div>';
+    var open=false;
+    b.onclick=function(){
+      open=!open;
+      b.innerHTML='<div class="th">'+g.th+'</div><div class="en">'+g.en+'</div>'+
+        (open? '<div class="def">'+g.def+'</div>'+(g.hint?'<div class="tipbox" style="margin-top:8px">💡 '+g.hint+'</div>':'')
+             : '<div class="hint">แตะเพื่อดูคำนิยาม</div>');
+      beep(open?700:500,.06);
+    };
+    list.appendChild(b);
+  });
+}
+
+/* ---------- จุดที่มักเข้าใจผิด ---------- */
+function renderMis(){
+  var l=document.getElementById('misList'); l.innerHTML='';
+  MISCON.forEach(function(m,i){
+    var c=E('div','card');
+    c.innerHTML='<div style="font-weight:800;color:var(--bad)">❌ เข้าใจผิด '+(i+1)+': '+m.w+'</div>'+
+      '<div style="margin-top:8px;border-top:1px dashed var(--line);padding-top:8px"><b style="color:var(--green-d)">✅ ที่ถูกคือ:</b> '+m.r+'</div>';
+    l.appendChild(c);
+  });
+}
+
+/* ---------- ผูกปุ่ม ---------- */
+document.getElementById('btnPlay').onclick=function(){ renderHome(); go('home'); document.getElementById('map').scrollIntoView({behavior:'smooth'}); };
+document.getElementById('btnCards').onclick=function(){ renderCards(); go('cards'); };
+document.getElementById('btnMis').onclick=function(){ renderMis(); go('mis'); };
+document.getElementById('btnHelp').onclick=function(){
+  var s=document.getElementById('scopeList');
+  s.innerHTML=SCOPE.map(function(x){return '<li>'+x+'</li>'}).join('');
+  go('help');
+};
+document.getElementById('btnQuit').onclick=function(){ if(confirm('ออกจากด่านนี้? คะแนนรอบนี้จะไม่ถูกบันทึก')){ renderHome(); go('home'); } };
+document.getElementById('btnReset').onclick=function(){
+  if(confirm('ล้างดาวและคะแนนทั้งหมดในเครื่องนี้?')){ SAVE={stars:{},best:{},name:''}; save(); renderHome(); }
+};
+document.getElementById('cardSearch').oninput=function(e){ cardQ=e.target.value; renderCards(); };
+document.getElementById('soundBtn').onclick=function(){
+  SOUND=!SOUND; document.getElementById('soundBtn').textContent=SOUND?'🔊':'🔇'; if(SOUND) beep(660,.1);
+};
+
+renderHome();
+</script>
+</body>
+</html>
