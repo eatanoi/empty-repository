@@ -332,8 +332,8 @@ const NO_CORS_MODE   = false;
    SUPABASE_KEY : anon public key — เป็นคีย์สาธารณะ ใส่ในหน้าเว็บได้ตามปกติ
                   สิทธิ์ถูกจำกัดด้วย Row Level Security ให้ "เพิ่มคะแนนได้อย่างเดียว"
    ปล่อยว่างทั้งคู่ก็ได้ แล้วไปตั้งค่าผ่านโหมดครูในเกม (?setup=1) */
-const SUPABASE_URL = 'https://vgurqbcbovgeppvdwizr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
+const SUPABASE_URL = '';
+const SUPABASE_KEY = '';
 
 /* ---------------- storage ---------------- */
 const KEY='genetics_quest_v1';
@@ -374,6 +374,17 @@ function backendName(){
   const e=ENDPOINT();
   if(!e) return '';
   return e.kind==='sb' ? 'ฐานข้อมูล Supabase ของครู' : 'Google Sheet ของครู (script.google.com)';
+}
+
+/* รับ URL ที่ครูมักคัดลอกมาผิดรูป แล้วตัดให้เหลือเฉพาะส่วนที่ใช้ได้ */
+function normalizeSbUrl(raw){
+  let s=String(raw||'').trim();
+  if(!s) return '';
+  if(!/^https?:\/\//.test(s)) s='https://'+s;
+  let u; try{ u=new URL(s); }catch(e){ return s.replace(/\/+$/,''); }
+  const dash=u.hostname.replace(/^www\./,'')==='supabase.com' && /\/dashboard\/project\/([a-z0-9]{16,})/.exec(u.pathname);
+  if(dash) return 'https://'+dash[1]+'.supabase.co';
+  return 'https://'+u.hostname.replace(/\.supabase\.com$/i,'.supabase.co');
 }
 
 /* อ่านพารามิเตอร์จาก URL เช่น ?ep=...&room=M401A หรือ ?setup=1 */
@@ -417,7 +428,7 @@ async function sendOne(ep, item){
       score:item.score, max_score:item.max, seconds:item.seconds, misses:item.misses,
       total_stars:item.totalStars, attempt:item.attempt, client_ts:item.ts
     };
-    const r=await fetch(ep.url+'/rest/v1/scores',{
+    const r=await fetch(ep.url+'/rest/v1/scores?on_conflict=uid',{
       method:'POST',
       headers:{
         'apikey':ep.key, 'Authorization':'Bearer '+ep.key,
@@ -427,8 +438,11 @@ async function sendOne(ep, item){
       body:JSON.stringify(row)
     });
     if(!r.ok){
-      let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
-      if(r.status===401||r.status===403) throw new Error('ไม่มีสิทธิ์บันทึก — ห้องอาจถูกปิดอยู่ หรือคีย์ไม่ถูกต้อง');
+      let d=''; try{ d=(await r.text()).slice(0,160); }catch(e){}
+      if(r.status===401) throw new Error('คีย์ของห้องไม่ถูกต้อง (anon key) — ขอลิงก์ใหม่จากครู');
+      if(r.status===403) throw new Error('ห้อง '+item.room+' ยังไม่เปิดรับคะแนน — ครูยังไม่ได้สร้างห้องนี้ หรือปิดห้องไปแล้ว');
+      if(r.status===404) throw new Error('ไม่พบตารางคะแนนในฐานข้อมูล — ครูยังตั้งค่าไม่ครบ');
+      if(r.status===409) return true; /* มีข้อมูลนี้อยู่แล้ว ถือว่าส่งสำเร็จ */
       throw new Error('ฐานข้อมูลตอบรหัส '+r.status+(d?(' · '+d):''));
     }
     return true;
@@ -520,6 +534,13 @@ function renderOutbox(){
     '<div class="kv"><span>รอส่งอยู่</span><b>'+SAVE.outbox.length+' รายการ</b></div>'+
     '<div class="kv"><span>ส่งสำเร็จล่าสุด</span><b>'+thDate(SAVE.lastSent)+'</b></div>'+
     '<div class="kv"><span>สถานะเครือข่าย</span><b>'+(navigator.onLine===false?'ออฟไลน์':'ออนไลน์')+'</b></div>'+
+    (function(){
+      const e=ENDPOINT(); if(!e) return '';
+      let host=''; try{ host=new URL(e.url).host; }catch(x){ host=e.url.slice(0,32); }
+      return '<div class="kv"><span>ปลายทาง</span><b style="font-size:.8rem">'+host+'</b></div>'+
+        (e.kind==='sb' ? '<div class="kv"><span>คีย์ที่เครื่องนี้ใช้</span><b style="font-size:.8rem">'+
+          e.key.slice(0,8)+'… ('+e.key.length+' ตัว)</b></div>' : '');
+    })()+
     (lastFlushErr?'<div class="tipbox" style="margin-top:10px"><b>บันทึกล่าสุด:</b> '+lastFlushErr+'</div>':'')+
     '<p class="mini" style="margin-top:12px">เล่นตอนไม่มีเน็ตได้ตามปกติ คะแนนจะพักไว้ในเครื่องแล้วส่งให้อัตโนมัติเมื่อกลับมาออนไลน์</p>';
   const bSend=E('button','btn','🚀 ส่งเดี๋ยวนี้');
@@ -575,9 +596,15 @@ function renderTeacher(){
   function readCfg(){
     const room=(document.getElementById('tRoom').value||'').trim().toUpperCase();
     if(TEACHER_MODE==='sb'){
-      const url=(document.getElementById('tSb').value||'').trim().replace(/\/+$/,'');
+      const url=normalizeSbUrl(document.getElementById('tSb').value);
       const key=(document.getElementById('tKey').value||'').trim();
-      if(!SB_RE.test(url)){ alert('Project URL ยังไม่ถูกต้อง\nต้องอยู่ในรูปแบบ https://ชื่อโปรเจกต์.supabase.co'); return null; }
+      if(!SB_RE.test(url)){
+        alert('Project URL ยังไม่ถูกต้อง\n\nต้องอยู่ในรูปแบบ https://ชื่อโปรเจกต์.supabase.co\n'+
+              '· ลงท้าย .co ไม่ใช่ .com\n· ไม่ต้องมี /rest/v1/ ต่อท้าย\n'+
+              '· ดูได้ที่ Project Settings → Data API → Project URL');
+        return null;
+      }
+      document.getElementById('tSb').value=url;
       if(!SBKEY_RE.test(key)){ alert('anon key ยังไม่ถูกต้อง'); return null; }
       return {kind:'sb', url:url, key:key, room:room};
     }
