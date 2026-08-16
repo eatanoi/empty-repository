@@ -269,10 +269,10 @@ ul.recap li{margin-bottom:6px}
     </div>
     <div class="card">
       <h2>👩‍🏫 สำหรับครู</h2>
-      <p class="mini">ระบบส่งคะแนนปิดอยู่โดยค่าเริ่มต้น เปิดใช้โดยเปิดไฟล์ <code>index.html</code> ด้วยโปรแกรมแก้ไขข้อความ
-      แล้วมองหาบรรทัด <code>const CLASS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx6FZeRS5eYZ1bZuVd7_7g7tHoCJed2ynI94f_ttQjAKF0ZRSSqhZU31IaWb-SjtIJnCQ/exec';</code> (อยู่ต้น ๆ ของส่วนสคริปต์)
-      จากนั้นวาง URL ของ Google Apps Script Web App ลงในเครื่องหมายคำพูด แล้วบันทึก
-      ดูขั้นตอนสร้างชีตและสคริปต์ได้ในไฟล์ <code>SETUP-CLASSROOM.md</code></p>
+      <p class="mini">เปิดระบบบันทึกคะแนนได้ 2 วิธี — วิธีที่ง่ายที่สุดคือกดปุ่มด้านล่างเพื่อสร้างลิงก์ชั้นเรียน
+      (ไม่ต้องแก้ไฟล์ใด ๆ) หรือถ้าต้องการฝังถาวรในไฟล์ ให้แก้บรรทัด <code>const CLASS_ENDPOINT = '';</code>
+      ในไฟล์ <code>index.html</code> ขั้นตอนสร้าง Google Sheet อยู่ในไฟล์ <code>SETUP-CLASSROOM.md</code></p>
+      <button class="btn small orange" id="btnTeacher">👩‍🏫 เปิดโหมดครู · สร้างชั้นเรียน</button>
     </div>
     <div class="card">
       <h2>📚 ขอบเขตเนื้อหา (สสวท. ม.4)</h2>
@@ -327,6 +327,14 @@ const sWin =()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*
 const CLASS_ENDPOINT = '';
 const NO_CORS_MODE   = false;
 
+/* ---- ทางเลือกที่ 2: Supabase (ฐานข้อมูลจริง + แดชบอร์ด realtime) ----
+   SUPABASE_URL : https://xxxxxxxx.supabase.co   (Project URL)
+   SUPABASE_KEY : anon public key — เป็นคีย์สาธารณะ ใส่ในหน้าเว็บได้ตามปกติ
+                  สิทธิ์ถูกจำกัดด้วย Row Level Security ให้ "เพิ่มคะแนนได้อย่างเดียว"
+   ปล่อยว่างทั้งคู่ก็ได้ แล้วไปตั้งค่าผ่านโหมดครูในเกม (?setup=1) */
+const SUPABASE_URL = '';
+const SUPABASE_KEY = '';
+
 /* ---------------- storage ---------------- */
 const KEY='genetics_quest_v1';
 let SAVE={stars:{},best:{},name:'',stu:null,outbox:[],plays:{},lastSent:''};
@@ -340,7 +348,47 @@ if(!SAVE.plays || typeof SAVE.plays!=='object') SAVE.plays={};
    0) ระบบชั้นเรียน — เข้าร่วมห้อง + คิวส่งคะแนนแบบทนเน็ตหลุด
    ========================================================== */
 const OUTBOX_MAX=300;
-function classOn(){ return /^https?:\/\//.test(CLASS_ENDPOINT); }
+
+/* ปลายทางที่ยอมรับจาก "ลิงก์ที่ครูสร้าง" ได้ ต้องเป็น Google Apps Script เท่านั้น
+   (กันคนแอบทำลิงก์ปลอมให้ข้อมูลนักเรียนวิ่งไปเซิร์ฟเวอร์อื่น) */
+const EP_RE=/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_\-]+\/exec$/;
+
+const SB_RE=/^https:\/\/[a-z0-9-]+\.supabase\.co$/;
+const SBKEY_RE=/^[A-Za-z0-9._-]{20,600}$/;
+
+/* ปลายทางจริงที่ใช้ส่ง: ค่าที่ฝังในไฟล์มาก่อน ถ้าไม่มีจึงใช้ค่าที่ได้จากลิงก์ของครู
+   คืนค่าเป็น null หรือ {kind:'gas'|'sb', ...} */
+function ENDPOINT(){
+  if(SB_RE.test(SUPABASE_URL) && SUPABASE_KEY) return {kind:'sb', url:SUPABASE_URL, key:SUPABASE_KEY};
+  if(/^https?:\/\//.test(CLASS_ENDPOINT))       return {kind:'gas', url:CLASS_ENDPOINT};
+  if(SAVE.sb && SAVE.sbKey && SB_RE.test(SAVE.sb)) return {kind:'sb', url:SAVE.sb, key:SAVE.sbKey};
+  if(SAVE.ep && EP_RE.test(SAVE.ep))            return {kind:'gas', url:SAVE.ep};
+  return null;
+}
+function classOn(){ return !!ENDPOINT(); }
+function epFromLink(){
+  const inFile = (SB_RE.test(SUPABASE_URL)&&SUPABASE_KEY) || /^https?:\/\//.test(CLASS_ENDPOINT);
+  return !inFile && !!(SAVE.ep || SAVE.sb);
+}
+function backendName(){
+  const e=ENDPOINT();
+  if(!e) return '';
+  return e.kind==='sb' ? 'ฐานข้อมูล Supabase ของครู' : 'Google Sheet ของครู (script.google.com)';
+}
+
+/* อ่านพารามิเตอร์จาก URL เช่น ?ep=...&room=M401A หรือ ?setup=1 */
+function urlParams(){
+  var out={}, s=(location.search||'').replace(/^\?/,'');
+  if(!s && location.hash.indexOf('?')>=0) s=location.hash.split('?').slice(1).join('?');
+  s.split('&').forEach(function(kv){
+    if(!kv) return;
+    var i=kv.indexOf('=');
+    var k=decodeURIComponent(i<0?kv:kv.slice(0,i));
+    var v=i<0?'':decodeURIComponent(kv.slice(i+1).replace(/\+/g,' '));
+    out[k]=v;
+  });
+  return out;
+}
 function joined(){ return !!(SAVE.stu && SAVE.stu.room && SAVE.stu.name); }
 function newSid(){ return 'S'+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4); }
 function thDate(iso){
@@ -360,26 +408,54 @@ function queueScore(item){
   flushOutbox();
 }
 
+/* ส่ง 1 รายการตามชนิดของปลายทาง */
+async function sendOne(ep, item){
+  if(ep.kind==='sb'){
+    const row={
+      uid:item.uid, room:item.room, student:item.name, sid:item.sid,
+      level:item.level, level_name:item.levelName, stars:item.stars, percent:item.percent,
+      score:item.score, max_score:item.max, seconds:item.seconds, misses:item.misses,
+      total_stars:item.totalStars, attempt:item.attempt, client_ts:item.ts
+    };
+    const r=await fetch(ep.url+'/rest/v1/scores',{
+      method:'POST',
+      headers:{
+        'apikey':ep.key, 'Authorization':'Bearer '+ep.key,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal,resolution=ignore-duplicates'
+      },
+      body:JSON.stringify(row)
+    });
+    if(!r.ok){
+      let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
+      if(r.status===401||r.status===403) throw new Error('ไม่มีสิทธิ์บันทึก — ห้องอาจถูกปิดอยู่ หรือคีย์ไม่ถูกต้อง');
+      throw new Error('ฐานข้อมูลตอบรหัส '+r.status+(d?(' · '+d):''));
+    }
+    return true;
+  }
+  /* Google Apps Script */
+  if(NO_CORS_MODE){
+    await fetch(ep.url,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(item)});
+    return true; /* โหมดนี้อ่านผลตอบกลับไม่ได้ ถือว่าส่งแล้ว */
+  }
+  const r=await fetch(ep.url,{method:'POST',redirect:'follow',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(item)});
+  if(!r.ok) throw new Error('เซิร์ฟเวอร์ตอบกลับรหัส '+r.status);
+  return true;
+}
+
 let flushing=false, lastFlushErr='';
 async function flushOutbox(){
-  if(!classOn() || flushing || !SAVE.outbox.length) return {sent:0,left:SAVE.outbox.length};
+  const ep=ENDPOINT();
+  if(!ep || flushing || !SAVE.outbox.length) return {sent:0,left:SAVE.outbox.length};
   if(navigator.onLine===false){ lastFlushErr='ออฟไลน์อยู่ — จะส่งให้อัตโนมัติเมื่อกลับมาออนไลน์'; updateClassChip(); return {sent:0,left:SAVE.outbox.length}; }
   flushing=true; updateClassChip();
   const left=[]; let sent=0; lastFlushErr='';
   for(const item of SAVE.outbox.slice()){
     let ok=false;
-    try{
-      if(NO_CORS_MODE){
-        await fetch(CLASS_ENDPOINT,{method:'POST',mode:'no-cors',
-          headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(item)});
-        ok=true; /* โหมดนี้อ่านผลตอบกลับไม่ได้ ถือว่าส่งแล้ว */
-      }else{
-        const r=await fetch(CLASS_ENDPOINT,{method:'POST',redirect:'follow',
-          headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(item)});
-        ok=r.ok;
-        if(!ok) lastFlushErr='เซิร์ฟเวอร์ตอบกลับรหัส '+r.status;
-      }
-    }catch(e){ ok=false; lastFlushErr='ส่งไม่สำเร็จ ('+(e&&e.message?e.message:'เครือข่ายมีปัญหา')+')'; }
+    try{ ok=await sendOne(ep,item); }
+    catch(e){ ok=false; lastFlushErr=(e&&e.message)?e.message:'เครือข่ายมีปัญหา'; }
     if(ok) sent++; else left.push(item);
   }
   SAVE.outbox=left;
@@ -400,20 +476,22 @@ function updateClassChip(){
 }
 
 /* ---------- หน้าเข้าร่วมชั้นเรียน ---------- */
+let PENDING_ROOM='';
 function renderJoin(){
   const h=document.getElementById('classHost'); h.innerHTML='';
   const c=E('div','card');
   c.innerHTML='<h2>🏫 เข้าร่วมชั้นเรียน</h2>'+
     '<p class="mini">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</p>'+
     '<div class="field"><label for="fRoom">รหัสห้อง</label>'+
-      '<input id="fRoom" inputmode="latin" autocapitalize="characters" placeholder="เช่น M401A" value="'+((SAVE.stu&&SAVE.stu.room)||'')+'">'+
-      '<div class="note">ครูจะบอกรหัสนี้หน้าชั้นเรียน</div></div>'+
+      '<input id="fRoom" inputmode="latin" autocapitalize="characters" placeholder="เช่น M401A" value="'+(PENDING_ROOM||(SAVE.stu&&SAVE.stu.room)||'')+'">'+
+      '<div class="note">'+(PENDING_ROOM?'✅ กรอกให้แล้วจากลิงก์ของครู':'ครูจะบอกรหัสนี้หน้าชั้นเรียน')+'</div></div>'+
     '<div class="field"><label for="fName">ชื่อของคุณ (หรือ ชื่อ–เลขที่)</label>'+
       '<input id="fName" placeholder="เช่น สมชาย เลขที่ 12" value="'+((SAVE.stu&&SAVE.stu.name)||'')+'">'+
       '<div class="note">ใส่ให้ครูรู้ว่าเป็นใคร ไม่ต้องใส่นามสกุลเต็มก็ได้</div></div>'+
     '<div class="privacy"><b>🔒 ความเป็นส่วนตัว</b><br>ระบบเก็บเฉพาะ <b>รหัสห้อง ชื่อที่กรอก และผลการเล่น</b> (ด่าน ดาว คะแนน เวลาที่ใช้) '+
       'เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น <b>ไม่เก็บ</b>อีเมล เบอร์โทร ตำแหน่งที่ตั้ง หรือข้อมูลอื่นในเครื่อง '+
-      'และคุณกด “ออกจากชั้นเรียน” เพื่อหยุดส่งได้ทุกเมื่อ</div>';
+      'และคุณกด “ออกจากชั้นเรียน” เพื่อหยุดส่งได้ทุกเมื่อ'+
+      (epFromLink()?('<br><br>ลิงก์นี้ตั้งค่าให้ส่งข้อมูลไปยัง <b>'+backendName()+'</b>'):'')+'</div>';
   const bJoin=E('button','btn','✅ เข้าร่วม');
   const bCancel=E('button','btn ghost','ยกเลิก');
   bJoin.onclick=function(){
@@ -421,6 +499,7 @@ function renderJoin(){
     const room=r.value.trim().toUpperCase(), name=n.value.trim();
     r.classList.toggle('err',!room); n.classList.toggle('err',!name);
     if(!room||!name){ sBad(); return; }
+    PENDING_ROOM='';
     SAVE.stu={room:room, name:name, sid:(SAVE.stu&&SAVE.stu.sid)||newSid()};
     if(!SAVE.name) SAVE.name=name;
     save(); sGood(); updateClassChip(); renderHome(); go('home');
@@ -464,6 +543,126 @@ function renderOutbox(){
   bBack.onclick=function(){ renderHome(); go('home'); };
   c.appendChild(bSend); c.appendChild(bEdit); c.appendChild(bOut); c.appendChild(bBack);
   h.appendChild(c); go('class');
+}
+
+/* ---------- 👩‍🏫 โหมดครู: สร้างลิงก์สำหรับนักเรียน ---------- */
+let TEACHER_MODE = (SAVE.sb ? 'sb' : (SAVE.ep ? 'gas' : 'sb'));
+function renderTeacher(){
+  const h=document.getElementById('classHost'); h.innerHTML='';
+  const c=E('div','card');
+  const sb = TEACHER_MODE==='sb';
+  c.innerHTML='<h2>👩‍🏫 โหมดครู · สร้างชั้นเรียน</h2>'+
+    '<p class="mini">กรอกข้อมูลแล้วกดสร้างลิงก์ ระบบจะได้ลิงก์สำหรับให้นักเรียนสแกน โดยไม่ต้องแก้ไฟล์ใด ๆ</p>'+
+    '<div class="btnrow" style="margin-bottom:14px">'+
+      '<button class="btn small '+(sb?'':'ghost')+'" id="mSb">🗄️ Supabase</button>'+
+      '<button class="btn small '+(sb?'ghost':'')+'" id="mGas">📊 Google Sheet</button>'+
+    '</div>'+
+    (sb
+      ? '<div class="field"><label for="tSb">Project URL</label>'+
+          '<input id="tSb" placeholder="https://abcdefgh.supabase.co" value="'+(SAVE.sb||'')+'">'+
+          '<div class="note">Supabase → Project Settings → Data API → Project URL</div></div>'+
+        '<div class="field"><label for="tKey">anon public key</label>'+
+          '<input id="tKey" placeholder="eyJhbGciOi... หรือ sb_publishable_..." value="'+(SAVE.sbKey||'')+'">'+
+          '<div class="note">คีย์สาธารณะ ใส่ในลิงก์ได้ตามปกติ · สิทธิ์ถูกจำกัดด้วย RLS ให้เพิ่มคะแนนได้อย่างเดียว</div></div>'
+      : '<div class="field"><label for="tEp">URL ของ Google Apps Script (Web app)</label>'+
+          '<input id="tEp" placeholder="https://script.google.com/macros/s/..../exec" value="'+(SAVE.ep||'')+'">'+
+          '<div class="note">ได้จากขั้นตอน Deploy → New deployment → Web app (ต้องลงท้ายด้วย /exec)</div></div>')+
+    '<div class="field"><label for="tRoom">รหัสห้อง</label>'+
+      '<input id="tRoom" autocapitalize="characters" placeholder="เช่น M401A" value="'+((SAVE.stu&&SAVE.stu.room)||'')+'">'+
+      '<div class="note">'+(sb?'ต้องตรงกับรหัสห้องที่สร้างไว้ในแดชบอร์ด และห้องต้องเปิดอยู่':'ตั้งเองได้เลย ห้องละรหัส เช่น M401A, M402B')+'</div></div>';
+
+  const outBox=E('div');
+  function readCfg(){
+    const room=(document.getElementById('tRoom').value||'').trim().toUpperCase();
+    if(TEACHER_MODE==='sb'){
+      const url=(document.getElementById('tSb').value||'').trim().replace(/\/+$/,'');
+      const key=(document.getElementById('tKey').value||'').trim();
+      if(!SB_RE.test(url)){ alert('Project URL ยังไม่ถูกต้อง\nต้องอยู่ในรูปแบบ https://ชื่อโปรเจกต์.supabase.co'); return null; }
+      if(!SBKEY_RE.test(key)){ alert('anon key ยังไม่ถูกต้อง'); return null; }
+      return {kind:'sb', url:url, key:key, room:room};
+    }
+    const url=(document.getElementById('tEp').value||'').trim();
+    if(!EP_RE.test(url)){ alert('URL ยังไม่ถูกต้อง\nต้องอยู่ในรูปแบบ https://script.google.com/macros/s/..../exec'); return null; }
+    return {kind:'gas', url:url, room:room};
+  }
+
+  const bTest=E('button','btn ghost','🔌 ทดสอบการเชื่อมต่อ');
+  bTest.onclick=async function(){
+    const cfg=readCfg(); if(!cfg) return;
+    const room=cfg.room||'TEST';
+    bTest.disabled=true; bTest.textContent='กำลังทดสอบ...';
+    const item={v:1, uid:'TEST-'+Date.now().toString(36), room:room, name:'✅ ทดสอบระบบ (ครู)', sid:'TEACHER',
+      level:0, levelName:'ทดสอบการเชื่อมต่อ', stars:0, percent:0, score:0, max:0,
+      seconds:0, misses:0, totalStars:0, attempt:1, ts:new Date().toISOString()};
+    let msg='';
+    try{
+      await sendOne(cfg,item);
+      msg = cfg.kind==='sb'
+        ? '✅ เชื่อมต่อสำเร็จ\n\nเปิดแดชบอร์ดของห้อง '+room+' จะเห็นแถว "✅ ทดสอบระบบ (ครู)" เพิ่มขึ้นมาแบบเรียลไทม์ (ลบทิ้งได้)'
+        : '✅ เชื่อมต่อสำเร็จ\n\nเปิด Google Sheet ดูได้เลย จะมีแถว "✅ ทดสอบระบบ (ครู)" เพิ่มขึ้นมา (ลบทิ้งได้)';
+    }catch(e){
+      msg='❌ ส่งไม่สำเร็จ\n'+((e&&e.message)||'')+'\n\n'+(cfg.kind==='sb'
+        ? 'ตรวจ 3 อย่าง: รัน schema.sql ครบแล้วหรือยัง · สร้างห้อง '+room+' ในแดชบอร์ดแล้วหรือยัง · ห้องยังเปิดอยู่ไหม'
+        : 'ตรวจว่า Deploy แล้ว และตั้ง Who has access เป็น Anyone · URL ต้องลงท้าย /exec');
+    }
+    bTest.disabled=false; bTest.textContent='🔌 ทดสอบการเชื่อมต่อ';
+    alert(msg);
+  };
+
+  const bMake=E('button','btn','🔗 สร้างลิงก์สำหรับนักเรียน');
+  bMake.onclick=function(){
+    const cfg=readCfg(); if(!cfg) return;
+    if(!cfg.room){ alert('กรุณาใส่รหัสห้อง'); return; }
+    let link=location.origin+location.pathname+'?';
+    if(cfg.kind==='sb'){
+      SAVE.sb=cfg.url; SAVE.sbKey=cfg.key;
+      link+='sb='+encodeURIComponent(cfg.url)+'&key='+encodeURIComponent(cfg.key);
+    }else{
+      SAVE.ep=cfg.url;
+      link+='ep='+encodeURIComponent(cfg.url);
+    }
+    link+='&room='+encodeURIComponent(cfg.room);
+    save();
+    outBox.innerHTML='<div class="card" style="margin-top:14px"><h3>🔗 ลิงก์สำหรับห้อง '+cfg.room+'</h3>'+
+      '<div class="field"><input id="tLink" readonly value="'+link.replace(/"/g,'&quot;')+'"></div>'+
+      '<p class="mini">นำลิงก์นี้ไปสร้าง QR แจกนักเรียน — นักเรียนสแกนแล้วกรอกแค่ชื่อ ไม่ต้องพิมพ์รหัสห้องเอง</p></div>';
+    const bCopy=E('button','btn orange','📋 คัดลอกลิงก์');
+    bCopy.onclick=function(){
+      const inp=document.getElementById('tLink');
+      inp.select(); inp.setSelectionRange(0,99999);
+      const done=function(){ bCopy.textContent='✅ คัดลอกแล้ว'; setTimeout(function(){bCopy.textContent='📋 คัดลอกลิงก์'},1800); };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(inp.value).then(done, function(){ try{document.execCommand('copy'); done();}catch(e){ alert('กดค้างที่ช่องลิงก์แล้วเลือก Copy ได้เลยครับ'); } });
+      } else { try{document.execCommand('copy'); done();}catch(e){ alert('กดค้างที่ช่องลิงก์แล้วเลือก Copy ได้เลยครับ'); } }
+    };
+    outBox.querySelector('.card').appendChild(bCopy);
+    sGood();
+    outBox.scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+
+  const bBack=E('button','btn ghost','← กลับหน้าหลัก');
+  bBack.onclick=function(){ renderHome(); go('home'); };
+  c.appendChild(bMake); c.appendChild(bTest); c.appendChild(bBack);
+  h.appendChild(c); h.appendChild(outBox);
+
+  const note=E('div','card');
+  note.innerHTML = TEACHER_MODE==='sb'
+    ? '<h3>📋 ลำดับการติดตั้ง (Supabase)</h3><ul class="recap">'+
+      '<li>สร้างโปรเจกต์ที่ supabase.com (ฟรี) → SQL Editor → วางไฟล์ <code>supabase/schema.sql</code> → Run</li>'+
+      '<li>Authentication → Users → Add user = บัญชีครูสำหรับเข้าแดชบอร์ด</li>'+
+      '<li>เปิด <code>dashboard.html</code> → ล็อกอิน → สร้างห้อง เช่น M401A</li>'+
+      '<li>คัดลอก Project URL กับ anon key มาวางข้างบน → ทดสอบ → สร้างลิงก์ → ทำ QR แจก</li>'+
+      '<li>รายละเอียดทั้งหมดอยู่ในไฟล์ <code>SETUP-SUPABASE.md</code></li></ul>'
+    : '<h3>📋 ลำดับการติดตั้ง (Google Sheet)</h3><ul class="recap">'+
+      '<li>สร้าง Google Sheet → Extensions → Apps Script → วางโค้ดจากไฟล์ <code>apps-script/Code.gs</code> → Run ฟังก์ชัน <code>setup</code></li>'+
+      '<li>Deploy → New deployment → Web app · Execute as: <b>Me</b> · Who has access: <b>Anyone</b></li>'+
+      '<li>คัดลอก URL มาวางข้างบน → กดทดสอบการเชื่อมต่อ → กดสร้างลิงก์</li>'+
+      '<li>รายละเอียดอยู่ในไฟล์ <code>SETUP-CLASSROOM.md</code></li></ul>';
+  h.appendChild(note);
+
+  document.getElementById('mSb').onclick=function(){ TEACHER_MODE='sb'; renderTeacher(); };
+  document.getElementById('mGas').onclick=function(){ TEACHER_MODE='gas'; renderTeacher(); };
+  go('class');
 }
 
 function renderClassCard(){
@@ -1305,7 +1504,8 @@ function finishLevel(){
   /* ส่งผลให้ครู (เข้าคิวไว้ก่อน ส่งจริงเมื่อมีเน็ต) */
   if(classOn() && joined()){
     queueScore({
-      v:1, room:SAVE.stu.room, name:SAVE.stu.name, sid:SAVE.stu.sid,
+      v:1, uid:SAVE.stu.sid+'-'+lv.id+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+      room:SAVE.stu.room, name:SAVE.stu.name, sid:SAVE.stu.sid,
       level:lv.id, levelName:lv.name, stars:st, percent:pct,
       score:G.score, max:G.max, seconds:secs, misses:G.miss.length,
       totalStars:totalStars(), attempt:SAVE.plays[lv.id], ts:new Date().toISOString()
@@ -1420,13 +1620,28 @@ document.getElementById('btnReset').onclick=function(){
   }
 };
 document.getElementById('classChip').onclick=function(){ if(joined()) renderOutbox(); else renderJoin(); };
+document.getElementById('btnTeacher').onclick=renderTeacher;
 document.getElementById('cardSearch').oninput=function(e){ cardQ=e.target.value; renderCards(); };
 document.getElementById('soundBtn').onclick=function(){
   SOUND=!SOUND; document.getElementById('soundBtn').textContent=SOUND?'🔊':'🔇'; if(SOUND) beep(660,.1);
 };
 
-renderHome();
-flushOutbox();
+/* ---------- เปิดเกม: อ่านค่าจากลิงก์ที่ครูสร้าง ---------- */
+(function boot(){
+  var Q=urlParams();
+  if(Q.ep && EP_RE.test(Q.ep) && SAVE.ep!==Q.ep){ SAVE.ep=Q.ep; save(); }
+  if(Q.sb && Q.key && SB_RE.test(Q.sb) && SBKEY_RE.test(Q.key) && (SAVE.sb!==Q.sb || SAVE.sbKey!==Q.key)){
+    SAVE.sb=Q.sb; SAVE.sbKey=Q.key; save();
+  }
+  if(Q.room) PENDING_ROOM=String(Q.room).trim().toUpperCase();
+
+  renderHome();
+  flushOutbox();
+
+  if(Q.setup==='1'){ renderTeacher(); return; }
+  /* มาจากลิงก์ของครูและยังไม่ได้เข้าห้อง → พาไปหน้ากรอกชื่อเลย */
+  if(PENDING_ROOM && classOn() && !joined()) renderJoin();
+})();
 </script>
 </body>
 </html>
