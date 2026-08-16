@@ -422,11 +422,20 @@ function queueScore(item){
 /* ส่ง 1 รายการตามชนิดของปลายทาง */
 async function sendOne(ep, item){
   if(ep.kind==='sb'){
+    /* บีบค่าให้อยู่ในช่วงที่กฎความปลอดภัยของฐานข้อมูลยอมรับเสมอ
+       ไม่งั้นรายการที่ค่าเพี้ยน (เช่นเปิดค้างข้ามวันจนเวลาเกิน 24 ชม.)
+       จะถูกปฏิเสธซ้ำ ๆ และค้างอยู่ในคิวตลอดไป */
+    const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(Number(v)||0)));
     const row={
-      uid:item.uid, room:item.room, student:item.name, sid:item.sid,
-      level:item.level, level_name:item.levelName, stars:item.stars, percent:item.percent,
-      score:item.score, max_score:item.max, seconds:item.seconds, misses:item.misses,
-      total_stars:item.totalStars, attempt:item.attempt, client_ts:item.ts
+      uid:item.uid, room:item.room,
+      student:String(item.name||'').trim().slice(0,60),
+      sid:item.sid,
+      level:clamp(item.level,0,20), level_name:String(item.levelName||'').slice(0,80),
+      stars:clamp(item.stars,0,3), percent:clamp(item.percent,0,100),
+      score:clamp(item.score,0,100000), max_score:clamp(item.max,0,100000),
+      seconds:clamp(item.seconds,0,86400), misses:clamp(item.misses,0,10000),
+      total_stars:clamp(item.totalStars,0,1000), attempt:clamp(item.attempt,1,10000),
+      client_ts:item.ts
     };
     const r=await fetch(ep.url+'/rest/v1/scores?on_conflict=uid',{
       method:'POST',
