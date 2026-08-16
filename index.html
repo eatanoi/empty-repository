@@ -211,6 +211,7 @@ ul.recap li{margin-bottom:6px}
     <div class="card center" id="certSlot"></div>
     <div class="foot">เล่นออฟไลน์ได้ 100% · คะแนนบันทึกในเครื่องของคุณเอง<br>
       <button class="chip" id="btnReset" style="margin-top:8px">🗑 ล้างคะแนนทั้งหมด</button>
+      <button class="chip" id="btnTeacher2" style="margin-top:8px">👩‍🏫 สำหรับครู</button>
     </div>
   </section>
 
@@ -332,8 +333,8 @@ const NO_CORS_MODE   = false;
    SUPABASE_KEY : anon public key — เป็นคีย์สาธารณะ ใส่ในหน้าเว็บได้ตามปกติ
                   สิทธิ์ถูกจำกัดด้วย Row Level Security ให้ "เพิ่มคะแนนได้อย่างเดียว"
    ปล่อยว่างทั้งคู่ก็ได้ แล้วไปตั้งค่าผ่านโหมดครูในเกม (?setup=1) */
-const SUPABASE_URL = '';
-const SUPABASE_KEY = '';
+const SUPABASE_URL = 'https://vgurqbcbovgeppvdwizr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
 
 /* ---------------- storage ---------------- */
 const KEY='genetics_quest_v1';
@@ -712,7 +713,17 @@ function renderTeacher(){
 
 function renderClassCard(){
   const card=document.getElementById('classCard');
-  if(!classOn()){ card.classList.add('hidden'); return; }
+  if(!classOn()){
+    /* เครื่องที่เคยเข้าร่วมห้องมาก่อนแต่ค่าปลายทางหายไป ต้องบอกให้รู้ ไม่ใช่เงียบ */
+    if(SAVE.stu && SAVE.stu.room){
+      card.classList.remove('hidden');
+      card.innerHTML='<h3>⚠️ ยังส่งคะแนนให้ครูไม่ได้</h3>'+
+        '<p class="mini">เครื่องนี้เคยเข้าร่วมห้อง <b>'+SAVE.stu.room+'</b> แต่ตอนนี้ไม่มีข้อมูลปลายทางแล้ว '+
+        '(มักเกิดจากเปิดจากลิงก์เปล่าหรือล้างข้อมูลเว็บ) — ให้เปิดลิงก์/สแกน QR ที่ครูแจกอีกครั้ง</p>';
+      return;
+    }
+    card.classList.add('hidden'); return;
+  }
   card.classList.remove('hidden'); card.innerHTML='';
   if(!joined()){
     card.innerHTML='<h3>🏫 เข้าร่วมชั้นเรียน</h3><p class="mini">กรอกรหัสห้องที่ครูให้ เพื่อส่งคะแนนของคุณให้ครูเห็นความก้าวหน้า (ไม่กรอกก็เล่นได้ครบทุกด่าน)</p>';
@@ -1666,6 +1677,7 @@ document.getElementById('btnReset').onclick=function(){
 };
 document.getElementById('classChip').onclick=function(){ if(joined()) renderOutbox(); else renderJoin(); };
 document.getElementById('btnTeacher').onclick=renderTeacher;
+document.getElementById('btnTeacher2').onclick=renderTeacher;
 document.getElementById('cardSearch').oninput=function(e){ cardQ=e.target.value; renderCards(); };
 document.getElementById('soundBtn').onclick=function(){
   SOUND=!SOUND; document.getElementById('soundBtn').textContent=SOUND?'🔊':'🔇'; if(SOUND) beep(660,.1);
