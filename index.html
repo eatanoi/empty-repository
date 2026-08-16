@@ -144,6 +144,19 @@ button{font-family:inherit;font-size:1rem;cursor:pointer}
 .tagrow{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
 .tag{white-space:nowrap;border:2px solid var(--line);background:var(--cream2);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;color:var(--muted)}
 .tag.on{background:var(--green);border-color:var(--green);color:#fff}
+/* ---------- ฟอร์มเข้าร่วมชั้นเรียน ---------- */
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:800;font-size:.95rem;margin-bottom:6px;color:var(--green-d)}
+.field input{width:100%;min-height:56px;border-radius:14px;border:2px solid var(--line);background:var(--cream2);
+  padding:8px 14px;font-size:1.05rem;font-family:inherit;color:var(--ink)}
+.field input:focus{outline:none;border-color:var(--green-l);background:#fff}
+.field .note{font-size:.84rem;color:var(--muted);margin-top:5px}
+.field input.err{border-color:var(--bad);background:var(--bad-soft)}
+.privacy{background:var(--green-soft);border:2px solid var(--green-l);border-radius:14px;padding:11px 13px;font-size:.9rem;margin-bottom:14px}
+.kv{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:8px 0;font-size:.95rem}
+.kv:last-child{border:none}
+.kv b{color:var(--green-d)}
+#classChip.pending{background:#FFF3D9;border-color:var(--orange-l);color:var(--orange-d)}
 .fcard{background:var(--cream2);border:2px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px;
   box-shadow:var(--shadow);text-align:left;width:100%;color:var(--ink)}
 .fcard .th{font-weight:800;font-size:1.06rem;color:var(--green-d)}
@@ -174,6 +187,7 @@ ul.recap li{margin-bottom:6px}
     <div class="brand"><span class="logo">🧬</span><span>ภารกิจพันธุกรรม</span></div>
     <div class="spacer"></div>
     <div class="chip" id="starChip">⭐ 0/21</div>
+    <button class="chip hidden" id="classChip" title="สถานะการส่งคะแนน">👤</button>
     <button class="iconbtn" id="soundBtn" title="เสียง">🔊</button>
   </div>
 
@@ -192,6 +206,7 @@ ul.recap li{margin-bottom:6px}
         <button class="btn small ghost" id="btnHelp">❓ วิธีเล่น &amp; ขอบเขต</button>
       </div>
     </div>
+    <div class="card hidden" id="classCard"></div>
     <div class="map" id="map"></div>
     <div class="card center" id="certSlot"></div>
     <div class="foot">เล่นออฟไลน์ได้ 100% · คะแนนบันทึกในเครื่องของคุณเอง<br>
@@ -237,6 +252,9 @@ ul.recap li{margin-bottom:6px}
     <button class="btn ghost" onclick="go('home')">← กลับหน้าหลัก</button>
   </section>
 
+  <!-- ============ CLASS (เข้าร่วมชั้นเรียน / สถานะการส่ง) ============ -->
+  <section id="screen-class" class="hidden"><div id="classHost"></div></section>
+
   <!-- ============ HELP ============ -->
   <section id="screen-help" class="hidden">
     <div class="card">
@@ -246,7 +264,15 @@ ul.recap li{margin-bottom:6px}
         <li><b>ปลดล็อก:</b> ต้องได้อย่างน้อย 1⭐ จึงจะเปิดด่านถัดไป · ด่านบอสเปิดเมื่อผ่านครบ 6 ด่าน</li>
         <li><b>ตอบผิดไม่เป็นไร:</b> ทุกข้อมี “คำอธิบายเฉลย” และตอนจบด่านมีสรุปข้อที่พลาด</li>
         <li><b>เล่นซ้ำได้:</b> ระบบเก็บคะแนนที่ดีที่สุดไว้เสมอ</li>
+        <li><b>ส่งคะแนนให้ครู:</b> ถ้าครูเปิดระบบชั้นเรียนไว้ จะมีปุ่ม “เข้าร่วมชั้นเรียน” ที่หน้าหลัก เล่นตอนไม่มีเน็ตได้ตามปกติ คะแนนจะพักไว้ในเครื่องแล้วส่งอัตโนมัติเมื่อกลับมาออนไลน์</li>
       </ul>
+    </div>
+    <div class="card">
+      <h2>👩‍🏫 สำหรับครู</h2>
+      <p class="mini">ระบบส่งคะแนนปิดอยู่โดยค่าเริ่มต้น เปิดใช้โดยเปิดไฟล์ <code>index.html</code> ด้วยโปรแกรมแก้ไขข้อความ
+      แล้วมองหาบรรทัด <code>const CLASS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx6FZeRS5eYZ1bZuVd7_7g7tHoCJed2ynI94f_ttQjAKF0ZRSSqhZU31IaWb-SjtIJnCQ/exec';</code> (อยู่ต้น ๆ ของส่วนสคริปต์)
+      จากนั้นวาง URL ของ Google Apps Script Web App ลงในเครื่องหมายคำพูด แล้วบันทึก
+      ดูขั้นตอนสร้างชีตและสคริปต์ได้ในไฟล์ <code>SETUP-CLASSROOM.md</code></p>
     </div>
     <div class="card">
       <h2>📚 ขอบเขตเนื้อหา (สสวท. ม.4)</h2>
@@ -287,12 +313,174 @@ const sGood=()=>{beep(660,.12);setTimeout(()=>beep(880,.16),110)};
 const sBad =()=>{beep(220,.22,'triangle')};
 const sWin =()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*130))};
 
+/* ==========================================================
+   ⚙️ ตั้งค่าระบบส่งคะแนนให้ครู  (ครูแก้แค่ 2 บรรทัดนี้)
+   ----------------------------------------------------------
+   CLASS_ENDPOINT : วาง URL ของ Google Apps Script Web App
+                    เช่น 'https://script.google.com/macros/s/AKfycb.../exec'
+                    ถ้าปล่อยว่าง เกมจะทำงานปกติแบบออฟไลน์ล้วน
+                    และซ่อนเมนู "เข้าร่วมชั้นเรียน" ทั้งหมด
+   NO_CORS_MODE   : ปกติปล่อยเป็น false
+                    เปลี่ยนเป็น true เฉพาะกรณีที่เบราว์เซอร์ฟ้อง CORS
+                    (โหมดนี้ยิงข้อมูลออกไปแบบไม่รอผลตอบกลับ)
+   ========================================================== */
+const CLASS_ENDPOINT = '';
+const NO_CORS_MODE   = false;
+
 /* ---------------- storage ---------------- */
 const KEY='genetics_quest_v1';
-let SAVE={stars:{},best:{},name:''};
+let SAVE={stars:{},best:{},name:'',stu:null,outbox:[],plays:{},lastSent:''};
 function load(){ try{const r=localStorage.getItem(KEY); if(r) SAVE=Object.assign(SAVE,JSON.parse(r));}catch(e){} }
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(SAVE));}catch(e){} }
 load();
+if(!Array.isArray(SAVE.outbox)) SAVE.outbox=[];
+if(!SAVE.plays || typeof SAVE.plays!=='object') SAVE.plays={};
+
+/* ==========================================================
+   0) ระบบชั้นเรียน — เข้าร่วมห้อง + คิวส่งคะแนนแบบทนเน็ตหลุด
+   ========================================================== */
+const OUTBOX_MAX=300;
+function classOn(){ return /^https?:\/\//.test(CLASS_ENDPOINT); }
+function joined(){ return !!(SAVE.stu && SAVE.stu.room && SAVE.stu.name); }
+function newSid(){ return 'S'+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4); }
+function thDate(iso){
+  if(!iso) return '-';
+  const d=new Date(iso);
+  if(isNaN(d)) return '-';
+  const p=n=>String(n).padStart(2,'0');
+  return p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+
+/* เข้าคิว 1 รายการ = จบ 1 ด่าน */
+function queueScore(item){
+  if(!classOn() || !joined()) return;
+  SAVE.outbox.push(item);
+  if(SAVE.outbox.length>OUTBOX_MAX) SAVE.outbox=SAVE.outbox.slice(-OUTBOX_MAX);
+  save(); updateClassChip();
+  flushOutbox();
+}
+
+let flushing=false, lastFlushErr='';
+async function flushOutbox(){
+  if(!classOn() || flushing || !SAVE.outbox.length) return {sent:0,left:SAVE.outbox.length};
+  if(navigator.onLine===false){ lastFlushErr='ออฟไลน์อยู่ — จะส่งให้อัตโนมัติเมื่อกลับมาออนไลน์'; updateClassChip(); return {sent:0,left:SAVE.outbox.length}; }
+  flushing=true; updateClassChip();
+  const left=[]; let sent=0; lastFlushErr='';
+  for(const item of SAVE.outbox.slice()){
+    let ok=false;
+    try{
+      if(NO_CORS_MODE){
+        await fetch(CLASS_ENDPOINT,{method:'POST',mode:'no-cors',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(item)});
+        ok=true; /* โหมดนี้อ่านผลตอบกลับไม่ได้ ถือว่าส่งแล้ว */
+      }else{
+        const r=await fetch(CLASS_ENDPOINT,{method:'POST',redirect:'follow',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(item)});
+        ok=r.ok;
+        if(!ok) lastFlushErr='เซิร์ฟเวอร์ตอบกลับรหัส '+r.status;
+      }
+    }catch(e){ ok=false; lastFlushErr='ส่งไม่สำเร็จ ('+(e&&e.message?e.message:'เครือข่ายมีปัญหา')+')'; }
+    if(ok) sent++; else left.push(item);
+  }
+  SAVE.outbox=left;
+  if(sent) SAVE.lastSent=new Date().toISOString();
+  save(); flushing=false; updateClassChip();
+  return {sent:sent,left:left.length};
+}
+window.addEventListener('online', function(){ flushOutbox(); });
+
+function updateClassChip(){
+  const c=document.getElementById('classChip');
+  if(!c) return;
+  if(!classOn() || !joined()){ c.classList.add('hidden'); return; }
+  c.classList.remove('hidden');
+  const n=SAVE.outbox.length;
+  c.classList.toggle('pending', n>0);
+  c.textContent = n>0 ? ('📤 รอส่ง '+n) : ('👤 '+SAVE.stu.name);
+}
+
+/* ---------- หน้าเข้าร่วมชั้นเรียน ---------- */
+function renderJoin(){
+  const h=document.getElementById('classHost'); h.innerHTML='';
+  const c=E('div','card');
+  c.innerHTML='<h2>🏫 เข้าร่วมชั้นเรียน</h2>'+
+    '<p class="mini">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</p>'+
+    '<div class="field"><label for="fRoom">รหัสห้อง</label>'+
+      '<input id="fRoom" inputmode="latin" autocapitalize="characters" placeholder="เช่น M401A" value="'+((SAVE.stu&&SAVE.stu.room)||'')+'">'+
+      '<div class="note">ครูจะบอกรหัสนี้หน้าชั้นเรียน</div></div>'+
+    '<div class="field"><label for="fName">ชื่อของคุณ (หรือ ชื่อ–เลขที่)</label>'+
+      '<input id="fName" placeholder="เช่น สมชาย เลขที่ 12" value="'+((SAVE.stu&&SAVE.stu.name)||'')+'">'+
+      '<div class="note">ใส่ให้ครูรู้ว่าเป็นใคร ไม่ต้องใส่นามสกุลเต็มก็ได้</div></div>'+
+    '<div class="privacy"><b>🔒 ความเป็นส่วนตัว</b><br>ระบบเก็บเฉพาะ <b>รหัสห้อง ชื่อที่กรอก และผลการเล่น</b> (ด่าน ดาว คะแนน เวลาที่ใช้) '+
+      'เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น <b>ไม่เก็บ</b>อีเมล เบอร์โทร ตำแหน่งที่ตั้ง หรือข้อมูลอื่นในเครื่อง '+
+      'และคุณกด “ออกจากชั้นเรียน” เพื่อหยุดส่งได้ทุกเมื่อ</div>';
+  const bJoin=E('button','btn','✅ เข้าร่วม');
+  const bCancel=E('button','btn ghost','ยกเลิก');
+  bJoin.onclick=function(){
+    const r=document.getElementById('fRoom'), n=document.getElementById('fName');
+    const room=r.value.trim().toUpperCase(), name=n.value.trim();
+    r.classList.toggle('err',!room); n.classList.toggle('err',!name);
+    if(!room||!name){ sBad(); return; }
+    SAVE.stu={room:room, name:name, sid:(SAVE.stu&&SAVE.stu.sid)||newSid()};
+    if(!SAVE.name) SAVE.name=name;
+    save(); sGood(); updateClassChip(); renderHome(); go('home');
+  };
+  bCancel.onclick=function(){ renderHome(); go('home'); };
+  c.appendChild(bJoin); c.appendChild(bCancel);
+  h.appendChild(c);
+  go('class');
+}
+
+/* ---------- หน้าสถานะการส่งคะแนน ---------- */
+function renderOutbox(){
+  const h=document.getElementById('classHost'); h.innerHTML='';
+  const c=E('div','card');
+  c.innerHTML='<h2>📤 สถานะการส่งคะแนน</h2>'+
+    '<div class="kv"><span>ห้องเรียน</span><b>'+SAVE.stu.room+'</b></div>'+
+    '<div class="kv"><span>ชื่อที่ส่งให้ครู</span><b>'+SAVE.stu.name+'</b></div>'+
+    '<div class="kv"><span>รอส่งอยู่</span><b>'+SAVE.outbox.length+' รายการ</b></div>'+
+    '<div class="kv"><span>ส่งสำเร็จล่าสุด</span><b>'+thDate(SAVE.lastSent)+'</b></div>'+
+    '<div class="kv"><span>สถานะเครือข่าย</span><b>'+(navigator.onLine===false?'ออฟไลน์':'ออนไลน์')+'</b></div>'+
+    (lastFlushErr?'<div class="tipbox" style="margin-top:10px"><b>บันทึกล่าสุด:</b> '+lastFlushErr+'</div>':'')+
+    '<p class="mini" style="margin-top:12px">เล่นตอนไม่มีเน็ตได้ตามปกติ คะแนนจะพักไว้ในเครื่องแล้วส่งให้อัตโนมัติเมื่อกลับมาออนไลน์</p>';
+  const bSend=E('button','btn','🚀 ส่งเดี๋ยวนี้');
+  bSend.onclick=async function(){
+    bSend.disabled=true; bSend.textContent='กำลังส่ง...';
+    const r=await flushOutbox();
+    bSend.disabled=false;
+    sGood(); renderOutbox();
+    if(r.sent) alert('ส่งสำเร็จ '+r.sent+' รายการ'+(r.left?(' · เหลือรอส่ง '+r.left):''));
+    else if(r.left) alert('ยังส่งไม่ได้ '+r.left+' รายการ\n'+(lastFlushErr||'ลองใหม่อีกครั้งเมื่อเน็ตกลับมา'));
+    else alert('ไม่มีรายการค้างส่ง');
+  };
+  const bEdit=E('button','btn orange','✏️ แก้ไขห้อง/ชื่อ');
+  bEdit.onclick=renderJoin;
+  const bOut=E('button','btn ghost','🚪 ออกจากชั้นเรียน');
+  bOut.onclick=function(){
+    if(!confirm('ออกจากชั้นเรียน? คะแนนที่ยังค้างส่ง '+SAVE.outbox.length+' รายการจะถูกลบทิ้ง (ดาวในเครื่องยังอยู่ครบ)')) return;
+    SAVE.stu=null; SAVE.outbox=[]; save(); updateClassChip(); renderHome(); go('home');
+  };
+  const bBack=E('button','btn ghost','← กลับหน้าหลัก');
+  bBack.onclick=function(){ renderHome(); go('home'); };
+  c.appendChild(bSend); c.appendChild(bEdit); c.appendChild(bOut); c.appendChild(bBack);
+  h.appendChild(c); go('class');
+}
+
+function renderClassCard(){
+  const card=document.getElementById('classCard');
+  if(!classOn()){ card.classList.add('hidden'); return; }
+  card.classList.remove('hidden'); card.innerHTML='';
+  if(!joined()){
+    card.innerHTML='<h3>🏫 เข้าร่วมชั้นเรียน</h3><p class="mini">กรอกรหัสห้องที่ครูให้ เพื่อส่งคะแนนของคุณให้ครูเห็นความก้าวหน้า (ไม่กรอกก็เล่นได้ครบทุกด่าน)</p>';
+    const b=E('button','btn small orange','🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)');
+    b.onclick=renderJoin; card.appendChild(b);
+  }else{
+    card.innerHTML='<h3>🏫 ห้อง '+SAVE.stu.room+' · '+SAVE.stu.name+'</h3>'+
+      '<p class="mini">'+(SAVE.outbox.length? ('มีคะแนนรอส่ง '+SAVE.outbox.length+' รายการ') : ('ส่งคะแนนครบแล้ว · ล่าสุด '+thDate(SAVE.lastSent)))+'</p>';
+    const b=E('button','btn small ghost','📤 สถานะการส่งคะแนน');
+    b.onclick=renderOutbox; card.appendChild(b);
+  }
+}
 
 /* ==========================================================
    1) คลังคำศัพท์ ไทย–อังกฤษ
@@ -728,7 +916,7 @@ const MAXSTARS = LEVELS.length*3;
 let G=null;
 
 function go(name){
-  ['home','play','result','cards','mis','help'].forEach(function(s){
+  ['home','play','result','cards','mis','help','class'].forEach(function(s){
     var el=document.getElementById('screen-'+s); if(el) el.classList.add('hidden');
   });
   document.getElementById('screen-'+name).classList.remove('hidden');
@@ -744,6 +932,7 @@ function starStr(n){ var s=''; for(var i=0;i<3;i++) s += i<n?'★':'☆'; return
 
 function renderHome(){
   document.getElementById('starChip').textContent='⭐ '+totalStars()+'/'+MAXSTARS;
+  renderClassCard(); updateClassChip();
   var map=document.getElementById('map'); map.innerHTML='';
   LEVELS.forEach(function(lv){
     var open=unlocked(lv), st=SAVE.stars[lv.id]||0, best=SAVE.best[lv.id];
@@ -773,7 +962,7 @@ function renderHome(){
 
 function startLevel(id){
   var lv=LEVELS.filter(function(l){return l.id===id})[0];
-  G={lv:lv, i:0, score:0, max:0, miss:[]};
+  G={lv:lv, i:0, score:0, max:0, miss:[], t0:Date.now()};
   document.getElementById('hudName').textContent=lv.name;
   go('play'); renderTask();
 }
@@ -1108,17 +1297,40 @@ function finishLevel(){
   var lv=G.lv;
   if(st > (SAVE.stars[lv.id]||0)) SAVE.stars[lv.id]=st;
   if(pct > (SAVE.best[lv.id]||0)) SAVE.best[lv.id]=pct;
+  var secs=Math.max(0, Math.round((Date.now()-(G.t0||Date.now()))/1000));
+  SAVE.plays[lv.id]=(SAVE.plays[lv.id]||0)+1;
   save();
   if(st>=2) sWin(); else sGood();
+
+  /* ส่งผลให้ครู (เข้าคิวไว้ก่อน ส่งจริงเมื่อมีเน็ต) */
+  if(classOn() && joined()){
+    queueScore({
+      v:1, room:SAVE.stu.room, name:SAVE.stu.name, sid:SAVE.stu.sid,
+      level:lv.id, levelName:lv.name, stars:st, percent:pct,
+      score:G.score, max:G.max, seconds:secs, misses:G.miss.length,
+      totalStars:totalStars(), attempt:SAVE.plays[lv.id], ts:new Date().toISOString()
+    });
+  }
 
   var h=document.getElementById('resultHost'); h.innerHTML='';
   var c=E('div','card center');
   c.innerHTML='<h2>'+(st>=2?'🎉 เยี่ยมมาก!':(st===1?'👍 ผ่านแล้ว!':'💪 ลองอีกครั้งนะ'))+'</h2>'+
     '<div class="bigstars">'+starStr(st)+'</div>'+
     '<div class="scorebig">'+pct+'%</div>'+
-    '<p class="mini">ได้ '+G.score+' จาก '+G.max+' คะแนน · '+lv.name+'</p>'+
+    '<p class="mini">ได้ '+G.score+' จาก '+G.max+' คะแนน · ใช้เวลา '+Math.floor(secs/60)+' นาที '+(secs%60)+' วินาที</p>'+
     (st===0?'<p class="mini" style="color:var(--bad)">ต้องได้ตั้งแต่ 50% ขึ้นไปจึงจะปลดล็อกด่านถัดไป</p>':'');
   h.appendChild(c);
+
+  if(classOn() && joined()){
+    var sBox=E('div','card');
+    sBox.innerHTML='<div class="kv"><span>ส่งให้ครู (ห้อง '+SAVE.stu.room+')</span><b id="sendState">'+
+      (SAVE.outbox.length?'⏳ รอส่ง '+SAVE.outbox.length+' รายการ':'✅ ส่งแล้ว')+'</b></div>';
+    h.appendChild(sBox);
+    setTimeout(function(){
+      var el=document.getElementById('sendState');
+      if(el) el.textContent = SAVE.outbox.length?('⏳ รอส่ง '+SAVE.outbox.length+' รายการ'):'✅ ส่งแล้ว';
+    },1500);
+  }
 
   if(G.miss.length){
     var m=E('div','card');
@@ -1202,14 +1414,19 @@ document.getElementById('btnHelp').onclick=function(){
 };
 document.getElementById('btnQuit').onclick=function(){ if(confirm('ออกจากด่านนี้? คะแนนรอบนี้จะไม่ถูกบันทึก')){ renderHome(); go('home'); } };
 document.getElementById('btnReset').onclick=function(){
-  if(confirm('ล้างดาวและคะแนนทั้งหมดในเครื่องนี้?')){ SAVE={stars:{},best:{},name:''}; save(); renderHome(); }
+  if(confirm('ล้างดาวและคะแนนทั้งหมดในเครื่องนี้? (ห้องเรียนที่เข้าร่วมไว้ยังอยู่)')){
+    SAVE.stars={}; SAVE.best={}; SAVE.plays={}; SAVE.name='';
+    save(); renderHome();
+  }
 };
+document.getElementById('classChip').onclick=function(){ if(joined()) renderOutbox(); else renderJoin(); };
 document.getElementById('cardSearch').oninput=function(e){ cardQ=e.target.value; renderCards(); };
 document.getElementById('soundBtn').onclick=function(){
   SOUND=!SOUND; document.getElementById('soundBtn').textContent=SOUND?'🔊':'🔇'; if(SOUND) beep(660,.1);
 };
 
 renderHome();
+flushOutbox();
 </script>
 </body>
 </html>
