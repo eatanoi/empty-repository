@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตรวจระบบส่งคะแนน | ภารกิจพันธุกรรม</title>
+<style>
+:root{--cream:#FFF6E6;--cream2:#FFFDF7;--green:#2F7D5D;--green-d:#215C44;--green-l:#5BAE85;--green-soft:#E4F2EA;
+ --orange:#E8792B;--orange-d:#C25E17;--orange-l:#FFB067;--orange-soft:#FDEBDC;--ink:#3A2E22;--muted:#7C6B57;
+ --line:#E6D6BB;--bad:#C8452F;--bad-soft:#FBE4DF}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans Thai","Sarabun","Leelawadee UI",Tahoma,system-ui,sans-serif;
+ background:var(--cream);color:var(--ink);line-height:1.6;font-size:16px}
+.wrap{max-width:720px;margin:0 auto;padding:16px 14px 50px}
+h1{font-size:1.3rem;margin:0 0 6px}h2{font-size:1.05rem;margin:0 0 8px}
+p{margin:0 0 10px}
+.card{background:var(--cream2);border:2px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 3px 0 rgba(58,46,34,.1);margin-bottom:14px}
+label{display:block;font-weight:800;font-size:.92rem;margin-bottom:5px;color:var(--green-d)}
+input{width:100%;min-height:50px;border-radius:12px;border:2px solid var(--line);background:var(--cream2);
+ padding:6px 12px;font-size:1rem;font-family:inherit;color:var(--ink);margin-bottom:12px}
+input:focus{outline:none;border-color:var(--green-l);background:#fff}
+button{font-family:inherit;font-size:1rem;cursor:pointer;width:100%;min-height:54px;border-radius:14px;border:none;
+ padding:10px;font-weight:800;color:#fff;background:var(--green);box-shadow:0 4px 0 var(--green-d);margin-bottom:10px}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 var(--green-d)}
+button.ghost{background:var(--cream2);color:var(--green-d);border:2px solid var(--green-l);box-shadow:0 4px 0 #CFE3D8}
+button[disabled]{opacity:.5;pointer-events:none}
+.step{border-left:5px solid var(--line);padding:10px 12px;margin-bottom:10px;border-radius:0 12px 12px 0;background:#FFFDF7}
+.step.ok{border-color:var(--green);background:var(--green-soft)}
+.step.bad{border-color:var(--bad);background:var(--bad-soft)}
+.step.wait{border-color:var(--orange-l);background:var(--orange-soft)}
+.step .t{font-weight:800}
+.step .d{font-size:.9rem;margin-top:4px}
+.verdict{border:2px solid;border-radius:14px;padding:14px;margin-bottom:12px;font-weight:700}
+.verdict.ok{border-color:var(--green);background:var(--green-soft);color:var(--green-d)}
+.verdict.bad{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+pre{background:#2E2A24;color:#F5EEE0;border-radius:12px;padding:12px;overflow-x:auto;font-size:.8rem;line-height:1.45;white-space:pre-wrap;word-break:break-all}
+.mini{font-size:.85rem;color:var(--muted)}
+code{background:var(--cream);padding:1px 5px;border-radius:5px;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>🔧 ตรวจระบบส่งคะแนน</h1>
+    <p class="mini">หน้านี้จะยิงคำขอชุดเดียวกับที่เกมใช้จริง แล้วบอกว่าติดตรงขั้นไหน
+      ใช้ได้ทั้งบนคอมของครูและบนมือถือนักเรียน</p>
+    <label for="fUrl">Project URL</label>
+    <input id="fUrl" placeholder="https://xxxx.supabase.co">
+    <label for="fKey">anon public key</label>
+    <input id="fKey" placeholder="eyJhbGciOi... หรือ sb_publishable_...">
+    <label for="fRoom">รหัสห้อง</label>
+    <input id="fRoom" placeholder="M401A" autocapitalize="characters">
+    <button id="run">▶ เริ่มตรวจ</button>
+    <p class="mini">💡 ถ้าเปิดหน้านี้จากลิงก์ของนักเรียน (มี <code>?sb=...&amp;key=...&amp;room=...</code>)
+      ช่องทั้งหมดจะถูกเติมให้อัตโนมัติ</p>
+  </div>
+
+  <div id="out"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+/* เติมค่าจากลิงก์ให้อัตโนมัติ */
+(function(){
+  const q={}, s=(location.search||'').replace(/^\?/,'');
+  s.split('&').forEach(kv=>{ if(!kv)return; const i=kv.indexOf('=');
+    q[decodeURIComponent(i<0?kv:kv.slice(0,i))]=i<0?'':decodeURIComponent(kv.slice(i+1).replace(/\+/g,' ')); });
+  if(q.sb) $('#fUrl').value=q.sb;
+  if(q.key) $('#fKey').value=q.key;
+  if(q.room) $('#fRoom').value=q.room;
+  try{
+    const save=JSON.parse(localStorage.getItem('genetics_quest_v1')||'{}');
+    if(!$('#fUrl').value && save.sb) $('#fUrl').value=save.sb;
+    if(!$('#fKey').value && save.sbKey) $('#fKey').value=save.sbKey;
+    if(!$('#fRoom').value && save.stu && save.stu.room) $('#fRoom').value=save.stu.room;
+  }catch(e){}
+})();
+
+function normUrl(raw){
+  let s=String(raw||'').trim();
+  if(!s) return '';
+  if(!/^https?:\/\//.test(s)) s='https://'+s;
+  let u; try{ u=new URL(s); }catch(e){ return s.replace(/\/+$/,''); }
+  const m=u.hostname.replace(/^www\./,'')==='supabase.com' && /\/dashboard\/project\/([a-z0-9]{16,})/.exec(u.pathname);
+  if(m) return 'https://'+m[1]+'.supabase.co';
+  return 'https://'+u.hostname.replace(/\.supabase\.com$/i,'.supabase.co');
+}
+
+const LOG=[];
+function step(cls,title,detail){
+  LOG.push((cls==='ok'?'[ผ่าน] ':cls==='bad'?'[ไม่ผ่าน] ':'[กำลังตรวจ] ')+title+(detail?(' :: '+detail.replace(/<[^>]+>/g,'')):''));
+  $('#out').insertAdjacentHTML('beforeend',
+    '<div class="step '+cls+'"><div class="t">'+title+'</div>'+(detail?('<div class="d">'+detail+'</div>'):'')+'</div>');
+  window.scrollTo(0,document.body.scrollHeight);
+}
+function verdict(ok,html){
+  LOG.push('=== สรุป === '+html.replace(/<[^>]+>/g,''));
+  $('#out').insertAdjacentHTML('beforeend','<div class="verdict '+(ok?'ok':'bad')+'">'+html+'</div>');
+}
+async function call(url,opts){
+  const t0=Date.now();
+  try{
+    const r=await fetch(url,opts);
+    let body=''; try{ body=await r.text(); }catch(e){}
+    return {ok:r.ok,status:r.status,body:body.slice(0,400),ms:Date.now()-t0};
+  }catch(e){
+    return {ok:false,status:0,body:'network: '+(e&&e.message?e.message:'unknown'),ms:Date.now()-t0};
+  }
+}
+
+$('#run').onclick=async function(){
+  const url=normUrl($('#fUrl').value); $('#fUrl').value=url;
+  const key=$('#fKey').value.trim();
+  const room=$('#fRoom').value.trim().toUpperCase(); $('#fRoom').value=room;
+  $('#out').innerHTML=''; LOG.length=0;
+  const b=$('#run'); b.disabled=true; b.textContent='กำลังตรวจ...';
+
+  LOG.push('URL='+url,'ความยาวคีย์='+key.length+' ตัวอักษร','ห้อง='+room);
+
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url)){
+    step('bad','1. รูปแบบ Project URL','ต้องเป็น https://ชื่อโปรเจกต์.supabase.co (ลงท้าย .co ไม่ใช่ .com และไม่มี /rest/v1/)');
+    verdict(false,'หยุดการตรวจ — แก้ Project URL ก่อน');
+    b.disabled=false; b.textContent='▶ เริ่มตรวจ'; return;
+  }
+  step('ok','1. รูปแบบ Project URL ถูกต้อง',url);
+  if(key.length<20){
+    step('bad','2. คีย์สั้นผิดปกติ','ได้มา '+key.length+' ตัวอักษร — น่าจะคัดลอกมาไม่ครบ');
+    verdict(false,'หยุดการตรวจ — คัดลอก anon key ใหม่ทั้งเส้น');
+    b.disabled=false; b.textContent='▶ เริ่มตรวจ'; return;
+  }
+  step('ok','2. ความยาวคีย์ดูปกติ',key.length+' ตัวอักษร · ขึ้นต้นด้วย '+esc(key.slice(0,12))+'…');
+
+  const H={'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json'};
+
+  /* 3) คีย์ใช้ได้ไหม — ถามที่ /auth/v1/settings ซึ่งเปิดให้ผู้ถือคีย์ที่ถูกต้องเสมอ
+        (ไม่ใช้การอ่านตาราง scores เป็นตัวเช็ก เพราะ RLS ตั้งใจไม่ให้นักเรียนอ่านอยู่แล้ว) */
+  const r3=await call(url+'/auth/v1/settings',{headers:{'apikey':key}});
+  if(r3.status===200) step('ok','3. คีย์ใช้งานได้','ฐานข้อมูลรับรองคีย์นี้ ('+r3.ms+' มิลลิวินาที)');
+  else if(r3.status===401||/invalid api key/i.test(r3.body)){
+    step('bad','3. คีย์ไม่ถูกต้อง','ฐานข้อมูลตอบ '+r3.status+' · '+esc(r3.body));
+    verdict(false,'❌ ปัญหาอยู่ที่ <b>anon key</b> — คัดลอกใหม่จาก Project Settings → Data API (อย่าหยิบ service_role) แล้วสร้างลิงก์ใหม่');
+    dump(); b.disabled=false; b.textContent='▶ เริ่มตรวจ'; return; }
+  else if(r3.status===0){
+    step('bad','3. ติดต่อฐานข้อมูลไม่ได้',esc(r3.body)+' — เน็ตหลุด หรือโปรเจกต์ถูกพักการใช้งาน (paused)');
+    verdict(false,'❌ ตรวจอินเทอร์เน็ต และเช็กที่ Supabase ว่าโปรเจกต์ไม่ได้ขึ้นสถานะ <b>Paused</b> (ถ้าพักอยู่ให้กด Restore)');
+    dump(); b.disabled=false; b.textContent='▶ เริ่มตรวจ'; return; }
+  else step('wait','3. ผลการตรวจคีย์ไม่ชัดเจน','สถานะ '+r3.status+' · '+esc(r3.body));
+
+  /* 3.5) ตารางมีจริงไหม — คาดหวังว่าจะถูกปฏิเสธ (แปลว่า RLS ทำงานถูกต้อง) */
+  const r35=await call(url+'/rest/v1/scores?select=id&limit=1',{headers:H});
+  if(r35.status===404) {
+    step('bad','4. ไม่พบตาราง scores','ยังไม่ได้รัน schema.sql หรือรันไม่สำเร็จ · '+esc(r35.body));
+    verdict(false,'❌ ไปที่ SQL Editor แล้วรันไฟล์ <code>supabase/schema.sql</code> ให้ครบทั้งไฟล์');
+    dump(); b.disabled=false; b.textContent='▶ เริ่มตรวจ'; return;
+  }
+  else if(r35.status===200) step('ok','4. พบตาราง scores','หมายเหตุ: ผู้ไม่ล็อกอินอ่านข้อมูลได้ '+
+    (r35.body.trim()==='[]'?'0 แถว (ถูกต้อง RLS กำลังกรองอยู่)':'บางส่วน — ควรตรวจ policy อีกครั้ง'));
+  else step('ok','4. พบตาราง scores','ผู้ไม่ล็อกอินถูกปฏิเสธการอ่าน = ถูกต้องตามที่ออกแบบ (สถานะ '+r35.status+')');
+
+  /* 4) ห้องเปิดอยู่ไหม (ถามจากสิทธิ์ระดับเดียวกับนักเรียน) */
+  const r4=await call(url+'/rest/v1/rpc/room_is_open',{method:'POST',headers:H,body:JSON.stringify({p_room:room})});
+  let roomOpen=null;
+  if(r4.status===200){
+    roomOpen=(r4.body.trim()==='true');
+    step(roomOpen?'ok':'bad','5. สถานะห้อง '+room,
+      roomOpen?'เปิดรับคะแนนอยู่':'ฐานข้อมูลตอบว่า <b>ไม่เปิด</b> — ยังไม่ได้สร้างห้องนี้ หรือถูกปิดไปแล้ว');
+  }else if(r4.status===404){
+    step('bad','5. ไม่พบฟังก์ชัน room_is_open','รัน schema.sql ไม่ครบ · '+esc(r4.body));
+  }else{
+    step('wait','5. ตรวจสถานะห้องไม่ได้','สถานะ '+r4.status+' · '+esc(r4.body));
+  }
+
+  /* 5) ลองบันทึกจริง (เหมือนที่เกมทำทุกประการ) */
+  const row={uid:'CHECK-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    room:room,student:'🔧 ตรวจระบบ',sid:'CHECKER',level:0,level_name:'ตรวจระบบ',
+    stars:0,percent:0,score:0,max_score:0,seconds:0,misses:0,total_stars:0,attempt:1,
+    client_ts:new Date().toISOString()};
+  const r5=await call(url+'/rest/v1/scores?on_conflict=uid',
+    {method:'POST',headers:Object.assign({'Prefer':'return=minimal,resolution=ignore-duplicates'},H),body:JSON.stringify(row)});
+
+  if(r5.ok||r5.status===201||r5.status===204){
+    step('ok','6. บันทึกคะแนนสำเร็จ','เขียนแถวทดสอบเข้าห้อง '+room+' แล้ว');
+    verdict(true,'✅ <b>ระบบทำงานครบทุกขั้น</b><br>เปิดแดชบอร์ดจะเห็นแถว "🔧 ตรวจระบบ" ในห้อง '+room+' (ลบทิ้งได้)<br>'+
+      'ถ้านักเรียนยังส่งไม่ได้ แปลว่าเครื่องนั้นถือ<b>ลิงก์เก่า</b>อยู่ — ให้เปิดลิงก์ใหม่ที่ครูสร้างอีกครั้ง');
+  }else if(r5.status===403){
+    step('bad','6. ถูกปฏิเสธการบันทึก (403)',esc(r5.body));
+    verdict(false,'❌ กฎความปลอดภัยไม่อนุญาต สาเหตุที่เป็นไปได้:<br>'+
+      (roomOpen===false?'• <b>ห้อง '+room+' ยังไม่ถูกสร้าง หรือถูกปิด</b> ← น่าจะใช่<br>':'')+
+      '• รหัสห้องในลิงก์ไม่ตรงกับที่สร้างในแดชบอร์ด<br>'+
+      '• รัน schema.sql ไม่ครบ ทำให้สิทธิ์ insert ของ anon หายไป');
+  }else if(r5.status===401){
+    step('bad','6. ถูกปฏิเสธ (401)',esc(r5.body));
+    verdict(false,'❌ คีย์ไม่ถูกต้องหรือหมดอายุ — คัดลอก anon key ใหม่แล้วสร้างลิงก์ใหม่');
+  }else{
+    step('bad','6. บันทึกไม่สำเร็จ','สถานะ '+r5.status+' · '+esc(r5.body));
+    verdict(false,'❌ ส่งข้อความในกรอบดำด้านล่างให้ผู้ดูแลระบบดูได้เลย');
+  }
+  dump();
+  b.disabled=false; b.textContent='▶ ตรวจอีกครั้ง';
+};
+
+function dump(){
+  $('#out').insertAdjacentHTML('beforeend',
+    '<div class="card"><h2>📋 ผลตรวจแบบละเอียด</h2>'+
+    '<pre id="raw">'+esc(LOG.join('\n'))+'</pre>'+
+    '<button class="ghost" id="cp">📋 คัดลอกผลตรวจ</button>'+
+    '<p class="mini">คัดลอกข้อความนี้ส่งให้ผู้ช่วยดูได้ · ไม่มีรหัสผ่านหรือคีย์เต็มอยู่ในนี้</p></div>');
+  const c=document.getElementById('cp');
+  if(c) c.onclick=function(){
+    const t=document.getElementById('raw').textContent;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(()=>{c.textContent='✅ คัดลอกแล้ว';},()=>{alert('กดค้างที่กรอบดำแล้วเลือก Copy');});
+    }else alert('กดค้างที่กรอบดำแล้วเลือก Copy');
+  };
+  window.scrollTo(0,document.body.scrollHeight);
+}
+</script>
+</body>
+</html>
