@@ -437,15 +437,24 @@ async function sendOne(ep, item){
       total_stars:clamp(item.totalStars,0,1000), attempt:clamp(item.attempt,1,10000),
       client_ts:item.ts
     };
-    const r=await fetch(ep.url+'/rest/v1/scores?on_conflict=uid',{
+    const H={'apikey':ep.key,'Authorization':'Bearer '+ep.key,'Content-Type':'application/json'};
+    /* วิธีปกติ: บันทึกแบบกันข้อมูลซ้ำ (ต้องการสิทธิ์ select ระดับตารางด้วย) */
+    let r=await fetch(ep.url+'/rest/v1/scores?on_conflict=uid',{
       method:'POST',
-      headers:{
-        'apikey':ep.key, 'Authorization':'Bearer '+ep.key,
-        'Content-Type':'application/json',
-        'Prefer':'return=minimal,resolution=ignore-duplicates'
-      },
+      headers:Object.assign({'Prefer':'return=minimal,resolution=ignore-duplicates'},H),
       body:JSON.stringify(row)
     });
+    /* ถ้าฐานข้อมูลไม่ให้สิทธิ์สำหรับโหมดกันซ้ำ ให้บันทึกแบบธรรมดาแทน
+       (เกิดเมื่อ anon มีสิทธิ์ insert อย่างเดียว) */
+    if(!r.ok && (r.status===401||r.status===403)){
+      let peek=''; try{ peek=await r.clone().text(); }catch(e){}
+      if(/42501|permission denied/i.test(peek)){
+        r=await fetch(ep.url+'/rest/v1/scores',{
+          method:'POST', headers:Object.assign({'Prefer':'return=minimal'},H),
+          body:JSON.stringify(row)
+        });
+      }
+    }
     if(!r.ok){
       let d=''; try{ d=(await r.text()).slice(0,160); }catch(e){}
       if(r.status===401) throw new Error('คีย์ของห้องไม่ถูกต้อง (anon key) — ขอลิงก์ใหม่จากครู');
