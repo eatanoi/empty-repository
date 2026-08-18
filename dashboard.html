@@ -129,6 +129,7 @@ td.num,th.num{text-align:center}
       <div class="row">
         <div style="min-width:190px"><label for="selRoom">ห้องเรียน</label><select id="selRoom"></select></div>
         <div style="min-width:150px"><label for="selTerm">ภาคเรียน</label><select id="selTerm"></select></div>
+        <div style="min-width:170px"><label for="selGame">เกม</label><select id="selGame"></select></div>
         <div class="spacer"></div>
         <button class="btn sm ghost" id="btnRefresh">🔄 รีเฟรช</button>
         <button class="btn sm orange" id="btnCsv">⬇️ ดาวน์โหลด CSV</button>
@@ -160,7 +161,11 @@ let CFG={url:'',key:'',token:'',refresh:'',email:''};
 try{ Object.assign(CFG, JSON.parse(localStorage.getItem(CFG_KEY)||'{}')); }catch(e){}
 function saveCfg(){ try{ localStorage.setItem(CFG_KEY, JSON.stringify(CFG)); }catch(e){} }
 
-let ROOMS=[], ROWS=[], TAB='overview', SOCK=null, POLL=null, LIVE='off';
+let ROOMS=[], ROWS=[], ALL=[], TAB='overview', SOCK=null, POLL=null, LIVE='off';
+/* ชื่อเกมสำหรับแสดงผล — แถวเก่าที่ยังไม่มีคอลัมน์ game ถือเป็นเกมภารกิจพันธุกรรม */
+const GAME_NAMES={ genetics:'ภารกิจพันธุกรรม', cell:'มหานครเซลล์', respiration:'โรงไฟฟ้าไมโทคอนเดรีย' };
+function gameOf(r){ return r.game || 'genetics'; }
+function gameName(g){ return GAME_NAMES[g] || g; }
 
 /* ---------------- REST helpers ---------------- */
 async function api(path, opts){
@@ -231,8 +236,9 @@ async function loadRooms(){
 }
 async function loadScores(){
   const room=$('#selRoom').value;
-  if(!room){ ROWS=[]; return; }
-  ROWS=await api('/rest/v1/scores?select=*&room=eq.'+encodeURIComponent(room)+'&order=created_at.desc&limit=5000')||[];
+  if(!room){ ALL=[]; ROWS=[]; return; }
+  ALL=await api('/rest/v1/scores?select=*&room=eq.'+encodeURIComponent(room)+'&order=created_at.desc&limit=5000')||[];
+  fillGameSelect(); applyGame();
 }
 function fillRoomSelect(){
   const term=$('#selTerm').value||'';
@@ -241,6 +247,17 @@ function fillRoomSelect(){
   $('#selRoom').innerHTML=list.map(r=>'<option value="'+esc(r.room)+'">'+esc(r.room)+(r.label?(' · '+esc(r.label)):'')+(r.active?'':' (ปิด)')+'</option>').join('')
     || '<option value="">— ยังไม่มีห้อง —</option>';
   if(cur && list.some(r=>r.room===cur)) $('#selRoom').value=cur;
+}
+function fillGameSelect(){
+  const games=Array.from(new Set(ALL.map(gameOf))).sort();
+  const cur=$('#selGame').value;
+  $('#selGame').innerHTML='<option value="">ทั้งหมด</option>'+
+    games.map(g=>'<option value="'+esc(g)+'">'+esc(gameName(g))+'</option>').join('');
+  if(cur && games.indexOf(cur)>=0) $('#selGame').value=cur;
+}
+function applyGame(){
+  const g=$('#selGame').value||'';
+  ROWS = g ? ALL.filter(r=>gameOf(r)===g) : ALL.slice();
 }
 function fillTermSelect(){
   const terms=Array.from(new Set(ROOMS.map(r=>r.term).filter(Boolean))).sort();
@@ -468,7 +485,7 @@ function startRealtime(){
       }
       if(m.event==='postgres_changes'){
         const rec=m.payload && m.payload.data && m.payload.data.record;
-        if(rec && rec.room===$('#selRoom').value){ ROWS.unshift(rec); render(); stamp(true); }
+        if(rec && rec.room===$('#selRoom').value){ ALL.unshift(rec); fillGameSelect(); applyGame(); render(); stamp(true); }
       }
     };
     ws.onerror=function(){ if(!joined){ setLive('poll','รีเฟรชอัตโนมัติทุก 8 วินาที'); startPolling(8000); } };
@@ -487,7 +504,7 @@ function stamp(fromLive){
 /* ---------------- CSV ---------------- */
 $('#btnCsv').onclick=function(){
   if(!ROWS.length){ alert('ยังไม่มีข้อมูลให้ดาวน์โหลด'); return; }
-  const cols=['created_at','room','student','sid','level','level_name','stars','percent','score','max_score','seconds','misses','total_stars','attempt'];
+  const cols=['created_at','room','game','student','sid','level','level_name','stars','percent','score','max_score','seconds','misses','total_stars','attempt'];
   const head=['เวลา','รหัสห้อง','ชื่อ','รหัสอุปกรณ์','ด่าน','ชื่อด่าน','ดาว','เปอร์เซ็นต์','คะแนน','เต็ม','เวลาที่ใช้(วินาที)','ข้อที่พลาด','ดาวรวม','ครั้งที่'];
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const csv='﻿'+head.map(q).join(',')+'\n'+ROWS.map(r=>cols.map(c=>q(r[c])).join(',')).join('\n');
@@ -504,6 +521,7 @@ $$('.tab').forEach(t=>t.onclick=function(){
 });
 $('#selRoom').onchange=async function(){ await loadScores(); render(); stamp(); };
 $('#selTerm').onchange=function(){ fillRoomSelect(); $('#selRoom').onchange(); };
+$('#selGame').onchange=function(){ applyGame(); render(); };
 $('#btnRefresh').onclick=async function(){
   const b=$('#btnRefresh'); b.disabled=true;
   try{ await loadRooms(); fillTermSelect(); fillRoomSelect(); await loadScores(); render(); stamp(); }
