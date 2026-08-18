@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="มหานครเซลล์">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8EC"/><stop offset="1" stop-color="#EAE4C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="188" fill="#E9F1E4" stroke="#F26716" stroke-width="16"/>
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#F7C39C" stroke-width="7"/>
+  <circle cx="238" cy="232" r="86" fill="#CFE0E8" stroke="#5C90A6" stroke-width="13"/>
+  <circle cx="262" cy="212" r="28" fill="#5C90A6" opacity=".8"/>
+  <g transform="translate(330 352) rotate(-24)">
+    <ellipse cx="0" cy="0" rx="66" ry="34" fill="#F4B7A6" stroke="#E7390D" stroke-width="10"/>
+    <path d="M-30 -14 q16 18 -4 32 M14 -16 q16 18 -4 32" fill="none" stroke="#E7390D" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <g fill="none" stroke="#2F7D4F" stroke-width="12" stroke-linecap="round">
+    <path d="M120 336 q56 -22 106 6"/><path d="M116 372 q58 -22 108 8"/>
+  </g>
+  <g fill="#2F7D4F"><circle cx="140" cy="322" r="7"/><circle cx="188" cy="326" r="7"/><circle cx="134" cy="358" r="7"/><circle cx="186" cy="362" r="7"/></g>
+  <g fill="none" stroke="#F26716" stroke-width="11" stroke-linecap="round">
+    <path d="M300 140 q54 -20 96 6"/><path d="M306 168 q52 -18 90 6"/>
+  </g>
+</svg>
