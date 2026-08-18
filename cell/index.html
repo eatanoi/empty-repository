@@ -334,6 +334,25 @@ h3{font-size:1.05rem}
 
 <style>
 /* ---- เพิ่มเติมสำหรับเกมมหานครเซลล์ ---- */
+/* กระดานติดป้ายแบบใช้ภาพจริง — จุดหมายเลขบนภาพ + รายการเติมชื่อด้านล่าง
+   ทุกพิกัดคิดเป็นสัดส่วนของภาพ จึงเปลี่ยนไฟล์ภาพที่สัดส่วนต่างกันได้โดยไม่ต้องแก้โครง */
+.photo{max-width:660px;margin:8px auto 2px}
+.pimg{position:relative}
+.pimg>img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.pin{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;
+  width:clamp(22px,4.6vw,30px);height:clamp(22px,4.6vw,30px);border-radius:50%;
+  background:var(--gold);color:#FFF7F0;font-weight:800;font-size:clamp(.68rem,2.4vw,.85rem);
+  border:2px solid #fff;box-shadow:0 2px 6px rgba(8,74,36,.35)}
+.pin.done{background:var(--lime)}
+.numgrid{display:grid;gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.slot.numrow{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
+  min-width:0;text-align:left;white-space:normal;padding:9px 12px}
+.slot.numrow i{flex:0 0 auto;width:25px;height:25px;border-radius:50%;background:var(--gold);color:#FFF7F0;
+  font-style:normal;font-weight:800;display:grid;place-items:center;font-size:.78rem}
+.slot.numrow.filled i{background:var(--lime)}
+.slot.numrow.wrong{animation:shakerow .35s}
+@keyframes shakerow{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
 .buckets{display:grid;gap:10px;margin-top:14px}
 @media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
 .bucket{background:rgba(255,255,255,.66);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:96px;transition:.15s}
@@ -431,7 +450,7 @@ function stageIcon(file, alt, emoji){
 }
 
 const STAGES = [
-  { id:'animal', ic:stageIcon('stage-animal.webp','เซลล์สัตว์','🐾'), title:'สำรวจเซลล์สัตว์',   desc:'ติดป้ายชื่อออร์แกเนลล์ 8 ชนิดในเซลล์สัตว์', req:0 },
+  { id:'animal', ic:stageIcon('stage-animal.webp','เซลล์สัตว์','🐾'), title:'สำรวจเซลล์สัตว์',   desc:'จับคู่ภาพขยายของออร์แกเนลล์กับชื่อให้ถูกต้อง', req:0 },
   { id:'plant',  ic:stageIcon('stage-plant.webp','เซลล์พืช','🌿'),   title:'สำรวจเซลล์พืช',     desc:'ติดป้ายชื่อเซลล์พืช แล้วแยกว่าอะไรมีเฉพาะพืช/สัตว์/ทั้งคู่', req:1 },
   { id:'road',   ic:stageIcon('stage-road.webp','เส้นทางโปรตีน','📦'), title:'เส้นทางส่งโปรตีน',  desc:'เรียงเส้นทางจากนิวเคลียสถึงการหลั่งออกนอกเซลล์', req:2 },
   { id:'jobs',   ic:stageIcon('stage-jobs.webp','หน้าที่','🏭'),      title:'จับคู่หน้าที่ในเมือง', desc:'จับคู่ออร์แกเนลล์กับหน้าที่และอุปมาในเมือง', req:3 },
@@ -548,6 +567,30 @@ function labelBoard(svgInner, parts){
   </div>
   <div class="feedback" id="fb"></div>`;
 }
+/* กระดานติดป้ายแบบใช้ภาพจริง
+   parts: {key, label, u, v, info} — u,v = ตำแหน่งภาพขยายในภาพ คิดเป็นสัดส่วน 0–1 */
+function photoBoard(src, parts){
+  const pc = n => (n*100).toFixed(2)+'%';
+  return `<div class="photo"><div class="pimg">
+    <img src="${src}" alt="แผนภาพเซลล์พร้อมภาพขยายของออร์แกเนลล์">
+    ${parts.map((p,i)=>`<div class="pin" id="pin-${p.key}" style="left:${pc(p.u)};top:${pc(p.v)}">${i+1}</div>`).join('')}
+  </div></div>
+  <div class="bank" id="bank">
+    ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+  </div>
+  <div class="numgrid">
+    ${parts.map((p,i)=>`<div class="slot numrow" data-key="${p.key}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+  </div>
+  <div class="feedback" id="fb"></div>`;
+}
+
+/* เช็กว่าไฟล์ภาพมีจริงไหม — ถ้ายังไม่ได้อัป จะถอยไปใช้ภาพวาด SVG ในตัวเกมแทน */
+function withImage(src, ok, fail){
+  const im = new Image();
+  im.onload = ()=>ok(); im.onerror = ()=>fail();
+  im.src = src;
+}
+
 /* ผูกเหตุการณ์ให้กระดานติดป้าย แล้วเรียก done(จำนวนที่ผิด) เมื่อวางครบ */
 function bindLabelBoard(parts, onDone){
   let placed=0, mistakes=0, armed=null;
@@ -566,7 +609,10 @@ function bindLabelBoard(parts, onDone){
       if(!armed || sl.classList.contains('filled')) return;
       const part = parts.find(p=>p.key===armed);
       if(sl.dataset.key===armed){
-        sl.classList.add('filled'); sl.classList.remove('armed'); sl.textContent=part.label;
+        sl.classList.add('filled'); sl.classList.remove('armed');
+        const ans = sl.querySelector('.ans');
+        if(ans){ ans.textContent=part.label; document.getElementById('pin-'+part.key)?.classList.add('done'); }
+        else sl.textContent=part.label;
         app.querySelector(`.tok[data-key="${armed}"]`).classList.add('used');
         placed++; if(pb) pb.style.width=(placed/parts.length*100)+'%';
         fb.className='feedback show good'; fb.innerHTML=`✅ <b>${part.label}</b> — ${part.info}`;
@@ -584,6 +630,55 @@ function bindLabelBoard(parts, onDone){
 /* =========================================================================
    ด่าน 1 — เซลล์สัตว์
    ========================================================================= */
+/* ---- พิกัดบนภาพจริง (ปรับตัวเลขได้ที่นี่จุดเดียว) ----
+   u,v = ตำแหน่ง "ภาพขยาย" รอบเซลล์ คิดเป็นสัดส่วนของภาพ (0 = ซ้าย/บน, 1 = ขวา/ล่าง)
+   su,sv = ตำแหน่งป้ายชื่อ — ค่าติดลบคืออยู่นอกขอบซ้าย/บน, เกิน 1 คือนอกขอบขวา/ล่าง   */
+const ANIMAL_PHOTO = 'animal-cell.png';
+const ANIMAL_PHOTO_PARTS = [
+  { key:'nuc',  label:'นิวเคลียส',       u:.394, v:.076,
+    info:'Nucleus — ศูนย์บัญชาการที่เก็บ <b>DNA</b> มีเยื่อหุ้ม 2 ชั้นเจาะรู และมีนิวคลีโอลัสสร้างไรโบโซม' },
+  { key:'rer',  label:'ER หยาบ',         u:.702, v:.087,
+    info:'Rough ER — ถุงแบนที่มี<b>ไรโบโซมเกาะ</b>จนดูขรุขระ ต่อเนื่องกับเยื่อหุ้มนิวเคลียส ทำหน้าที่สร้างและพับโปรตีนส่งออก' },
+  { key:'cyto', label:'ไซโทสเกเลตอน',    u:.117, v:.215,
+    info:'Cytoskeleton — โครงร่างเส้นใยโปรตีนที่ค้ำรูปทรงเซลล์ ช่วยการเคลื่อนที่และลำเลียงสารภายในเซลล์' },
+  { key:'mem',  label:'เยื่อหุ้มเซลล์',  u:.847, v:.373,
+    info:'Cell membrane — ฟอสโฟลิพิดสองชั้นที่มีโปรตีนแทรก ทำหน้าที่<b>คัดเลือกสารเข้าออก</b>และรับสัญญาณ' },
+  { key:'lyso', label:'ไลโซโซม',         u:.834, v:.531,
+    info:'Lysosome — ถุงบรรจุ<b>เอนไซม์ย่อยสลาย</b> ย่อยอาหาร เชื้อโรค และออร์แกเนลล์ที่หมดอายุ' },
+  { key:'golgi',label:'กอลจิคอมเพล็กซ์', u:.840, v:.782,
+    info:'Golgi complex — ถุงแบนเรียงซ้อน <b>ดัดแปลง คัดแยก บรรจุ</b>สารใส่ถุงส่งไปยังปลายทาง' },
+  { key:'pero', label:'เพอรอกซิโซม',     u:.602, v:.900,
+    info:'Peroxisome — ถุงเอนไซม์ที่สลายไฮโดรเจนเพอรอกไซด์และกรดไขมัน ช่วยกำจัดอนุมูลอิสระ' },
+  { key:'cent', label:'เซนทริโอล',       u:.394, v:.918,
+    info:'Centriole — ทรงกระบอกคู่ตั้งฉากกัน สร้างเส้นใยสปินเดิลตอนแบ่งเซลล์ <b>พบในเซลล์สัตว์</b>' },
+  { key:'mito', label:'ไมโทคอนเดรีย',    u:.102, v:.778,
+    info:'Mitochondrion — โรงไฟฟ้าของเซลล์ สร้าง <b>ATP</b> ด้วยการหายใจระดับเซลล์ มีเยื่อ 2 ชั้นและ DNA ของตัวเอง' }
+];
+const PLANT_PHOTO = 'plant-cell.png';
+const PLANT_PHOTO_PARTS = [
+  { key:'golgi',label:'กอลจิคอมเพล็กซ์', u:.411, v:.086,
+    info:'Golgi complex — ดัดแปลง คัดแยก และบรรจุสารใส่ถุงส่งออก ทำงานต่อจาก ER' },
+  { key:'rer',  label:'ER หยาบ',         u:.700, v:.080,
+    info:'Rough ER — ถุงแบนที่มีไรโบโซมเกาะ ต่อเนื่องกับเยื่อหุ้มนิวเคลียส สร้างและพับโปรตีน' },
+  { key:'nuc',  label:'นิวเคลียส',       u:.884, v:.218,
+    info:'Nucleus — ศูนย์บัญชาการที่เก็บ DNA เซลล์พืชมีเหมือนเซลล์สัตว์ทุกประการ' },
+  { key:'wall', label:'ผนังเซลล์',       u:.233, v:.277,
+    info:'Cell wall — ชั้นนอกสุดที่ทำจาก<b>เซลลูโลส</b> ค้ำรูปทรงและกันเซลล์แตกเมื่อน้ำเข้ามาก <b>พบเฉพาะเซลล์พืช</b>' },
+  { key:'mito', label:'ไมโทคอนเดรีย',    u:.127, v:.530,
+    info:'Mitochondrion — เซลล์พืช<b>ก็มีไมโทคอนเดรีย</b> เพราะต้องหายใจระดับเซลล์ตลอดเวลาทั้งกลางวันและกลางคืน' },
+  { key:'chl',  label:'คลอโรพลาสต์',     u:.144, v:.688,
+    info:'Chloroplast — มีคลอโรฟิลล์ ทำ<b>การสังเคราะห์ด้วยแสง</b> มีเยื่อ 2 ชั้นและ DNA ของตัวเอง' },
+  { key:'pd',   label:'พลาสโมเดสมาตา',   u:.189, v:.836,
+    info:'Plasmodesmata — ช่องที่เจาะผ่านผนังเซลล์ เชื่อมไซโทพลาซึมของเซลล์ข้างเคียงให้ส่งสารถึงกันได้' },
+  { key:'mem',  label:'เยื่อหุ้มเซลล์',  u:.478, v:.914,
+    info:'Cell membrane — อยู่<b>ถัดจากผนังเซลล์เข้ามาด้านใน</b> เป็นตัวจริงที่คัดเลือกสารเข้าออก' },
+  { key:'lyso', label:'ไลโซโซม',         u:.722, v:.879,
+    info:'Lysosome — ถุงเอนไซม์ย่อยสลาย ในเซลล์พืชงานย่อยส่วนใหญ่เกิดในแวคิวโอล' },
+  { key:'vac',  label:'แวคิวโอลกลาง',    u:.907, v:.714,
+    info:'Central vacuole — ถุงเก็บน้ำและสารละลายขนาดใหญ่มาก สร้าง<b>แรงดันเต่ง</b>ให้เซลล์พืชตั้งตรง' }
+];
+
+
 const ANIMAL_SVG = `
 <defs>
   <radialGradient id="cyto" cx="45%" cy="40%">
@@ -666,15 +761,21 @@ const ANIMAL_PARTS = [
     info:'Smooth ER — ท่อกลมที่<b>ไม่มีไรโบโซมเกาะ</b> สร้างลิพิดและฮอร์โมนสเตอรอยด์ และกำจัดสารพิษ (พบมากในเซลล์ตับ)' }
 ];
 function stageAnimal(){
+  // มีไฟล์ภาพจริงก็ใช้ภาพจริง ถ้ายังไม่ได้อัปก็เล่นด้วยภาพวาด SVG ในตัวเกมได้เหมือนเดิม
+  withImage(ANIMAL_PHOTO, ()=>build(ANIMAL_PHOTO_PARTS, photoBoard(ANIMAL_PHOTO, ANIMAL_PHOTO_PARTS)),
+                          ()=>build(ANIMAL_PARTS, labelBoard(ANIMAL_SVG, ANIMAL_PARTS)));
+
+  function build(parts, board){
   app.innerHTML = stageShell('animal', `
-    <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่อออร์แกเนลล์ แล้วแตะช่องว่างที่ตรงกับตำแหน่งในภาพ — ติดให้ครบ ${ANIMAL_PARTS.length} จุดโดยผิดน้อยที่สุด</div>
+    <div class="note">🎯 <b>ภารกิจ:</b> ดูภาพขยายที่มีหมายเลขกำกับรอบเซลล์ แล้วแตะชื่อออร์แกเนลล์ → แตะหมายเลขที่ตรงกัน
+      — ติดให้ครบ ${parts.length} ข้อโดยผิดน้อยที่สุด</div>
     <div class="bar"><i id="pb" style="width:0%"></i></div>
-    ${labelBoard(ANIMAL_SVG, ANIMAL_PARTS)}
+    ${board}
     <div class="note key" style="margin-top:16px">
       💡 <b>เคล็ดลับจำ:</b> ER <b>หยาบ</b> มีไรโบโซมเกาะเป็นเม็ด ๆ (สร้างโปรตีน) · ER <b>เรียบ</b> เป็นท่อกลมเกลี้ยง (สร้างลิพิด กำจัดสารพิษ)
     </div>
   `);
-  bindLabelBoard(ANIMAL_PARTS, mistakes=>{
+  bindLabelBoard(parts, mistakes=>{
     const got = mistakes<=1?3:mistakes<=3?2:1;
     finishStage('animal', got, 60-Math.min(mistakes*6,30), `
       <div class="note key">🟡 <b>สรุปที่ต้องจำ — เซลล์สัตว์</b><br>
@@ -685,6 +786,7 @@ function stageAnimal(){
         ต่างจากเซลล์พืชที่มีผนังเซลล์ค้ำไว้</div>
       <div class="small muted">ผิดทั้งหมด ${mistakes} ครั้ง</div>`);
   });
+  }
 }
 
 /* =========================================================================
@@ -757,18 +859,19 @@ const SORT_ITEMS = [
 ];
 function stagePlant(){
   let labelMiss = 0;
-  drawLabels();
+  withImage(PLANT_PHOTO, ()=>drawLabels(PLANT_PHOTO_PARTS, photoBoard(PLANT_PHOTO, PLANT_PHOTO_PARTS)),
+                         ()=>drawLabels(PLANT_PARTS, labelBoard(PLANT_SVG, PLANT_PARTS)));
 
-  function drawLabels(){
+  function drawLabels(parts, board){
     app.innerHTML = stageShell('plant', `
-      <div class="note">🎯 <b>ช่วงที่ 1:</b> ติดป้ายชื่อโครงสร้างของเซลล์พืชให้ครบ ${PLANT_PARTS.length} จุด</div>
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> จับคู่ภาพขยายรอบเซลล์พืชกับชื่อให้ครบ ${parts.length} ข้อ</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      ${labelBoard(PLANT_SVG, PLANT_PARTS)}
+      ${board}
       <div class="note key" style="margin-top:16px">
         💡 <b>จำง่าย ๆ:</b> เซลล์พืชมี 3 อย่างที่เซลล์สัตว์ไม่มี — <b>ผนังเซลล์ · คลอโรพลาสต์ · แวคิวโอลกลางขนาดใหญ่</b>
       </div>
     `);
-    bindLabelBoard(PLANT_PARTS, m=>{ labelMiss=m; toast('เก่งมาก! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawSort,700); });
+    bindLabelBoard(parts, m=>{ labelMiss=m; toast('เก่งมาก! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawSort,700); });
   }
 
   function drawSort(){

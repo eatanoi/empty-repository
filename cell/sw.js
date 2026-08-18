@@ -14,6 +14,8 @@ const ASSETS = [
   './icon-192.png',
   './icon-512.png',
   './logo.png',
+  './animal-cell.png',
+  './plant-cell.png',
   
   './imag/bg.webp',
   './imag/stage-animal.webp',
