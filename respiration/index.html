@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>โรงไฟฟ้าไมโทคอนเดรีย | เกมการหายใจระดับเซลล์ ม.4</title>
+<meta name="description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 เรื่องการหายใจระดับเซลล์ — ไกลโคไลซิส วัฏจักรเครบส์ การถ่ายทอดอิเล็กตรอน และการหมัก">
+<meta name="theme-color" content="#084A24">
+
+<!-- ไอคอน -->
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- เพิ่มลงหน้าจอโฮมได้ (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="โรงไฟฟ้าไมโทคอนเดรีย">
+
+<!-- พรีวิวตอนแชร์ลิงก์ใน LINE / Facebook / Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gamesbiology.biologypremium.com/respiration/">
+<meta property="og:title" content="โรงไฟฟ้าไมโทคอนเดรีย — เกมการหายใจระดับเซลล์">
+<meta property="og:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 · ไกลโคไลซิส เครบส์ ถ่ายทอดอิเล็กตรอน การหมัก">
+<meta property="og:image" content="https://gamesbiology.biologypremium.com/respiration/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="โรงไฟฟ้าไมโทคอนเดรีย — เกมการหายใจระดับเซลล์">
+<meta name="twitter:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 · เล่นบนมือถือได้เลย">
+<meta name="twitter:image" content="https://gamesbiology.biologypremium.com/respiration/og-cover.png">
+<style>
+:root{
+  /* ── พาเลตเดียวกับเกมสังเคราะห์แสง: F2EDD5 · E7390D · F26716 · 084A24 · 04261E ── */
+  --cream:#F2EDD5; --cream-hi:#FBF8EC; --cream-lo:#E9E1BE;
+  --ink:#04261E; --deep:#084A24;
+  --bg0:#FBF8EC; --bg1:#F2EDD5; --bg2:#EAE4C6;
+  --panel:rgba(255,255,255,.58);
+  --panel2:rgba(255,255,255,.85);
+  --line:rgba(8,74,36,.18);
+  --green:#4E9370; --lime:#2F7D4F; --teal:#7CB894;
+  --gold:#F26716; --rose:#E7390D;
+  --violet:#5C90A6; --sky:#5C90A6;
+  --green-soft:#AFD2BC; --green-pale:#DCEBE1;
+  --orange-soft:#F7C39C; --orange-pale:#FBE4D2;
+  --red-soft:#F4B7A6; --blue-soft:#BCD6E0;
+  --text:#04261E; --muted:#6B8A76;
+  --ok:#2F7D4F; --bad:#D6350B;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh; color:var(--text);
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.55), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.42), transparent 60%),
+    radial-gradient(800px 600px at 50% 112%, rgba(188,214,224,.38), transparent 62%),
+    linear-gradient(rgba(251,248,236,.72),rgba(242,237,213,.80)),
+    url("imag/bg.webp") center top/cover no-repeat fixed,
+    linear-gradient(170deg,var(--bg0),var(--bg1) 45%,var(--bg2));
+  background-attachment:fixed;
+  line-height:1.65; letter-spacing:.01em;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 90px}
+
+.hud{
+  position:sticky;top:0;z-index:60;margin:-16px -16px 18px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(251,248,236,.96),rgba(242,237,213,.80));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.02rem;letter-spacing:.02em;color:var(--deep)}
+.brand .leaf{font-size:1.35rem;filter:drop-shadow(0 1px 3px rgba(8,74,36,.3))}
+.hud .spacer{flex:1}
+@media(max-width:520px){
+  .hud{gap:7px;padding:9px 12px;flex-wrap:nowrap}
+  .brand{font-size:.86rem;min-width:0}
+  .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand .leaf{font-size:1.1rem}
+  .chip{padding:4px 8px;font-size:.72rem}
+  .hud .btn.sm{padding:5px 9px;font-size:.75rem}
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:.82rem;font-weight:700;white-space:nowrap;
+}
+.chip b{color:var(--gold)}
+.chip.xp b{color:var(--lime)}
+
+button{font-family:inherit}
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  padding:11px 20px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:.16s transform,.16s background,.16s border-color;
+}
+.btn:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,#4E9370,#2F7D4F);color:#FBF8EC;border-color:transparent;box-shadow:0 8px 20px -10px rgba(8,74,36,.65)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;box-shadow:0 8px 20px -10px rgba(231,57,13,.5)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn.sm{padding:7px 14px;font-size:.85rem}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+h1,h2,h3{line-height:1.35;margin:0 0 .5em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.hidden{display:none !important}
+
+.pub{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
+.pub img{height:38px;width:auto;filter:drop-shadow(0 1px 2px rgba(8,74,36,.18))}
+.pub span{font-weight:800;font-size:1.05rem;color:var(--deep);letter-spacing:.02em}
+.pub span b{color:var(--gold)}
+/* ---- ระบบชั้นเรียน ---- */
+.classchip{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:8px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--deep);cursor:pointer;transition:.15s}
+.classchip:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.classchip.joined{background:rgba(175,210,188,.55);border-color:var(--green);cursor:default}
+.classchip .x{color:var(--rose);font-weight:800;margin-left:2px;cursor:pointer;padding:0 4px}
+.modalbg{position:fixed;inset:0;background:rgba(4,38,30,.5);backdrop-filter:blur(3px);z-index:300;display:grid;place-items:center;padding:16px}
+.modal{background:var(--cream-hi);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:380px;width:100%;box-shadow:0 22px 60px -20px rgba(0,0,0,.5)}
+.modal h3{margin:0 0 4px;color:var(--deep);font-size:1.15rem}
+.modal .msub{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.modal label{display:block;font-size:.82rem;font-weight:700;color:var(--deep);margin:10px 0 4px}
+.modal input{width:100%;font-family:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal input#jcode{text-transform:uppercase;letter-spacing:3px;font-weight:800}
+.modal .mrow{display:flex;gap:8px;margin-top:16px}
+.modal .mrow .btn{flex:1}
+.modal .mmsg{font-size:.85rem;margin-top:10px;min-height:1em;color:var(--muted)}
+.modal .mmsg.err{color:var(--bad)}
+.hero{text-align:center;padding:14px 12px 8px}
+.hero h1{font-size:clamp(1.7rem,5.2vw,2.6rem);margin-bottom:.25em;
+  background:linear-gradient(100deg,var(--deep),#2F7D4F 42%,var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#4A6A58;margin:0;font-size:.98rem}
+.eq{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;
+  background:rgba(175,210,188,.45);border:1px solid rgba(8,74,36,.25);color:var(--deep);
+  font-size:.9rem;font-weight:700;letter-spacing:.03em}
+.eq sub{font-size:.72em}
+
+.maplist{display:grid;gap:12px;margin-top:22px}
+@media(min-width:720px){.maplist{grid-template-columns:1fr 1fr}}
+.node{
+  display:flex;gap:14px;align-items:center;
+  padding:16px;border-radius:var(--r);cursor:pointer;position:relative;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);
+  transition:.18s transform,.18s border-color,.18s background;
+}
+.node:hover{transform:translateY(-3px);border-color:rgba(8,74,36,.38);background:var(--panel2)}
+.node.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.55)}
+.node.locked:hover{transform:none;border-color:var(--line);background:var(--panel)}
+.node .ic{
+  width:56px;height:56px;flex:0 0 56px;border-radius:15px;display:grid;place-items:center;font-size:1.7rem;
+  background:rgba(255,255,255,.75);border:1px solid var(--line);
+}
+.stage-ic-img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.stagehead .ic .stage-ic-img{width:46px;height:46px;padding:0}
+.node .body{flex:1;text-align:left}
+.node .body .t{font-weight:800;font-size:1.02rem}
+.node .body .d{font-size:.84rem;color:var(--muted);line-height:1.5}
+.node .stars{font-size:.9rem;letter-spacing:2px;color:var(--gold);margin-top:3px}
+.node .stars .off{color:rgba(8,74,36,.16)}
+.node.done{border-color:rgba(8,74,36,.4)}
+.node.done .ic{background:rgba(175,210,188,.65)}
+.node .no{position:absolute;top:8px;right:12px;font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.1em}
+
+.stagehead{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stagehead .ic{font-size:2rem}
+.stagehead h2{margin:0}
+.stagehead .sub{color:var(--muted);font-size:.88rem}
+.bar{height:7px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin:10px 0 18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--lime));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.note{
+  border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0;
+  border-left:4px solid var(--sky);background:rgba(92,144,166,.13);
+}
+.note.warn{border-left-color:var(--gold);background:rgba(242,103,22,.11)}
+.note.key{border-left-color:var(--lime);background:rgba(47,125,79,.11)}
+.note.miss{border-left-color:var(--rose);background:rgba(231,57,13,.09)}
+.note b{color:var(--deep)}
+
+.feedback{border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.9rem;display:none}
+.feedback.show{display:block;animation:pop .3s}
+.feedback.good{background:rgba(47,125,79,.14);border:1px solid rgba(47,125,79,.4)}
+.feedback.bad{background:rgba(231,57,13,.11);border:1px solid rgba(231,57,13,.35)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* labeling */
+.diagram{position:relative;width:100%;aspect-ratio:900/560;margin:6px 0 4px}
+.diagram svg{width:100%;height:100%;display:block}
+@supports (container-type:inline-size){
+  .diagram{container-type:inline-size}
+  .slot{min-width:11.5cqw;font-size:clamp(7px,2.5cqw,.76rem);padding:.7cqw 1.2cqw;border-radius:min(10px,1.4cqw)}
+}
+.slot{
+  position:absolute;transform:translate(-50%,-50%);
+  min-width:104px;padding:6px 10px;border-radius:10px;text-align:center;
+  font-size:.76rem;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.9);border:2px dashed rgba(8,74,36,.38);color:var(--muted);
+  transition:.15s;white-space:nowrap;box-shadow:0 1px 4px rgba(8,74,36,.08);
+}
+.slot:hover{border-color:var(--lime);color:var(--deep)}
+.slot.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.22)}
+.slot.filled{border-style:solid;border-color:var(--green);background:rgba(175,210,188,.85);color:var(--deep)}
+.slot.wrong{border-color:var(--bad);background:rgba(231,57,13,.16);animation:shake .35s}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(calc(-50% - 6px),-50%)}75%{transform:translate(calc(-50% + 6px),-50%)}}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tok{
+  padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--line);transition:.15s;
+}
+.tok:hover{border-color:var(--lime)}
+.tok.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;transform:translateY(-2px);
+  box-shadow:0 5px 14px -6px rgba(231,57,13,.6)}
+.tok.used{display:none}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:56px;
+  padding:14px;border-radius:14px;background:rgba(255,255,255,.66);border:1px solid var(--line)}
+.chain .ph{color:var(--muted);font-size:.85rem}
+.link{padding:8px 13px;border-radius:11px;font-size:.82rem;font-weight:700;color:var(--deep);
+  background:rgba(175,210,188,.8);border:1px solid rgba(8,74,36,.32);animation:pop .25s}
+.arrow{color:var(--muted);font-size:.9rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pool .tok{font-size:.82rem}
+.pool .tok.bad{animation:shake .35s;background:rgba(231,57,13,.16);border-color:var(--bad)}
+
+/* wheel / phases */
+.calvin{display:grid;gap:16px}
+@media(min-width:800px){.calvin{grid-template-columns:1fr 1.1fr}}
+.wheel{position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;width:100%}
+.wheel svg{width:100%;height:100%}
+.phase{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.66);margin-bottom:12px;transition:.2s}
+.phase.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.16)}
+.phase.solved{border-color:rgba(8,74,36,.42);background:rgba(175,210,188,.4)}
+.phase h4{margin:0 0 4px;font-size:.98rem}
+.phase .hintline{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.step{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:7px 0;flex-wrap:wrap}
+.step .nm{font-size:.88rem;font-weight:700}
+.stepper{display:flex;align-items:center;gap:4px;background:rgba(8,74,36,.07);border-radius:10px;padding:3px}
+.stepper button{width:30px;height:30px;border-radius:8px;border:none;background:rgba(255,255,255,.9);
+  color:var(--deep);font-size:1.05rem;font-weight:800;cursor:pointer;line-height:1}
+.stepper button:active{background:var(--green);color:#FBF8EC}
+.stepper .n{min-width:34px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ledger (sim) */
+.sim{display:grid;gap:16px}
+@media(min-width:820px){.sim{grid-template-columns:1fr 1.05fr}}
+.specbox{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:14px;padding:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.toggle{display:flex;gap:8px;margin:6px 0 14px}
+.toggle button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-weight:700;font-size:.82rem;cursor:pointer}
+.toggle button.on{background:rgba(175,210,188,.8);border-color:var(--green);color:var(--deep)}
+.tlabel{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:2px}
+.ledtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ledtable th,.ledtable td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+.ledtable th:first-child,.ledtable td:first-child{text-align:left}
+.ledtable th{color:var(--deep);font-size:.82rem}
+.ledtable tfoot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none;font-size:1rem;color:var(--deep)}
+.ledtable .zero{color:var(--muted);opacity:.6}
+.totbox{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-top:12px}
+.totbox .k{font-size:.78rem;color:var(--muted)}
+.totbox .v{font-size:2.4rem;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums;line-height:1.1}
+.mito-vis{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
+.mito-vis svg{width:100%;height:auto;display:block}
+
+/* scenarios */
+.scene{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{
+  text-align:left;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:.9rem;
+  background:var(--panel);border:1px solid var(--line);transition:.15s;
+}
+.opt:hover{background:var(--panel2);border-color:rgba(8,74,36,.38)}
+.opt.correct{background:rgba(47,125,79,.18);border-color:var(--ok)}
+.opt.incorrect{background:rgba(231,57,13,.13);border-color:var(--bad)}
+.opt.disabled{pointer-events:none;opacity:.75}
+
+/* flashcards */
+.deckbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.deckbar button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-size:.83rem;font-weight:700;cursor:pointer}
+.deckbar button.on{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent}
+.fcstage{perspective:1400px;margin:0 auto;max-width:560px}
+.fc{position:relative;width:100%;min-height:290px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.fc.flip{transform:rotateY(180deg)}
+.fc .side{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);box-shadow:0 6px 22px -10px rgba(8,74,36,.35);
+}
+.fc .front{background:linear-gradient(150deg,rgba(175,210,188,.72),rgba(220,235,225,.55)),#fff;align-items:center;text-align:center}
+.fc .back{background:linear-gradient(150deg,rgba(247,195,156,.6),rgba(251,228,210,.45)),#fff;transform:rotateY(180deg)}
+.fc .tag{font-size:.7rem;letter-spacing:.14em;color:#5F7D6B;text-transform:uppercase;margin-bottom:10px}
+.fc .term{font-size:1.5rem;font-weight:800;margin-bottom:6px;line-height:1.3;color:var(--deep)}
+.fc .en{font-size:.9rem;color:var(--muted);font-style:italic}
+.fc .def{font-size:.98rem;line-height:1.7}
+.fc .hint{margin-top:auto;padding-top:14px;font-size:.75rem;color:var(--muted);text-align:center}
+.fcnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+.fcnav .count{font-weight:800;font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+
+.result{text-align:center;padding:26px 16px}
+.result .big{font-size:3rem;letter-spacing:6px;color:var(--gold)}
+.result .big .off{color:rgba(8,74,36,.16)}
+.result h2{margin-top:10px}
+
+.footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.78rem;text-align:center;line-height:1.8}
+.footer .fb{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:9px}
+.footer .fb img{height:26px;width:auto;opacity:.92}
+.footer .fb span{font-weight:800;color:var(--deep);font-size:.92rem}
+.footer .fb span b{color:var(--gold)}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);
+  background:linear-gradient(135deg,#2F7D4F,#4E9370);color:#FBF8EC;
+  padding:11px 22px;border-radius:999px;font-weight:800;font-size:.9rem;z-index:200;
+  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hud">
+    <div class="brand"><span class="leaf">🔋</span><span>โรงไฟฟ้าไมโทคอนเดรีย</span></div>
+    <div class="spacer"></div>
+    <div class="chip xp">⚡ XP <b id="hudXp">0</b></div>
+    <div class="chip">⭐ <b id="hudStars">0</b>/18</div>
+    <button class="btn sm ghost" id="btnHome">🗺️ แผนที่</button>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    <div class="fb"><img src="logo.png" alt="โลโก้ Biology" onerror="this.remove()"><span>Biology<b>.</b></span></div>
+    เกมประกอบตำราชีววิทยา ม.4 เทอม 1 · หน่วยการเรียนรู้ <b>การหายใจระดับเซลล์</b><br>
+    อิงหลักสูตร สสวท. (ฉบับปรับปรุง พ.ศ. 2560) · ความก้าวหน้าถูกบันทึกไว้ในเครื่องของผู้เล่นเอง
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* =========================================================================
+   โรงไฟฟ้าไมโทคอนเดรีย — เกมประกอบการเรียนรู้ เรื่องการหายใจระดับเซลล์ (ม.4)
+   ไฟล์เดียว ทำงานออฟไลน์ · เข้าชุดกับเกม "ภารกิจคลอโรพลาสต์"
+   ========================================================================= */
+
+const app   = document.getElementById('app');
+const toastEl = document.getElementById('toast');
+const SAVE_KEY = 'cellular-respiration-quest-v1';
+
+const defaultState = { xp:0, stars:{}, bonus:0 };
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return structuredClone(defaultState);
+    return Object.assign(structuredClone(defaultState), JSON.parse(raw));
+  }catch(e){ return structuredClone(defaultState); }
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function totalStars(){ return Object.values(S.stars).reduce((a,b)=>a+b,0); }
+function syncHud(){
+  document.getElementById('hudXp').textContent = S.xp;
+  document.getElementById('hudStars').textContent = totalStars();
+}
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+function shuffle(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+  return r;
+}
+function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span class="off">★</span>'; return s; }
+
+/* ไอคอนด่าน: ถ้ายังไม่ได้ใส่ไฟล์ภาพในโฟลเดอร์ imag/ จะแสดงอิโมจิแทนอัตโนมัติ */
+function stageIcon(file, alt, emoji){
+  return `<img class="stage-ic-img" src="imag/${file}" alt="${alt}" onerror="this.outerHTML='${emoji}'">`;
+}
+
+const STAGES = [
+  { id:'mito',  ic:stageIcon('stage-mito.webp','ไมโทคอนเดรีย','🫁'), title:'ประตูสู่ไมโทคอนเดรีย', desc:'สำรวจโครงสร้างไมโทคอนเดรีย — โรงไฟฟ้าของเซลล์', req:0 },
+  { id:'glyco', ic:stageIcon('stage-glycolysis.webp','ไกลโคไลซิส','🍬'), title:'ด่านไกลโคไลซิส',       desc:'แตกกลูโคสเป็นไพรูเวตในไซโทซอล นับ ATP และ NADH', req:1 },
+  { id:'krebs', ic:stageIcon('stage-krebs.webp','วัฏจักรเครบส์','🔄'), title:'วัฏจักรเครบส์',         desc:'ออกซิไดซ์ไพรูเวตจนหมด ปลดปล่อย CO₂ และตัวพาอิเล็กตรอน', req:2 },
+  { id:'etc',   ic:stageIcon('stage-etc.webp','การถ่ายทอดอิเล็กตรอน','⚡'), title:'สายพานถ่ายทอดอิเล็กตรอน', desc:'ส่งอิเล็กตรอนจาก NADH ไปถึงออกซิเจน แล้วปั่น ATP', req:3 },
+  { id:'ledger',ic:stageIcon('stage-atp.webp','ATP','🔋'), title:'ห้องบัญชีพลังงาน',      desc:'รวมยอด ATP ทั้งหมด เทียบใช้/ไม่ใช้ออกซิเจน', req:4 },
+  { id:'boss',  ic:stageIcon('stage-oxygen.webp','ออกซิเจน','💨'), title:'บอส: ศึกออกซิเจน',       desc:'การหมัก การออกกำลังกาย ยีสต์ และสารพิษยับยั้ง', req:5 }
+];
+
+function renderMap(){
+  syncHud();
+  const cleared = STAGES.filter(s=>S.stars[s.id]>0).length;
+  app.innerHTML = `
+    <div class="hero">
+      <div class="pub"><img src="logo.png" alt="โลโก้ Biology" onerror="this.remove()"><span>Biology<b>.</b></span></div>
+      <h1>โรงไฟฟ้าไมโทคอนเดรีย</h1>
+      <p>เดินทางเข้าไปในไมโทคอนเดรีย เพื่อดูว่าเซลล์<strong>สลายกลูโคส</strong><br>
+         เปลี่ยนเป็นพลังงาน <strong>ATP</strong> ทีละขั้นได้อย่างไร</p>
+      <div class="eq">C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6O<sub>2</sub> → 6CO<sub>2</sub> + 6H<sub>2</sub>O + พลังงาน (ATP)</div>
+      <div id="classSlot"></div>
+    </div>
+    <div class="maplist">
+      ${STAGES.map((s,i)=>{
+        const got=S.stars[s.id]||0, locked=cleared<s.req;
+        return `<div class="node ${locked?'locked':''} ${got?'done':''}" data-id="${s.id}">
+          <span class="no">ด่าน ${i+1}</span>
+          <div class="ic">${locked?'🔒':s.ic}</div>
+          <div class="body">
+            <div class="t">${s.title}</div>
+            <div class="d">${locked?`ผ่านด่านก่อนหน้าให้ครบ ${s.req} ด่านเพื่อปลดล็อก`:s.desc}</div>
+            ${locked?'':`<div class="stars">${stars(got)}</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:2rem">🃏</div>
+      <div style="flex:1;min-width:190px">
+        <div style="font-weight:800">การ์ดคำศัพท์</div>
+        <div class="small muted">${CARDS.length} การ์ด ทบทวนศัพท์ไทย–อังกฤษ พร้อมนิยาม เปิดเล่นได้ตลอดเวลา</div>
+      </div>
+      <button class="btn gold" id="btnCards">เปิดสำรับ</button>
+    </div>
+    ${totalStars()>=15 ? `<div class="note key" style="margin-top:14px">
+      🏅 <b>เหรียญวิศวกรพลังงานเซลล์!</b> ได้ ${totalStars()} ดาว — เข้าใจครบทั้ง 4 ขั้นของการหายใจแบบใช้ออกซิเจนแล้ว
+    </div>`:''}
+    <div class="center" style="margin-top:18px">
+      <button class="btn ghost sm" id="btnReset">เริ่มใหม่ทั้งหมด</button>
+    </div>
+  `;
+  app.querySelectorAll('.node').forEach(n=>{
+    n.addEventListener('click',()=>{
+      if(n.classList.contains('locked')){ toast('🔒 ยังไม่ปลดล็อกด่านนี้'); return; }
+      openStage(n.dataset.id);
+    });
+  });
+  document.getElementById('btnCards').onclick = renderCards;
+  document.getElementById('btnReset').onclick = ()=>{
+    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+      S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
+    }
+  };
+  renderClassChip();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function stageShell(id, extraHtml=''){
+  const st = STAGES.find(s=>s.id===id);
+  return `<div class="stagehead">
+      <div class="ic">${st.ic}</div>
+      <div style="flex:1;min-width:200px"><h2>${st.title}</h2><div class="sub">${st.desc}</div></div>
+    </div>${extraHtml}`;
+}
+function openStage(id){
+  window.scrollTo({top:0});
+  ({mito:stageMito, glyco:stageGlyco, krebs:stageKrebs, etc:stageETC, ledger:stageLedger, boss:stageBoss})[id]();
+}
+function finishStage(id, got, xp, summaryHtml){
+  const prev=S.stars[id]||0; if(got>prev) S.stars[id]=got;
+  S.xp+=xp; save(); syncHud();
+  submitProgress(id, got, S.xp);   // ส่งดาวเข้าระบบชั้นเรียน (ถ้าเข้าร่วมห้อง)
+  app.innerHTML = `
+    <div class="card result">
+      <div class="big">${stars(got)}</div>
+      <h2>${got===3?'สมบูรณ์แบบ!':got===2?'เก่งมาก!':got===1?'ผ่านแล้ว':'ยังไม่ผ่าน'}</h2>
+      <p class="muted">ได้รับ <b style="color:var(--lime)">+${xp} XP</b></p>
+      <div style="text-align:left;max-width:640px;margin:18px auto 0">${summaryHtml}</div>
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="again">เล่นด่านนี้อีกครั้ง</button>
+        <button class="btn primary" id="back">กลับแผนที่ →</button>
+      </div>
+    </div>`;
+  document.getElementById('again').onclick = ()=>openStage(id);
+  document.getElementById('back').onclick  = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================================
+   ด่าน 1 — โครงสร้างไมโทคอนเดรีย
+   ========================================================================= */
+/* ใช้ภาพตัดขวางไมโทคอนเดรียจริง (ของผู้ใช้) เป็นแผนภาพหลัก
+   พิกัดอ้างระบบ SVG ของผู้ใช้ 1988.06×1314.68 (ภาพวางที่ 391.76,342.39 ขนาด 1535×837)
+   ax/ay = จุดชี้ที่ผู้ใช้กำหนดไว้เอง (ปลายเส้นชี้ด้านที่แตะออร์แกเนลล์)
+   ถ้าไฟล์ mitochondrion.jpg ยังไม่ถูกวางไว้ จะใช้ภาพวาด SVG สำรองด้านล่างแทนอัตโนมัติ */
+const MITO_PARTS = [
+  { key:'ribo', label:'ไรโบโซม', x:210, y:684, ax:685.34, ay:685.88,
+    info:'Ribosome — เม็ดเล็ก ๆ กระจายในเมทริกซ์ ไมโทคอนเดรียมีไรโบโซมของตัวเอง จึงสร้างโปรตีนบางส่วนได้เอง' },
+  { key:'dna', label:'ดีเอ็นเอ', x:520, y:120, ax:794.78, ay:703.12,
+    info:'mtDNA — DNA วงแหวนของไมโทคอนเดรีย (แยกจาก DNA ในนิวเคลียส) เป็นหลักฐานสำคัญของทฤษฎีเอนโดซิมไบโอซิส' },
+  { key:'matrix', label:'เมทริกซ์', x:1010, y:110, ax:1088.25, ay:671.57,
+    info:'Matrix — ของเหลวชั้นในสุด (สีน้ำตาล) เป็นที่เกิด <b>การออกซิไดซ์ไพรูเวตและวัฏจักรเครบส์</b> มีเอนไซม์ · DNA · ไรโบโซม' },
+  { key:'outer', label:'เยื่อหุ้มชั้นนอก', x:1430, y:100, ax:1291.58, ay:401.09,
+    info:'Outer membrane — ชั้นนอกสุดที่เรียบ ยอมให้สารเล็ก ๆ ผ่านได้ค่อนข้างอิสระเพราะมีโปรตีนพอริน' },
+  { key:'inner', label:'เยื่อหุ้มชั้นใน', x:1730, y:250, ax:1592.52, ay:555.06,
+    info:'Inner membrane — เยื่อชั้นในที่พับเป็นคริสตี ฝัง <b>ระบบถ่ายทอดอิเล็กตรอนและ ATP synthase</b> เลือกผ่านอย่างเข้มงวด' },
+  { key:'inter', label:'ช่องระหว่างเยื่อ', x:900, y:1240, ax:913.32, ay:858.09,
+    info:'Intermembrane space — ช่องแคบระหว่างเยื่อสองชั้น เป็นที่<b>สะสม H⁺</b> จน pH ต่ำ (เทียบได้กับลูเมนของไทลาคอยด์)' },
+  { key:'crista', label:'คริสตี', x:1540, y:1240, ax:1324.92, ay:753.61,
+    info:'Cristae — รอยพับเข้าของเยื่อชั้นใน เพิ่มพื้นที่ผิวให้ติดตั้งลูกโซ่หายใจได้มากที่สุด' }
+];
+/* ภาพวาดสำรอง (ใช้เมื่อยังไม่มีไฟล์ภาพถ่าย) — วางในกรอบเดียวกับภาพถ่ายพอดี */
+const MITO_FALLBACK = `
+<svg viewBox="0 0 1988.06 1314.68" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" aria-hidden="true">
+  <defs><clipPath id="mfMatrix"><ellipse cx="1160" cy="765" rx="692" ry="330"/></clipPath></defs>
+  <ellipse cx="1160" cy="765" rx="735" ry="380" fill="#FBF3DE" stroke="#C77A3A" stroke-width="22"/>
+  <ellipse cx="1160" cy="765" rx="692" ry="330" fill="#EBD9AE" stroke="#2F7D4F" stroke-width="18"/>
+  <g clip-path="url(#mfMatrix)" fill="none" stroke-linecap="round">
+    <g stroke="#2F7D4F" stroke-width="76">
+      <path d="M913 1090 L913 830"/><path d="M1325 425 L1325 820"/>
+      <path d="M1450 1090 L1450 880"/><path d="M1150 1090 L1150 945"/>
+    </g>
+    <g stroke="#FBF3DE" stroke-width="42">
+      <path d="M913 1090 L913 830"/><path d="M1325 425 L1325 820"/>
+      <path d="M1450 1090 L1450 880"/><path d="M1150 1090 L1150 945"/>
+    </g>
+    <path d="M1655 500 L1545 675" stroke="#2F7D4F" stroke-width="70"/>
+    <path d="M1655 500 L1545 675" stroke="#FBF3DE" stroke-width="38"/>
+    <g fill="#8A6234" opacity=".6" stroke="none">
+      <circle cx="685" cy="686" r="15"/><circle cx="742" cy="792" r="12"/><circle cx="631" cy="612" r="11"/>
+      <circle cx="840" cy="930" r="12"/><circle cx="1000" cy="610" r="11"/><circle cx="1230" cy="960" r="12"/>
+      <circle cx="1560" cy="905" r="11"/><circle cx="1015" cy="860" r="10"/><circle cx="700" cy="880" r="10"/>
+      <circle cx="1600" cy="790" r="12"/>
+    </g>
+    <g fill="none" stroke="#E7390D" stroke-width="9">
+      <circle cx="795" cy="703" r="46"/><circle cx="808" cy="712" r="30" opacity=".65"/>
+    </g>
+  </g>
+</svg>`;
+function stageMito(){
+  let mistakes=0, placed=0, armed=null;
+  const order = shuffle(MITO_PARTS);
+  app.innerHTML = stageShell('mito', `
+    <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่อโครงสร้าง แล้วแตะช่องว่างที่ตรงกับตำแหน่งในภาพ — วางถูกครบ ${MITO_PARTS.length} จุดโดยผิดน้อยที่สุด</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div class="diagram" id="dg" style="aspect-ratio:1988.06/1314.68">
+      ${MITO_FALLBACK}
+      <img src="mitochondrion.jpg" alt="ภาพตัดขวางไมโทคอนเดรีย" onerror="this.remove()"
+           style="position:absolute;left:19.71%;top:26.04%;width:77.21%;border-radius:14px;
+                  box-shadow:0 5px 18px -6px rgba(8,74,36,.28)">
+      <svg viewBox="0 0 1988.06 1314.68" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+        ${MITO_PARTS.map(p=>`<line x1="${p.x}" y1="${p.y}" x2="${p.ax}" y2="${p.ay}"
+            stroke="#04261E" stroke-width="3" stroke-dasharray="9 6" opacity=".7"/>
+          <circle cx="${p.ax}" cy="${p.ay}" r="10" fill="#F26716" stroke="#fff" stroke-width="3"/>`).join('')}
+      </svg>
+      ${MITO_PARTS.map(p=>`<div class="slot" data-key="${p.key}"
+          style="left:${p.x/1988.06*100}%;top:${p.y/1314.68*100}%">? ? ?</div>`).join('')}
+    </div>
+    <div class="bank" id="bank">
+      ${order.map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <div class="note key" style="margin-top:16px">
+      💡 <b>หัวใจของด่านนี้:</b> วัฏจักรเครบส์เกิดใน <b>เมทริกซ์</b> ส่วนการถ่ายทอดอิเล็กตรอนเกิดที่ <b>เยื่อชั้นใน (คริสตี)</b> —
+      โครงสร้างนี้คล้ายคลอโรพลาสต์: เยื่อชั้นในทำหน้าที่เดียวกับเยื่อไทลาคอยด์
+    </div>
+  `);
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#bank .tok').forEach(t=>{
+    t.onclick = ()=>{
+      app.querySelectorAll('.tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.key){ armed=null; return; }
+      armed=t.dataset.key; t.classList.add('sel');
+      app.querySelectorAll('.slot:not(.filled)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.slot').forEach(sl=>{
+    sl.onclick = ()=>{
+      if(!armed || sl.classList.contains('filled')) return;
+      const part = MITO_PARTS.find(p=>p.key===armed);
+      if(sl.dataset.key===armed){
+        sl.classList.add('filled'); sl.classList.remove('armed'); sl.textContent=part.label;
+        app.querySelector(`.tok[data-key="${armed}"]`).classList.add('used');
+        placed++; pb.style.width=(placed/MITO_PARTS.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${part.label}</b> — ${part.info}`;
+        armed=null; app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+        if(placed===MITO_PARTS.length) setTimeout(done,900);
+      }else{
+        mistakes++; sl.classList.add('wrong'); setTimeout(()=>sl.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ ตำแหน่งนี้ยังไม่ใช่ <b>${part.label}</b> — ลองดูว่ามันอยู่ชั้นไหนของไมโทคอนเดรีย`;
+      }
+    };
+  });
+  function done(){
+    const got = mistakes<=1?3:mistakes<=3?2:1;
+    finishStage('mito', got, 60-Math.min(mistakes*6,30), `
+      <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+        • ไมโทคอนเดรียมีเยื่อหุ้ม <b>2 ชั้น</b> เยื่อชั้นในพับเป็น <b>คริสตี</b> เพิ่มพื้นที่ผิว<br>
+        • <b>เมทริกซ์</b> = ที่เกิดการออกซิไดซ์ไพรูเวต + วัฏจักรเครบส์ · <b>เยื่อชั้นใน</b> = ที่เกิดการถ่ายทอดอิเล็กตรอน<br>
+        • มี DNA และไรโบโซมของตัวเอง (หลักฐานทฤษฎีเอนโดซิมไบโอซิส เช่นเดียวกับคลอโรพลาสต์)</div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> <b>ไกลโคไลซิสไม่ได้เกิดในไมโทคอนเดรีย</b> แต่เกิดใน <b>ไซโทซอล (ไซโทพลาซึม)</b>
+        เซลล์ที่ไม่มีไมโทคอนเดรีย เช่น เม็ดเลือดแดง จึงยังทำไกลโคไลซิสได้</div>
+      <div class="small muted">ผิดทั้งหมด ${mistakes} ครั้ง</div>`);
+  }
+}
+
+/* =========================================================================
+   ด่าน 2 — ไกลโคไลซิส (สโตอิคิโอเมตรี)
+   ========================================================================= */
+function stageGlyco(){
+  const PH = [
+    { title:'ระยะลงทุนพลังงาน (Energy investment)',
+      hint:'เซลล์ต้องเติมหมู่ฟอสเฟตจาก <b>ATP</b> ให้กลูโคสก่อน เพื่อทำให้โมเลกุลไม่เสถียรและพร้อมแตกตัว',
+      inputs:[{id:'inv',name:'ATP ที่ลงทุนไป', ans:2, max:6}],
+      ok:'ถูกต้อง! ช่วงแรกต้องใช้ ATP <b>2</b> โมเลกุลก่อน จึงยังไม่ได้กำไรในระยะนี้' },
+    { title:'การแตกโมเลกุล (Cleavage)',
+      hint:'น้ำตาลฟรุกโทส-1,6-บิสฟอสเฟต (6C) ถูกแตกครึ่งเป็นน้ำตาล 3 คาร์บอน<br>นับดูว่าจะได้ G3P (3C) กี่โมเลกุล',
+      inputs:[{id:'g3p',name:'G3P ที่ได้', ans:2, max:6}],
+      ok:'ถูกต้อง! กลูโคส 1 โมเลกุล (6C) แตกเป็น G3P <b>2</b> โมเลกุล (3C × 2 = 6C ✓)' },
+    { title:'ระยะได้ผลตอบแทน (Energy payoff)',
+      hint:'G3P 2 โมเลกุลถูกเปลี่ยนเป็นไพรูเวต ปล่อยพลังงานออกมาสร้าง ATP และ NADH<br>นับผลรวมของ G3P ทั้ง 2 โมเลกุล',
+      inputs:[
+        {id:'atp',   name:'ATP ที่ผลิตได้ (รวม)', ans:4, max:8},
+        {id:'nadh',  name:'NADH ที่ได้',          ans:2, max:6},
+        {id:'pyr',   name:'ไพรูเวตที่ได้',        ans:2, max:6}
+      ],
+      ok:'ถูกต้อง! ได้ ATP <b>4</b> (แบบ substrate-level) · NADH <b>2</b> · ไพรูเวต <b>2</b> โมเลกุล' }
+  ];
+  let cur=0, wrong=0;
+  const vals={}; PH.forEach(p=>p.inputs.forEach(i=>vals[i.id]=0));
+
+  app.innerHTML = stageShell('glyco', `
+    <div class="note">🎯 <b>ภารกิจ:</b> เดินไกลโคไลซิสทีละระยะในไซโทซอล เติมจำนวนโมเลกุลให้ถูก
+      สุดท้ายจะได้ <b>กำไรสุทธิ ATP 2 โมเลกุล</b></div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="phases"></div>
+    <div class="feedback" id="fb"></div>
+    <div class="note small" style="margin-top:8px">
+      🔵 ไกลโคไลซิสเกิดใน <b>ไซโทซอล</b> และ <b>ไม่ต้องใช้ออกซิเจน</b> — จึงเป็นขั้นตอนร่วมของทั้งการหายใจแบบใช้ออกซิเจนและการหมัก
+    </div>
+  `);
+  const phasesEl=document.getElementById('phases'), fb=document.getElementById('fb'), pb=document.getElementById('pb');
+
+  function render(){
+    pb.style.width=(cur/PH.length*100)+'%';
+    phasesEl.innerHTML = PH.map((p,i)=>`
+      <div class="phase ${i===cur?'active':''} ${i<cur?'solved':''}">
+        <h4>${i<cur?'✅ ':''}${p.title}</h4>
+        ${i===cur?`<div class="hintline">${p.hint}</div>
+          ${p.inputs.map(inp=>`
+            <div class="step"><span class="nm">${inp.name}</span>
+              <span class="stepper">
+                <button data-act="-" data-id="${inp.id}">−</button>
+                <span class="n" id="n-${inp.id}">${vals[inp.id]}</span>
+                <button data-act="+" data-id="${inp.id}" data-max="${inp.max}">+</button>
+              </span></div>`).join('')}
+          <button class="btn primary sm" style="margin-top:10px" id="check">ตรวจสอบ →</button>`:''}
+      </div>`).join('');
+    phasesEl.querySelectorAll('.stepper button').forEach(b=>{
+      b.onclick=()=>{
+        const id=b.dataset.id;
+        if(b.dataset.act==='+') vals[id]=Math.min(+b.dataset.max, vals[id]+1);
+        else vals[id]=Math.max(0, vals[id]-1);
+        document.getElementById('n-'+id).textContent=vals[id];
+      };
+    });
+    const chk=phasesEl.querySelector('#check');
+    if(chk) chk.onclick=()=>{
+      const p=PH[cur], bad=p.inputs.filter(i=>vals[i.id]!==i.ans);
+      if(bad.length===0){
+        fb.className='feedback show good'; fb.innerHTML='✅ '+p.ok;
+        cur++;
+        if(cur>=PH.length){ pb.style.width='100%'; setTimeout(done,1500); }
+        else setTimeout(render,850);
+      }else{
+        wrong++; fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถูก — ลองตรวจ <b>${bad.map(b=>b.name).join(', ')}</b> อีกครั้ง`;
+      }
+    };
+  }
+  render();
+  function done(){
+    const got = wrong<=1?3:wrong<=3?2:1;
+    finishStage('glyco', got, 70-Math.min(wrong*8,45), `
+      <div class="note key">🟡 <b>บัญชีของไกลโคไลซิส (ต่อกลูโคส 1 โมเลกุล)</b><br>
+        ลงทุน ATP 2 → ผลิต ATP 4 → <b>กำไรสุทธิ ATP = 2</b><br>
+        ได้ <b>NADH 2</b> และ <b>ไพรูเวต 2</b> โมเลกุล (ยังไม่ปล่อย CO₂ เลยในขั้นนี้)</div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ATP ที่ได้จากไกลโคไลซิสเป็นแบบ <b>substrate-level phosphorylation</b>
+        (ถ่ายหมู่ฟอสเฟตโดยตรง) ไม่ใช่จากการถ่ายทอดอิเล็กตรอน จึงเกิดได้แม้ไม่มีออกซิเจน</div>
+      <div class="small muted">ตอบผิด ${wrong} ครั้ง</div>`);
+  }
+}
+
+/* =========================================================================
+   ด่าน 3 — การออกซิไดซ์ไพรูเวต + วัฏจักรเครบส์
+   ========================================================================= */
+function stageKrebs(){
+  const PH = [
+    { key:'po', title:'ขั้นเตรียม · การออกซิไดซ์ไพรูเวต (ต่อกลูโคส = ไพรูเวต 2)',
+      hint:'ไพรูเวต (3C) เข้าสู่เมทริกซ์ ถูกปลด CO₂ 1 โมเลกุล และให้ NADH กลายเป็น <b>อะซิติล-โคเอนไซม์เอ</b> (2C)<br>นับผลรวมของไพรูเวตทั้ง 2 โมเลกุล',
+      inputs:[
+        {id:'poco2', name:'CO₂ ที่ปล่อย', ans:2, max:6},
+        {id:'ponadh',name:'NADH ที่ได้',  ans:2, max:6},
+        {id:'acetyl',name:'อะซิติล-CoA ที่ได้', ans:2, max:6}
+      ],
+      ok:'ถูกต้อง! ไพรูเวต 2 โมเลกุล → CO₂ <b>2</b> · NADH <b>2</b> · อะซิติล-CoA <b>2</b>' },
+    { key:'kr', title:'วัฏจักรเครบส์ (ต่อกลูโคส = หมุน 2 รอบ)',
+      hint:'อะซิติล-CoA (2C) รวมกับออกซาโลแอซีเตต (4C) เป็นซิเตรต (6C) แล้วปลด CO₂ ทีละโมเลกุล<br>นับผลรวมของ <b>2 รอบ</b> (1 รอบให้ CO₂ 2 · NADH 3 · FADH₂ 1 · ATP 1)',
+      inputs:[
+        {id:'krco2', name:'CO₂ ที่ปล่อย',  ans:4, max:8},
+        {id:'krnadh',name:'NADH ที่ได้',   ans:6, max:10},
+        {id:'krfadh',name:'FADH₂ ที่ได้',  ans:2, max:6},
+        {id:'kratp', name:'ATP ที่ได้',    ans:2, max:6}
+      ],
+      ok:'ถูกต้อง! 2 รอบให้ CO₂ <b>4</b> · NADH <b>6</b> · FADH₂ <b>2</b> · ATP <b>2</b>' }
+  ];
+  let cur=0, wrong=0;
+  const vals={}; PH.forEach(p=>p.inputs.forEach(i=>vals[i.id]=0));
+
+  app.innerHTML = stageShell('krebs', `
+    <div class="note">🎯 <b>ภารกิจ:</b> ในเมทริกซ์ ไพรูเวตจะถูกออกซิไดซ์จนคาร์บอนกลายเป็น CO₂ หมด
+      เติมจำนวนให้ถูกทั้งสองขั้น</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div class="calvin">
+      <div>
+        <div class="wheel" id="wheel"></div>
+        <div class="note small" style="margin-top:8px">
+          🔵 คาร์บอนทั้ง 6 อะตอมของกลูโคสถูกปล่อยเป็น CO₂ จนครบ (2 จากการออกซิไดซ์ไพรูเวต + 4 จากเครบส์)
+          — นี่คือที่มาของ CO₂ ที่เราหายใจออก
+        </div>
+      </div>
+      <div id="phases"></div>
+    </div>
+    <div class="feedback" id="fb"></div>
+  `);
+  const phasesEl=document.getElementById('phases'), fb=document.getElementById('fb'),
+        pb=document.getElementById('pb'), wheel=document.getElementById('wheel');
+
+  function drawWheel(active){
+    const arc=(a0,a1,color,on)=>{
+      const R=120,cx=160,cy=160,p=a=>[cx+R*Math.cos(a*Math.PI/180),cy+R*Math.sin(a*Math.PI/180)];
+      const [x0,y0]=p(a0),[x1,y1]=p(a1);
+      return `<path d="M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1}" fill="none"
+        stroke="${color}" stroke-width="${on?18:12}" stroke-linecap="round" opacity="${on?1:.35}"/>`;
+    };
+    wheel.innerHTML = `<svg viewBox="-34 -14 388 356">
+      ${arc(-90,90,'#F26716',active===0)}
+      ${arc(90,270,'#084A24',active===1)}
+      <text x="160" y="150" text-anchor="middle" fill="#04261E" font-size="17" font-weight="700">วัฏจักรเครบส์</text>
+      <text x="160" y="174" text-anchor="middle" fill="#6B8A76" font-size="13">Krebs cycle</text>
+      <text x="160" y="198" text-anchor="middle" fill="#6B8A76" font-size="12">เกิดในเมทริกซ์</text>
+      <text x="286" y="160" text-anchor="middle" fill="#D9560B" font-size="12" font-weight="700">ไพรูเวต→อะซิติล</text>
+      <text x="34" y="160" text-anchor="middle" fill="#084A24" font-size="12" font-weight="700">หมุนเครบส์</text>
+    </svg>`;
+  }
+  function render(){
+    drawWheel(cur); pb.style.width=(cur/PH.length*100)+'%';
+    phasesEl.innerHTML = PH.map((p,i)=>`
+      <div class="phase ${i===cur?'active':''} ${i<cur?'solved':''}">
+        <h4>${i<cur?'✅ ':''}${p.title}</h4>
+        ${i===cur?`<div class="hintline">${p.hint}</div>
+          ${p.inputs.map(inp=>`
+            <div class="step"><span class="nm">${inp.name}</span>
+              <span class="stepper">
+                <button data-act="-" data-id="${inp.id}">−</button>
+                <span class="n" id="n-${inp.id}">${vals[inp.id]}</span>
+                <button data-act="+" data-id="${inp.id}" data-max="${inp.max}">+</button>
+              </span></div>`).join('')}
+          <button class="btn primary sm" style="margin-top:10px" id="check">ตรวจสอบ →</button>`:''}
+      </div>`).join('');
+    phasesEl.querySelectorAll('.stepper button').forEach(b=>{
+      b.onclick=()=>{
+        const id=b.dataset.id;
+        if(b.dataset.act==='+') vals[id]=Math.min(+b.dataset.max, vals[id]+1);
+        else vals[id]=Math.max(0, vals[id]-1);
+        document.getElementById('n-'+id).textContent=vals[id];
+      };
+    });
+    const chk=phasesEl.querySelector('#check');
+    if(chk) chk.onclick=()=>{
+      const p=PH[cur], bad=p.inputs.filter(i=>vals[i.id]!==i.ans);
+      if(bad.length===0){
+        fb.className='feedback show good'; fb.innerHTML='✅ '+p.ok;
+        cur++;
+        if(cur>=PH.length){ pb.style.width='100%'; setTimeout(done,1600); }
+        else setTimeout(render,900);
+      }else{
+        wrong++; fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถูก — ลองตรวจ <b>${bad.map(b=>b.name).join(', ')}</b> อีกครั้ง<br>
+          <span class="small muted">เคล็ดลับ: อย่าลืมคูณ 2 เพราะกลูโคส 1 โมเลกุลให้ไพรูเวต 2 โมเลกุล</span>`;
+      }
+    };
+  }
+  render();
+  function done(){
+    const got = wrong<=1?3:wrong<=3?2:1;
+    finishStage('krebs', got, 85-Math.min(wrong*8,50), `
+      <div class="note key">🟡 <b>รวมยอดหลังจบเครบส์ (ต่อกลูโคส 1 โมเลกุล)</b><br>
+        การออกซิไดซ์ไพรูเวต: CO₂ 2 · NADH 2<br>
+        วัฏจักรเครบส์ (2 รอบ): CO₂ 4 · NADH 6 · FADH₂ 2 · ATP 2<br>
+        <b>สะสมถึงตอนนี้: NADH 10 · FADH₂ 2 · ATP 4 · CO₂ 6 ครบ</b></div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> วัฏจักรเครบส์ <b>ไม่ได้สร้าง ATP โดยตรงเป็นส่วนใหญ่</b>
+        มันสร้างเพียง ATP น้อยนิด แต่ผลิต <b>NADH และ FADH₂</b> ซึ่งเป็นตัวพาอิเล็กตรอนไปให้ขั้นถัดไปสร้าง ATP จำนวนมาก</div>
+      <div class="note">🔵 <b>ต่อยอด:</b> วัฏจักรเครบส์ยังเป็น “ทางแยกกลาง” ที่กรดอะมิโนและกรดไขมันเข้าร่วมได้
+        จึงเชื่อมเมแทบอลิซึมของสารอาหารทุกชนิดเข้าด้วยกัน</div>
+      <div class="small muted">ตอบผิด ${wrong} ครั้ง</div>`);
+  }
+}
+
+/* =========================================================================
+   ด่าน 4 — ระบบถ่ายทอดอิเล็กตรอน (ETC) + เคมิออสโมซิส
+   ========================================================================= */
+const ETC = [
+  { n:'NADH · FADH₂ (ตัวให้อิเล็กตรอน)', e:'นำอิเล็กตรอนพลังงานสูงจากไกลโคไลซิส การออกซิไดซ์ไพรูเวต และวัฏจักรเครบส์ มาปล่อยที่เยื่อชั้นใน' },
+  { n:'คอมเพล็กซ์ I', e:'NADH dehydrogenase — รับอิเล็กตรอนจาก NADH แล้ว<b>ปั๊ม H⁺</b> ข้ามเยื่อเข้าสู่ช่องระหว่างเยื่อ (FADH₂ ข้ามคอมเพล็กซ์นี้ ไปเข้าที่ Q แทน)' },
+  { n:'โคเอนไซม์คิว (Q / ยูบิควิโนน)', e:'ตัวพาอิเล็กตรอนเคลื่อนที่ได้ในเยื่อ รับอิเล็กตรอนจากคอมเพล็กซ์ I และ II ส่งต่อให้คอมเพล็กซ์ III' },
+  { n:'คอมเพล็กซ์ III', e:'Cytochrome bc₁ — ปั๊ม H⁺ เพิ่ม แล้วส่งอิเล็กตรอนต่อให้ไซโทโครม ซี' },
+  { n:'ไซโทโครม ซี', e:'ตัวพาอิเล็กตรอนขนาดเล็ก เคลื่อนที่บนผิวด้านนอกของเยื่อชั้นใน นำอิเล็กตรอนไปให้คอมเพล็กซ์ IV' },
+  { n:'คอมเพล็กซ์ IV', e:'Cytochrome c oxidase — ปั๊ม H⁺ และส่งอิเล็กตรอนตัวสุดท้ายให้ออกซิเจน' },
+  { n:'ออกซิเจน (O₂)', e:'<b>ตัวรับอิเล็กตรอนตัวสุดท้าย</b> — รับอิเล็กตรอนและ H⁺ กลายเป็น <b>น้ำ (H₂O)</b> ถ้าไม่มี O₂ ทั้งสายจะติดขัดทันที' },
+  { n:'ATP synthase (เคมิออสโมซิส)', e:'H⁺ ที่สะสมในช่องระหว่างเยื่อไหลกลับเข้าเมทริกซ์ผ่าน ATP synthase → ปั่นสร้าง <b>ATP จำนวนมาก</b> (oxidative phosphorylation)' }
+];
+function stageETC(){
+  let idx=0, wrong=0;
+  const pool = shuffle(ETC.map((z,i)=>({...z,i})));
+  app.innerHTML = stageShell('etc', `
+    <div class="note">🎯 <b>ภารกิจ:</b> อิเล็กตรอนต้องวิ่งจาก <b>NADH</b> ไปจบที่ <b>ออกซิเจน</b> แล้วพลังงานถูกเก็บเป็น ATP
+      แตะการ์ดให้ถูก<b>ลำดับ</b></div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div class="chain" id="chain"><span class="ph">แตะการ์ดด้านล่างเพื่อเริ่มต่อสายถ่ายทอดอิเล็กตรอน…</span></div>
+    <div class="pool" id="pool">${pool.map(p=>`<div class="tok" data-i="${p.i}">${p.n}</div>`).join('')}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="note warn" style="margin-top:16px">
+      ⚡ <b>ที่นี่คือที่ผลิต ATP มากที่สุด</b> — H⁺ ที่ถูกปั๊มไปสะสมในช่องระหว่างเยื่อ สร้างเกรเดียนต์
+      แล้วไหลกลับผ่าน ATP synthase (หลักการเดียวกับ ATP synthase ในคลอโรพลาสต์เป๊ะ)
+    </div>
+  `);
+  const chain=document.getElementById('chain'), fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      const i=+t.dataset.i;
+      if(i===idx){
+        if(idx===0) chain.innerHTML=''; else chain.insertAdjacentHTML('beforeend','<span class="arrow">→</span>');
+        chain.insertAdjacentHTML('beforeend', `<span class="link">${ETC[i].n}</span>`);
+        t.classList.add('used');
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${ETC[i].n}</b><br>${ETC[i].e}`;
+        idx++; pb.style.width=(idx/ETC.length*100)+'%';
+        if(idx===ETC.length) setTimeout(done,1400);
+      }else{
+        wrong++; t.classList.add('bad'); setTimeout(()=>t.classList.remove('bad'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถึงคิวของ <b>${ETC[i].n}</b> — ลองนึกว่าอิเล็กตรอนตอนนี้อยู่ตรงไหนของสาย`;
+      }
+    };
+  });
+  function done(){
+    const got = wrong<=1?3:wrong<=3?2:1;
+    finishStage('etc', got, 85-Math.min(wrong*7,50), `
+      <div class="note key">🟡 <b>สรุปที่ต้องจำ — ระบบถ่ายทอดอิเล็กตรอน</b><br>
+        NADH/FADH₂ → คอมเพล็กซ์ I → Q → III → ไซโทโครม ซี → IV → <b>O₂ → H₂O</b><br>
+        พลังงานถูกใช้ปั๊ม H⁺ สะสมในช่องระหว่างเยื่อ แล้ว <b>ATP synthase</b> ปั่นเป็น ATP (เคมิออสโมซิส)</div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ออกซิเจน<b>ไม่ได้ไป “เผา” กลูโคสโดยตรง</b>
+        แต่ทำหน้าที่เพียง <b>ตัวรับอิเล็กตรอนตัวสุดท้าย</b> ปลายสาย ถ้าขาด O₂ อิเล็กตรอนไม่มีที่ไป
+        NADH สะสมจนล้น ทั้งเครบส์และ ETC หยุดชะงัก</div>
+      <div class="note">🔵 <b>ทำไม FADH₂ ให้ ATP น้อยกว่า NADH?</b> เพราะ FADH₂ ป้อนอิเล็กตรอนเข้าที่ Q
+        ข้ามคอมเพล็กซ์ I ไป จึงปั๊ม H⁺ ได้น้อยกว่า → ได้ ATP น้อยกว่า (2 เทียบกับ 3 ในค่าดั้งเดิม)</div>
+      <div class="small muted">ตอบผิด ${wrong} ครั้ง</div>`);
+  }
+}
+
+/* =========================================================================
+   ด่าน 5 — ห้องบัญชีพลังงาน (ATP ledger, แบบจำลอง)
+   ========================================================================= */
+function stageLedger(){
+  const st = { aerobic:true, euk:true, modern:false };
+  // ค่าต่อกลูโคส 1 โมเลกุล
+  function model(s){
+    const perN = s.modern?2.5:3, perF = s.modern?1.5:2;
+    if(!s.aerobic){
+      return { subst:2, fromN:0, fromF:0, total:2, // การหมัก: ได้เฉพาะ ATP จากไกลโคไลซิส
+               nadh:2, fadh:0, note:'ไม่ใช้ออกซิเจน → NADH ไม่ถูกส่งเข้า ETC แต่ถูกใช้คืน NAD⁺ ในการหมัก' };
+    }
+    const nadh=10, fadh=2;
+    let subst=4, fromN=nadh*perN, fromF=fadh*perF;
+    let total = subst+fromN+fromF;
+    if(s.euk) total -= 2; // ยูคาริโอต: ต้นทุนขนส่ง NADH จากไกลโคไลซิสเข้าไมโทคอนเดรีย
+    total = Math.round(total);
+    return { subst, fromN:Math.round(fromN), fromF:Math.round(fromF), total, nadh, fadh,
+             note: s.euk?'ยูคาริโอต: เสีย ATP ~2 ไปกับการขนส่ง NADH ของไกลโคไลซิสเข้าไมโทคอนเดรีย':'โพรคาริโอต: ไม่มีต้นทุนขนส่ง จึงได้เต็ม' };
+  }
+  const MISSIONS = [
+    { t:'<b>ยอดเต็มแบบใช้ออกซิเจน</b><br>ตั้งค่า: ใช้ออกซิเจน · โพรคาริโอต · ค่าดั้งเดิม แล้วอ่านยอดรวมให้ได้ <b>38 ATP</b>',
+      test:(s,m)=> s.aerobic && !s.euk && !s.modern && m.total===38,
+      q:{ q:'ในการหายใจแบบใช้ออกซิเจน ขั้นตอนใดสร้าง ATP ได้<b>มากที่สุด</b>?',
+          o:['ไกลโคไลซิส','วัฏจักรเครบส์','ระบบถ่ายทอดอิเล็กตรอน (oxidative phosphorylation)','การออกซิไดซ์ไพรูเวต'],
+          a:2, e:'ATP ส่วนใหญ่ (ราว 34 จาก 38) มาจาก <b>ระบบถ่ายทอดอิเล็กตรอน</b> ผ่านเคมิออสโมซิส ส่วนไกลโคไลซิสและเครบส์ให้ ATP โดยตรงเพียง 4 โมเลกุล' } },
+    { t:'<b>เมื่อออกซิเจนหมด</b><br>สลับเป็น <b>ไม่ใช้ออกซิเจน</b> แล้วดูว่ายอดรวมเหลือเท่าไร',
+      test:(s,m)=> !s.aerobic && m.total===2,
+      q:{ q:'เหตุใดเมื่อไม่มีออกซิเจน เซลล์จึงได้ ATP เพียง 2 โมเลกุล ทั้งที่ยังมี NADH อยู่?',
+          o:['เพราะไกลโคไลซิสหยุดทำงาน','เพราะ NADH ส่งอิเล็กตรอนไม่ได้ (ไม่มีตัวรับสุดท้าย) จึงต้องนำไปคืนเป็น NAD⁺ ในการหมักแทน ไม่ได้ ATP เพิ่ม','เพราะไมโทคอนเดรียสลายตัว','เพราะกลูโคสไม่ถูกใช้'],
+          a:1, e:'ไม่มี O₂ = ไม่มีตัวรับอิเล็กตรอนสุดท้าย ETC หยุด NADH จึงถูกใช้ในการหมักเพื่อคืนเป็น <b>NAD⁺</b> ให้ไกลโคไลซิสเดินต่อได้ — การหมักเองไม่ได้สร้าง ATP เพิ่ม ATP ทั้ง 2 ยังมาจากไกลโคไลซิส' } },
+    { t:'<b>ตัวเลขดั้งเดิม vs ปัจจุบัน</b><br>กลับไปใช้ออกซิเจน แล้วสลับเป็น <b>ค่าปัจจุบัน</b> — สังเกตว่ายอดรวมลดลงเหลือราว 30',
+      test:(s,m)=> s.aerobic && s.modern && m.total<=32,
+      q:{ q:'ทำไมตำราสมัยใหม่จึงบอกว่าได้ ATP ราว 30–32 ไม่ใช่ 38 พอดี?',
+          o:['เพราะกลูโคสมีพลังงานน้อยลง','เพราะการวัดจริงพบว่าต่อ NADH ได้ ~2.5 และต่อ FADH₂ ได้ ~1.5 อีกทั้งมีการรั่วของ H⁺','เพราะไมโทคอนเดรียทำงานผิดพลาด','เพราะออกซิเจนไม่พอ'],
+          a:1, e:'ตัวเลข 38 เป็น <b>ค่าสูงสุดทางทฤษฎี</b> ค่าจริงต่ำกว่าเพราะอัตราส่วน H⁺/ATP ไม่ลงตัวพอดี มีการรั่วของโปรตอน และต้นทุนการขนส่งสาร ค่าที่ยอมรับกันจึงอยู่ราว <b>30–32</b>' } }
+  ];
+  let mi=0, wrongQ=0, answering=false;
+
+  app.innerHTML = stageShell('ledger', `
+    <div class="note">🎯 <b>ภารกิจ:</b> ปรับสวิตช์เพื่อรวมยอด ATP ต่อกลูโคส 1 โมเลกุล ในเงื่อนไขต่าง ๆ แล้วตอบคำถามอธิบาย</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="missionBox"></div>
+    <div class="sim">
+      <div class="specbox">
+        <div class="tlabel">ออกซิเจน</div>
+        <div class="toggle">
+          <button id="aOn" class="on">ใช้ออกซิเจน (aerobic)</button>
+          <button id="aOff">ไม่ใช้ (anaerobic)</button>
+        </div>
+        <div class="tlabel">ชนิดเซลล์</div>
+        <div class="toggle">
+          <button id="euk" class="on">ยูคาริโอต (36)</button>
+          <button id="pro">โพรคาริโอต (38)</button>
+        </div>
+        <div class="tlabel">ตัวเลขที่ใช้คำนวณ</div>
+        <div class="toggle">
+          <button id="trad" class="on">ค่าดั้งเดิม (NADH=3)</button>
+          <button id="mod">ค่าปัจจุบัน (NADH=2.5)</button>
+        </div>
+        <div class="note small" id="noteLine" style="margin:10px 0 0"></div>
+      </div>
+      <div>
+        <table class="ledtable">
+          <thead><tr><th>ขั้นตอน</th><th>ATP ตรง</th><th>จาก NADH</th><th>จาก FADH₂</th></tr></thead>
+          <tbody id="ledbody"></tbody>
+          <tfoot><tr><td>รวม ATP สุทธิ</td><td colspan="3" id="ledtot" style="text-align:right"></td></tr></tfoot>
+        </table>
+        <div class="totbox"><div class="k">ATP ต่อกลูโคส 1 โมเลกุล</div><div class="v" id="grand">0</div></div>
+      </div>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <div id="qbox"></div>
+  `);
+  const el=id=>document.getElementById(id), pb=el('pb'), fb=el('fb');
+  function renderMission(){
+    pb.style.width=(mi/MISSIONS.length*100)+'%';
+    el('missionBox').innerHTML = mi<MISSIONS.length
+      ? `<div class="note miss">🧪 <b>ภารกิจที่ ${mi+1}/${MISSIONS.length}</b><br>${MISSIONS[mi].t}</div>` : '';
+  }
+  function update(){
+    const m=model(st);
+    const rows = st.aerobic ? [
+      ['ไกลโคไลซิส (ไซโทซอล)', 2, st.modern?'2.5×2':'3×2', '—'],
+      ['ออกซิไดซ์ไพรูเวต', '—', st.modern?'2.5×2':'3×2', '—'],
+      ['วัฏจักรเครบส์', 2, st.modern?'2.5×6':'3×6', st.modern?'1.5×2':'2×2'],
+      ['ถ่ายทอดอิเล็กตรอน', '—', '↑ รวม', '↑ รวม']
+    ] : [
+      ['ไกลโคไลซิส (ไซโทซอล)', 2, '0', '—'],
+      ['การหมัก (คืน NAD⁺)', 0, '—', '—']
+    ];
+    el('ledbody').innerHTML = rows.map(r=>`<tr>
+      <td>${r[0]}</td>
+      <td class="${r[1]===0||r[1]==='—'?'zero':''}">${r[1]}</td>
+      <td class="${r[2]==='—'||r[2]==='0'?'zero':''}">${r[2]}</td>
+      <td class="${r[3]==='—'?'zero':''}">${r[3]}</td></tr>`).join('');
+    el('ledtot').innerHTML = st.aerobic
+      ? `ATP ตรง ${m.subst} + จาก NADH ${m.fromN} + จาก FADH₂ ${m.fromF}${st.euk?' − ต้นทุนขนส่ง 2':''}`
+      : `ATP ตรง 2 + จาก ETC 0`;
+    el('grand').textContent = m.total;
+    el('noteLine').innerHTML = 'ℹ️ '+m.note;
+    // เปิด/ปิดสวิตช์ชนิดเซลล์เมื่อไม่ใช้ออกซิเจน (ไม่มีผล)
+    ['euk','pro'].forEach(id=>el(id).style.opacity = st.aerobic?1:.4);
+    if(!answering && mi<MISSIONS.length && MISSIONS[mi].test(st,m)){
+      answering=true; toast('🎉 เงื่อนไขภารกิจสำเร็จ!'); setTimeout(askQ,450);
+    }
+  }
+  el('aOn').onclick=()=>{ st.aerobic=true; el('aOn').classList.add('on'); el('aOff').classList.remove('on'); update(); };
+  el('aOff').onclick=()=>{ st.aerobic=false; el('aOff').classList.add('on'); el('aOn').classList.remove('on'); update(); };
+  el('euk').onclick=()=>{ st.euk=true; el('euk').classList.add('on'); el('pro').classList.remove('on'); update(); };
+  el('pro').onclick=()=>{ st.euk=false; el('pro').classList.add('on'); el('euk').classList.remove('on'); update(); };
+  el('trad').onclick=()=>{ st.modern=false; el('trad').classList.add('on'); el('mod').classList.remove('on'); update(); };
+  el('mod').onclick=()=>{ st.modern=true; el('mod').classList.add('on'); el('trad').classList.remove('on'); update(); };
+
+  function askQ(){
+    const q=MISSIONS[mi].q, box=el('qbox');
+    box.innerHTML = `<div class="scene"><h3 style="margin:0">${q.q}</h3>
+      <div class="opts">${q.o.map((o,i)=>`<div class="opt" data-i="${i}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div></div>`;
+    box.scrollIntoView({behavior:'smooth',block:'center'});
+    box.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const i=+op.dataset.i, ok=i===q.a; if(!ok) wrongQ++;
+        box.querySelectorAll('.opt').forEach((x,j)=>{
+          x.classList.add('disabled');
+          if(j===q.a) x.classList.add('correct'); else if(j===i) x.classList.add('incorrect');
+        });
+        const f=box.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง — ':'❌ ยังไม่ใช่ — ')+q.e;
+        setTimeout(()=>{ mi++; answering=false; box.innerHTML=''; renderMission(); update();
+          if(mi>=MISSIONS.length) done(); }, ok?2600:4200);
+      };
+    });
+  }
+  function done(){
+    const got = wrongQ===0?3:wrongQ===1?2:1;
+    finishStage('ledger', got, 100-wrongQ*15, `
+      <div class="note key">🟡 <b>บัญชี ATP ต่อกลูโคส 1 โมเลกุล (ค่าดั้งเดิม)</b><br>
+        ไกลโคไลซิส 2 + เครบส์ 2 (ATP ตรง) + ETC 34 = <b>38 (โพรคาริโอต)</b> · <b>36 (ยูคาริโอต)</b><br>
+        แบบไม่ใช้ออกซิเจน (การหมัก) ได้เพียง <b>2 ATP</b> — ต่างกันเกือบ 20 เท่า!</div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ตัวเลข 38/36 เป็น <b>ค่าสูงสุดทางทฤษฎี</b>
+        ค่าจริงราว 30–32 เพราะการรั่วของ H⁺ และต้นทุนการขนส่ง</div>
+      <div class="note">🔵 <b>ต่อยอด:</b> per NADH ≈ 3 และ per FADH₂ ≈ 2 เป็นตัวเลขดั้งเดิม
+        ปัจจุบันวัดได้ ~2.5 และ ~1.5 ตามลำดับ (อัตราส่วน H⁺/ATP ไม่ลงตัวพอดี)</div>`);
+  }
+  renderMission(); update();
+}
+
+/* =========================================================================
+   ด่าน 6 — บอส: การหมัก · ออกกำลังกาย · สารพิษ
+   ========================================================================= */
+function stageBoss(){
+  const SC = [
+    { icon:'🏃', title:'วิ่งสปรินต์เต็มแรง 100 เมตร',
+      body:'ระหว่างวิ่งเร็วสุดแรง กล้ามเนื้อได้รับออกซิเจนไม่ทัน แต่ยังต้องการ ATP ด่วน หลังวิ่งเสร็จรู้สึกล้าและปวดกล้ามเนื้อ',
+      q:'กล้ามเนื้อสร้าง ATP ต่อได้อย่างไรในภาวะนี้?',
+      o:['ทำการหมักกรดแลกติก — เปลี่ยนไพรูเวตเป็นแลกเทตเพื่อคืน NAD⁺ ให้ไกลโคไลซิสเดินต่อ','เพิ่มการหายใจแบบใช้ออกซิเจนให้เร็วขึ้น','หยุดสร้าง ATP ทั้งหมด','สลายไขมันแทนกลูโคสทันที'],
+      a:0, e:'เมื่อ O₂ ไม่พอ กล้ามเนื้อทำ <b>การหมักกรดแลกติก</b>: ไพรูเวต + NADH → แลกเทต + NAD⁺ การคืน NAD⁺ ทำให้ไกลโคไลซิสเดินต่อได้ ATP 2 โมเลกุล กรดแลกติกที่สะสมคือส่วนหนึ่งของความล้า (และร่างกายเป็นหนี้ออกซิเจนไว้ชดใช้ภายหลัง)' },
+
+    { icon:'🍞', title:'ยีสต์ในแป้งขนมปัง',
+      body:'ช่างทำขนมปังผสมยีสต์ลงในแป้ง ทิ้งไว้ให้ขึ้นฟู สังเกตว่าแป้งพองตัวและมีกลิ่นแอลกอฮอล์อ่อน ๆ',
+      q:'ยีสต์ทำกระบวนการใด และอะไรทำให้แป้งพองฟู?',
+      o:['การหมักกรดแลกติก ทำให้เกิดกรด','การหมักแอลกอฮอล์ — ปล่อย CO₂ (ทำให้แป้งฟู) และเอทานอล','การหายใจแบบใช้ออกซิเจนเต็มรูปแบบ','การสังเคราะห์ด้วยแสง'],
+      a:1, e:'ยีสต์ทำ <b>การหมักแอลกอฮอล์</b>: ไพรูเวต → อะซีตัลดีไฮด์ + CO₂ → เอทานอล ก๊าซ <b>CO₂</b> ที่ปล่อยออกมาคือสิ่งที่ทำให้แป้งพองฟู ส่วนเอทานอลระเหยไปตอนอบ (ต่างจากการหมักกรดแลกติกที่<b>ไม่ปล่อย CO₂</b>)' },
+
+    { icon:'🩸', title:'เม็ดเลือดแดงของคน',
+      body:'เม็ดเลือดแดงที่โตเต็มที่ไม่มีไมโทคอนเดรีย (เพื่อเว้นที่ให้ฮีโมโกลบินขนออกซิเจนได้มากที่สุด) แต่ก็ยังต้องใช้พลังงาน',
+      q:'เม็ดเลือดแดงสร้าง ATP จากที่ใด?',
+      o:['จากวัฏจักรเครบส์','จากไกลโคไลซิสในไซโทซอลเท่านั้น (ได้ 2 ATP ต่อกลูโคส)','จากระบบถ่ายทอดอิเล็กตรอน','ไม่ต้องใช้ ATP เลย'],
+      a:1, e:'เพราะ<b>ไม่มีไมโทคอนเดรีย</b> เม็ดเลือดแดงจึงพึ่ง <b>ไกลโคไลซิส</b> เพียงอย่างเดียว (เกิดในไซโทซอล ไม่ต้องใช้ออกซิเจน) ได้ 2 ATP ต่อกลูโคส — ตอกย้ำว่าไกลโคไลซิสไม่ต้องอาศัยไมโทคอนเดรีย' },
+
+    { icon:'☠️', title:'ห้องทดลอง: สารยับยั้งไซยาไนด์',
+      body:'นักวิจัยเติมไซยาไนด์ซึ่งจับกับคอมเพล็กซ์ IV ของระบบถ่ายทอดอิเล็กตรอน แล้ววัดการสร้าง ATP ของเซลล์',
+      q:'ผลที่เกิดขึ้นและสาเหตุคือข้อใด?',
+      o:['ATP เพิ่มขึ้นเพราะอิเล็กตรอนไหลเร็วขึ้น','การสร้าง ATP แบบใช้ออกซิเจนหยุด เพราะอิเล็กตรอนส่งต่อให้ O₂ ไม่ได้ NADH สะสมจนเครบส์หยุดตาม','เฉพาะไกลโคไลซิสหยุด','ไม่มีผลใด ๆ'],
+      a:1, e:'ไซยาไนด์บล็อกคอมเพล็กซ์ IV → อิเล็กตรอนไปถึง O₂ ไม่ได้ → <b>ทั้งสายถ่ายทอดอิเล็กตรอนหยุด</b> ไม่มีการปั๊ม H⁺ ไม่มี ATP จากออกซิเดทีฟฟอสโฟรีเลชัน ยิ่งกว่านั้น NADH ที่คั่งค้างทำให้เครบส์หยุดตาม เซลล์จึงขาดพลังงานรุนแรง (นี่คือเหตุที่ไซยาไนด์เป็นพิษถึงตาย)' },
+
+    { icon:'🥑', title:'ไขมันให้พลังงานมากกว่าน้ำตาล',
+      body:'ต่อน้ำหนักที่เท่ากัน ไขมันให้พลังงานราว 2 เท่าของคาร์โบไฮเดรต ร่างกายจึงสะสมพลังงานระยะยาวเป็นไขมัน',
+      q:'เหตุผลเชิงชีวเคมีที่ไขมันให้ ATP ต่อกรัมมากกว่าคือข้อใด?',
+      o:['ไขมันมีพันธะ C–H (อิเล็กตรอนพลังงานสูง) หนาแน่นกว่า เมื่อสลายด้วยบีตาออกซิเดชันจึงได้อะซิติล-CoA และ NADH/FADH₂ มากกว่า','ไขมันมีออกซิเจนมากกว่า','ไขมันไม่ต้องใช้ไมโทคอนเดรีย','ไขมันข้ามวัฏจักรเครบส์ได้'],
+      a:0, e:'โมเลกุลไขมัน (กรดไขมัน) มี <b>พันธะ C–H จำนวนมากและถูกรีดิวซ์สูง</b> เมื่อผ่าน <b>บีตาออกซิเดชัน</b> จะถูกตัดเป็นอะซิติล-CoA หลายโมเลกุลป้อนเข้าเครบส์ ให้ NADH/FADH₂ และ ATP ต่อกรัมมากกว่าคาร์โบไฮเดรตราวเท่าตัว' },
+
+    { icon:'🔄', title:'ปริศนา: ไมโทคอนเดรีย vs คลอโรพลาสต์',
+      body:'ทั้งการหายใจระดับเซลล์และการสังเคราะห์ด้วยแสงต่างก็สร้าง ATP ด้วยกลไกคล้ายกัน',
+      q:'ข้อความใด<b>ถูกต้อง</b>ที่สุดเกี่ยวกับความสัมพันธ์ของสองกระบวนการนี้?',
+      o:['ทั้งคู่ใช้ ATP synthase และเคมิออสโมซิสเหมือนกัน แต่ทิศทางพลังงานและสารตั้งต้น–ผลผลิตกลับกัน','เป็นกระบวนการเดียวกันแค่คนละชื่อ','การหายใจเกิดเฉพาะกลางคืน การสังเคราะห์แสงเฉพาะกลางวัน','ไมโทคอนเดรียสร้างออกซิเจน ส่วนคลอโรพลาสต์ใช้ออกซิเจน'],
+      a:0, e:'ทั้งสองใช้ <b>ATP synthase และเคมิออสโมซิส</b> เหมือนกัน แต่กลับทิศ: การสังเคราะห์แสง<b>สร้าง</b>กลูโคสและ O₂ โดยใช้ CO₂ + H₂O + แสง ส่วนการหายใจ<b>สลาย</b>กลูโคสด้วย O₂ ได้ CO₂ + H₂O + ATP — พืชทำทั้งสองอย่าง (มีทั้งคลอโรพลาสต์และไมโทคอนเดรีย) และทั้งคู่คือหลักฐานเอนโดซิมไบโอซิส' }
+  ];
+  let i=0, right=0;
+  app.innerHTML = stageShell('boss', `
+    <div class="note miss">👹 <b>ด่านบอส:</b> 6 สถานการณ์ ทดสอบว่าเข้าใจ “ทำไม” ไม่ใช่แค่ “คืออะไร” — ตอบถูกยิ่งมาก ยิ่งได้ดาวเยอะ</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="box"></div>
+  `);
+  const pb=document.getElementById('pb'), host=document.getElementById('box');
+  function step(){
+    pb.style.width=(i/SC.length*100)+'%';
+    if(i>=SC.length){
+      const got = right>=6?3:right>=4?2:right>=2?1:0;
+      finishStage('boss', got, right*22, `
+        <div class="note key">🟡 <b>สรุปการหมัก (เมื่อไม่มีออกซิเจน)</b><br>
+          <b>หมักกรดแลกติก</b> — ไพรูเวต → แลกเทต · ไม่ปล่อย CO₂ · ในกล้ามเนื้อคนและแบคทีเรียนมเปรี้ยว<br>
+          <b>หมักแอลกอฮอล์</b> — ไพรูเวต → เอทานอล + CO₂ · ในยีสต์ (ทำขนมปัง เบียร์ ไวน์)<br>
+          ทั้งคู่จุดประสงค์เดียวกันคือ<b>คืน NAD⁺</b> ให้ไกลโคไลซิสเดินต่อ — ไม่ได้ ATP เพิ่ม</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> “การหายใจระดับเซลล์” ≠ “การหายใจเข้าออก”
+          — อย่างแรกคือการสลายกลูโคสเป็น ATP ในเซลล์ ส่วนอย่างหลังคือการแลกเปลี่ยนแก๊สที่ปอด</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> การหายใจแบบใช้ออกซิเจนให้ ATP มากกว่าการหมักเกือบ 20 เท่า
+          จึงเป็นข้อได้เปรียบที่ทำให้สิ่งมีชีวิตที่ใช้ออกซิเจนครองโลก</div>
+        <div class="small muted">ตอบถูก ${right}/${SC.length} ข้อ</div>`);
+      return;
+    }
+    const s=SC[i];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">สถานการณ์ ${i+1}/${SC.length}</div>
+      <h3 style="margin:6px 0 4px">${s.icon} ${s.title}</h3>
+      <p style="margin:0 0 6px;font-size:.92rem">${s.body}</p>
+      <div style="font-weight:800;font-size:.95rem;margin-top:10px">${s.q}</div>
+      <div class="opts">${s.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===s.a; if(ok) right++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===s.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+s.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${i===SC.length-1?'สรุปผล →':'สถานการณ์ถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ i++; step(); window.scrollTo({top:0,behavior:'smooth'}); };
+      };
+    });
+  }
+  step();
+}
+
+/* =========================================================================
+   การ์ดคำศัพท์
+   ========================================================================= */
+const CARDS = [
+  ['โครงสร้าง','ไมโทคอนเดรีย','Mitochondrion','ออร์แกเนลล์เยื่อหุ้ม 2 ชั้น เป็นที่เกิดการหายใจแบบใช้ออกซิเจน มี DNA และไรโบโซมของตัวเอง'],
+  ['โครงสร้าง','คริสตี','Cristae','รอยพับเข้าของเยื่อหุ้มชั้นใน เพิ่มพื้นที่ผิวสำหรับติดตั้งระบบถ่ายทอดอิเล็กตรอนและ ATP synthase'],
+  ['โครงสร้าง','เมทริกซ์','Matrix','ของเหลวชั้นในสุดของไมโทคอนเดรีย เป็นที่เกิด<b>การออกซิไดซ์ไพรูเวตและวัฏจักรเครบส์</b> มีเอนไซม์ DNA ไรโบโซม'],
+  ['โครงสร้าง','ช่องระหว่างเยื่อ','Intermembrane space','ช่องแคบระหว่างเยื่อสองชั้น เป็นที่<b>สะสม H⁺</b> สร้างเกรเดียนต์สำหรับผลิต ATP (เทียบได้กับลูเมนไทลาคอยด์)'],
+  ['โครงสร้าง','ไซโทซอล','Cytosol','ของเหลวในไซโทพลาซึมนอกออร์แกเนลล์ เป็นที่เกิด<b>ไกลโคไลซิส</b> — ไม่ได้อยู่ในไมโทคอนเดรีย'],
+
+  ['ไกลโคไลซิส','ไกลโคไลซิส','Glycolysis','การสลายกลูโคส (6C) เป็นไพรูเวต 2 โมเลกุล (3C) ในไซโทซอล ได้กำไรสุทธิ 2 ATP + 2 NADH · ไม่ต้องใช้ออกซิเจน'],
+  ['ไกลโคไลซิส','กลูโคส','Glucose','น้ำตาล 6 คาร์บอน เป็นสารตั้งต้นหลักของการหายใจระดับเซลล์'],
+  ['ไกลโคไลซิส','ไพรูเวต','Pyruvate','สารประกอบ 3 คาร์บอน ผลผลิตของไกลโคไลซิส เมื่อมีออกซิเจนจะเข้าสู่ไมโทคอนเดรียต่อ'],
+  ['ไกลโคไลซิส','substrate-level phosphorylation','Substrate-level phosphorylation','การสร้าง ATP โดยถ่ายหมู่ฟอสเฟตจากสารตัวกลางโดยตรง (พบในไกลโคไลซิสและเครบส์) ไม่ต้องใช้ออกซิเจน'],
+
+  ['เครบส์','การออกซิไดซ์ไพรูเวต','Pyruvate oxidation','ขั้นเชื่อมในเมทริกซ์: ไพรูเวต → อะซิติล-CoA + CO₂ + NADH (ต่อกลูโคสได้ CO₂ 2 · NADH 2)'],
+  ['เครบส์','อะซิติลโคเอนไซม์เอ','Acetyl-CoA','สาร 2 คาร์บอนที่นำคาร์บอนเข้าสู่วัฏจักรเครบส์ เป็นจุดรวมของเมแทบอลิซึมคาร์โบไฮเดรต ไขมัน โปรตีน'],
+  ['เครบส์','วัฏจักรเครบส์','Krebs cycle','วัฏจักรในเมทริกซ์ ต่อ 1 รอบให้ CO₂ 2 · NADH 3 · FADH₂ 1 · ATP 1 (ต่อกลูโคสหมุน 2 รอบ) เรียกอีกชื่อว่าวัฏจักรกรดซิตริก'],
+  ['เครบส์','ออกซาโลแอซีเตต','Oxaloacetate','สาร 4 คาร์บอนที่รับอะซิติล-CoA เข้าวัฏจักร และถูกสร้างคืนเมื่อจบรอบ'],
+  ['เครบส์','NADH','NADH','ตัวพาอิเล็กตรอนพลังงานสูง นำอิเล็กตรอนไปให้ระบบถ่ายทอดอิเล็กตรอน (ต่อ 1 โมเลกุลให้ ~3 ATP)'],
+  ['เครบส์','FADH₂','FADH2','ตัวพาอิเล็กตรอน ป้อนเข้า ETC ที่โคเอนไซม์คิว จึงให้ ATP น้อยกว่า NADH (~2 ATP)'],
+
+  ['ถ่ายทอดอิเล็กตรอน','ระบบถ่ายทอดอิเล็กตรอน','Electron transport chain','ชุดโปรตีนบนเยื่อชั้นในที่ส่งอิเล็กตรอนเป็นทอด ๆ พร้อมปั๊ม H⁺ ข้ามเยื่อ — สร้าง ATP ได้มากที่สุด'],
+  ['ถ่ายทอดอิเล็กตรอน','ออกซิเจน','Oxygen','<b>ตัวรับอิเล็กตรอนตัวสุดท้าย</b> รับอิเล็กตรอนและ H⁺ กลายเป็นน้ำ — ถ้าขาดไป ทั้งสายหยุดทันที'],
+  ['ถ่ายทอดอิเล็กตรอน','เคมิออสโมซิส','Chemiosmosis','การสร้าง ATP โดยอาศัย H⁺ ไหลตามเกรเดียนต์ผ่าน ATP synthase กลับเข้าเมทริกซ์'],
+  ['ถ่ายทอดอิเล็กตรอน','ออกซิเดทีฟฟอสโฟรีเลชัน','Oxidative phosphorylation','การสร้าง ATP ที่อาศัยการถ่ายทอดอิเล็กตรอนและออกซิเจน — ให้ ATP ส่วนใหญ่ของกระบวนการ'],
+  ['ถ่ายทอดอิเล็กตรอน','ATP synthase','ATP synthase','เอนไซม์ที่ปั่นสร้าง ATP เมื่อ H⁺ ไหลผ่าน — โครงสร้างและหลักการเดียวกับใน คลอโรพลาสต์'],
+  ['ถ่ายทอดอิเล็กตรอน','โคเอนไซม์คิว','Coenzyme Q / Ubiquinone','ตัวพาอิเล็กตรอนเคลื่อนที่ได้ในเยื่อ รับอิเล็กตรอนจากคอมเพล็กซ์ I และ II'],
+  ['ถ่ายทอดอิเล็กตรอน','ไซโทโครม ซี','Cytochrome c','โปรตีนพาอิเล็กตรอนขนาดเล็กระหว่างคอมเพล็กซ์ III กับ IV'],
+
+  ['การหมัก','การหมัก','Fermentation','การสร้าง ATP แบบไม่ใช้ออกซิเจน อาศัยไกลโคไลซิส + การคืน NAD⁺ ได้เพียง 2 ATP ต่อกลูโคส'],
+  ['การหมัก','การหมักกรดแลกติก','Lactic acid fermentation','ไพรูเวต + NADH → แลกเทต + NAD⁺ · <b>ไม่ปล่อย CO₂</b> · พบในกล้ามเนื้อคนขณะออกแรงหนักและแบคทีเรียนมเปรี้ยว'],
+  ['การหมัก','การหมักแอลกอฮอล์','Alcoholic fermentation','ไพรูเวต → CO₂ + เอทานอล · <b>ปล่อย CO₂</b> (ทำให้ขนมปังฟู) · พบในยีสต์'],
+  ['การหมัก','NAD⁺','NAD+','ตัวรับอิเล็กตรอนรูปออกซิไดซ์ การหมักมีหน้าที่คืน NAD⁺ ให้ไกลโคไลซิสดำเนินต่อได้'],
+  ['การหมัก','หนี้ออกซิเจน','Oxygen debt','ปริมาณออกซิเจนที่ร่างกายต้องใช้ภายหลังการออกแรงหนัก เพื่อกำจัดกรดแลกติกที่สะสม'],
+
+  ['ภาพรวม','การหายใจระดับเซลล์','Cellular respiration','การสลายสารอาหารเพื่อสร้าง ATP ในเซลล์ — คนละอย่างกับ “การหายใจเข้าออก” ที่เป็นการแลกเปลี่ยนแก๊ส'],
+  ['ภาพรวม','การหายใจแบบใช้ออกซิเจน','Aerobic respiration','ครบทั้ง 4 ขั้น (ไกลโคไลซิส→ออกซิไดซ์ไพรูเวต→เครบส์→ETC) ให้ ATP สูงสุดตามทฤษฎี 36–38'],
+  ['ภาพรวม','การหายใจแบบไม่ใช้ออกซิเจน','Anaerobic respiration','ไม่ใช้ออกซิเจน อาศัยไกลโคไลซิสและการหมัก ได้เพียง 2 ATP ต่อกลูโคส'],
+  ['ภาพรวม','ATP','ATP','อะดีโนซีนไตรฟอสเฟต — โมเลกุลพลังงานที่เซลล์ใช้ทำงาน ปล่อยพลังงานเมื่อสลายพันธะฟอสเฟต'],
+  ['ภาพรวม','ผลได้ ATP สุทธิ','ATP yield','ต่อกลูโคส 1 โมเลกุล: 38 (โพรคาริโอต) · 36 (ยูคาริโอต) ตามทฤษฎี · จริง ~30–32'],
+  ['ภาพรวม','บีตาออกซิเดชัน','Beta-oxidation','การสลายกรดไขมันเป็นอะซิติล-CoA หลายโมเลกุล ทำให้ไขมันให้ ATP ต่อกรัมมากกว่าคาร์โบไฮเดรต'],
+  ['ภาพรวม','สารตั้งต้นการหายใจ','Respiratory substrate','สารที่นำมาสลายให้พลังงาน — คาร์โบไฮเดรต ไขมัน และโปรตีน โดยเข้าสู่กระบวนการที่จุดต่างกัน'],
+  ['ภาพรวม','เอนโดซิมไบโอซิส','Endosymbiosis','ทฤษฎีว่าไมโทคอนเดรีย (และคลอโรพลาสต์) เดิมเป็นแบคทีเรียที่เข้าไปอยู่ในเซลล์ — หลักฐานคือมี DNA และไรโบโซมของตัวเอง']
+];
+
+function renderCards(){
+  const cats=[...new Set(CARDS.map(c=>c[0]))];
+  let cat='ทั้งหมด', deck=[], idx=0, flipped=false;
+  function build(){ deck=(cat==='ทั้งหมด'?CARDS:CARDS.filter(c=>c[0]===cat)); idx=0; flipped=false; }
+  build();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic">🃏</div>
+      <div style="flex:1;min-width:200px"><h2>การ์ดคำศัพท์</h2>
+        <div class="sub">แตะการ์ดเพื่อพลิกดูความหมาย · ${CARDS.length} คำศัพท์ ไทย–อังกฤษ</div></div>
+    </div>
+    <div class="deckbar" id="deckbar">
+      ${['ทั้งหมด',...cats].map(c=>`<button data-c="${c}" class="${c==='ทั้งหมด'?'on':''}">${c}</button>`).join('')}
+    </div>
+    <div class="fcstage"><div class="fc" id="fc"></div></div>
+    <div class="fcnav">
+      <button class="btn sm" id="prev">← ก่อนหน้า</button>
+      <span class="count" id="count"></span>
+      <button class="btn sm" id="next">ถัดไป →</button>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn ghost sm" id="shuf">🔀 สลับการ์ด</button>
+      <button class="btn primary sm" id="back">กลับแผนที่</button>
+    </div>
+    <div class="note" style="margin-top:20px">
+      💡 <b>วิธีใช้ให้ได้ผล:</b> อ่านคำศัพท์แล้ว<b>พูดนิยามออกมาเองก่อน</b> จึงค่อยพลิกดูเฉลย (active recall)
+    </div>`;
+  const fc=document.getElementById('fc'), cnt=document.getElementById('count');
+  function draw(){
+    const c=deck[idx];
+    if(!c){ fc.innerHTML='<div class="side front"><div class="term">ไม่มีการ์ดในหมวดนี้</div></div>'; return; }
+    fc.classList.remove('flip'); flipped=false;
+    fc.innerHTML = `
+      <div class="side front">
+        <div class="tag">${c[0]}</div><div class="term">${c[1]}</div><div class="en">${c[2]}</div>
+        <div class="hint">แตะเพื่อพลิก ↻</div>
+      </div>
+      <div class="side back">
+        <div class="tag">${c[1]} · ${c[2]}</div><div class="def">${c[3]}</div>
+        <div class="hint">แตะเพื่อพลิกกลับ ↻</div>
+      </div>`;
+    cnt.textContent = `${idx+1} / ${deck.length}`;
+  }
+  fc.onclick=()=>{ flipped=!flipped; fc.classList.toggle('flip',flipped); };
+  document.getElementById('prev').onclick=()=>{ idx=(idx-1+deck.length)%deck.length; draw(); };
+  document.getElementById('next').onclick=()=>{ idx=(idx+1)%deck.length; draw(); };
+  document.getElementById('shuf').onclick=()=>{ deck=shuffle(deck); idx=0; draw(); toast('สลับการ์ดแล้ว'); };
+  document.getElementById('back').onclick=renderMap;
+  document.querySelectorAll('#deckbar button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#deckbar button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); cat=b.dataset.c; build(); draw();
+    };
+  });
+  document.addEventListener('keydown', function nav(e){
+    if(!document.getElementById('fc')){ document.removeEventListener('keydown',nav); return; }
+    if(e.key==='ArrowRight') document.getElementById('next')?.click();
+    if(e.key==='ArrowLeft')  document.getElementById('prev')?.click();
+    if(e.key===' '){ e.preventDefault(); fc.click(); }
+  });
+  draw(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= ระบบชั้นเรียน (เชื่อม Supabase) =================
+   นักเรียนกรอกรหัสห้อง+ชื่อ แล้วเกมส่งดาวเข้าระบบให้ครูเห็น
+   ถ้าไม่เข้าร่วมห้อง/ออฟไลน์ เกมก็เล่นได้ปกติ (เก็บคะแนนในเครื่องเหมือนเดิม)
+   * ใช้คีย์ resp-* แยกจากเกมสังเคราะห์แสง (ห้อง/คะแนนคนละชุด) */
+const SB_URL  = 'https://pitraobqnvtfzqddpizb.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpdHJhb2JxbnZ0ZnpxZGRwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNjk0NjUsImV4cCI6MjA5OTg0NTQ2NX0.PQJLLkRyB51-_-uUB_AYYfU4wphNovTD-9d1pCSw0jE';
+
+function getJoin(){ try{ return JSON.parse(localStorage.getItem('resp-class')||'null'); }catch(e){ return null; } }
+function setJoin(o){ localStorage.setItem('resp-class', JSON.stringify(o)); }
+function clearJoin(){ localStorage.removeItem('resp-class'); }
+function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function sbRpc(fn, body){
+  const r = await fetch(SB_URL+'/rest/v1/rpc/'+fn, {
+    method:'POST',
+    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON, 'Content-Type':'application/json' },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok) throw new Error('http '+r.status);
+  return r.json();
+}
+
+/* คิวคะแนนที่ส่งไม่สำเร็จ (ออฟไลน์) แล้วส่งซ้ำตอนเปิดเกมครั้งหน้า */
+function queuePending(p){ const q=JSON.parse(localStorage.getItem('resp-pending')||'[]'); q.push(p); localStorage.setItem('resp-pending',JSON.stringify(q)); }
+async function flushPending(){
+  let q=JSON.parse(localStorage.getItem('resp-pending')||'[]'); if(!q.length) return;
+  const keep=[];
+  for(const p of q){ try{ await sbRpc('submit_progress',p); }catch(e){ keep.push(p); } }
+  localStorage.setItem('resp-pending', JSON.stringify(keep));
+}
+
+/* ส่งดาวของด่านเข้าระบบ (เงียบ ๆ ไม่บล็อกการเล่น) */
+async function submitProgress(stageId, starsGot, xp){
+  const j=getJoin(); if(!j || !j.code || !j.name) return;
+  const payload={ p_join_code:j.code, p_student_name:j.name, p_stage_id:stageId, p_stars:starsGot, p_xp:xp||0 };
+  try{ await sbRpc('submit_progress', payload); }catch(e){ queuePending(payload); }
+}
+
+/* ส่งดาวเดิมทั้งหมดตอนเพิ่งเข้าร่วมห้อง */
+async function syncAllStars(){
+  for(const s of STAGES){ const st=S.stars[s.id]||0; if(st>0) await submitProgress(s.id, st, S.xp); }
+}
+
+/* ชิปสถานะชั้นเรียนบนหน้าแผนที่ */
+function renderClassChip(){
+  const slot=document.getElementById('classSlot'); if(!slot) return;
+  const j=getJoin();
+  if(j && j.code){
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.className||j.code)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>`;
+    slot.querySelector('#leaveClass').onclick=()=>{ if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); } };
+  }else{
+    slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
+    slot.querySelector('#joinBtn').onclick=openJoinModal;
+  }
+}
+
+function openJoinModal(){
+  const bg=document.createElement('div'); bg.className='modalbg';
+  bg.innerHTML=`<div class="modal">
+    <h3>🏫 เข้าร่วมชั้นเรียน</h3>
+    <div class="msub">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</div>
+    <label>รหัสห้อง</label><input id="jcode" maxlength="6" placeholder="เช่น ABC123" autocomplete="off" autocapitalize="characters">
+    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off">
+    <div class="mmsg" id="jmsg"></div>
+    <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">การเข้าร่วมจะส่งชื่อและคะแนนให้ครู · <a href="/privacy/" target="_blank" style="color:var(--green)">นโยบายความเป็นส่วนตัว</a></div>
+  </div>`;
+  document.body.appendChild(bg);
+  const close=()=>bg.remove();
+  bg.addEventListener('click',e=>{ if(e.target===bg) close(); });
+  bg.querySelector('#jcancel').onclick=close;
+  const codeEl=bg.querySelector('#jcode'), nameEl=bg.querySelector('#jname'), msg=bg.querySelector('#jmsg');
+  bg.querySelector('#jok').onclick=async ()=>{
+    const code=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
+    if(code.length<6){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้อง 6 ตัว'; return; }
+    if(!name){ msg.className='mmsg err'; msg.textContent='กรอกชื่อของคุณ'; return; }
+    msg.className='mmsg'; msg.textContent='กำลังตรวจรหัส…';
+    try{
+      const res=await sbRpc('check_class',{p_join_code:code});
+      if(!res || !res.ok){ msg.className='mmsg err'; msg.textContent='ไม่พบรหัสห้องนี้ ลองตรวจอีกครั้ง'; return; }
+      setJoin({code, name, className:res.class_name});
+      close(); renderClassChip(); toast('เข้าร่วมห้อง '+(res.class_name||code)+' แล้ว');
+      syncAllStars();
+    }catch(e){ msg.className='mmsg err'; msg.textContent='เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง'; }
+  };
+  setTimeout(()=>codeEl.focus(),50);
+}
+
+/* ---------- boot ---------- */
+document.getElementById('btnHome').onclick = renderMap;
+renderMap();
+flushPending();
+
+/* ============ แบบฝึกจากครู (ด่านโบนัส · บล็อกพอร์ตได้ทุกเกม) ============
+   ดึงข้อจากคลังของครู (ผูก teacher+game) เมื่อเข้าร่วมห้อง แล้วเล่นเป็นด่านโบนัส
+   ใช้เฉพาะฟังก์ชัน/CSS ที่มีทุกเกม (.card/.btn/.note/.bar) + inline style */
+let CUSTOM_Q = [];
+function _bnStars(n){ let s=''; for(let i=0;i<3;i++) s+= i<n ? '★' : '<span style="color:rgba(8,74,36,.18)">★</span>'; return s; }
+function _bnRank(m){ return m===0?3 : m<=2?2 : 1; }
+function _bnEsc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function fetchCustomQuestions(){
+  const j=getJoin();
+  if(!j || !j.code){ CUSTOM_Q=[]; return; }
+  try{ const res=await sbRpc('get_class_questions',{p_join_code:j.code});
+    CUSTOM_Q=(res&&res.ok&&Array.isArray(res.questions))?res.questions:[];
+  }catch(e){ CUSTOM_Q=[]; }
+}
+async function refreshCustomQuestions(){ await fetchCustomQuestions(); injectBonusCard(); }
+function injectBonusCard(){
+  const old=document.getElementById('bonusCardWrap'); if(old) old.remove();
+  const cardsBtn=document.getElementById('btnCards'); if(!cardsBtn) return;   // อยู่หน้าแผนที่เท่านั้น
+  if(!getJoin() || !CUSTOM_Q.length) return;
+  const host=cardsBtn.closest('.card'); if(!host) return;
+  const wrap=document.createElement('div'); wrap.id='bonusCardWrap'; wrap.className='card';
+  wrap.style.cssText='margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-color:rgba(242,103,22,.45)';
+  wrap.innerHTML=`<div style="font-size:2rem">📝</div>
+    <div style="flex:1;min-width:190px">
+      <div style="font-weight:800">แบบฝึกจากครู <span style="color:var(--gold);letter-spacing:2px">${_bnStars(S.bonus||0)}</span></div>
+      <div class="small muted">${CUSTOM_Q.length} ข้อ ที่คุณครูสร้างเพิ่มสำหรับห้องนี้ · เล่นเก็บดาว ส่งคะแนนให้ครู</div>
+    </div>
+    <button class="btn gold" id="btnBonus">ทำแบบฝึก</button>`;
+  host.after(wrap);
+  document.getElementById('btnBonus').onclick=openBonus;
+}
+function openBonus(){
+  if(!CUSTOM_Q.length){ toast('ยังไม่มีแบบฝึกจากครู'); return; }
+  const Q=CUSTOM_Q, total=Q.length; let qi=0, wrong=0;
+  function draw(){
+    const q=Q[qi];
+    app.innerHTML=`
+      <div class="stagehead"><div class="ic" style="font-size:2rem">📝</div>
+        <div><h2 style="margin:0">แบบฝึกจากครู</h2><div class="muted small">ข้อ ${qi+1} / ${total}</div></div></div>
+      <div class="bar"><i id="pbar" style="width:${Math.round(qi/total*100)}%"></i></div>
+      <div class="note" style="border-left-color:var(--gold);background:rgba(242,103,22,.11)">ชุดแบบฝึกที่ <b>คุณครูของคุณ</b> สร้างเพิ่มเพื่อทบทวนโดยเฉพาะ 💪</div>
+      <div class="card">
+        <div style="font-size:1.05rem;font-weight:700;color:var(--deep);margin-bottom:10px">${_bnEsc(q.question)}</div>
+        <div id="bopts"></div>
+        <div id="bfb" style="display:none;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:.9rem"></div>
+        <div id="bnext" style="display:none;text-align:center;margin-top:14px">
+          <button class="btn primary" id="bnextBtn">${qi+1<total?'ข้อถัดไป →':'จบแบบฝึก'}</button>
+        </div>
+      </div>`;
+    const opts=document.getElementById('bopts');
+    (q.choices||[]).forEach((c,i)=>{
+      const b=document.createElement('button'); b.type='button';
+      b.style.cssText='display:block;width:100%;text-align:left;margin:8px 0;padding:12px 15px;border-radius:12px;border:1px solid var(--line);background:var(--panel2,rgba(255,255,255,.85));font-weight:600;color:var(--text,#04261E);cursor:pointer;font-family:inherit;font-size:.94rem';
+      b.innerHTML=_bnEsc(c); b.onclick=()=>pick(i,b); opts.appendChild(b);
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function pick(i,btn){
+    const q=Q[qi], correct=q.answer_index;
+    [...document.querySelectorAll('#bopts button')].forEach((b,bi)=>{ b.disabled=true;
+      if(bi===correct){ b.style.background='rgba(47,125,79,.16)'; b.style.borderColor='var(--lime)'; b.style.color='var(--deep)'; } });
+    if(i!==correct){ btn.style.background='rgba(231,57,13,.12)'; btn.style.borderColor='var(--bad)'; wrong++; }
+    const fb=document.getElementById('bfb'), ok=i===correct;
+    fb.style.display='block';
+    fb.style.background=ok?'rgba(47,125,79,.14)':'rgba(231,57,13,.11)';
+    fb.style.border='1px solid '+(ok?'rgba(47,125,79,.4)':'rgba(231,57,13,.35)');
+    fb.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ คำตอบที่ถูกคือ “'+_bnEsc(q.choices[correct])+'” ')+(q.explanation?'<br>'+_bnEsc(q.explanation):'');
+    document.getElementById('bnext').style.display='block';
+    document.getElementById('bnextBtn').onclick=()=>{ qi++; if(qi<total) draw(); else finish(); };
+  }
+  function finish(){
+    const got=_bnRank(wrong), xp=30+got*20;
+    if(got>(S.bonus||0)) S.bonus=got;
+    if(typeof S.xp==='number') S.xp+=xp;
+    save(); if(typeof syncHud==='function') syncHud();
+    submitProgress('teacher-bonus', got, S.xp||0);
+    app.innerHTML=`<div class="card" style="text-align:center;padding:8px">
+      <div style="font-size:2.4rem;letter-spacing:6px;color:var(--gold)">${_bnStars(got)}</div>
+      <h2 style="margin:.3em 0;color:var(--deep)">ทำแบบฝึกจากครูเสร็จแล้ว!</h2>
+      <div class="muted small">ได้รับ ${xp} XP</div>
+      <div class="note" style="border-left-color:var(--lime);background:rgba(47,125,79,.11);text-align:left">เยี่ยมมาก! คะแนนถูกส่งให้คุณครูอัตโนมัติแล้ว ⭐</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn ghost" id="bBack">🗺️ กลับแผนที่</button>
+        <button class="btn primary" id="bReplay">ทำอีกครั้ง</button>
+      </div></div>`;
+    document.getElementById('bBack').onclick=renderMap;
+    document.getElementById('bReplay').onclick=openBonus;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  draw();
+}
+const __bnRenderMap = renderMap; renderMap = function(){ __bnRenderMap.apply(this,arguments); injectBonusCard(); };
+const __bnSetJoin = setJoin; setJoin = function(o){ __bnSetJoin(o); refreshCustomQuestions(); };
+const __bnClearJoin = clearJoin; clearJoin = function(){ __bnClearJoin(); CUSTOM_Q=[]; const el=document.getElementById('bonusCardWrap'); if(el) el.remove(); };
+refreshCustomQuestions();
+
+/* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
+   ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
