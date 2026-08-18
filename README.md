@@ -10,3 +10,4 @@ education
 
 แดชบอร์ดครู: [`dashboard.html`](dashboard.html) · ตัวตรวจการเชื่อมต่อ: [`check.html`](check.html)
 วิธีตั้งค่า: [SETUPSUPABASE.md](SETUPSUPABASE.md) · [SETUPCLASSROOM.md](SETUPCLASSROOM.md)
+วิธีนำเกมอื่น ๆ ขึ้น GitHub: [ADDGAME.md](ADDGAME.md)
