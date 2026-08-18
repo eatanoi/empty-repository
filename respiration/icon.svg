@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="โรงไฟฟ้าไมโทคอนเดรีย">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8EC"/><stop offset="1" stop-color="#EAE4C6"/>
+    </linearGradient>
+    <clipPath id="matrix"><ellipse cx="256" cy="256" rx="176" ry="112"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <ellipse cx="256" cy="256" rx="200" ry="136" fill="#FBF3DE" stroke="#F26716" stroke-width="16"/>
+  <ellipse cx="256" cy="256" rx="176" ry="112" fill="#EBD9AE" stroke="#2F7D4F" stroke-width="14"/>
+  <g clip-path="url(#matrix)" fill="none" stroke-linecap="round">
+    <g stroke="#2F7D4F" stroke-width="34">
+      <path d="M150 380 L150 262"/><path d="M362 130 L362 250"/>
+    </g>
+    <g stroke="#FBF3DE" stroke-width="16">
+      <path d="M150 380 L150 262"/><path d="M362 130 L362 250"/>
+    </g>
+  </g>
+  <path d="M272 168 L214 268 h44 l-18 92 62 -108 h-46 z" fill="#E7390D" stroke="#FBF8EC" stroke-width="10" stroke-linejoin="round"/>
+</svg>
