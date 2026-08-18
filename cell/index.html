@@ -353,6 +353,19 @@ h3{font-size:1.05rem}
 .slot.numrow.wrong{animation:shakerow .35s}
 @keyframes shakerow{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 8px 26px -12px rgba(8,74,36,.45);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);text-align:center}
+.certform input:focus{outline:none;border-color:var(--green)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .5s}
+
 .buckets{display:grid;gap:10px;margin-top:14px}
 @media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
 .bucket{background:rgba(255,255,255,.66);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:96px;transition:.15s}
@@ -492,6 +505,7 @@ function renderMap(){
       </div>
       <button class="btn gold" id="btnCards">เปิดสำรับ</button>
     </div>
+    ${certCardHtml()}
     ${totalStars()>=15 ? `<div class="note key" style="margin-top:14px">
       🏅 <b>เหรียญนายกเทศมนตรีเซลล์!</b> ได้ ${totalStars()} ดาว — อ่านผังเมืองของเซลล์ได้ครบทุกส่วนแล้ว
     </div>`:''}
@@ -506,6 +520,7 @@ function renderMap(){
     });
   });
   document.getElementById('btnCards').onclick = renderCards;
+  const bc=document.getElementById('btnCert'); if(bc) bc.onclick = renderCert;
   document.getElementById('btnReset').onclick = ()=>{
     if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
       S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
@@ -1198,6 +1213,152 @@ function stageBoss(){
     });
   }
   step();
+}
+
+
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้) */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  nameX:0.50,             // จุดกึ่งกลางชื่อ (แนวนอน)
+  nameY:0.492,            // จุดกึ่งกลางชื่อ (แนวตั้ง) — กลางกรอบสีชมพู
+  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
+  nameSize:0.042,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
+  nameColor:'#0B2C1E'
+};
+const MAX_STARS = STAGES.length * 3;
+function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
+function certPassed(){
+  const allPlayed = STAGES.every(st => (S.stars[st.id]||0) > 0);
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  const j = (typeof getJoin==='function') ? getJoin() : null;
+  return localStorage.getItem('cell-cert-name') || (j && j.name) || '';
+}
+function certCardHtml(){
+  const need=certNeed(), got=totalStars(), ok=certPassed();
+  const pct=Math.min(100, Math.round(got/need*100));
+  return `<div class="card ${ok?'':'lockcard'}" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      border-color:${ok?'rgba(242,103,22,.5)':'var(--line)'}">
+    <div style="font-size:2rem">${ok?'🏅':'🔒'}</div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800">เกียรติบัตร${ok?' — ผ่านเกณฑ์แล้ว!':''}</div>
+      <div class="small muted">${ok
+        ? `เรียนครบทุกด่านและได้ ${got}/${MAX_STARS} ดาว (เกณฑ์ ${Math.round(CERT.pass*100)}% = ${need} ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย`
+        : `เล่นให้ครบทั้ง ${STAGES.length} ด่าน และเก็บดาวให้ถึง <b>${need}/${MAX_STARS}</b> ดาว (${Math.round(CERT.pass*100)}%) · ตอนนี้ได้ ${got} ดาว`}</div>
+      ${ok?'':`<div class="certprog"><i style="width:${pct}%"></i></div>`}
+    </div>
+    <button class="btn ${ok?'gold':''}" id="btnCert" ${ok?'':'disabled'}>รับเกียรติบัตร</button>
+  </div>`;
+}
+
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  const W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); }
+  else { certFallback(c, W, H); }
+  // ---- ชื่อผู้เรียน (ย่อขนาดอัตโนมัติจนพอดีกรอบ) ----
+  const maxW = W * CERT.nameW;
+  let size = W * CERT.nameSize;
+  const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = CERT.nameColor; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  c.strokeStyle = '#084A24'; c.lineWidth = W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle = '#F26716'; c.lineWidth = W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  const f=(px,w=700)=>`${w} ${px}px "Sukhumvit Set","Noto Sans Thai",sans-serif`;
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.font=f(W*0.03,400); c.fillStyle='#6B8A76';
+  c.fillText('(ยังไม่ได้วางไฟล์ cert-bg.png จึงใช้กรอบสำรองชั่วคราว)', W/2, H*0.20);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิก (e-learning)', W/2, H*0.63);
+  c.fillStyle='#D6350B'; c.font=f(W*0.026);
+  c.fillText('หน่วยที่ 3 เซลล์และการทำงานของเซลล์ เรื่อง โครงสร้างและหน้าที่ของเซลล์', W/2, H*0.70);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.80);
+  // กรอบใส่ชื่อ
+  const bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  const gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+
+function renderCert(){
+  if(!certPassed()){ toast('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  let img = null, nameNow = certName();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic" style="font-size:2rem">🏅</div>
+      <div style="flex:1;min-width:200px"><h2>เกียรติบัตร</h2>
+        <div class="sub">ผ่านเกณฑ์ ${Math.round(CERT.pass*100)}% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</div></div>
+    </div>
+    <div class="note key">🎓 ได้ <b>${totalStars()}/${MAX_STARS} ดาว</b> จากทั้ง ${STAGES.length} ด่าน
+      (เกณฑ์ผ่าน ${certNeed()} ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>
+    <div class="certform">
+      <input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="${escHtml(nameNow)}">
+      <button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>
+    </div>
+    <div class="certwrap"><canvas id="ccv"></canvas></div>
+    <div class="certbar">
+      <button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>
+      <button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>
+      <button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>
+    </div>
+    <div class="note small" style="margin-top:14px">
+      📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b>
+    </div>`;
+  const cv = document.getElementById('ccv'), inp = document.getElementById('cname');
+  function paint(){
+    const nm = (inp.value||'').trim();
+    if(!nm){ toast('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    localStorage.setItem('cell-cert-name', nm);
+    drawCert(cv, nm, img);
+    return true;
+  }
+  // โหลดภาพเกียรติบัตรของโรงเรียน ถ้าไม่มีก็ใช้กรอบสำรอง
+  const im = new Image();
+  im.onload = ()=>{ img = im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror = ()=>{ img = null; drawCert(cv, nameNow||'', null); };
+  im.src = CERT.src;
+
+  document.getElementById('cmake').onclick = paint;
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick = ()=>{
+    if(!paint()) return;
+    const nm = (inp.value||'').trim();
+    cv.toBlob(b=>{
+      const url = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = url; a.download = `เกียรติบัตร-${nm}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('บันทึกเกียรติบัตรแล้ว 🎉');
+    }, 'image/png');
+  };
+  document.getElementById('copen').onclick = ()=>{
+    if(!paint()) return;
+    cv.toBlob(b=>{ window.open(URL.createObjectURL(b), '_blank'); }, 'image/png');
+  };
+  document.getElementById('cback').onclick = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* =========================================================================
