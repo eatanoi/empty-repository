@@ -343,6 +343,7 @@ h3{font-size:1.05rem}
   background:var(--gold);color:#FFF7F0;font-weight:800;font-size:clamp(.68rem,2.4vw,.85rem);
   border:2px solid #fff;box-shadow:0 2px 6px rgba(8,74,36,.35)}
 .pin.done{background:var(--lime)}
+.pmask{position:absolute;background:#fff;border-radius:4px}
 .numgrid{display:grid;gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
 .slot.numrow{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
   min-width:0;text-align:left;white-space:normal;padding:9px 12px}
@@ -595,10 +596,11 @@ function labelBoard(svgInner, parts){
 }
 /* กระดานติดป้ายแบบใช้ภาพจริง
    parts: {key, label, u, v, info} — u,v = ตำแหน่งภาพขยายในภาพ คิดเป็นสัดส่วน 0–1 */
-function photoBoard(src, parts){
+function photoBoard(src, parts, masks){
   const pc = n => (n*100).toFixed(2)+'%';
   return `<div class="photo"><div class="pimg">
-    <img src="${src}" alt="แผนภาพเซลล์พร้อมภาพขยายของออร์แกเนลล์">
+    <img src="${src}" alt="แผนภาพประกอบด่าน">
+    ${(masks||[]).map(m=>`<div class="pmask" style="left:${pc(m.x)};top:${pc(m.y)};width:${pc(m.w)};height:${pc(m.h)}"></div>`).join('')}
     ${parts.map((p,i)=>`<div class="pin" id="pin-${p.key}" style="left:${pc(p.u)};top:${pc(p.v)}">${i+1}</div>`).join('')}
   </div></div>
   <div class="bank" id="bank">
@@ -728,17 +730,59 @@ const MEMB_PARTS = [
   { key:'bi',   label:'ฟอสโฟลิพิดสองชั้น', x:1076, y:700, ax:1128, ay:430,
     info:'Phospholipid bilayer — โครงหลักของเยื่อ เรียงเป็น <b>2 ชั้น</b> หัวออก–หางเข้า เป็นที่มาของสมบัติ “เยื่อเลือกผ่าน”' }
 ];
+/* ---- ใช้ภาพเยื่อหุ้มเซลล์ของ สสวท. ถ้ามีไฟล์ membrane.png ----
+   u,v = ตำแหน่งจุดหมายเลข (สัดส่วนของภาพ 0–1)
+   MEMB_MASKS = แผ่นสีขาวปิดข้อความชื่อโครงสร้างที่พิมพ์มาบนภาพ ไม่ให้นักเรียนเห็นเฉลย
+   ปรับตัวเลขทั้งสองชุดได้ที่นี่จุดเดียว */
+const MEMB_PHOTO = 'membrane.png';
+const MEMB_MASKS = [
+  { x:.100, y:.165, w:.165, h:.075 },   // ภายนอกเซลล์
+  { x:.245, y:.130, w:.310, h:.105 },   // โปรตีนที่แทรกหรืออยู่ที่ผิวทั้งสองด้านของฟอสโฟลิพิด
+  { x:.205, y:.285, w:.155, h:.075 },   // ไกลโคลิพิด
+  { x:.125, y:.445, w:.195, h:.075 },   // ฟอสโฟลิพิด
+  { x:.145, y:.605, w:.205, h:.075 },   // ภายในเซลล์
+  { x:.715, y:.285, w:.205, h:.075 },   // ไกลโคโปรตีน
+  { x:.690, y:.615, w:.230, h:.075 },   // คอเลสเตอรอล
+  { x:.580, y:.675, w:.210, h:.075 },   // ไซโทสเกเลตอน
+  { x:.290, y:.760, w:.440, h:.120 }    // ชื่อภาพด้านล่าง
+];
+const MEMB_PHOTO_PARTS = [
+  { key:'out',  label:'ภายนอกเซลล์',        u:.500, v:.215,
+    info:'บริเวณเหนือเยื่อหุ้มเซลล์ — เป็นด้านที่มีสายน้ำตาลของไกลโคโปรตีนและไกลโคลิพิดยื่นออกมา' },
+  { key:'glip', label:'ไกลโคลิพิด',          u:.348, v:.300,
+    info:'Glycolipid — <b>ลิพิดที่มีสายน้ำตาลต่ออยู่</b> ยื่นออกด้านนอกเซลล์ ใช้เป็นเครื่องหมายและช่วยให้เซลล์จำกันได้' },
+  { key:'gpro', label:'ไกลโคโปรตีน',         u:.700, v:.300,
+    info:'Glycoprotein — <b>โปรตีนที่มีสายน้ำตาล</b>ยื่นออกนอกเซลล์ เป็นเครื่องหมายประจำเซลล์ เช่น หมู่เลือด' },
+  { key:'prot', label:'โปรตีนแทรกในเยื่อ',   u:.575, v:.520,
+    info:'Membrane protein — โปรตีนที่<b>แทรกทะลุเยื่อหรือเกาะอยู่ที่ผิว</b> ทำหน้าที่เป็นช่อง ตัวพา ตัวรับ และเอนไซม์' },
+  { key:'phos', label:'ฟอสโฟลิพิดสองชั้น',   u:.300, v:.470,
+    info:'Phospholipid bilayer — เรียงสองชั้น <b>หัวชอบน้ำหันออก · หางไม่ชอบน้ำหันเข้า</b> เป็นโครงหลักของเยื่อ' },
+  { key:'chol', label:'คอเลสเตอรอล',         u:.690, v:.530,
+    info:'Cholesterol — แทรกอยู่ระหว่างหางไขมัน <b>คุมความยืดหยุ่นของเยื่อ</b> ไม่ให้แข็งหรือเหลวเกินไป' },
+  { key:'cyto', label:'ไซโทสเกเลตอน',        u:.530, v:.640,
+    info:'Cytoskeleton — เส้นใยโปรตีนใต้เยื่อด้านในเซลล์ ค้ำรูปทรงและยึดโปรตีนของเยื่อให้อยู่กับที่' },
+  { key:'in',   label:'ภายในเซลล์',          u:.430, v:.700,
+    info:'บริเวณใต้เยื่อหุ้มเซลล์ คือ<b>ไซโทพลาซึม</b> — ด้านที่มีไซโทสเกเลตอนอยู่' }
+];
+
 function stageMemb(){
+  // มีไฟล์ภาพจริงก็ใช้ภาพจริง (จุดหมายเลข) ถ้ายังไม่ได้อัปก็เล่นด้วยภาพวาด SVG ในตัวเกม
+  withImage(MEMB_PHOTO, ()=>build(MEMB_PHOTO_PARTS, photoBoard(MEMB_PHOTO, MEMB_PHOTO_PARTS, MEMB_MASKS),
+                                  'ดูภาพเยื่อหุ้มเซลล์ที่มีหมายเลขกำกับ แล้วแตะชื่อส่วนประกอบ → แตะหมายเลขที่ตรงกัน'),
+                       ()=>build(MEMB_PARTS, labelBoard(membraneSvg(), MEMB_PARTS),
+                                 'แตะชื่อส่วนประกอบ แล้วแตะช่องว่างที่ตรงกับตำแหน่งในภาพ'));
+
+  function build(parts, board, how){
   app.innerHTML = stageShell('memb', `
-    <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่อส่วนประกอบ แล้วแตะช่องว่างที่ตรงกับตำแหน่งในภาพ — ติดให้ครบ ${MEMB_PARTS.length} จุดโดยผิดน้อยที่สุด</div>
+    <div class="note">🎯 <b>ภารกิจ:</b> ${how} — ติดให้ครบ ${parts.length} จุดโดยผิดน้อยที่สุด</div>
     <div class="bar"><i id="pb" style="width:0%"></i></div>
-    ${labelBoard(membraneSvg(), MEMB_PARTS)}
+    ${board}
     <div class="note key" style="margin-top:16px">
       💡 <b>หัวใจของด่านนี้:</b> แกนกลางที่เป็น<b>หางไขมัน</b>คือด่านจริง — สารที่ละลายในไขมันผ่านฉลุย
       ส่วนไอออนและโมเลกุลใหญ่ที่ละลายน้ำต้องอาศัย<b>โปรตีน</b>เป็นประตู
     </div>
   `);
-  bindLabelBoard(MEMB_PARTS, mistakes=>{
+  bindLabelBoard(parts, mistakes=>{
     const got = mistakes<=1?3:mistakes<=3?2:1;
     finishStage('memb', got, 60-Math.min(mistakes*6,30), `
       <div class="note key">🟡 <b>สรุปที่ต้องจำ — แบบจำลองโมเสกของไหล (fluid mosaic model)</b><br>
@@ -750,6 +794,7 @@ function stageMemb(){
         ส่วนโมเลกุลใหญ่กว่าแต่ละลายในไขมัน (เช่น ฮอร์โมนสเตอรอยด์) ผ่านได้สบาย</div>
       <div class="small muted">ผิดทั้งหมด ${mistakes} ครั้ง</div>`, mistakes);
   });
+  }
 }
 
 /* =========================================================================
