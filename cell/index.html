@@ -429,7 +429,7 @@ const app   = document.getElementById('app');
 const toastEl = document.getElementById('toast');
 const SAVE_KEY = 'cell-structure-quest-v1';
 
-const defaultState = { xp:0, stars:{}, plays:{} };
+const defaultState = { xp:0, stars:{}, plays:{}, secs:{}, miss:{} };
 let S = load();
 
 function load(){
@@ -548,6 +548,9 @@ function finishStage(id, got, xp, summaryHtml, misses){
   S.plays = S.plays || {}; S.plays[id] = (S.plays[id]||0) + 1;
   S.xp+=xp; save(); syncHud();
   const secs = stageT0 ? Math.round((Date.now()-stageT0)/1000) : 0;
+  S.secs = S.secs || {}; S.miss = S.miss || {};
+  S.secs[id] = secs; S.miss[id] = misses||0;   // เก็บไว้เผื่อเข้าร่วมห้องทีหลัง จะได้ส่งเวลาจริงตามไปด้วย
+  save();
   sendScore(id, got, misses||0, secs);   // ส่งคะแนนให้ครู (ถ้าเข้าร่วมห้อง)
   app.innerHTML = `
     <div class="card result">
@@ -1544,7 +1547,7 @@ function sendScore(stageId, starsGot, misses, seconds){
 function syncAllStars(){
   STAGES.forEach((st,i)=>{
     const got = S.stars[st.id]||0; if(!got) return;
-    sendScore(st.id, got, 0, 0);
+    sendScore(st.id, got, (S.miss&&S.miss[st.id])||0, (S.secs&&S.secs[st.id])||0);
   });
 }
 
