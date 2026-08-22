@@ -163,7 +163,8 @@ function saveCfg(){ try{ localStorage.setItem(CFG_KEY, JSON.stringify(CFG)); }ca
 
 let ROOMS=[], ROWS=[], ALL=[], TAB='overview', SOCK=null, POLL=null, LIVE='off';
 /* ชื่อเกมสำหรับแสดงผล — แถวเก่าที่ยังไม่มีคอลัมน์ game ถือเป็นเกมภารกิจพันธุกรรม */
-const GAME_NAMES={ genetics:'ภารกิจพันธุกรรม', cell:'มหานครเซลล์', respiration:'โรงไฟฟ้าไมโทคอนเดรีย' };
+const GAME_NAMES={ genetics:'ภารกิจพันธุกรรม', cell:'มหานครเซลล์',
+                   transport:'ด่านศุลกากรเซลล์', respiration:'โรงไฟฟ้าไมโทคอนเดรีย' };
 function gameOf(r){ return r.game || 'genetics'; }
 function gameName(g){ return GAME_NAMES[g] || g; }
 
