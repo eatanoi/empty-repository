@@ -249,12 +249,18 @@ function fillRoomSelect(){
     || '<option value="">— ยังไม่มีห้อง —</option>';
   if(cur && list.some(r=>r.room===cur)) $('#selRoom').value=cur;
 }
+/* แสดงเกมที่มีคะแนนในห้องนี้ก่อน แล้วต่อท้ายด้วยเกมที่รู้จักแต่ยังไม่มีข้อมูล
+   (เพื่อให้ครูเห็นว่าเกมนั้นมีอยู่ในระบบ เพียงแต่ยังไม่มีนักเรียนส่งคะแนน) */
 function fillGameSelect(){
-  const games=Array.from(new Set(ALL.map(gameOf))).sort();
+  const found=new Set(ALL.map(gameOf));
+  const known=Object.keys(GAME_NAMES);
+  const list=known.filter(g=>found.has(g))
+    .concat(Array.from(found).filter(g=>known.indexOf(g)<0).sort())
+    .concat(known.filter(g=>!found.has(g)));
   const cur=$('#selGame').value;
   $('#selGame').innerHTML='<option value="">ทั้งหมด</option>'+
-    games.map(g=>'<option value="'+esc(g)+'">'+esc(gameName(g))+'</option>').join('');
-  if(cur && games.indexOf(cur)>=0) $('#selGame').value=cur;
+    list.map(g=>'<option value="'+esc(g)+'">'+esc(gameName(g))+(found.has(g)?'':' (ยังไม่มีข้อมูล)')+'</option>').join('');
+  if(cur && list.indexOf(cur)>=0) $('#selGame').value=cur;
 }
 function applyGame(){
   const g=$('#selGame').value||'';
