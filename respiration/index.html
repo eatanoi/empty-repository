@@ -137,6 +137,18 @@ h3{font-size:1.05rem}
 .modal .mrow .btn{flex:1}
 .modal .mmsg{font-size:.85rem;margin-top:10px;min-height:1em;color:var(--muted)}
 .modal .mmsg.err{color:var(--bad)}
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 18px 40px -22px rgba(8,74,36,.55);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.certform input:focus{outline:none;border-color:var(--green)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .5s}
 .hero{text-align:center;padding:14px 12px 8px}
 .hero h1{font-size:clamp(1.7rem,5.2vw,2.6rem);margin-bottom:.25em;
   background:linear-gradient(100deg,var(--deep),#2F7D4F 42%,var(--gold));
@@ -441,6 +453,7 @@ function renderMap(){
       </div>
       <button class="btn gold" id="btnCards">เปิดสำรับ</button>
     </div>
+    ${certCardHtml()}
     ${totalStars()>=15 ? `<div class="note key" style="margin-top:14px">
       🏅 <b>เหรียญวิศวกรพลังงานเซลล์!</b> ได้ ${totalStars()} ดาว — เข้าใจครบทั้ง 4 ขั้นของการหายใจแบบใช้ออกซิเจนแล้ว
     </div>`:''}
@@ -455,6 +468,8 @@ function renderMap(){
     });
   });
   document.getElementById('btnCards').onclick = renderCards;
+  const certBtn = document.getElementById('btnCert');
+  if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
   document.getElementById('btnReset').onclick = ()=>{
     if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
       S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
@@ -471,14 +486,23 @@ function stageShell(id, extraHtml=''){
       <div style="flex:1;min-width:200px"><h2>${st.title}</h2><div class="sub">${st.desc}</div></div>
     </div>${extraHtml}`;
 }
+let stageT0 = 0;        // เวลาเริ่มด่าน ใช้คำนวณเวลาที่ใช้ต่อด่าน
+let stageMiss = 0;      // จำนวนครั้งที่ตอบผิดในด่านที่กำลังเล่น (ตั้งค่าก่อนเรียก finishStage)
 function openStage(id){
   window.scrollTo({top:0});
+  stageT0 = Date.now(); stageMiss = 0;
   ({mito:stageMito, glyco:stageGlyco, krebs:stageKrebs, etc:stageETC, ledger:stageLedger, boss:stageBoss})[id]();
 }
 function finishStage(id, got, xp, summaryHtml){
   const prev=S.stars[id]||0; if(got>prev) S.stars[id]=got;
+  S.plays = S.plays || {}; S.plays[id] = (S.plays[id]||0) + 1;
   S.xp+=xp; save(); syncHud();
-  submitProgress(id, got, S.xp);   // ส่งดาวเข้าระบบชั้นเรียน (ถ้าเข้าร่วมห้อง)
+  const secs = stageT0 ? Math.round((Date.now()-stageT0)/1000) : 0;
+  const misses = Math.max(0, stageMiss|0); stageMiss = 0;
+  S.secs = S.secs || {}; S.miss = S.miss || {};
+  S.secs[id] = secs; S.miss[id] = misses;   // เก็บไว้เผื่อเข้าร่วมห้องทีหลัง จะได้ส่งเวลาจริงตามไปด้วย
+  save();
+  sendScore(id, got, misses, secs);   // ส่งคะแนนให้ครู (ถ้าเข้าร่วมห้อง)
   app.innerHTML = `
     <div class="card result">
       <div class="big">${stars(got)}</div>
@@ -604,7 +628,7 @@ function stageMito(){
   });
   function done(){
     const got = mistakes<=1?3:mistakes<=3?2:1;
-    finishStage('mito', got, 60-Math.min(mistakes*6,30), `
+    stageMiss=mistakes; finishStage('mito', got, 60-Math.min(mistakes*6,30), `
       <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
         • ไมโทคอนเดรียมีเยื่อหุ้ม <b>2 ชั้น</b> เยื่อชั้นในพับเป็น <b>คริสตี</b> เพิ่มพื้นที่ผิว<br>
         • <b>เมทริกซ์</b> = ที่เกิดการออกซิไดซ์ไพรูเวต + วัฏจักรเครบส์ · <b>เยื่อชั้นใน</b> = ที่เกิดการถ่ายทอดอิเล็กตรอน<br>
@@ -692,7 +716,7 @@ function stageGlyco(){
   render();
   function done(){
     const got = wrong<=1?3:wrong<=3?2:1;
-    finishStage('glyco', got, 70-Math.min(wrong*8,45), `
+    stageMiss=wrong; finishStage('glyco', got, 70-Math.min(wrong*8,45), `
       <div class="note key">🟡 <b>บัญชีของไกลโคไลซิส (ต่อกลูโคส 1 โมเลกุล)</b><br>
         ลงทุน ATP 2 → ผลิต ATP 4 → <b>กำไรสุทธิ ATP = 2</b><br>
         ได้ <b>NADH 2</b> และ <b>ไพรูเวต 2</b> โมเลกุล (ยังไม่ปล่อย CO₂ เลยในขั้นนี้)</div>
@@ -805,7 +829,7 @@ function stageKrebs(){
   render();
   function done(){
     const got = wrong<=1?3:wrong<=3?2:1;
-    finishStage('krebs', got, 85-Math.min(wrong*8,50), `
+    stageMiss=wrong; finishStage('krebs', got, 85-Math.min(wrong*8,50), `
       <div class="note key">🟡 <b>รวมยอดหลังจบเครบส์ (ต่อกลูโคส 1 โมเลกุล)</b><br>
         การออกซิไดซ์ไพรูเวต: CO₂ 2 · NADH 2<br>
         วัฏจักรเครบส์ (2 รอบ): CO₂ 4 · NADH 6 · FADH₂ 2 · ATP 2<br>
@@ -866,7 +890,7 @@ function stageETC(){
   });
   function done(){
     const got = wrong<=1?3:wrong<=3?2:1;
-    finishStage('etc', got, 85-Math.min(wrong*7,50), `
+    stageMiss=wrong; finishStage('etc', got, 85-Math.min(wrong*7,50), `
       <div class="note key">🟡 <b>สรุปที่ต้องจำ — ระบบถ่ายทอดอิเล็กตรอน</b><br>
         NADH/FADH₂ → คอมเพล็กซ์ I → Q → III → ไซโทโครม ซี → IV → <b>O₂ → H₂O</b><br>
         พลังงานถูกใช้ปั๊ม H⁺ สะสมในช่องระหว่างเยื่อ แล้ว <b>ATP synthase</b> ปั่นเป็น ATP (เคมิออสโมซิส)</div>
@@ -1015,7 +1039,7 @@ function stageLedger(){
   }
   function done(){
     const got = wrongQ===0?3:wrongQ===1?2:1;
-    finishStage('ledger', got, 100-wrongQ*15, `
+    stageMiss=wrongQ; finishStage('ledger', got, 100-wrongQ*15, `
       <div class="note key">🟡 <b>บัญชี ATP ต่อกลูโคส 1 โมเลกุล (ค่าดั้งเดิม)</b><br>
         ไกลโคไลซิส 2 + เครบส์ 2 (ATP ตรง) + ETC 34 = <b>38 (โพรคาริโอต)</b> · <b>36 (ยูคาริโอต)</b><br>
         แบบไม่ใช้ออกซิเจน (การหมัก) ได้เพียง <b>2 ATP</b> — ต่างกันเกือบ 20 เท่า!</div>
@@ -1079,7 +1103,7 @@ function stageBoss(){
     pb.style.width=(i/SC.length*100)+'%';
     if(i>=SC.length){
       const got = right>=6?3:right>=4?2:right>=2?1:0;
-      finishStage('boss', got, right*22, `
+      stageMiss=SC.length-right; finishStage('boss', got, right*22, `
         <div class="note key">🟡 <b>สรุปการหมัก (เมื่อไม่มีออกซิเจน)</b><br>
           <b>หมักกรดแลกติก</b> — ไพรูเวต → แลกเทต · ไม่ปล่อย CO₂ · ในกล้ามเนื้อคนและแบคทีเรียนมเปรี้ยว<br>
           <b>หมักแอลกอฮอล์</b> — ไพรูเวต → เอทานอล + CO₂ · ในยีสต์ (ทำขนมปัง เบียร์ ไวน์)<br>
@@ -1226,56 +1250,233 @@ function renderCards(){
   draw(); window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ================= ระบบชั้นเรียน (เชื่อม Supabase) =================
-   นักเรียนกรอกรหัสห้อง+ชื่อ แล้วเกมส่งดาวเข้าระบบให้ครูเห็น
-   ถ้าไม่เข้าร่วมห้อง/ออฟไลน์ เกมก็เล่นได้ปกติ (เก็บคะแนนในเครื่องเหมือนเดิม)
-   * ใช้คีย์ resp-* แยกจากเกมสังเคราะห์แสง (ห้อง/คะแนนคนละชุด) */
-const SB_URL  = 'https://pitraobqnvtfzqddpizb.supabase.co';
-const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpdHJhb2JxbnZ0ZnpxZGRwaXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNjk0NjUsImV4cCI6MjA5OTg0NTQ2NX0.PQJLLkRyB51-_-uUB_AYYfU4wphNovTD-9d1pCSw0jE';
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้) */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  nameX:0.50,             // จุดกึ่งกลางชื่อ (แนวนอน)
+  nameY:0.492,            // จุดกึ่งกลางชื่อ (แนวตั้ง) — กลางกรอบสีชมพู
+  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
+  nameSize:0.042,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
+  nameColor:'#0B2C1E'
+};
+const MAX_STARS = STAGES.length * 3;
+function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
+function certPassed(){
+  const allPlayed = STAGES.every(st => (S.stars[st.id]||0) > 0);
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  const j = (typeof getJoin==='function') ? getJoin() : null;
+  return localStorage.getItem('resp-cert-name') || (j && j.name) || '';
+}
+function certCardHtml(){
+  const need=certNeed(), got=totalStars(), ok=certPassed();
+  const pct=Math.min(100, Math.round(got/need*100));
+  return `<div class="card ${ok?'':'lockcard'}" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      border-color:${ok?'rgba(242,103,22,.5)':'var(--line)'}">
+    <div style="font-size:2rem">${ok?'🏅':'🔒'}</div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800">เกียรติบัตร${ok?' — ผ่านเกณฑ์แล้ว!':''}</div>
+      <div class="small muted">${ok
+        ? `เรียนครบทุกด่านและได้ ${got}/${MAX_STARS} ดาว (เกณฑ์ ${Math.round(CERT.pass*100)}% = ${need} ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย`
+        : `เล่นให้ครบทั้ง ${STAGES.length} ด่าน และเก็บดาวให้ถึง <b>${need}/${MAX_STARS}</b> ดาว (${Math.round(CERT.pass*100)}%) · ตอนนี้ได้ ${got} ดาว`}</div>
+      ${ok?'':`<div class="certprog"><i style="width:${pct}%"></i></div>`}
+    </div>
+    <button class="btn ${ok?'gold':''}" id="btnCert" ${ok?'':'disabled'}>รับเกียรติบัตร</button>
+  </div>`;
+}
+
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  const W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); }
+  else { certFallback(c, W, H); }
+  // ---- ชื่อผู้เรียน (ย่อขนาดอัตโนมัติจนพอดีกรอบ) ----
+  const maxW = W * CERT.nameW;
+  let size = W * CERT.nameSize;
+  const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = CERT.nameColor; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  c.strokeStyle = '#084A24'; c.lineWidth = W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle = '#F26716'; c.lineWidth = W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  const f=(px,w=700)=>`${w} ${px}px "Sukhumvit Set","Noto Sans Thai",sans-serif`;
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.font=f(W*0.03,400); c.fillStyle='#6B8A76';
+  c.fillText('(ยังไม่ได้วางไฟล์ cert-bg.png จึงใช้กรอบสำรองชั่วคราว)', W/2, H*0.20);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.63);
+  c.fillStyle='#D6350B'; c.font=f(W*0.026);
+  c.fillText('หน่วยที่ 3 เซลล์และการทำงานของเซลล์ เรื่อง การหายใจระดับเซลล์', W/2, H*0.70);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.80);
+  // กรอบใส่ชื่อ
+  const bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  const gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+
+function renderCert(){
+  if(!certPassed()){ toast('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  let img = null, nameNow = certName();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic" style="font-size:2rem">🏅</div>
+      <div style="flex:1;min-width:200px"><h2>เกียรติบัตร</h2>
+        <div class="sub">ผ่านเกณฑ์ ${Math.round(CERT.pass*100)}% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</div></div>
+    </div>
+    <div class="note key">🎓 ได้ <b>${totalStars()}/${MAX_STARS} ดาว</b> จากทั้ง ${STAGES.length} ด่าน
+      (เกณฑ์ผ่าน ${certNeed()} ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>
+    <div class="certform">
+      <input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="${escHtml(nameNow)}">
+      <button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>
+    </div>
+    <div class="certwrap"><canvas id="ccv"></canvas></div>
+    <div class="certbar">
+      <button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>
+      <button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>
+      <button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>
+    </div>
+    <div class="note small" style="margin-top:14px">
+      📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b>
+    </div>`;
+  const cv = document.getElementById('ccv'), inp = document.getElementById('cname');
+  function paint(){
+    const nm = (inp.value||'').trim();
+    if(!nm){ toast('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    localStorage.setItem('resp-cert-name', nm);
+    drawCert(cv, nm, img);
+    return true;
+  }
+  // โหลดภาพเกียรติบัตรของโรงเรียน ถ้าไม่มีก็ใช้กรอบสำรอง
+  const im = new Image();
+  im.onload = ()=>{ img = im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror = ()=>{ img = null; drawCert(cv, nameNow||'', null); };
+  im.src = CERT.src;
+
+  document.getElementById('cmake').onclick = paint;
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick = ()=>{
+    if(!paint()) return;
+    const nm = (inp.value||'').trim();
+    cv.toBlob(b=>{
+      const url = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = url; a.download = `เกียรติบัตร-${nm}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('บันทึกเกียรติบัตรแล้ว 🎉');
+    }, 'image/png');
+  };
+  document.getElementById('copen').onclick = ()=>{
+    if(!paint()) return;
+    cv.toBlob(b=>{ window.open(URL.createObjectURL(b), '_blank'); }, 'image/png');
+  };
+  document.getElementById('cback').onclick = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= ระบบชั้นเรียน =================
+   ใช้ฐานข้อมูล Supabase ชุดเดียวกับเกมภารกิจพันธุกรรม/มหานครเซลล์ คะแนนจึงขึ้นแดชบอร์ดครูหน้าเดิม
+   นักเรียนกรอกรหัสห้อง (เช่น M401A) + ชื่อ → จบด่านแล้วคะแนนวิ่งเข้าตาราง scores
+   แถวของเกมนี้กำกับด้วยคอลัมน์ game = 'respiration' และเลขด่าน 31–36 เพื่อไม่ปนกับเกมอื่น
+   ถ้าไม่เข้าร่วมห้องหรือเน็ตหลุด เกมยังเล่นได้ปกติ คะแนนจะพักไว้แล้วส่งเองเมื่อกลับมาออนไลน์ */
+const SB_URL  = 'https://vgurqbcbovgeppvdwizr.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
+const GAME_KEY   = 'respiration';   // ใช้แยกคะแนนของแต่ละเกมในแดชบอร์ด
+const LEVEL_BASE = 30;              // ด่าน 1–6 ของเกมนี้ = เลข 31–36 ในตารางคะแนน
 
 function getJoin(){ try{ return JSON.parse(localStorage.getItem('resp-class')||'null'); }catch(e){ return null; } }
 function setJoin(o){ localStorage.setItem('resp-class', JSON.stringify(o)); }
 function clearJoin(){ localStorage.removeItem('resp-class'); }
+function newSid(){ return 'S'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-async function sbRpc(fn, body){
-  const r = await fetch(SB_URL+'/rest/v1/rpc/'+fn, {
+/* ---- คิวคะแนน กันเน็ตหลุด ---- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem('resp-outbox')||'[]'); }catch(e){ return []; } }
+function setOutbox(q){ try{ localStorage.setItem('resp-outbox', JSON.stringify(q)); }catch(e){} }
+
+async function pushRow(row){
+  const r = await fetch(SB_URL+'/rest/v1/scores', {
     method:'POST',
-    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON, 'Content-Type':'application/json' },
-    body: JSON.stringify(body)
+    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON,
+              'Content-Type':'application/json', 'Prefer':'return=minimal' },
+    body: JSON.stringify(row)
   });
-  if(!r.ok) throw new Error('http '+r.status);
-  return r.json();
+  if(!r.ok){
+    let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
+    const err = new Error('http '+r.status+(d?' · '+d:'')); err.status = r.status; throw err;
+  }
 }
-
-/* คิวคะแนนที่ส่งไม่สำเร็จ (ออฟไลน์) แล้วส่งซ้ำตอนเปิดเกมครั้งหน้า */
-function queuePending(p){ const q=JSON.parse(localStorage.getItem('resp-pending')||'[]'); q.push(p); localStorage.setItem('resp-pending',JSON.stringify(q)); }
+/* ส่งคะแนนที่ค้างอยู่ในคิว (เงียบ ๆ ไม่บล็อกการเล่น) */
 async function flushPending(){
-  let q=JSON.parse(localStorage.getItem('resp-pending')||'[]'); if(!q.length) return;
-  const keep=[];
-  for(const p of q){ try{ await sbRpc('submit_progress',p); }catch(e){ keep.push(p); } }
-  localStorage.setItem('resp-pending', JSON.stringify(keep));
+  const q = outbox(); if(!q.length) return;
+  const keep = [];
+  for(const row of q){
+    try{ await pushRow(row); }
+    catch(e){ keep.push(row); if(e.status===400 || e.status===404) break; }
+  }
+  setOutbox(keep.slice(-200));
 }
 
-/* ส่งดาวของด่านเข้าระบบ (เงียบ ๆ ไม่บล็อกการเล่น) */
-async function submitProgress(stageId, starsGot, xp){
-  const j=getJoin(); if(!j || !j.code || !j.name) return;
-  const payload={ p_join_code:j.code, p_student_name:j.name, p_stage_id:stageId, p_stars:starsGot, p_xp:xp||0 };
-  try{ await sbRpc('submit_progress', payload); }catch(e){ queuePending(payload); }
+/* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
+function sendScore(stageId, starsGot, misses, seconds){
+  const j = getJoin(); if(!j || !j.room || !j.name) return;
+  const idx = STAGES.findIndex(x=>x.id===stageId);
+  const st  = STAGES[idx] || { title: stageId };
+  const row = {
+    uid: j.sid+'-'+stageId+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    room: j.room, student: String(j.name).trim().slice(0,60), sid: j.sid,
+    game: GAME_KEY,
+    level: LEVEL_BASE + (idx>=0?idx+1:9),
+    level_name: 'หายใจ · ด่าน '+(idx+1)+' '+st.title,
+    stars: starsGot, percent: Math.round(starsGot/3*100),
+    score: starsGot, max_score: 3,
+    seconds: Math.max(0, Math.min(seconds|0, 86400)),
+    misses: Math.max(0, Math.min(misses|0, 9999)),
+    total_stars: totalStars(),
+    attempt: (S.plays && S.plays[stageId]) || 1,
+    client_ts: new Date().toISOString()
+  };
+  const q = outbox(); q.push(row); setOutbox(q.slice(-200));
+  flushPending();
+}
+/* ส่งดาวที่เคยได้ทั้งหมดตอนเพิ่งเข้าร่วมห้อง (นับเป็นครั้งที่ 1) */
+function syncAllStars(){
+  STAGES.forEach(st=>{
+    const got = S.stars[st.id]||0; if(!got) return;
+    sendScore(st.id, got, (S.miss&&S.miss[st.id])||0, (S.secs&&S.secs[st.id])||0);
+  });
 }
 
-/* ส่งดาวเดิมทั้งหมดตอนเพิ่งเข้าร่วมห้อง */
-async function syncAllStars(){
-  for(const s of STAGES){ const st=S.stars[s.id]||0; if(st>0) await submitProgress(s.id, st, S.xp); }
-}
-
-/* ชิปสถานะชั้นเรียนบนหน้าแผนที่ */
+/* ---- ชิปสถานะชั้นเรียนบนหน้าแผนที่ ---- */
 function renderClassChip(){
   const slot=document.getElementById('classSlot'); if(!slot) return;
   const j=getJoin();
-  if(j && j.code){
-    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.className||j.code)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>`;
-    slot.querySelector('#leaveClass').onclick=()=>{ if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); } };
+  if(j && j.room){
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>`;
+    slot.querySelector('#leaveClass').onclick=()=>{
+      if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
+    };
   }else{
     slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
     slot.querySelector('#joinBtn').onclick=openJoinModal;
@@ -1283,33 +1484,30 @@ function renderClassChip(){
 }
 
 function openJoinModal(){
+  const j = getJoin() || {};
   const bg=document.createElement('div'); bg.className='modalbg';
   bg.innerHTML=`<div class="modal">
     <h3>🏫 เข้าร่วมชั้นเรียน</h3>
     <div class="msub">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</div>
-    <label>รหัสห้อง</label><input id="jcode" maxlength="6" placeholder="เช่น ABC123" autocomplete="off" autocapitalize="characters">
-    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off">
+    <label>รหัสห้อง</label><input id="jcode" maxlength="12" placeholder="เช่น M401A" autocomplete="off" autocapitalize="characters" value="${escHtml(j.room||'')}">
+    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
     <div class="mmsg" id="jmsg"></div>
     <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">การเข้าร่วมจะส่งชื่อและคะแนนให้ครู · <a href="/privacy/" target="_blank" style="color:var(--green)">นโยบายความเป็นส่วนตัว</a></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น</div>
   </div>`;
   document.body.appendChild(bg);
   const close=()=>bg.remove();
   bg.addEventListener('click',e=>{ if(e.target===bg) close(); });
   bg.querySelector('#jcancel').onclick=close;
   const codeEl=bg.querySelector('#jcode'), nameEl=bg.querySelector('#jname'), msg=bg.querySelector('#jmsg');
-  bg.querySelector('#jok').onclick=async ()=>{
-    const code=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
-    if(code.length<6){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้อง 6 ตัว'; return; }
+  bg.querySelector('#jok').onclick=()=>{
+    const room=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
+    if(!room){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้องที่ครูให้'; return; }
     if(!name){ msg.className='mmsg err'; msg.textContent='กรอกชื่อของคุณ'; return; }
-    msg.className='mmsg'; msg.textContent='กำลังตรวจรหัส…';
-    try{
-      const res=await sbRpc('check_class',{p_join_code:code});
-      if(!res || !res.ok){ msg.className='mmsg err'; msg.textContent='ไม่พบรหัสห้องนี้ ลองตรวจอีกครั้ง'; return; }
-      setJoin({code, name, className:res.class_name});
-      close(); renderClassChip(); toast('เข้าร่วมห้อง '+(res.class_name||code)+' แล้ว');
-      syncAllStars();
-    }catch(e){ msg.className='mmsg err'; msg.textContent='เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง'; }
+    const prev=getJoin();
+    setJoin({ room, name, sid:(prev&&prev.sid)||newSid() });
+    close(); renderClassChip(); toast('เข้าร่วมห้อง '+room+' แล้ว');
+    syncAllStars();
   };
   setTimeout(()=>codeEl.focus(),50);
 }
@@ -1318,102 +1516,7 @@ function openJoinModal(){
 document.getElementById('btnHome').onclick = renderMap;
 renderMap();
 flushPending();
-
-/* ============ แบบฝึกจากครู (ด่านโบนัส · บล็อกพอร์ตได้ทุกเกม) ============
-   ดึงข้อจากคลังของครู (ผูก teacher+game) เมื่อเข้าร่วมห้อง แล้วเล่นเป็นด่านโบนัส
-   ใช้เฉพาะฟังก์ชัน/CSS ที่มีทุกเกม (.card/.btn/.note/.bar) + inline style */
-let CUSTOM_Q = [];
-function _bnStars(n){ let s=''; for(let i=0;i<3;i++) s+= i<n ? '★' : '<span style="color:rgba(8,74,36,.18)">★</span>'; return s; }
-function _bnRank(m){ return m===0?3 : m<=2?2 : 1; }
-function _bnEsc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-async function fetchCustomQuestions(){
-  const j=getJoin();
-  if(!j || !j.code){ CUSTOM_Q=[]; return; }
-  try{ const res=await sbRpc('get_class_questions',{p_join_code:j.code});
-    CUSTOM_Q=(res&&res.ok&&Array.isArray(res.questions))?res.questions:[];
-  }catch(e){ CUSTOM_Q=[]; }
-}
-async function refreshCustomQuestions(){ await fetchCustomQuestions(); injectBonusCard(); }
-function injectBonusCard(){
-  const old=document.getElementById('bonusCardWrap'); if(old) old.remove();
-  const cardsBtn=document.getElementById('btnCards'); if(!cardsBtn) return;   // อยู่หน้าแผนที่เท่านั้น
-  if(!getJoin() || !CUSTOM_Q.length) return;
-  const host=cardsBtn.closest('.card'); if(!host) return;
-  const wrap=document.createElement('div'); wrap.id='bonusCardWrap'; wrap.className='card';
-  wrap.style.cssText='margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-color:rgba(242,103,22,.45)';
-  wrap.innerHTML=`<div style="font-size:2rem">📝</div>
-    <div style="flex:1;min-width:190px">
-      <div style="font-weight:800">แบบฝึกจากครู <span style="color:var(--gold);letter-spacing:2px">${_bnStars(S.bonus||0)}</span></div>
-      <div class="small muted">${CUSTOM_Q.length} ข้อ ที่คุณครูสร้างเพิ่มสำหรับห้องนี้ · เล่นเก็บดาว ส่งคะแนนให้ครู</div>
-    </div>
-    <button class="btn gold" id="btnBonus">ทำแบบฝึก</button>`;
-  host.after(wrap);
-  document.getElementById('btnBonus').onclick=openBonus;
-}
-function openBonus(){
-  if(!CUSTOM_Q.length){ toast('ยังไม่มีแบบฝึกจากครู'); return; }
-  const Q=CUSTOM_Q, total=Q.length; let qi=0, wrong=0;
-  function draw(){
-    const q=Q[qi];
-    app.innerHTML=`
-      <div class="stagehead"><div class="ic" style="font-size:2rem">📝</div>
-        <div><h2 style="margin:0">แบบฝึกจากครู</h2><div class="muted small">ข้อ ${qi+1} / ${total}</div></div></div>
-      <div class="bar"><i id="pbar" style="width:${Math.round(qi/total*100)}%"></i></div>
-      <div class="note" style="border-left-color:var(--gold);background:rgba(242,103,22,.11)">ชุดแบบฝึกที่ <b>คุณครูของคุณ</b> สร้างเพิ่มเพื่อทบทวนโดยเฉพาะ 💪</div>
-      <div class="card">
-        <div style="font-size:1.05rem;font-weight:700;color:var(--deep);margin-bottom:10px">${_bnEsc(q.question)}</div>
-        <div id="bopts"></div>
-        <div id="bfb" style="display:none;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:.9rem"></div>
-        <div id="bnext" style="display:none;text-align:center;margin-top:14px">
-          <button class="btn primary" id="bnextBtn">${qi+1<total?'ข้อถัดไป →':'จบแบบฝึก'}</button>
-        </div>
-      </div>`;
-    const opts=document.getElementById('bopts');
-    (q.choices||[]).forEach((c,i)=>{
-      const b=document.createElement('button'); b.type='button';
-      b.style.cssText='display:block;width:100%;text-align:left;margin:8px 0;padding:12px 15px;border-radius:12px;border:1px solid var(--line);background:var(--panel2,rgba(255,255,255,.85));font-weight:600;color:var(--text,#04261E);cursor:pointer;font-family:inherit;font-size:.94rem';
-      b.innerHTML=_bnEsc(c); b.onclick=()=>pick(i,b); opts.appendChild(b);
-    });
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  function pick(i,btn){
-    const q=Q[qi], correct=q.answer_index;
-    [...document.querySelectorAll('#bopts button')].forEach((b,bi)=>{ b.disabled=true;
-      if(bi===correct){ b.style.background='rgba(47,125,79,.16)'; b.style.borderColor='var(--lime)'; b.style.color='var(--deep)'; } });
-    if(i!==correct){ btn.style.background='rgba(231,57,13,.12)'; btn.style.borderColor='var(--bad)'; wrong++; }
-    const fb=document.getElementById('bfb'), ok=i===correct;
-    fb.style.display='block';
-    fb.style.background=ok?'rgba(47,125,79,.14)':'rgba(231,57,13,.11)';
-    fb.style.border='1px solid '+(ok?'rgba(47,125,79,.4)':'rgba(231,57,13,.35)');
-    fb.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ คำตอบที่ถูกคือ “'+_bnEsc(q.choices[correct])+'” ')+(q.explanation?'<br>'+_bnEsc(q.explanation):'');
-    document.getElementById('bnext').style.display='block';
-    document.getElementById('bnextBtn').onclick=()=>{ qi++; if(qi<total) draw(); else finish(); };
-  }
-  function finish(){
-    const got=_bnRank(wrong), xp=30+got*20;
-    if(got>(S.bonus||0)) S.bonus=got;
-    if(typeof S.xp==='number') S.xp+=xp;
-    save(); if(typeof syncHud==='function') syncHud();
-    submitProgress('teacher-bonus', got, S.xp||0);
-    app.innerHTML=`<div class="card" style="text-align:center;padding:8px">
-      <div style="font-size:2.4rem;letter-spacing:6px;color:var(--gold)">${_bnStars(got)}</div>
-      <h2 style="margin:.3em 0;color:var(--deep)">ทำแบบฝึกจากครูเสร็จแล้ว!</h2>
-      <div class="muted small">ได้รับ ${xp} XP</div>
-      <div class="note" style="border-left-color:var(--lime);background:rgba(47,125,79,.11);text-align:left">เยี่ยมมาก! คะแนนถูกส่งให้คุณครูอัตโนมัติแล้ว ⭐</div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px">
-        <button class="btn ghost" id="bBack">🗺️ กลับแผนที่</button>
-        <button class="btn primary" id="bReplay">ทำอีกครั้ง</button>
-      </div></div>`;
-    document.getElementById('bBack').onclick=renderMap;
-    document.getElementById('bReplay').onclick=openBonus;
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  draw();
-}
-const __bnRenderMap = renderMap; renderMap = function(){ __bnRenderMap.apply(this,arguments); injectBonusCard(); };
-const __bnSetJoin = setJoin; setJoin = function(o){ __bnSetJoin(o); refreshCustomQuestions(); };
-const __bnClearJoin = clearJoin; clearJoin = function(){ __bnClearJoin(); CUSTOM_Q=[]; const el=document.getElementById('bonusCardWrap'); if(el) el.remove(); };
-refreshCustomQuestions();
+window.addEventListener('online', flushPending);   // กลับมาออนไลน์เมื่อไร ส่งคะแนนที่ค้างทันที
 
 /* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
    ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
