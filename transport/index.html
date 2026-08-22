@@ -400,6 +400,8 @@ h3{font-size:1.05rem}
 @media(min-width:820px){.tonicwrap{grid-template-columns:1fr 1fr}}
 .cellview{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
 .cellview svg{width:100%;height:auto;max-width:330px}
+.cellview img{width:100%;max-width:520px;height:auto;display:block;margin:0 auto;border-radius:12px;
+  box-shadow:0 5px 16px -8px rgba(8,74,36,.4)}
 .cellview .cap{font-weight:800;color:var(--deep);margin-top:6px;font-size:.92rem}
 .cellview .sub{font-size:.82rem;color:var(--muted)}
 .legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:6px}
@@ -610,6 +612,11 @@ function photoBoard(src, parts, masks){
     ${parts.map((p,i)=>`<div class="slot numrow" data-key="${p.key}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
   </div>
   <div class="feedback" id="fb"></div>`;
+}
+
+/* หาไฟล์ภาพจากชื่อฐาน — ลอง .jpg ก่อน ถ้าไม่มีค่อยลอง .png */
+function findImage(base, ok, fail){
+  withImage(base+'.jpg', ()=>ok(base+'.jpg'), ()=>withImage(base+'.png', ()=>ok(base+'.png'), fail));
 }
 
 /* เช็กว่าไฟล์ภาพมีจริงไหม — ถ้ายังไม่ได้อัป จะถอยไปใช้ภาพวาด SVG ในตัวเกมแทน */
@@ -875,6 +882,21 @@ function stagePass(){
 /* =========================================================================
    ด่าน 3 — ห้องทดลองออสโมซิส (แบบจำลอง)
    ========================================================================= */
+/* ---- ภาพถ่ายจริงของด่านออสโมซิส (วางไฟล์ไว้โฟลเดอร์เดียวกับ index.html) ----
+   ชื่อไฟล์: osmo-animal-hypo / osmo-animal-iso / osmo-animal-hyper
+             osmo-plant-hypo  / osmo-plant-iso  / osmo-plant-hyper
+   นามสกุล .jpg หรือ .png ก็ได้ · ไฟล์ไหนไม่มี ช่องนั้นจะใช้ภาพวาด SVG แทนอัตโนมัติ */
+const OSMO_PHOTO_SRC = {};        // เก็บชื่อไฟล์ที่หาเจอจริง
+function preloadOsmoPhotos(done){
+  const keys = [];
+  ['animal','plant'].forEach(c => ['hypo','iso','hyper'].forEach(t => keys.push([c,t])));
+  let left = keys.length;
+  const tick = ()=>{ if(--left===0) done(); };
+  keys.forEach(([c,t])=>{
+    findImage(`osmo-${c}-${t}`, src=>{ OSMO_PHOTO_SRC[c+'-'+t]=src; tick(); }, tick);
+  });
+}
+
 function stageOsmo(){
   /* ผลของสารละลายแต่ละแบบต่อเซลล์สัตว์และเซลล์พืช */
   const RES = {
@@ -898,9 +920,11 @@ function stageOsmo(){
   const SOLS = { hypo:'ไฮโพโทนิก (เจือจางกว่าในเซลล์)', iso:'ไอโซโทนิก (เท่ากับในเซลล์)', hyper:'ไฮเปอร์โทนิก (เข้มข้นกว่าในเซลล์)' };
   let cell='animal', sol='iso', mi=0, wrongQ=0, answering=false;
 
-  /* วาดเซลล์ตามผลลัพธ์ */
+  /* วาดเซลล์ตามผลลัพธ์ — ใช้ภาพถ่ายจริงถ้าอัปไฟล์ไว้ ไม่งั้นใช้ภาพวาด SVG */
   function draw(){
     const r = RES[cell][sol];
+    const photo = OSMO_PHOTO_SRC[cell+'-'+sol];
+    if(photo) return `<img src="${photo}" alt="${r.t}">`;
     if(cell==='animal'){
       const rad = 90*r.size;
       return `<svg viewBox="0 0 300 260">
@@ -966,7 +990,7 @@ function stageOsmo(){
         <div id="cellPic"></div>
         <div class="cap" id="cellCap"></div>
         <div class="sub" id="cellFlow"></div>
-        <div class="legend"><span>🧡 <b>เยื่อหุ้มเซลล์</b></span><span>🟫 <b>ผนังเซลล์</b></span><span>🔵 <b>แวคิวโอล</b></span></div>
+        <div class="legend" id="cellLegend"><span>🧡 <b>เยื่อหุ้มเซลล์</b></span><span>🟫 <b>ผนังเซลล์</b></span><span>🔵 <b>แวคิวโอล</b></span></div>
       </div>
     </div>
     <div class="feedback" id="fb"></div>
@@ -984,6 +1008,7 @@ function stageOsmo(){
     el('cellCap').innerHTML = r.t;
     el('cellFlow').innerHTML = r.flow + ' · สารละลาย' + SOLS[sol];
     el('noteLine').innerHTML = 'ℹ️ '+r.d;
+    el('cellLegend').style.display = OSMO_PHOTO_SRC[cell+'-'+sol] ? 'none' : '';
     ['animal','plant'].forEach(k=>el('c-'+k).classList.toggle('on', k===cell));
     ['hypo','iso','hyper'].forEach(k=>el('s-'+k).classList.toggle('on', k===sol));
     if(!answering && mi<MISSIONS.length && MISSIONS[mi].need()){
@@ -1026,6 +1051,7 @@ function stageOsmo(){
         ขณะที่เซลล์สัตว์ต้องอาศัยไตและระบบควบคุมสมดุลเกลือแร่ให้เลือดไอโซโทนิกตลอดเวลา</div>`, wrongQ);
   }
   renderMission(); update();
+  preloadOsmoPhotos(update);      // เจอไฟล์ภาพเมื่อไร ค่อยสลับจากภาพวาดเป็นภาพถ่าย
 }
 
 /* =========================================================================

@@ -3,7 +3,7 @@
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'transport-v2';
+const CACHE = 'transport-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,18 @@ const ASSETS = [
   './icon-192.png',
   './icon-512.png',
   './membrane.png',
+  './osmo-animal-hypo.jpg',
+  './osmo-animal-hypo.png',
+  './osmo-animal-iso.jpg',
+  './osmo-animal-iso.png',
+  './osmo-animal-hyper.jpg',
+  './osmo-animal-hyper.png',
+  './osmo-plant-hypo.jpg',
+  './osmo-plant-hypo.png',
+  './osmo-plant-iso.jpg',
+  './osmo-plant-iso.png',
+  './osmo-plant-hyper.jpg',
+  './osmo-plant-hyper.png',
   './logo.png',
   './cert-bg.png',
   
