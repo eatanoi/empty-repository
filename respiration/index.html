@@ -226,24 +226,33 @@ h3{font-size:1.05rem}
 .slot.filled{border-style:solid;border-color:var(--green);background:rgba(175,210,188,.85);color:var(--deep)}
 .slot.wrong{border-color:var(--bad);background:rgba(231,57,13,.16);animation:shake .35s}
 @keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(calc(-50% - 6px),-50%)}75%{transform:translate(calc(-50% + 6px),-50%)}}
-/* กระดานติดป้ายแบบใช้ภาพจริง — จุดหมายเลขบนภาพ + รายการเติมชื่อด้านล่าง
-   ทุกพิกัดคิดเป็นสัดส่วนของภาพ จึงเปลี่ยนไฟล์ภาพที่สัดส่วนต่างกันได้โดยไม่ต้องแก้โครง */
-.photo{max-width:680px;margin:8px auto 2px}
-.pimg{position:relative}
-.pimg>img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
-.pin{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;
-  width:clamp(22px,4.6vw,30px);height:clamp(22px,4.6vw,30px);border-radius:50%;
-  background:var(--gold);color:#FFF7F0;font-weight:800;font-size:clamp(.68rem,2.4vw,.85rem);
-  border:2px solid #fff;box-shadow:0 2px 6px rgba(8,74,36,.35)}
-.pin.done{background:var(--lime)}
-.numgrid{display:grid;gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
-.slot.numrow{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
-  min-width:0;text-align:left;white-space:normal;padding:9px 12px}
-.slot.numrow i{flex:0 0 auto;width:25px;height:25px;border-radius:50%;background:var(--gold);color:#FFF7F0;
-  font-style:normal;font-weight:800;display:grid;place-items:center;font-size:.78rem}
-.slot.numrow.filled i{background:var(--lime)}
-.slot.numrow.wrong{animation:shakerow .35s}
-@keyframes shakerow{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* กระดานติดป้ายรอบภาพจริง (ด่าน 1)
+   จอกว้าง = ป้าย ??? วางรอบภาพ มีเส้นประชี้ไปยังจุดสีส้มบนภาพ
+   จอแคบ (มือถือ) = จุดบนภาพกลายเป็นหมายเลข แล้วป้ายเรียงเป็นรายการใต้ภาพแทน ไม่เบียดกัน
+   พิกัดทุกจุดคิดเป็นสัดส่วน จึงเปลี่ยนไฟล์ภาพได้โดยไม่ต้องแก้โครง */
+.mboard{position:relative;max-width:1000px;margin:10px auto 0;padding:20% 12.5% 12.5% 14.5%}
+.mimg{position:relative}
+.mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cwrap{position:absolute;inset:0;pointer-events:none}
+.anchor{position:absolute;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;
+  background:var(--gold);border:2px solid #fff;box-shadow:0 1px 5px rgba(8,74,36,.45);
+  display:grid;place-items:center;color:#FFF7F0;font-weight:800;font-size:0}
+.anchor.done{background:var(--lime)}
+.slot.callout{pointer-events:auto;min-width:92px;padding:5px 9px;font-size:.74rem}
+.slot.callout i{display:none}
+@media (max-width:640px){
+  .mboard{padding:0}
+  .leads{display:none}
+  .cwrap{position:static;display:grid;gap:8px;margin-top:14px;pointer-events:auto;
+    grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+  .slot.callout{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
+    min-width:0;left:auto!important;top:auto!important;text-align:left;white-space:normal;padding:9px 12px;font-size:.8rem}
+  .slot.callout i{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;
+    background:var(--gold);color:#FFF7F0;font-style:normal;font-weight:800;font-size:.78rem}
+  .slot.callout.filled i{background:var(--lime)}
+  .anchor{width:clamp(21px,5vw,27px);height:clamp(21px,5vw,27px);font-size:clamp(.62rem,2.3vw,.8rem)}
+}
 .bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .tok{
   padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
@@ -545,20 +554,26 @@ function finishStage(id, got, xp, summaryHtml){
    จึงเปลี่ยนไฟล์ภาพที่ขนาดต่างกันได้ โดยไม่ต้องแก้อะไรอีก */
 const MITO_PHOTO = 'mito3d.jpg';
 const MITO_RATIO = '1400/763';        // สัดส่วนกว้าง/สูงของไฟล์ภาพ
+/* กรอบวาดของกระดาน (หน่วยเดียวกับ CSS ด้านบน): กว้าง 1000 หน่วย สูง 732 หน่วย
+   ภาพวางอยู่ในกรอบ ตั้งแต่ x 150→870 และ y 210→602 · ที่เหลือคือขอบไว้วางป้าย
+   ax,ay = จุดบนภาพ (คำนวณจาก u,v) · lx,ly = ตำแหน่งกึ่งกลางของป้าย ??? */
+const MB = { w:1000, h:723, x0:0.145, y0:0.20, iw:0.73, ih:0.3978 };
+const mbX = u => (MB.x0 + u*MB.iw) * MB.w;
+const mbY = v => (MB.y0 + v*MB.ih) * MB.w;
 const MITO_PARTS = [
-  { key:'outer',  u:0.360, v:0.740, label:'เยื่อหุ้มชั้นนอก',
+  { key:'outer',  u:0.360, v:0.740, lx:380, ly:690, label:'เยื่อหุ้มชั้นนอก',
     info:'Outer membrane — ชั้นนอกสุดที่เรียบ ไม่พับ มีโปรตีนพอริน สารโมเลกุลเล็กจึงผ่านเข้าออกได้ค่อนข้างอิสระ' },
-  { key:'inter',  u:0.150, v:0.669, label:'ช่องระหว่างเยื่อ',
+  { key:'inter',  u:0.150, v:0.669, lx:88,  ly:470, label:'ช่องระหว่างเยื่อ',
     info:'Intermembrane space — ช่องแคบ ๆ ระหว่างเยื่อสองชั้น (ในภาพเห็นเป็นเส้นบางระหว่างสองชั้น) เป็นที่<b>สะสม H⁺</b> จน pH ต่ำ เทียบได้กับลูเมนของไทลาคอยด์' },
-  { key:'inner',  u:0.700, v:0.168, label:'เยื่อหุ้มชั้นใน',
+  { key:'inner',  u:0.700, v:0.168, lx:660, ly:52,  label:'เยื่อหุ้มชั้นใน',
     info:'Inner membrane — เยื่อชั้นในที่พับเป็นคริสตี ฝัง <b>ระบบถ่ายทอดอิเล็กตรอนและ ATP synthase</b> เลือกผ่านอย่างเข้มงวด' },
-  { key:'crista', u:0.380, v:0.220, label:'คริสตี',
+  { key:'crista', u:0.380, v:0.220, lx:400, ly:40,  label:'คริสตี',
     info:'Cristae — รอยพับเข้าของเยื่อชั้นใน (นิ้วมือที่ยื่นเข้าไปในเมทริกซ์) เพิ่มพื้นที่ผิวให้ติดตั้งลูกโซ่หายใจได้มากที่สุด' },
-  { key:'matrix', u:0.632, v:0.565, label:'เมทริกซ์',
+  { key:'matrix', u:0.632, v:0.565, lx:722, ly:690, label:'เมทริกซ์',
     info:'Matrix — ของเหลวชั้นในสุด (สีน้ำตาล) เป็นที่เกิด <b>การออกซิไดซ์ไพรูเวตและวัฏจักรเครบส์</b> มีเอนไซม์ · DNA · ไรโบโซม' },
-  { key:'ribo',   u:0.650, v:0.300, label:'ไรโบโซม',
+  { key:'ribo',   u:0.650, v:0.300, lx:905, ly:128, label:'ไรโบโซม',
     info:'Ribosome — เม็ดกลมเล็ก ๆ ที่กระจายอยู่ในเมทริกซ์ ไมโทคอนเดรียมีไรโบโซมของตัวเอง จึงสร้างโปรตีนบางส่วนได้เอง' },
-  { key:'dna',    u:0.320, v:0.295, label:'ดีเอ็นเอ',
+  { key:'dna',    u:0.320, v:0.295, lx:150, ly:44,  label:'ดีเอ็นเอ',
     info:'mtDNA — เส้นดีเอ็นเอวงแหวนที่ขดอยู่ในเมทริกซ์ (แยกจาก DNA ในนิวเคลียส) เป็นหลักฐานสำคัญของทฤษฎีเอนโดซิมไบโอซิส' }
 ];
 /* ภาพวาดสำรอง (ใช้เมื่อยังไม่มีไฟล์ภาพถ่าย) */
@@ -579,17 +594,22 @@ const MITO_FALLBACK = `
   <path d="M430 200 q40 30 0 60 q-40 30 0 60" fill="none" stroke="#C98A5E" stroke-width="9" clip-path="url(#mfMatrix)"/>
 </svg>`;
 function mitoBoard(src){
-  const pc = n => (n*100).toFixed(2)+'%';
-  return `<div class="photo"><div class="pimg" style="aspect-ratio:${MITO_RATIO}">
+  const pcx = n => (n/MB.w*100).toFixed(2)+'%';   // แนวนอน เทียบความกว้างกรอบ
+  const pcy = n => (n/MB.h*100).toFixed(2)+'%';   // แนวตั้ง เทียบความสูงกรอบ
+  const lines = MITO_PARTS.map(p=>`<line x1="${p.lx}" y1="${p.ly}" x2="${mbX(p.u)}" y2="${mbY(p.v)}"
+      stroke="#04261E" stroke-width="1.6" stroke-dasharray="7 5" opacity=".65" vector-effect="non-scaling-stroke"/>`).join('');
+  return `<div class="mboard">
+    <div class="mimg" style="aspect-ratio:${MITO_RATIO}">
       ${src ? `<img src="${src}" alt="ภาพตัดขวางไมโทคอนเดรีย">` : MITO_FALLBACK}
-      ${MITO_PARTS.map((p,i)=>`<div class="pin" id="pin-${p.key}" style="left:${pc(p.u)};top:${pc(p.v)}">${i+1}</div>`).join('')}
-    </div></div>
-    <div class="bank" id="bank">
-      ${shuffle(MITO_PARTS).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+      ${MITO_PARTS.map((p,i)=>`<div class="anchor" id="pin-${p.key}"
+          style="left:${(p.u*100).toFixed(2)}%;top:${(p.v*100).toFixed(2)}%">${i+1}</div>`).join('')}
     </div>
-    <div class="numgrid">
-      ${MITO_PARTS.map((p,i)=>`<div class="slot numrow" data-key="${p.key}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
-    </div>`;
+    <svg class="leads" viewBox="0 0 ${MB.w} ${MB.h}" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
+    <div class="cwrap">
+      ${MITO_PARTS.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
+          style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+    </div>
+  </div>`;
 }
 /* เช็กว่าไฟล์ภาพมีจริงไหม ถ้ายังไม่ได้อัปโหลดจะถอยไปใช้ไฟล์สำรองให้เอง */
 function withImage(src, ok, fail){
@@ -599,9 +619,12 @@ function stageMito(){
   let mistakes=0, placed=0, armed=null;
   const draw = (src)=>{
     app.innerHTML = stageShell('mito', `
-      <div class="note">🎯 <b>ภารกิจ:</b> ดูหมายเลข 1–${MITO_PARTS.length} บนภาพ แล้วแตะชื่อโครงสร้างด้านล่าง
-        ตามด้วยแตะช่องหมายเลขที่ตรงกัน — ผิดน้อยที่สุดยิ่งได้ดาวเยอะ</div>
+      <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่อโครงสร้างในสำรับ แล้วแตะป้าย <b>? ? ?</b> ที่ชี้ไปยังตำแหน่งของมันในภาพ
+        — วางให้ครบ ${MITO_PARTS.length} จุดโดยผิดน้อยที่สุด <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="bank">
+        ${shuffle(MITO_PARTS).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+      </div>
       ${mitoBoard(src)}
       <div class="feedback" id="fb"></div>
       <div class="note key" style="margin-top:16px">
