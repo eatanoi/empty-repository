@@ -172,55 +172,71 @@ $('#run').onclick=async function(){
     step('wait','5. ตรวจสถานะห้องไม่ได้','สถานะ '+r4.status+' · '+esc(r4.body));
   }
 
-  /* 5) ลองบันทึกจริง (เหมือนที่เกมทำทุกประการ) */
-  const row={uid:'CHECK-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
-    room:room,student:'🔧 ตรวจระบบ',sid:'CHECKER',level:0,level_name:'ตรวจระบบ',
-    stars:0,percent:0,score:0,max_score:0,seconds:0,misses:0,total_stars:0,attempt:1,
-    client_ts:new Date().toISOString()};
-  const r5=await call(url+'/rest/v1/scores?on_conflict=uid',
-    {method:'POST',headers:Object.assign({'Prefer':'return=minimal,resolution=ignore-duplicates'},H),body:JSON.stringify(row)});
+  /* 5) ลองบันทึกจริง — ส่งแถวที่ "เหมือนเกมส่งจริงทุกประการ" ก่อน */
+  function baseRow(over){
+    const r={ uid:'CHECK-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+      room:room, student:'ทดสอบระบบ', sid:'S'+Math.random().toString(36).slice(2,8),
+      game:'division', level:1, level_name:'ตรวจระบบ · ด่าน 1',
+      stars:3, percent:100, score:3, max_score:3, seconds:60, misses:0,
+      total_stars:3, attempt:1, client_ts:new Date().toISOString() };
+    return Object.assign(r, over||{});
+  }
+  async function tryInsert(row, useUpsert){
+    const path = useUpsert ? '/rest/v1/scores?on_conflict=uid' : '/rest/v1/scores';
+    const pref = useUpsert ? 'return=minimal,resolution=ignore-duplicates' : 'return=minimal';
+    return await call(url+path, {method:'POST',
+      headers:Object.assign({'Prefer':pref},H), body:JSON.stringify(row)});
+  }
+  const okRes = r => (r.ok||r.status===201||r.status===204);
+  const short = r => 'สถานะ '+r.status+' · '+esc(String(r.body||'').replace(/\s+/g,' ').slice(0,150));
 
-  if(r5.ok||r5.status===201||r5.status===204){
-    step('ok','6. บันทึกคะแนนสำเร็จ','เขียนแถวทดสอบเข้าห้อง '+room+' แล้ว');
-    verdict(true,'✅ <b>ระบบทำงานครบทุกขั้น</b><br>เปิดแดชบอร์ดจะเห็นแถว "🔧 ตรวจระบบ" ในห้อง '+room+' (ลบทิ้งได้)<br>'+
-      'ถ้านักเรียนยังส่งไม่ได้ แปลว่าเครื่องนั้นถือ<b>ลิงก์เก่า</b>อยู่ — ให้เปิดลิงก์ใหม่ที่ครูสร้างอีกครั้ง');
-  }else if(r5.status===403){
-    step('bad','6. ถูกปฏิเสธการบันทึก (403)',esc(r5.body));
-    verdict(false,'❌ กฎความปลอดภัยไม่อนุญาต สาเหตุที่เป็นไปได้:<br>'+
-      (roomOpen===false?'• <b>ห้อง '+room+' ยังไม่ถูกสร้าง หรือถูกปิด</b> ← น่าจะใช่<br>':'')+
-      '• รหัสห้องในลิงก์ไม่ตรงกับที่สร้างในแดชบอร์ด<br>'+
-      '• รัน schema.sql ไม่ครบ ทำให้สิทธิ์ insert ของ anon หายไป');
-  }else if(r5.status===401){
-    step('bad','6. ถูกปฏิเสธ (401)',esc(r5.body));
-    verdict(false,'❌ คีย์ไม่ถูกต้องหรือหมดอายุ — คัดลอก anon key ใหม่แล้วสร้างลิงก์ใหม่');
+  const rMain = await tryInsert(baseRow(), false);
+  if(okRes(rMain)){
+    step('ok','6. บันทึกคะแนนสำเร็จ','เขียนแถวทดสอบเข้าห้อง '+room+' แล้ว (ชื่อ "ทดสอบระบบ" ลบทิ้งได้)');
+    verdict(true,'✅ <b>ระบบทำงานครบทุกขั้น</b><br>เปิดแดชบอร์ดจะเห็นแถว "ทดสอบระบบ" ในห้อง '+room+'<br>'+
+      'ถ้านักเรียนยังส่งไม่ได้ ให้เปิดเกมใหม่แล้วกดชิป "คะแนนค้างส่ง" บนหน้าแผนที่เพื่อส่งซ้ำ');
   }else{
-    step('bad','6. บันทึกไม่สำเร็จ','สถานะ '+r5.status+' · '+esc(r5.body));
-    verdict(false,'❌ ส่งข้อความในกรอบดำด้านล่างให้ผู้ดูแลระบบดูได้เลย');
-  }
-  /* 6) ทดสอบทีละเกม — ให้เห็นชัดว่าเกมไหนบันทึกได้/ไม่ได้ และเลขด่านที่ใช้ผ่านกฎของฐานข้อมูลไหม */
-  const GAMES=[['genetics','ภารกิจพันธุกรรม',1],['cell','มหานครเซลล์',11],
-               ['transport','ด่านศุลกากรเซลล์',1],['respiration','โรงไฟฟ้าไมโทคอนเดรีย',1],
-               ['division','โรงงานสร้างเซลล์',1]];
-  let gameFail=0;
-  for(const g of GAMES){
-    const gr={uid:'CHECK-'+g[0]+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
-      room:room,student:'🔧 ตรวจระบบ',sid:'CHECKER',game:g[0],level:g[2],
-      level_name:'ตรวจระบบ · '+g[1],stars:0,percent:0,score:0,max_score:3,
-      seconds:0,misses:0,total_stars:0,attempt:1,client_ts:new Date().toISOString()};
-    const rr=await call(url+'/rest/v1/scores?on_conflict=uid',
-      {method:'POST',headers:Object.assign({'Prefer':'return=minimal,resolution=ignore-duplicates'},H),body:JSON.stringify(gr)});
-    if(rr.ok||rr.status===201||rr.status===204){
-      step('ok','7. '+g[1],'บันทึกได้ (ด่านเลข '+g[2]+')');
-    }else{
-      gameFail++;
-      step('bad','7. '+g[1],'บันทึกไม่ได้ · สถานะ '+rr.status+' · '+esc(rr.body));
+    step('bad','6. ฐานข้อมูลไม่รับคะแนน', short(rMain));
+
+    /* หาให้เจอว่ากฎความปลอดภัยติดที่ฟิลด์ไหน — ลองเปลี่ยนทีละอย่าง */
+    step('wait','7. กำลังไล่หาสาเหตุทีละข้อ…','ส่งแถวทดสอบหลายแบบเพื่อดูว่าแบบไหนผ่าน');
+    const noGame = baseRow(); delete noGame.game;
+    const probes = [
+      ['ไม่ส่งคอลัมน์ game',        noGame,                                   false],
+      ['ส่งแบบกันข้อมูลซ้ำ (upsert)', baseRow(),                              true ],
+      ['เลขด่าน 21 (นอกช่วง 0–20)',  baseRow({level:21}),                     false],
+      ['ไม่ส่ง client_ts',           (()=>{const r=baseRow(); delete r.client_ts; return r;})(), false],
+      ['ไม่ส่ง uid',                 (()=>{const r=baseRow(); delete r.uid; return r;})(),       false],
+      ['ส่งเฉพาะฟิลด์จำเป็น',        {room:room, student:'ทดสอบระบบ', level:1, stars:3},          false],
+      ['ห้องพิมพ์เล็ก ('+room.toLowerCase()+')', baseRow({room:room.toLowerCase()}),             false]
+    ];
+    const passed=[];
+    for(const [name,row,up] of probes){
+      const rr = await tryInsert(row, up);
+      if(okRes(rr)){ passed.push(name); step('ok','7. '+name,'ผ่าน ✅ (แบบนี้ฐานข้อมูลรับ)'); }
+      else step('bad','7. '+name, short(rr));
     }
-  }
-  if(gameFail){
-    verdict(false,'❌ มี '+gameFail+' เกมที่ฐานข้อมูลไม่รับคะแนน — ดูข้อความในบรรทัดสีแดงด้านบน<br>'+
-      'สาเหตุที่พบบ่อยคือ <b>คอลัมน์ <code>game</code> ยังไม่มีในตาราง</b> '+
-      '(แก้โดยรัน <code>alter table public.scores add column if not exists game text;</code>) '+
-      'หรือกฎความปลอดภัยจำกัด<b>ช่วงเลขด่าน</b>ที่รับได้');
+
+    const rls = /42501|row-level security/i.test(String(rMain.body||''));
+    const colMissing = /PGRST204|column .* does not exist/i.test(String(rMain.body||''));
+    if(colMissing){
+      verdict(false,'❌ <b>ตารางยังไม่มีคอลัมน์ที่เกมส่งมา</b><br>'+
+        'รันคำสั่งนี้ใน SQL Editor ของ Supabase หนึ่งครั้ง:<br>'+
+        '<code>alter table public.scores add column if not exists game text;</code>');
+    }else if(passed.length){
+      verdict(false,'⚠️ <b>ฐานข้อมูลรับบางรูปแบบเท่านั้น</b> — แบบที่ผ่านคือ: <b>'+esc(passed.join(' · '))+'</b><br>'+
+        'ส่งข้อความในกรอบดำด้านล่างให้ผู้ช่วยดู จะแก้ให้ตรงจุดได้ทันที');
+    }else if(rls){
+      verdict(false,'❌ <b>กฎความปลอดภัย (RLS) ของตาราง scores ปฏิเสธทุกรูปแบบ</b><br>'+
+        'แปลว่านโยบาย insert ของ anon หายไปหรือเงื่อนไขไม่ตรง — เปิด Supabase → SQL Editor แล้วรัน 4 คำสั่งนี้ '+
+        'แล้วคัดลอกผลลัพธ์มาให้ผู้ช่วยดู:<br>'+
+        '<code>select policyname, cmd, roles, qual, with_check from pg_policies where tablename=\'scores\';</code><br>'+
+        '<code>select conname, pg_get_constraintdef(oid) from pg_constraint where conrelid=\'public.scores\'::regclass;</code><br>'+
+        '<code>select pg_get_functiondef(oid) from pg_proc where proname=\'room_is_open\';</code><br>'+
+        '<code>select room, active, term from public.classes order by room;</code>');
+    }else{
+      verdict(false,'❌ ส่งข้อความในกรอบดำด้านล่างให้ผู้ช่วยดูได้เลย');
+    }
   }
   dump();
   b.disabled=false; b.textContent='▶ ตรวจอีกครั้ง';
