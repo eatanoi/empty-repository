@@ -1,9 +1,9 @@
-/* service worker ของเกม "โรงไฟฟ้าไมโทคอนเดรีย"
+/* service worker ของเกม "ภารกิจพันธุกรรม" (หน้าแรกของเว็บไซต์)
    - แคชไฟล์ของเกมไว้ให้เล่นซ้ำได้แม้ออฟไลน์
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'respiration-v2';
+const CACHE = 'genetics-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -13,15 +13,7 @@ const ASSETS = [
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',
-  './logo.png',
-  './mitochondrion.jpg',
-  './imag/bg.webp',
-  './imag/stage-mito.webp',
-  './imag/stage-glycolysis.webp',
-  './imag/stage-krebs.webp',
-  './imag/stage-etc.webp',
-  './imag/stage-atp.webp',
-  './imag/stage-oxygen.webp'
+  './cert-bg.png'
 ];
 
 self.addEventListener('install', e=>{
@@ -36,7 +28,8 @@ self.addEventListener('install', e=>{
 self.addEventListener('activate', e=>{
   e.waitUntil((async ()=>{
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));
+    // ลบเฉพาะแคชรุ่นเก่าของเกมนี้ ไม่ไปยุ่งกับแคชของเกมอื่นในเว็บไซต์เดียวกัน
+    await Promise.all(keys.filter(k=>k.startsWith('genetics-') && k!==CACHE).map(k=>caches.delete(k)));
     await self.clients.claim();
   })());
 });
@@ -46,9 +39,11 @@ self.addEventListener('fetch', e=>{
   if(req.method !== 'GET') return;                       // POST ของระบบชั้นเรียน → ผ่านไปเลย
   const url = new URL(req.url);
   if(url.origin !== location.origin) return;             // ไฟล์ข้ามโดเมน → ไม่แคช
+  // ไฟล์ในโฟลเดอร์เกมอื่น ปล่อยให้ service worker ของเกมนั้นดูแลเอง
+  const BASE = new URL('./', self.location).pathname;
+  if(['cell/','transport/','respiration/','privacy/'].some(d=>url.pathname.startsWith(BASE+d))) return;
 
   // หน้าเว็บ (index.html): เอาจากเน็ตก่อนเสมอ เพื่อให้ได้เวอร์ชันล่าสุดทันทีที่ครูอัปเดตเกม
-  // ถ้าออฟไลน์ค่อยใช้ของที่แคชไว้ — ส่วนไฟล์อื่น (รูป ไอคอน) ยังใช้แคชก่อนเพื่อความเร็ว
   if(req.mode === 'navigate' || req.destination === 'document'){
     e.respondWith((async ()=>{
       try{
@@ -65,10 +60,7 @@ self.addEventListener('fetch', e=>{
   e.respondWith((async ()=>{
     const cached = await caches.match(req);
     if(cached){
-      // มีในแคชแล้ว: ใช้ทันที แล้วอัปเดตเบื้องหลัง
-      fetch(req).then(res=>{
-        if(res && res.ok) caches.open(CACHE).then(c=>c.put(req, res.clone()));
-      }).catch(()=>{});
+      fetch(req).then(res=>{ if(res && res.ok) caches.open(CACHE).then(c=>c.put(req, res.clone())); }).catch(()=>{});
       return cached;
     }
     try{
@@ -76,7 +68,6 @@ self.addEventListener('fetch', e=>{
       if(res && res.ok) (await caches.open(CACHE)).put(req, res.clone());
       return res;
     }catch(err){
-      // ออฟไลน์และไม่มีในแคช: ถ้าเป็นการเปิดหน้าเว็บ ให้ส่งหน้าเกมกลับไป
       if(req.mode === 'navigate'){
         const fallback = await caches.match('./index.html');
         if(fallback) return fallback;
