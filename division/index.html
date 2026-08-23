@@ -123,6 +123,7 @@ h3{font-size:1.05rem}
 .classchip{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:8px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--deep);cursor:pointer;transition:.15s}
 .classchip:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
 .classchip.joined{background:rgba(175,210,188,.55);border-color:var(--green);cursor:default}
+.classchip.stuck{display:block;margin-top:6px;background:rgba(242,103,22,.14);border-color:var(--gold);color:var(--deep);cursor:pointer;font-size:.78rem}
 .classchip .x{color:var(--rose);font-weight:800;margin-left:2px;cursor:pointer;padding:0 4px}
 .modalbg{position:fixed;inset:0;background:rgba(4,38,30,.5);backdrop-filter:blur(3px);z-index:300;display:grid;place-items:center;padding:16px}
 .modal{background:var(--cream-hi);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:380px;width:100%;box-shadow:0 22px 60px -20px rgba(0,0,0,.5)}
@@ -1583,7 +1584,7 @@ function renderCert(){
 const SB_URL  = 'https://vgurqbcbovgeppvdwizr.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
 const GAME_KEY   = 'division';   // ใช้แยกคะแนนของแต่ละเกมในแดชบอร์ด
-const LEVEL_BASE = 50;           // ด่าน 1–6 ของเกมนี้ = เลข 51–56 ในตารางคะแนน
+const LEVEL_BASE = 0;            // เลขด่านในตารางคะแนน = 1–6 (ฐานข้อมูลรับเลขด่าน 0–20 · แยกเกมด้วยคอลัมน์ game)
 
 function getJoin(){ try{ return JSON.parse(localStorage.getItem('div-class')||'null'); }catch(e){ return null; } }
 function setJoin(o){ localStorage.setItem('div-class', JSON.stringify(o)); }
@@ -1607,15 +1608,30 @@ async function pushRow(row){
     const err = new Error('http '+r.status+(d?' · '+d:'')); err.status = r.status; throw err;
   }
 }
-/* ส่งคะแนนที่ค้างอยู่ในคิว (เงียบ ๆ ไม่บล็อกการเล่น) */
-async function flushPending(){
+/* ส่งคะแนนที่ค้างอยู่ในคิว — ถ้าส่งไม่สำเร็จจะบอกให้รู้ ไม่เงียบหาย */
+let lastSendErr = '';
+function sendErrMsg(e){
+  const s = e && e.status;
+  if(s===401) return 'คีย์ของห้องไม่ถูกต้อง — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===403) return 'ฐานข้อมูลปฏิเสธคะแนนนี้ — ห้องอาจถูกปิด หรือกฎความปลอดภัยไม่รับค่าที่ส่ง';
+  if(s===404) return 'ไม่พบตารางคะแนนในฐานข้อมูล — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===400) return 'รูปแบบข้อมูลไม่ตรงกับตารางคะแนน — แจ้งครูให้ตรวจคอลัมน์ในตาราง';
+  return (e && e.message) ? e.message : 'เครือข่ายมีปัญหา';
+}
+async function flushPending(opts){
   const q = outbox(); if(!q.length) return;
   const keep = [];
+  let failed = false;
   for(const row of q){
     try{ await pushRow(row); }
-    catch(e){ keep.push(row); if(e.status===400 || e.status===404) break; }
+    catch(e){
+      keep.push(row); failed = true; lastSendErr = sendErrMsg(e);
+      if(e.status===400 || e.status===401 || e.status===403 || e.status===404) break;
+    }
   }
   setOutbox(keep.slice(-200));
+  renderClassChip();
+  if(failed && !(opts && opts.quiet)) toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr);
 }
 
 /* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
@@ -1653,10 +1669,14 @@ function renderClassChip(){
   const slot=document.getElementById('classSlot'); if(!slot) return;
   const j=getJoin();
   if(j && j.room){
-    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>`;
+    const stuck = outbox().length;
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>` +
+      (stuck ? `<div class="classchip stuck" id="retrySend" title="แตะเพื่อลองส่งอีกครั้ง">⚠️ คะแนนค้างส่ง ${stuck} รายการ · แตะเพื่อลองใหม่</div>` : '');
     slot.querySelector('#leaveClass').onclick=()=>{
       if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
     };
+    const rs = slot.querySelector('#retrySend');
+    if(rs) rs.onclick=()=>{ toast('กำลังลองส่งอีกครั้ง…'+(lastSendErr?(' ('+lastSendErr+')'):'')); flushPending(); };
   }else{
     slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
     slot.querySelector('#joinBtn').onclick=openJoinModal;

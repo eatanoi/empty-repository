@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ตรวจระบบส่งคะแนน | ภารกิจพันธุกรรม</title>
+<title>ตรวจระบบส่งคะแนน | เกมชีววิทยา ม.4</title>
 <style>
 :root{--cream:#FFF6E6;--cream2:#FFFDF7;--green:#2F7D5D;--green-d:#215C44;--green-l:#5BAE85;--green-soft:#E4F2EA;
  --orange:#E8792B;--orange-d:#C25E17;--orange-l:#FFB067;--orange-soft:#FDEBDC;--ink:#3A2E22;--muted:#7C6B57;
@@ -196,6 +196,31 @@ $('#run').onclick=async function(){
   }else{
     step('bad','6. บันทึกไม่สำเร็จ','สถานะ '+r5.status+' · '+esc(r5.body));
     verdict(false,'❌ ส่งข้อความในกรอบดำด้านล่างให้ผู้ดูแลระบบดูได้เลย');
+  }
+  /* 6) ทดสอบทีละเกม — ให้เห็นชัดว่าเกมไหนบันทึกได้/ไม่ได้ และเลขด่านที่ใช้ผ่านกฎของฐานข้อมูลไหม */
+  const GAMES=[['genetics','ภารกิจพันธุกรรม',1],['cell','มหานครเซลล์',11],
+               ['transport','ด่านศุลกากรเซลล์',1],['respiration','โรงไฟฟ้าไมโทคอนเดรีย',1],
+               ['division','โรงงานสร้างเซลล์',1]];
+  let gameFail=0;
+  for(const g of GAMES){
+    const gr={uid:'CHECK-'+g[0]+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+      room:room,student:'🔧 ตรวจระบบ',sid:'CHECKER',game:g[0],level:g[2],
+      level_name:'ตรวจระบบ · '+g[1],stars:0,percent:0,score:0,max_score:3,
+      seconds:0,misses:0,total_stars:0,attempt:1,client_ts:new Date().toISOString()};
+    const rr=await call(url+'/rest/v1/scores?on_conflict=uid',
+      {method:'POST',headers:Object.assign({'Prefer':'return=minimal,resolution=ignore-duplicates'},H),body:JSON.stringify(gr)});
+    if(rr.ok||rr.status===201||rr.status===204){
+      step('ok','7. '+g[1],'บันทึกได้ (ด่านเลข '+g[2]+')');
+    }else{
+      gameFail++;
+      step('bad','7. '+g[1],'บันทึกไม่ได้ · สถานะ '+rr.status+' · '+esc(rr.body));
+    }
+  }
+  if(gameFail){
+    verdict(false,'❌ มี '+gameFail+' เกมที่ฐานข้อมูลไม่รับคะแนน — ดูข้อความในบรรทัดสีแดงด้านบน<br>'+
+      'สาเหตุที่พบบ่อยคือ <b>คอลัมน์ <code>game</code> ยังไม่มีในตาราง</b> '+
+      '(แก้โดยรัน <code>alter table public.scores add column if not exists game text;</code>) '+
+      'หรือกฎความปลอดภัยจำกัด<b>ช่วงเลขด่าน</b>ที่รับได้');
   }
   dump();
   b.disabled=false; b.textContent='▶ ตรวจอีกครั้ง';
