@@ -1523,25 +1523,49 @@ function sendErrMsg(e){
   if(s===400) return 'รูปแบบข้อมูลไม่ตรงกับตารางคะแนน — แจ้งครูให้ตรวจคอลัมน์ในตาราง';
   return (e && e.message) ? e.message : 'เครือข่ายมีปัญหา';
 }
+/* ซ่อมแถวเก่าที่ค้างในคิวให้ตรงกับกติกาปัจจุบันก่อนส่ง
+   (แถวที่ถูกเก็บไว้ตอนใช้เลขด่านชุดเก่า เช่น 21–26 จะถูกแปลงเป็น 1–6 ให้อัตโนมัติ) */
+function fixRow(row){
+  const r = Object.assign({}, row);
+  if(typeof r.level === 'number' && r.level > 20) r.level = ((r.level - 1) % 10) + 1;
+  r.stars   = Math.max(0, Math.min(3, Math.round(r.stars||0)));
+  r.percent = Math.max(0, Math.min(100, Math.round(r.percent||0)));
+  r.seconds = Math.max(0, Math.min(86400, Math.round(r.seconds||0)));
+  r.misses  = Math.max(0, Math.min(9999, Math.round(r.misses||0)));
+  r.attempt = Math.max(1, Math.min(9999, Math.round(r.attempt||1)));
+  delete r.tries;                                   // ตัวนับความพยายาม เก็บไว้ในเครื่องเท่านั้น
+  return r;
+}
 let flushing = false;
 async function flushPending(opts){
   if(flushing) return;              // กันส่งซ้ำซ้อนตอนจบด่านพร้อมกับรอบส่งอัตโนมัติ
   const q = outbox(); if(!q.length) return;
   flushing = true;
   const keep = [];
-  let failed = false;
+  let failed = false, sent = 0, dropped = 0;
   for(const row of q){
-    try{ await pushRow(row); }
+    try{ await pushRow(fixRow(row)); sent++; }
     catch(e){
-      keep.push(row); failed = true; lastSendErr = sendErrMsg(e);
-      if(e.status===400 || e.status===401 || e.status===403 || e.status===404) break;
+      failed = true; lastSendErr = sendErrMsg(e);
+      const permanent = (e.status===400 || e.status===403 || e.status===422);
+      row.tries = (row.tries||0) + 1;
+      /* แถวที่ฐานข้อมูลไม่รับจริง ๆ จะถูกทิ้งหลังพยายาม 3 ครั้ง
+         เพื่อไม่ให้แถวเดียวค้างจนบล็อกคะแนนที่เหลือทั้งคิว */
+      if(permanent && row.tries >= 3){ dropped++; continue; }
+      keep.push(row);
+      if(e.status===401 || e.status===404) {        // ปัญหาการตั้งค่า ส่งต่อไปก็ไม่ผ่าน
+        keep.push(...q.slice(q.indexOf(row)+1)); break;
+      }
     }
   }
   setOutbox(keep.slice(-200));
   flushing = false;
   renderClassChip();
-  if(failed && !(opts && opts.quiet)) toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr);
-  else if(!keep.length && q.length>1) toast('✅ ส่งคะแนนที่ค้างครบแล้ว ' + q.length + ' รายการ');
+  if(failed && !(opts && opts.quiet)){
+    toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr + (dropped?(' · ข้ามที่ส่งไม่ได้ '+dropped+' รายการ'):''));
+  }else if(!keep.length && sent>1){
+    toast('✅ ส่งคะแนนที่ค้างครบแล้ว ' + sent + ' รายการ');
+  }
 }
 
 /* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
@@ -1586,7 +1610,22 @@ function renderClassChip(){
       if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
     };
     const rs = slot.querySelector('#retrySend');
-    if(rs) rs.onclick=()=>{ toast('กำลังลองส่งอีกครั้ง…'+(lastSendErr?(' ('+lastSendErr+')'):'')); flushPending(); };
+    if(rs) rs.onclick=async ()=>{
+      toast('กำลังลองส่งอีกครั้ง…');
+      await flushPending({quiet:true});
+      const left = outbox();
+      if(!left.length){ toast('✅ ส่งคะแนนที่ค้างครบแล้ว'); return; }
+      /* ยังส่งไม่ได้ — แสดงรายละเอียดให้ครูถ่ายหน้าจอส่งต่อได้ */
+      const r0 = left[0] || {};
+      alert('ส่งคะแนนไม่สำเร็จ\n\n' +
+        'ค้างอยู่ ' + left.length + ' รายการ\n' +
+        'สาเหตุล่าสุด: ' + (lastSendErr || 'ไม่ทราบ') + '\n\n' +
+        'รายการแรกในคิว\n' +
+        '· เกม: ' + (r0.game||'-') + '\n' +
+        '· ด่าน: ' + (r0.level||'-') + ' (' + (r0.level_name||'-') + ')\n' +
+        '· ห้อง: ' + (r0.room||'-') + ' · ชื่อ: ' + (r0.student||'-') + '\n' +
+        '· พยายามส่งแล้ว: ' + (r0.tries||1) + ' ครั้ง');
+    };
   }else{
     slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
     slot.querySelector('#joinBtn').onclick=openJoinModal;
