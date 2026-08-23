@@ -3,28 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#2F7D5D">
-<title>ภารกิจพันธุกรรม | เกมเรียนรู้ชีววิทยา ม.4</title>
+<meta name="theme-color" content="#084A24">
+<title>ภารกิจพันธุกรรม | เกมการถ่ายทอดลักษณะทางพันธุกรรม ม.4</title>
+<meta name="description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 เรื่องการถ่ายทอดลักษณะทางพันธุกรรม — กฎของเมนเดล ตารางพันเนตต์ ไดไฮบริด และส่วนขยายของพันธุศาสตร์เมนเดล">
+
+<!-- ไอคอน -->
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- เพิ่มลงหน้าจอโฮมได้ (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ภารกิจพันธุกรรม">
+
+<!-- พรีวิวตอนแชร์ลิงก์ใน LINE / Facebook / Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gamesbiology.biologypremium.com/">
+<meta property="og:title" content="ภารกิจพันธุกรรม — เกมการถ่ายทอดลักษณะทางพันธุกรรม">
+<meta property="og:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 · 6 ด่าน + ด่านบอส เก็บดาว 21 ดวง">
+<meta property="og:image" content="https://gamesbiology.biologypremium.com/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ภารกิจพันธุกรรม — เกมการถ่ายทอดลักษณะทางพันธุกรรม">
+<meta name="twitter:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 · เล่นบนมือถือได้เลย">
+<meta name="twitter:image" content="https://gamesbiology.biologypremium.com/og-cover.png">
 <style>
 :root{
-  --cream:#FFF6E6; --cream2:#FFFDF7; --cream3:#F7EAD3;
-  --green:#2F7D5D; --green-d:#215C44; --green-l:#5BAE85; --green-soft:#E4F2EA;
-  --orange:#E8792B; --orange-d:#C25E17; --orange-l:#FFB067; --orange-soft:#FDEBDC;
-  --ink:#3A2E22; --muted:#7C6B57; --line:#E6D6BB;
-  --ok:#2F7D5D; --bad:#C8452F; --bad-soft:#FBE4DF;
-  --r:18px; --shadow:0 4px 0 rgba(58,46,34,.12);
+  /* ── พาเลตเดียวกับเกมมหานครเซลล์ · ด่านศุลกากรเซลล์ · โรงไฟฟ้าไมโทคอนเดรีย ── */
+  --cream:#F2EDD5; --cream2:rgba(255,255,255,.58); --cream3:#E9E1BE;
+  --panel2:rgba(255,255,255,.85);
+  --green:#2F7D4F; --green-d:#084A24; --green-l:#5FA777; --green-soft:rgba(47,125,79,.13);
+  --orange:#F26716; --orange-d:#D6350B; --orange-l:#F7A97F; --orange-soft:rgba(242,103,22,.12);
+  --ink:#04261E; --muted:#6B8A76; --line:rgba(8,74,36,.18);
+  --ok:#2F7D4F; --bad:#E7390D; --bad-soft:rgba(231,57,13,.11);
+  --sky:#5C90A6;
+  --r:16px; --shadow:0 2px 12px rgba(8,74,36,.06);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{
-  font-family:"Noto Sans Thai","Sarabun","Leelawadee UI","Tahoma",system-ui,-apple-system,sans-serif;
-  background:var(--cream); color:var(--ink); line-height:1.65; font-size:17px;
-  background-image:radial-gradient(circle at 12% 8%, #FFEBC7 0 22%, transparent 60%),
-                   radial-gradient(circle at 88% 92%, #E4F2EA 0 24%, transparent 62%);
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  color:var(--ink); line-height:1.65; font-size:16.5px; letter-spacing:.01em; min-height:100dvh;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.55), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.42), transparent 60%),
+    radial-gradient(800px 600px at 50% 112%, rgba(188,214,224,.38), transparent 62%),
+    linear-gradient(170deg,#FBF8EC,#F2EDD5 45%,#EAE4C6);
   background-attachment:fixed;
   padding-bottom:env(safe-area-inset-bottom);
 }
-.app{max-width:760px;margin:0 auto;padding:14px 14px 40px}
+.app{max-width:1080px;margin:0 auto;padding:16px 16px 80px}
 h1,h2,h3{margin:0 0 8px;line-height:1.35}
 h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.06rem}
 p{margin:0 0 10px}
@@ -178,6 +211,153 @@ ul.recap li{margin-bottom:6px}
 .foot{text-align:center;color:var(--muted);font-size:.82rem;margin-top:18px}
 .mini{font-size:.88rem;color:var(--muted)}
 .pill{display:inline-block;background:var(--green-soft);color:var(--green-d);border-radius:999px;padding:2px 10px;font-size:.82rem;font-weight:700;margin:0 0 6px 6px}
+
+/* =========================================================================
+   โครงหน้าตาชุดเดียวกับเกมมหานครเซลล์ / ด่านศุลกากรเซลล์ / โรงไฟฟ้าไมโทคอนเดรีย
+   (วางไว้ท้ายสุดเพื่อทับสไตล์เดิม — แก้ที่นี่จุดเดียวก็เปลี่ยนทั้งเกม)
+   ========================================================================= */
+h1,h2,h3{margin:0 0 .5em}
+h2{font-size:1.35rem}h3{font-size:1.05rem}
+
+/* ---- แถบบน ---- */
+.topbar{position:sticky;top:0;z-index:60;margin:-16px -16px 18px;padding:12px 16px;gap:10px;
+  background:linear-gradient(180deg,rgba(251,248,236,.96),rgba(242,237,213,.82));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);flex-wrap:nowrap}
+.brand{color:var(--green-d);font-size:1.02rem;min-width:0}
+.brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brand .logo{width:34px;height:34px;flex:0 0 34px;border-radius:11px;font-size:18px;
+  background:rgba(255,255,255,.72);border:1px solid var(--line);box-shadow:none}
+.chip{background:var(--cream2);border:1px solid var(--line);border-radius:999px;padding:5px 11px;
+  font-size:.82rem;font-weight:700;color:var(--ink);white-space:nowrap}
+.chip b{color:var(--orange)}
+.chip.xp b{color:var(--green)}
+.iconbtn{background:var(--cream2);border:1px solid var(--line);border-radius:12px;width:auto;min-width:40px;
+  height:38px;padding:0 10px;font-size:.95rem;color:var(--ink)}
+@media(max-width:560px){
+  .topbar{gap:6px;padding:9px 12px}
+  .brand{font-size:.86rem}.brand .logo{width:29px;height:29px;flex:0 0 29px;font-size:15px}
+  .chip{padding:4px 8px;font-size:.72rem}
+  .iconbtn{min-width:34px;height:34px;padding:0 7px;font-size:.85rem}
+}
+
+/* ---- การ์ด / ปุ่ม ---- */
+.card{background:var(--cream2);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:var(--shadow);margin-bottom:14px}
+.btn{display:inline-block;width:auto;min-height:0;border:1px solid var(--line);background:var(--cream2);
+  color:var(--ink);padding:11px 20px;border-radius:12px;font-size:.95rem;font-weight:700;
+  box-shadow:none;margin-bottom:0;transition:.16s transform,.16s background,.16s border-color}
+.btn:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.btn:active{transform:scale(.97);box-shadow:none}
+.btn.primary{background:linear-gradient(135deg,#4E9370,#2F7D4F);color:#FBF8EC;border-color:transparent;
+  box-shadow:0 8px 20px -10px rgba(8,74,36,.65)}
+.btn.orange,.btn.gold{background:linear-gradient(135deg,var(--orange),var(--bad));color:#FFF7F0;
+  border-color:transparent;box-shadow:0 8px 20px -10px rgba(231,57,13,.5)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.small{padding:9px 16px;font-size:.88rem}
+.btnrow{gap:10px;margin-top:12px}
+.btnrow>.btn{flex:0 1 auto}
+
+/* ---- แผนที่ด่าน ---- */
+.map{display:grid;gap:12px;margin-top:6px}
+@media(min-width:720px){.map{grid-template-columns:1fr 1fr}}
+.node{position:relative;overflow:hidden;background:var(--cream2);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px;gap:14px;box-shadow:none;
+  transition:.18s transform,.18s border-color,.18s background}
+.node:hover{transform:translateY(-3px);border-color:rgba(8,74,36,.38);background:var(--panel2)}
+.node.locked{opacity:.5;filter:grayscale(.55)}
+.node.locked:hover{transform:none;border-color:var(--line);background:var(--cream2)}
+.node .badge{width:56px;height:56px;flex:0 0 56px;border-radius:15px;font-size:1.7rem;
+  background:rgba(255,255,255,.75);border:1px solid var(--line)}
+.node.boss .badge{background:rgba(242,103,22,.14);border-color:rgba(242,103,22,.4)}
+.node.done{border-color:rgba(8,74,36,.4)}
+.node.done .badge{background:rgba(175,210,188,.6)}
+.node .nm{font-size:1.02rem}
+.node .sub{font-size:.84rem;line-height:1.5}
+.node .no{position:absolute;top:8px;right:12px;font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.1em}
+.node .go{display:none}
+.stars{color:var(--orange);letter-spacing:2px}
+.stars .off{color:rgba(8,74,36,.16)}
+
+/* ---- หัวหน้าปก ---- */
+.hero{text-align:center;padding:6px 12px 10px}
+.hero h1{font-size:clamp(1.7rem,5.2vw,2.5rem);margin-bottom:.25em;
+  background:linear-gradient(100deg,var(--green-d),#2F7D4F 42%,var(--orange));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#4A6A58;margin:0;font-size:.96rem}
+.eq{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;
+  background:rgba(175,210,188,.45);border:1px solid rgba(8,74,36,.25);color:var(--green-d);
+  font-size:.9rem;font-weight:700}
+.pub{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:4px;
+  font-weight:800;font-size:1.02rem;color:var(--green-d)}
+.pub b{color:var(--orange)}
+
+/* ---- HUD ระหว่างเล่น ---- */
+.hud{background:transparent;border-bottom:none;padding:0;margin:0 0 14px}
+.hud .lvname{color:var(--green-d)}
+.bar{height:7px;border-radius:99px;background:rgba(8,74,36,.10);border:none}
+.bar>i{background:linear-gradient(90deg,var(--green-l),var(--green))}
+
+/* ---- กล่องข้อความ ---- */
+.note{border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0;
+  border-left:4px solid var(--sky);background:rgba(92,144,166,.13)}
+.note.key{border-left-color:var(--green);background:rgba(47,125,79,.11)}
+.note.warn{border-left-color:var(--orange);background:rgba(242,103,22,.11)}
+.note.miss{border-left-color:var(--bad);background:rgba(231,57,13,.09)}
+.note b{color:var(--green-d)}
+.tipbox{background:rgba(242,103,22,.11);border:1px solid rgba(242,103,22,.35);border-radius:12px}
+.feedback{border-radius:12px;border-width:1px}
+.feedback.good{background:rgba(47,125,79,.14);border-color:rgba(47,125,79,.4)}
+.feedback.bad{background:rgba(231,57,13,.11);border-color:rgba(231,57,13,.35)}
+.missbox{background:rgba(242,103,22,.09);border:1px solid rgba(242,103,22,.32);border-radius:12px}
+.missbox .m{border-bottom:1px dashed rgba(242,103,22,.35)}
+
+/* ---- ตัวเลือก/ชิ้นงานในด่าน ---- */
+.opt{min-height:0;padding:12px 15px;border:1px solid var(--line);background:var(--cream2);
+  border-radius:12px;box-shadow:none;font-weight:600}
+.opt:hover{border-color:var(--green-l)}
+.opt.correct{background:rgba(47,125,79,.16);border-color:var(--green);color:var(--green-d)}
+.opt.wrong{background:rgba(231,57,13,.12);border-color:var(--bad);color:var(--bad)}
+.opt .mk{color:var(--orange-d)}
+.mitem,.chip-b,.fcard,.field input,.searchbar input,.tag{border-width:1px;box-shadow:none}
+.mitem{background:var(--cream2);border-color:var(--line);border-radius:12px}
+.mitem.sel{border-color:var(--orange);background:rgba(242,103,22,.12)}
+.mitem.done{background:rgba(47,125,79,.16);border-color:var(--green);color:var(--green-d)}
+.chip-b{background:var(--cream2);border-radius:999px}
+.chip-b.done{background:rgba(47,125,79,.16);border-color:var(--green);color:var(--green-d)}
+.mark{background:var(--orange);border:2px solid #fff;width:30px;height:30px;font-size:.85rem}
+.mark.done{background:var(--green)}
+.imgbox{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:var(--r)}
+.ptable th{background:rgba(242,103,22,.12);border:1px solid rgba(242,103,22,.4);color:var(--orange-d)}
+.pcell{border:1px dashed var(--line);background:var(--cream2);border-radius:12px}
+.pcell.sel{border-style:solid;border-color:var(--orange);background:rgba(242,103,22,.12)}
+.pcell.done{border-style:solid;background:rgba(47,125,79,.16);border-color:var(--green);color:var(--green-d)}
+.parents .pp{background:rgba(47,125,79,.14);border:1px solid var(--green-l);color:var(--green-d);border-radius:999px}
+.tag.on{background:linear-gradient(135deg,var(--orange),var(--bad));border-color:transparent;color:#FFF7F0}
+.fcard .th{color:var(--green-d)}
+.fcard .en{color:var(--orange-d)}
+.privacy{background:rgba(47,125,79,.11);border:1px solid rgba(47,125,79,.35);border-radius:12px}
+.pill{background:rgba(47,125,79,.13);color:var(--green-d)}
+.bigstars{color:var(--orange);letter-spacing:8px}
+.bigstars .off{color:rgba(8,74,36,.16)}
+.scorebig{color:var(--green-d)}
+.foot{color:var(--muted);margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 8px 26px -12px rgba(8,74,36,.45);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.certform input:focus{outline:none;border-color:var(--green-l)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--bad));transition:width .5s}
+.rowcard{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.rowcard .ic{font-size:2rem}
+.rowcard .tx{flex:1;min-width:200px}
+.rowcard .tx .t{font-weight:800}
 </style>
 </head>
 <body>
@@ -186,30 +366,39 @@ ul.recap li{margin-bottom:6px}
   <div class="topbar">
     <div class="brand"><span class="logo">🧬</span><span>ภารกิจพันธุกรรม</span></div>
     <div class="spacer"></div>
+    <div class="chip xp" id="xpChip">⚡ XP <b>0</b></div>
     <div class="chip" id="starChip">⭐ 0/21</div>
     <button class="chip hidden" id="classChip" title="สถานะการส่งคะแนน">👤</button>
     <button class="iconbtn" id="soundBtn" title="เสียง">🔊</button>
+    <button class="iconbtn hidden" id="btnMap" title="กลับแผนที่">🗺️</button>
   </div>
 
   <!-- ============ HOME ============ -->
   <section id="screen-home">
-    <div class="card">
-      <h1>🌱 ภารกิจพันธุกรรม</h1>
-      <p class="mini">ชีววิทยา ม.4 เทอม 2 · เรื่อง การถ่ายทอดลักษณะทางพันธุกรรม (อิงขอบเขตเนื้อหา สสวท.)</p>
-      <p>ผจญภัย 6 ด่าน + ด่านบอสสถานการณ์จริง เก็บดาวให้ครบ 21 ดวง! เล่นซ้ำได้ไม่จำกัดเพื่อพัฒนาคะแนน</p>
-      <div class="btnrow">
-        <button class="btn small" id="btnPlay">▶ เริ่มผจญภัย</button>
-        <button class="btn small orange" id="btnCards">📇 การ์ดคำศัพท์</button>
-      </div>
-      <div class="btnrow">
-        <button class="btn small ghost" id="btnMis">⚠️ จุดที่มักเข้าใจผิด</button>
-        <button class="btn small ghost" id="btnHelp">❓ วิธีเล่น &amp; ขอบเขต</button>
-      </div>
+    <div class="hero">
+      <div class="pub"><span>Biology<b>.</b></span></div>
+      <h1>ภารกิจพันธุกรรม</h1>
+      <p>ชีววิทยา ม.4 · เรื่อง <strong>การถ่ายทอดลักษณะทางพันธุกรรม</strong><br>
+         ผจญภัย 6 ด่าน + ด่านบอสสถานการณ์จริง เก็บดาวให้ครบ 21 ดวง</p>
+      <div class="eq">ยีน → แอลลีล → จีโนไทป์ → ฟีโนไทป์</div>
     </div>
     <div class="card hidden" id="classCard"></div>
     <div class="map" id="map"></div>
-    <div class="card center" id="certSlot"></div>
-    <div class="foot">เล่นออฟไลน์ได้ 100% · คะแนนบันทึกในเครื่องของคุณเอง<br>
+    <div class="card rowcard">
+      <div class="ic">🃏</div>
+      <div class="tx"><div class="t">การ์ดคำศัพท์</div>
+        <div class="mini">ทบทวนศัพท์ไทย–อังกฤษพร้อมนิยาม เปิดเล่นได้ตลอดเวลา</div></div>
+      <button class="btn gold" id="btnCards">เปิดสำรับ</button>
+    </div>
+    <div class="card rowcard">
+      <div class="ic">⚠️</div>
+      <div class="tx"><div class="t">จุดที่มักเข้าใจผิด</div>
+        <div class="mini">รวมกับดักยอดฮิตของบทพันธุกรรม อ่านก่อนสอบช่วยได้เยอะ</div></div>
+      <button class="btn" id="btnMis">เปิดอ่าน</button>
+    </div>
+    <div id="certSlot"></div>
+    <div class="foot">เล่นออฟไลน์ได้ 100% · ความก้าวหน้าบันทึกไว้ในเครื่องของผู้เล่นเอง<br>
+      <button class="chip" id="btnHelp" style="margin-top:8px">❓ วิธีเล่น &amp; ขอบเขต</button>
       <button class="chip" id="btnReset" style="margin-top:8px">🗑 ล้างคะแนนทั้งหมด</button>
       <button class="chip" id="btnTeacher2" style="margin-top:8px">👩‍🏫 สำหรับครู</button>
     </div>
@@ -252,6 +441,9 @@ ul.recap li{margin-bottom:6px}
     <div id="misList"></div>
     <button class="btn ghost" onclick="go('home')">← กลับหน้าหลัก</button>
   </section>
+
+  <!-- ============ CERTIFICATE ============ -->
+  <section id="screen-cert" class="hidden"><div id="certHost"></div></section>
 
   <!-- ============ CLASS (เข้าร่วมชั้นเรียน / สถานะการส่ง) ============ -->
   <section id="screen-class" class="hidden"><div id="classHost"></div></section>
@@ -338,7 +530,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 /* ---------------- storage ---------------- */
 const KEY='genetics_quest_v1';
-let SAVE={stars:{},best:{},name:'',stu:null,outbox:[],plays:{},lastSent:''};
+let SAVE={stars:{},best:{},name:'',stu:null,outbox:[],plays:{},lastSent:'',xp:0};
 function load(){ try{const r=localStorage.getItem(KEY); if(r) SAVE=Object.assign(SAVE,JSON.parse(r));}catch(e){} }
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(SAVE));}catch(e){} }
 load();
@@ -430,7 +622,7 @@ async function sendOne(ep, item){
     const row={
       uid:item.uid, room:item.room,
       student:String(item.name||'').trim().slice(0,60),
-      sid:item.sid,
+      sid:item.sid, game:'genetics',
       level:clamp(item.level,0,20), level_name:String(item.levelName||'').slice(0,80),
       stars:clamp(item.stars,0,3), percent:clamp(item.percent,0,100),
       score:clamp(item.score,0,100000), max_score:clamp(item.max,0,100000),
@@ -497,6 +689,7 @@ async function flushOutbox(){
   return {sent:sent,left:left.length};
 }
 window.addEventListener('online', function(){ flushOutbox(); });
+window.addEventListener('resize', function(){ updateClassChip(); });
 
 function updateClassChip(){
   const c=document.getElementById('classChip');
@@ -505,7 +698,9 @@ function updateClassChip(){
   c.classList.remove('hidden');
   const n=SAVE.outbox.length;
   c.classList.toggle('pending', n>0);
-  c.textContent = n>0 ? ('📤 รอส่ง '+n) : ('👤 '+SAVE.stu.name);
+  /* จอแคบเหลือแค่ไอคอน กันแถบบนล้น (ชื่อเต็มดูได้ในหน้าห้องเรียน) */
+  var short = window.matchMedia('(max-width:560px)').matches;
+  c.textContent = n>0 ? ('📤 '+(short?n:'รอส่ง '+n)) : (short ? '👤' : '👤 '+SAVE.stu.name);
 }
 
 /* ---------- หน้าเข้าร่วมชั้นเรียน ---------- */
@@ -1172,11 +1367,17 @@ const MAXSTARS = LEVELS.length*3;
 let G=null;
 
 function go(name){
-  ['home','play','result','cards','mis','help','class'].forEach(function(s){
+  ['home','play','result','cards','mis','help','class','cert'].forEach(function(s){
     var el=document.getElementById('screen-'+s); if(el) el.classList.add('hidden');
   });
   document.getElementById('screen-'+name).classList.remove('hidden');
+  var mb=document.getElementById('btnMap');
+  if(mb) mb.classList.toggle('hidden', name==='home');
   window.scrollTo(0,0);
+}
+function syncHud(){
+  document.getElementById('starChip').textContent='⭐ '+totalStars()+'/'+MAXSTARS;
+  document.getElementById('xpChip').innerHTML='⚡ XP <b>'+(SAVE.xp||0)+'</b>';
 }
 function totalStars(){ return LEVELS.reduce(function(s,l){return s+(SAVE.stars[l.id]||0)},0); }
 function unlocked(lv){
@@ -1184,20 +1385,22 @@ function unlocked(lv){
   if(lv.boss) return LEVELS.filter(function(l){return !l.boss}).every(function(l){return (SAVE.stars[l.id]||0)>=1});
   return (SAVE.stars[lv.id-1]||0)>=1;
 }
-function starStr(n){ var s=''; for(var i=0;i<3;i++) s += i<n?'★':'☆'; return s; }
+function starStr(n){ var s=''; for(var i=0;i<3;i++) s += i<n?'★':'<span class="off">★</span>'; return s; }
 
 function renderHome(){
-  document.getElementById('starChip').textContent='⭐ '+totalStars()+'/'+MAXSTARS;
+  syncHud();
   renderClassCard(); updateClassChip();
   var map=document.getElementById('map'); map.innerHTML='';
-  LEVELS.forEach(function(lv){
+  LEVELS.forEach(function(lv,i){
     var open=unlocked(lv), st=SAVE.stars[lv.id]||0, best=SAVE.best[lv.id];
-    var b=E('button','node'+(open?'':' locked')+(lv.boss?' boss':''));
-    b.innerHTML='<div class="badge">'+(open?lv.icon:'🔒')+'</div>'+
-      '<div class="info"><div class="nm">'+lv.name+'</div>'+
-      '<div class="sub">'+lv.sub+'</div>'+
-      '<div class="stars">'+starStr(st)+(best!=null?' <span class="mini">· ดีที่สุด '+best+'%</span>':'')+'</div></div>'+
-      '<div class="go">'+(open?'▶':'')+'</div>';
+    var b=E('button','node'+(open?'':' locked')+(lv.boss?' boss':'')+(st?' done':''));
+    var title=lv.name.split(' · ').slice(1).join(' · ') || lv.name;
+    b.innerHTML='<div class="no">'+(lv.boss?'ด่านบอส':'ด่าน '+(i+1))+'</div>'+
+      '<div class="badge">'+(open?lv.icon:'🔒')+'</div>'+
+      '<div class="info"><div class="nm">'+title+'</div>'+
+      '<div class="sub">'+(open?lv.sub:(lv.boss?'ผ่านครบทั้ง 6 ด่านเพื่อปลดล็อก':'ผ่านด่านก่อนหน้าเพื่อปลดล็อก'))+'</div>'+
+      (open?'<div class="stars">'+starStr(st)+(best!=null?' <span class="mini">· ดีที่สุด '+best+'%</span>':'')+'</div>':'')+
+      '</div>';
     b.onclick=function(){
       if(!open){ alert(lv.boss?'ด่านบอสจะเปิดเมื่อผ่านครบทั้ง 6 ด่าน (อย่างน้อยด่านละ 1 ดาว)':'ต้องได้อย่างน้อย 1 ดาวจากด่านก่อนหน้าจึงจะปลดล็อกด่านนี้'); return; }
       startLevel(lv.id);
@@ -1205,15 +1408,9 @@ function renderHome(){
     map.appendChild(b);
   });
   var cs=document.getElementById('certSlot');
-  if((SAVE.stars[7]||0)>=1){
-    cs.classList.remove('hidden');
-    cs.innerHTML='<div class="cert"><div style="font-size:34px">🏅</div><h3>เกียรติบัตรนักพันธุศาสตร์รุ่นเยาว์</h3>'+
-      '<div class="nm" id="certName">'+(SAVE.name||'(ใส่ชื่อของคุณ)')+'</div>'+
-      '<p class="mini">ผ่านภารกิจครบทุกด่าน เก็บดาวได้ '+totalStars()+'/'+MAXSTARS+' ดวง</p></div>';
-    document.getElementById('certName').onclick=function(){
-      var n=prompt('ใส่ชื่อ–นามสกุลของคุณ', SAVE.name||''); if(n!=null){ SAVE.name=n.trim(); save(); renderHome(); }
-    };
-  } else { cs.classList.add('hidden'); }
+  cs.innerHTML=certCardHtml();
+  var cb=document.getElementById('btnCert');
+  if(cb && !cb.disabled) cb.onclick=renderCert;
 }
 
 function startLevel(id){
@@ -1555,7 +1752,9 @@ function finishLevel(){
   if(pct > (SAVE.best[lv.id]||0)) SAVE.best[lv.id]=pct;
   var secs=Math.max(0, Math.round((Date.now()-(G.t0||Date.now()))/1000));
   SAVE.plays[lv.id]=(SAVE.plays[lv.id]||0)+1;
-  save();
+  var xp=Math.round(40+pct*0.6);            // XP ต่อด่าน 40–100 เท่ากับเกมอื่นในชุด
+  SAVE.xp=(SAVE.xp||0)+xp;
+  save(); syncHud();
   if(st>=2) sWin(); else sGood();
 
   /* ส่งผลให้ครู (เข้าคิวไว้ก่อน ส่งจริงเมื่อมีเน็ต) */
@@ -1571,10 +1770,11 @@ function finishLevel(){
 
   var h=document.getElementById('resultHost'); h.innerHTML='';
   var c=E('div','card center');
-  c.innerHTML='<h2>'+(st>=2?'🎉 เยี่ยมมาก!':(st===1?'👍 ผ่านแล้ว!':'💪 ลองอีกครั้งนะ'))+'</h2>'+
-    '<div class="bigstars">'+starStr(st)+'</div>'+
+  c.innerHTML='<div class="bigstars">'+starStr(st)+'</div>'+
+    '<h2>'+(st===3?'สมบูรณ์แบบ!':st===2?'เก่งมาก!':st===1?'ผ่านแล้ว':'ยังไม่ผ่าน')+'</h2>'+
     '<div class="scorebig">'+pct+'%</div>'+
-    '<p class="mini">ได้ '+G.score+' จาก '+G.max+' คะแนน · ใช้เวลา '+Math.floor(secs/60)+' นาที '+(secs%60)+' วินาที</p>'+
+    '<p class="mini">ได้รับ <b style="color:var(--green)">+'+xp+' XP</b> · '+G.score+' จาก '+G.max+' คะแนน · '+
+      'ใช้เวลา '+Math.floor(secs/60)+' นาที '+(secs%60)+' วินาที</p>'+
     (st===0?'<p class="mini" style="color:var(--bad)">ต้องได้ตั้งแต่ 50% ขึ้นไปจึงจะปลดล็อกด่านถัดไป</p>':'');
   h.appendChild(c);
 
@@ -1600,20 +1800,150 @@ function finishLevel(){
   }
 
   var r=E('div','card');
-  r.innerHTML='<span class="pill">สรุปสิ่งที่ได้เรียนรู้</span><h3>'+lv.sub+'</h3><ul class="recap">'+
-    lv.recap.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+
-    '<div class="tipbox" style="margin-top:12px"><b>⚠️ จุดที่มักเข้าใจผิด:</b> '+lv.mis+'</div>';
+  r.innerHTML='<div class="note key">🟡 <b>สรุปที่ต้องจำ — '+lv.sub+'</b><ul class="recap" style="margin-top:6px">'+
+      lv.recap.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul></div>'+
+    '<div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> '+lv.mis+'</div>'+
+    (lv.goal?'<div class="note">🔵 <b>เป้าหมายของด่านนี้:</b> '+lv.goal+'</div>':'');
   h.appendChild(r);
 
-  var btns=E('div');
+  var btns=E('div','btnrow center');
+  btns.style.cssText='display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px';
+  var b2=E('button','btn','เล่นด่านนี้อีกครั้ง'); b2.onclick=function(){startLevel(lv.id)}; btns.appendChild(b2);
   var nx=LEVELS.filter(function(l){return l.id===lv.id+1})[0];
   if(st>=1 && nx){
-    var b1=E('button','btn','ไปด่านต่อไป: '+nx.name+' →'); b1.onclick=function(){startLevel(nx.id)}; btns.appendChild(b1);
+    var t=nx.name.split(' · ').slice(1).join(' · ')||nx.name;
+    var b1=E('button','btn gold','ด่านต่อไป: '+t+' →'); b1.onclick=function(){startLevel(nx.id)}; btns.appendChild(b1);
   }
-  var b2=E('button','btn orange','🔁 เล่นด่านนี้อีกครั้ง'); b2.onclick=function(){startLevel(lv.id)}; btns.appendChild(b2);
-  var b3=E('button','btn ghost','🗺 กลับแผนที่ด่าน'); b3.onclick=function(){renderHome();go('home')}; btns.appendChild(b3);
+  var b3=E('button','btn primary','🗺️ กลับแผนที่ →'); b3.onclick=function(){renderHome();go('home')}; btns.appendChild(b3);
   h.appendChild(btns);
   go('result');
+}
+
+
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้)
+   ========================================================================= */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  nameX:0.50, nameY:0.492, nameW:0.44, nameSize:0.042,
+  nameColor:'#0B2C1E'
+};
+function certNeed(){ return Math.ceil(MAXSTARS * CERT.pass); }
+function certPassed(){
+  var allPlayed = LEVELS.every(function(lv){ return (SAVE.stars[lv.id]||0) > 0; });
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  return SAVE.name || (SAVE.stu && SAVE.stu.name) || '';
+}
+function certCardHtml(){
+  var need=certNeed(), got=totalStars(), ok=certPassed();
+  var pct=Math.min(100, Math.round(got/need*100));
+  return '<div class="card rowcard '+(ok?'':'lockcard')+'" style="border-color:'+(ok?'rgba(242,103,22,.5)':'var(--line)')+'">'+
+    '<div class="ic">'+(ok?'🏅':'🔒')+'</div>'+
+    '<div class="tx"><div class="t">เกียรติบัตร'+(ok?' — ผ่านเกณฑ์แล้ว!':'')+'</div>'+
+      '<div class="mini">'+(ok
+        ? 'เรียนครบทุกด่านและได้ '+got+'/'+MAXSTARS+' ดาว (เกณฑ์ '+Math.round(CERT.pass*100)+'% = '+need+' ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย'
+        : 'เล่นให้ครบทั้ง '+LEVELS.length+' ด่าน และเก็บดาวให้ถึง <b>'+need+'/'+MAXSTARS+'</b> ดาว ('+Math.round(CERT.pass*100)+'%) · ตอนนี้ได้ '+got+' ดาว')+'</div>'+
+      (ok?'':'<div class="certprog"><i style="width:'+pct+'%"></i></div>')+
+    '</div>'+
+    '<button class="btn '+(ok?'gold':'')+'" id="btnCert" '+(ok?'':'disabled')+'>รับเกียรติบัตร</button></div>';
+}
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  var W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  var c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); } else { certFallback(c, W, H); }
+  var maxW = W * CERT.nameW, size = W * CERT.nameSize;
+  var font = function(px){ return '700 '+px+'px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif'; };
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = CERT.nameColor; c.textAlign='center'; c.textBaseline='middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  var g=c.createLinearGradient(0,0,W,H); g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle=g; c.fillRect(0,0,W,H);
+  c.strokeStyle='#084A24'; c.lineWidth=W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle='#F26716'; c.lineWidth=W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  var f=function(px,w){ return (w||700)+' '+px+'px "Sukhumvit Set","Noto Sans Thai",sans-serif'; };
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.font=f(W*0.03,400); c.fillStyle='#6B8A76';
+  c.fillText('(ยังไม่ได้วางไฟล์ cert-bg.png จึงใช้กรอบสำรองชั่วคราว)', W/2, H*0.20);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.63);
+  c.fillStyle='#D6350B'; c.font=f(W*0.026);
+  c.fillText('เรื่อง การถ่ายทอดลักษณะทางพันธุกรรม', W/2, H*0.70);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.80);
+  var bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  var gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+function renderCert(){
+  if(!certPassed()){ alert('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  var img=null, nameNow=certName();
+  document.getElementById('certHost').innerHTML =
+    '<div class="card">'+
+      '<h2>🏅 เกียรติบัตร</h2>'+
+      '<p class="mini">ผ่านเกณฑ์ '+Math.round(CERT.pass*100)+'% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</p>'+
+      '<div class="note key">🎓 ได้ <b>'+totalStars()+'/'+MAXSTARS+' ดาว</b> จากทั้ง '+LEVELS.length+' ด่าน '+
+        '(เกณฑ์ผ่าน '+certNeed()+' ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>'+
+      '<div class="certform">'+
+        '<input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="'+String(nameNow).replace(/"/g,'&quot;')+'">'+
+        '<button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>'+
+      '</div>'+
+      '<div class="certwrap"><canvas id="ccv"></canvas></div>'+
+      '<div class="certbar">'+
+        '<button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>'+
+        '<button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>'+
+        '<button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>'+
+      '</div>'+
+      '<div class="note small" style="margin-top:14px">📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น '+
+        'ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b></div>'+
+    '</div>';
+  go('cert');
+  var cv=document.getElementById('ccv'), inp=document.getElementById('cname');
+  function paint(){
+    var nm=(inp.value||'').trim();
+    if(!nm){ alert('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    SAVE.name=nm; save();
+    drawCert(cv, nm, img);
+    return true;
+  }
+  var im=new Image();
+  im.onload=function(){ img=im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror=function(){ img=null; drawCert(cv, nameNow||'', null); };
+  im.src=CERT.src;
+  document.getElementById('cmake').onclick=paint;
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick=function(){
+    if(!paint()) return;
+    var nm=(inp.value||'').trim();
+    cv.toBlob(function(b){
+      var url=URL.createObjectURL(b), a=document.createElement('a');
+      a.href=url; a.download='เกียรติบัตร-'+nm+'.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },4000);
+      sWin();
+    },'image/png');
+  };
+  document.getElementById('copen').onclick=function(){
+    if(!paint()) return;
+    cv.toBlob(function(b){ window.open(URL.createObjectURL(b),'_blank'); },'image/png');
+  };
+  document.getElementById('cback').onclick=function(){ renderHome(); go('home'); };
 }
 
 /* ---------- การ์ดคำศัพท์ ---------- */
@@ -1661,7 +1991,6 @@ function renderMis(){
 }
 
 /* ---------- ผูกปุ่ม ---------- */
-document.getElementById('btnPlay').onclick=function(){ renderHome(); go('home'); document.getElementById('map').scrollIntoView({behavior:'smooth'}); };
 document.getElementById('btnCards').onclick=function(){ renderCards(); go('cards'); };
 document.getElementById('btnMis').onclick=function(){ renderMis(); go('mis'); };
 document.getElementById('btnHelp').onclick=function(){
@@ -1672,10 +2001,11 @@ document.getElementById('btnHelp').onclick=function(){
 document.getElementById('btnQuit').onclick=function(){ if(confirm('ออกจากด่านนี้? คะแนนรอบนี้จะไม่ถูกบันทึก')){ renderHome(); go('home'); } };
 document.getElementById('btnReset').onclick=function(){
   if(confirm('ล้างดาวและคะแนนทั้งหมดในเครื่องนี้? (ห้องเรียนที่เข้าร่วมไว้ยังอยู่)')){
-    SAVE.stars={}; SAVE.best={}; SAVE.plays={}; SAVE.name='';
+    SAVE.stars={}; SAVE.best={}; SAVE.plays={}; SAVE.name=''; SAVE.xp=0;
     save(); renderHome();
   }
 };
+document.getElementById('btnMap').onclick=function(){ renderHome(); go('home'); };
 document.getElementById('classChip').onclick=function(){ if(joined()) renderOutbox(); else renderJoin(); };
 document.getElementById('btnTeacher').onclick=renderTeacher;
 document.getElementById('btnTeacher2').onclick=renderTeacher;
@@ -1700,6 +2030,12 @@ document.getElementById('soundBtn').onclick=function(){
   /* มาจากลิงก์ของครูและยังไม่ได้เข้าห้อง → พาไปหน้ากรอกชื่อเลย */
   if(PENDING_ROOM && classOn() && !joined()) renderJoin();
 })();
+
+/* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
+   ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
 </script>
 </body>
 </html>

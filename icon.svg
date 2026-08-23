@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ภารกิจพันธุกรรม">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8EC"/><stop offset="1" stop-color="#EAE4C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- เกลียวคู่ของ DNA -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M176 96 C 176 176, 336 176, 336 256 C 336 336, 176 336, 176 416"
+          stroke="#2F7D4F" stroke-width="26"/>
+    <path d="M336 96 C 336 176, 176 176, 176 256 C 176 336, 336 336, 336 416"
+          stroke="#F26716" stroke-width="26"/>
+    <g stroke="#084A24" stroke-width="16" opacity=".85">
+      <path d="M196 136 L316 136"/>
+      <path d="M226 186 L286 186"/>
+      <path d="M226 326 L286 326"/>
+      <path d="M196 376 L316 376"/>
+    </g>
+  </g>
+  <circle cx="256" cy="256" r="30" fill="#FBF8EC" stroke="#084A24" stroke-width="14"/>
+</svg>
