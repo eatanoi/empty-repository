@@ -282,10 +282,12 @@ function agg(){
     const s=byStudent[k]||(byStudent[k]={name:k,levels:{},plays:0,seconds:0,last:null,misses:0});
     s.plays++; s.seconds+=(r.seconds||0); s.misses+=(r.misses||0);
     if(!s.last || r.created_at>s.last) s.last=r.created_at;
-    const cur=s.levels[r.level];
-    if(!cur || r.stars>cur.stars || (r.stars===cur.stars && r.percent>cur.percent)) s.levels[r.level]={stars:r.stars,percent:r.percent};
+    const key=gameOf(r)+'|'+r.level;                 // แยกตามเกม+ด่าน กันด่านของคนละเกมมาทับกัน
+    const cur=s.levels[key];
+    if(!cur || r.stars>cur.stars || (r.stars===cur.stars && r.percent>cur.percent)) s.levels[key]={stars:r.stars,percent:r.percent};
 
-    const L=byLevel[r.level]||(byLevel[r.level]={level:r.level,name:r.level_name||('ด่าน '+r.level),n:0,pct:0,sec:0,miss:0,stars:0});
+    const L=byLevel[key]||(byLevel[key]={key:key, game:gameOf(r), level:r.level,
+      name:r.level_name||('ด่าน '+r.level), n:0,pct:0,sec:0,miss:0,stars:0});
     L.n++; L.pct+=(r.percent||0); L.sec+=(r.seconds||0); L.miss+=(r.misses||0); L.stars+=(r.stars||0);
   });
   const students=Object.values(byStudent).map(s=>{
@@ -293,7 +295,7 @@ function agg(){
     s.cleared=Object.values(s.levels).filter(x=>x.stars>0).length;
     return s;
   }).sort((a,b)=>b.totalStars-a.totalStars || a.name.localeCompare(b.name,'th'));
-  const levels=Object.values(byLevel).sort((a,b)=>a.level-b.level);
+  const levels=Object.values(byLevel).sort((a,b)=> a.game.localeCompare(b.game) || a.level-b.level);
   return {students,levels};
 }
 function stars(n){ let s=''; for(let i=0;i<3;i++) s+= i<n?'★':'☆'; return '<span class="stars'+(n?'':' zero')+'">'+s+'</span>'; }
@@ -308,7 +310,6 @@ function thTime(iso){
 /* ---------------- render ---------------- */
 function render(){
   const {students,levels}=agg();
-  const maxLevel=levels.length?Math.max(...levels.map(l=>l.level)):0;
   const totalStars=students.reduce((a,s)=>a+s.totalStars,0);
   const avg=students.length?(totalStars/students.length):0;
   const secs=ROWS.reduce((a,r)=>a+(r.seconds||0),0);
@@ -351,16 +352,18 @@ function render(){
 
   if(TAB==='students'){
     const c=E('div','card'); c.innerHTML='<h2>👥 ดาวที่ดีที่สุดของแต่ละคน แยกตามด่าน</h2>';
+    /* หนึ่งคอลัมน์ = ด่านหนึ่งของเกมหนึ่ง (ถ้าเลือก "ทุกเกม" จะมีชื่อเกมกำกับหัวคอลัมน์ด้วย) */
+    const multiGame = new Set(levels.map(l=>l.game)).size > 1;
     let head='<tr><th>ชื่อ</th>';
-    for(let i=1;i<=maxLevel;i++) head+='<th class="num">ด่าน '+i+'</th>';
+    levels.forEach(l=>{ head+='<th class="num">'+(multiGame?('<span class="mini">'+esc(gameName(l.game))+'</span><br>'):'')+'ด่าน '+l.level+'</th>'; });
     head+='<th class="num">ดาวรวม</th><th class="num">เวลารวม</th><th class="num">ล่าสุด</th></tr>';
     let body='';
     students.forEach(s=>{
       body+='<tr><td>'+esc(s.name)+'</td>';
-      for(let i=1;i<=maxLevel;i++){
-        const v=s.levels[i];
+      levels.forEach(l=>{
+        const v=s.levels[l.key];
         body+='<td class="num">'+(v?stars(v.stars):'<span class="mini">–</span>')+'</td>';
-      }
+      });
       body+='<td class="num"><b>'+s.totalStars+'</b></td><td class="num">'+mmss(s.seconds)+'</td><td class="num mini">'+thTime(s.last)+'</td></tr>';
     });
     const t=E('div','tablewrap'); t.innerHTML='<table><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
