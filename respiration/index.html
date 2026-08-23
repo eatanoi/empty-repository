@@ -1586,7 +1586,8 @@ function openJoinModal(){
     <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
     <div class="mmsg" id="jmsg"></div>
     <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น</div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น<br>
+      <a href="../privacy/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">อ่านนโยบายความเป็นส่วนตัว</a></div>
   </div>`;
   document.body.appendChild(bg);
   const close=()=>bg.remove();
