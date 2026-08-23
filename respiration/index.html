@@ -226,6 +226,24 @@ h3{font-size:1.05rem}
 .slot.filled{border-style:solid;border-color:var(--green);background:rgba(175,210,188,.85);color:var(--deep)}
 .slot.wrong{border-color:var(--bad);background:rgba(231,57,13,.16);animation:shake .35s}
 @keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(calc(-50% - 6px),-50%)}75%{transform:translate(calc(-50% + 6px),-50%)}}
+/* กระดานติดป้ายแบบใช้ภาพจริง — จุดหมายเลขบนภาพ + รายการเติมชื่อด้านล่าง
+   ทุกพิกัดคิดเป็นสัดส่วนของภาพ จึงเปลี่ยนไฟล์ภาพที่สัดส่วนต่างกันได้โดยไม่ต้องแก้โครง */
+.photo{max-width:680px;margin:8px auto 2px}
+.pimg{position:relative}
+.pimg>img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.pin{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;
+  width:clamp(22px,4.6vw,30px);height:clamp(22px,4.6vw,30px);border-radius:50%;
+  background:var(--gold);color:#FFF7F0;font-weight:800;font-size:clamp(.68rem,2.4vw,.85rem);
+  border:2px solid #fff;box-shadow:0 2px 6px rgba(8,74,36,.35)}
+.pin.done{background:var(--lime)}
+.numgrid{display:grid;gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.slot.numrow{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
+  min-width:0;text-align:left;white-space:normal;padding:9px 12px}
+.slot.numrow i{flex:0 0 auto;width:25px;height:25px;border-radius:50%;background:var(--gold);color:#FFF7F0;
+  font-style:normal;font-weight:800;display:grid;place-items:center;font-size:.78rem}
+.slot.numrow.filled i{background:var(--lime)}
+.slot.numrow.wrong{animation:shakerow .35s}
+@keyframes shakerow{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .tok{
   padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
@@ -522,82 +540,80 @@ function finishStage(id, got, xp, summaryHtml){
 /* =========================================================================
    ด่าน 1 — โครงสร้างไมโทคอนเดรีย
    ========================================================================= */
-/* ใช้ภาพตัดขวางไมโทคอนเดรียจริง (ของผู้ใช้) เป็นแผนภาพหลัก
-   พิกัดอ้างระบบ SVG ของผู้ใช้ 1988.06×1314.68 (ภาพวางที่ 391.76,342.39 ขนาด 1535×837)
-   ax/ay = จุดชี้ที่ผู้ใช้กำหนดไว้เอง (ปลายเส้นชี้ด้านที่แตะออร์แกเนลล์)
-   ถ้าไฟล์ mitochondrion.jpg ยังไม่ถูกวางไว้ จะใช้ภาพวาด SVG สำรองด้านล่างแทนอัตโนมัติ */
+/* ภาพไมโทคอนเดรีย 3 มิติ (ไฟล์ mito3d.jpg — ถ้าไม่มีจะถอยไปใช้ mitochondrion.jpg แล้วภาพวาดสำรองตามลำดับ)
+   พิกัดของทุกจุด u,v คิดเป็น "สัดส่วนของภาพ" (0–1) วัดจากไฟล์ภาพจริง
+   จึงเปลี่ยนไฟล์ภาพที่ขนาดต่างกันได้ โดยไม่ต้องแก้อะไรอีก */
+const MITO_PHOTO = 'mito3d.jpg';
+const MITO_RATIO = '1400/763';        // สัดส่วนกว้าง/สูงของไฟล์ภาพ
 const MITO_PARTS = [
-  { key:'ribo', label:'ไรโบโซม', x:210, y:684, ax:685.34, ay:685.88,
-    info:'Ribosome — เม็ดเล็ก ๆ กระจายในเมทริกซ์ ไมโทคอนเดรียมีไรโบโซมของตัวเอง จึงสร้างโปรตีนบางส่วนได้เอง' },
-  { key:'dna', label:'ดีเอ็นเอ', x:520, y:120, ax:794.78, ay:703.12,
-    info:'mtDNA — DNA วงแหวนของไมโทคอนเดรีย (แยกจาก DNA ในนิวเคลียส) เป็นหลักฐานสำคัญของทฤษฎีเอนโดซิมไบโอซิส' },
-  { key:'matrix', label:'เมทริกซ์', x:1010, y:110, ax:1088.25, ay:671.57,
-    info:'Matrix — ของเหลวชั้นในสุด (สีน้ำตาล) เป็นที่เกิด <b>การออกซิไดซ์ไพรูเวตและวัฏจักรเครบส์</b> มีเอนไซม์ · DNA · ไรโบโซม' },
-  { key:'outer', label:'เยื่อหุ้มชั้นนอก', x:1430, y:100, ax:1291.58, ay:401.09,
-    info:'Outer membrane — ชั้นนอกสุดที่เรียบ ยอมให้สารเล็ก ๆ ผ่านได้ค่อนข้างอิสระเพราะมีโปรตีนพอริน' },
-  { key:'inner', label:'เยื่อหุ้มชั้นใน', x:1730, y:250, ax:1592.52, ay:555.06,
+  { key:'outer',  u:0.360, v:0.740, label:'เยื่อหุ้มชั้นนอก',
+    info:'Outer membrane — ชั้นนอกสุดที่เรียบ ไม่พับ มีโปรตีนพอริน สารโมเลกุลเล็กจึงผ่านเข้าออกได้ค่อนข้างอิสระ' },
+  { key:'inter',  u:0.150, v:0.669, label:'ช่องระหว่างเยื่อ',
+    info:'Intermembrane space — ช่องแคบ ๆ ระหว่างเยื่อสองชั้น (ในภาพเห็นเป็นเส้นบางระหว่างสองชั้น) เป็นที่<b>สะสม H⁺</b> จน pH ต่ำ เทียบได้กับลูเมนของไทลาคอยด์' },
+  { key:'inner',  u:0.700, v:0.168, label:'เยื่อหุ้มชั้นใน',
     info:'Inner membrane — เยื่อชั้นในที่พับเป็นคริสตี ฝัง <b>ระบบถ่ายทอดอิเล็กตรอนและ ATP synthase</b> เลือกผ่านอย่างเข้มงวด' },
-  { key:'inter', label:'ช่องระหว่างเยื่อ', x:900, y:1240, ax:913.32, ay:858.09,
-    info:'Intermembrane space — ช่องแคบระหว่างเยื่อสองชั้น เป็นที่<b>สะสม H⁺</b> จน pH ต่ำ (เทียบได้กับลูเมนของไทลาคอยด์)' },
-  { key:'crista', label:'คริสตี', x:1540, y:1240, ax:1324.92, ay:753.61,
-    info:'Cristae — รอยพับเข้าของเยื่อชั้นใน เพิ่มพื้นที่ผิวให้ติดตั้งลูกโซ่หายใจได้มากที่สุด' }
+  { key:'crista', u:0.380, v:0.220, label:'คริสตี',
+    info:'Cristae — รอยพับเข้าของเยื่อชั้นใน (นิ้วมือที่ยื่นเข้าไปในเมทริกซ์) เพิ่มพื้นที่ผิวให้ติดตั้งลูกโซ่หายใจได้มากที่สุด' },
+  { key:'matrix', u:0.632, v:0.565, label:'เมทริกซ์',
+    info:'Matrix — ของเหลวชั้นในสุด (สีน้ำตาล) เป็นที่เกิด <b>การออกซิไดซ์ไพรูเวตและวัฏจักรเครบส์</b> มีเอนไซม์ · DNA · ไรโบโซม' },
+  { key:'ribo',   u:0.650, v:0.300, label:'ไรโบโซม',
+    info:'Ribosome — เม็ดกลมเล็ก ๆ ที่กระจายอยู่ในเมทริกซ์ ไมโทคอนเดรียมีไรโบโซมของตัวเอง จึงสร้างโปรตีนบางส่วนได้เอง' },
+  { key:'dna',    u:0.320, v:0.295, label:'ดีเอ็นเอ',
+    info:'mtDNA — เส้นดีเอ็นเอวงแหวนที่ขดอยู่ในเมทริกซ์ (แยกจาก DNA ในนิวเคลียส) เป็นหลักฐานสำคัญของทฤษฎีเอนโดซิมไบโอซิส' }
 ];
-/* ภาพวาดสำรอง (ใช้เมื่อยังไม่มีไฟล์ภาพถ่าย) — วางในกรอบเดียวกับภาพถ่ายพอดี */
+/* ภาพวาดสำรอง (ใช้เมื่อยังไม่มีไฟล์ภาพถ่าย) */
 const MITO_FALLBACK = `
-<svg viewBox="0 0 1988.06 1314.68" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" aria-hidden="true">
-  <defs><clipPath id="mfMatrix"><ellipse cx="1160" cy="765" rx="692" ry="330"/></clipPath></defs>
-  <ellipse cx="1160" cy="765" rx="735" ry="380" fill="#FBF3DE" stroke="#C77A3A" stroke-width="22"/>
-  <ellipse cx="1160" cy="765" rx="692" ry="330" fill="#EBD9AE" stroke="#2F7D4F" stroke-width="18"/>
-  <g clip-path="url(#mfMatrix)" fill="none" stroke-linecap="round">
-    <g stroke="#2F7D4F" stroke-width="76">
-      <path d="M913 1090 L913 830"/><path d="M1325 425 L1325 820"/>
-      <path d="M1450 1090 L1450 880"/><path d="M1150 1090 L1150 945"/>
-    </g>
-    <g stroke="#FBF3DE" stroke-width="42">
-      <path d="M913 1090 L913 830"/><path d="M1325 425 L1325 820"/>
-      <path d="M1450 1090 L1450 880"/><path d="M1150 1090 L1150 945"/>
-    </g>
-    <path d="M1655 500 L1545 675" stroke="#2F7D4F" stroke-width="70"/>
-    <path d="M1655 500 L1545 675" stroke="#FBF3DE" stroke-width="38"/>
-    <g fill="#8A6234" opacity=".6" stroke="none">
-      <circle cx="685" cy="686" r="15"/><circle cx="742" cy="792" r="12"/><circle cx="631" cy="612" r="11"/>
-      <circle cx="840" cy="930" r="12"/><circle cx="1000" cy="610" r="11"/><circle cx="1230" cy="960" r="12"/>
-      <circle cx="1560" cy="905" r="11"/><circle cx="1015" cy="860" r="10"/><circle cx="700" cy="880" r="10"/>
-      <circle cx="1600" cy="790" r="12"/>
-    </g>
-    <g fill="none" stroke="#E7390D" stroke-width="9">
-      <circle cx="795" cy="703" r="46"/><circle cx="808" cy="712" r="30" opacity=".65"/>
-    </g>
+<svg viewBox="0 0 1400 763" style="width:100%;display:block" aria-hidden="true">
+  <defs><clipPath id="mfMatrix"><ellipse cx="700" cy="382" rx="520" ry="230"/></clipPath></defs>
+  <rect width="1400" height="763" fill="#FBF8EC" rx="14"/>
+  <ellipse cx="700" cy="382" rx="560" ry="270" fill="#F3D2B4" stroke="#C77A3A" stroke-width="16"/>
+  <ellipse cx="700" cy="382" rx="520" ry="230" fill="#8A5A3B" stroke="#E09A63" stroke-width="14"/>
+  <g clip-path="url(#mfMatrix)" fill="none" stroke="#E09A63" stroke-width="34" stroke-linecap="round">
+    <path d="M532 152 L532 430"/><path d="M700 612 L700 350"/><path d="M884 152 L884 430"/>
+    <path d="M1040 612 L1040 400"/><path d="M380 612 L380 420"/>
   </g>
+  <g fill="#C98A5E" clip-path="url(#mfMatrix)">
+    <circle cx="910" cy="229" r="9"/><circle cx="940" cy="255" r="8"/><circle cx="600" cy="300" r="8"/>
+    <circle cx="640" cy="260" r="7"/><circle cx="800" cy="470" r="8"/><circle cx="470" cy="330" r="7"/>
+  </g>
+  <path d="M430 200 q40 30 0 60 q-40 30 0 60" fill="none" stroke="#C98A5E" stroke-width="9" clip-path="url(#mfMatrix)"/>
 </svg>`;
+function mitoBoard(src){
+  const pc = n => (n*100).toFixed(2)+'%';
+  return `<div class="photo"><div class="pimg" style="aspect-ratio:${MITO_RATIO}">
+      ${src ? `<img src="${src}" alt="ภาพตัดขวางไมโทคอนเดรีย">` : MITO_FALLBACK}
+      ${MITO_PARTS.map((p,i)=>`<div class="pin" id="pin-${p.key}" style="left:${pc(p.u)};top:${pc(p.v)}">${i+1}</div>`).join('')}
+    </div></div>
+    <div class="bank" id="bank">
+      ${shuffle(MITO_PARTS).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+    </div>
+    <div class="numgrid">
+      ${MITO_PARTS.map((p,i)=>`<div class="slot numrow" data-key="${p.key}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+    </div>`;
+}
+/* เช็กว่าไฟล์ภาพมีจริงไหม ถ้ายังไม่ได้อัปโหลดจะถอยไปใช้ไฟล์สำรองให้เอง */
+function withImage(src, ok, fail){
+  const im = new Image(); im.onload = ()=>ok(); im.onerror = ()=>fail(); im.src = src;
+}
 function stageMito(){
   let mistakes=0, placed=0, armed=null;
-  const order = shuffle(MITO_PARTS);
-  app.innerHTML = stageShell('mito', `
-    <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่อโครงสร้าง แล้วแตะช่องว่างที่ตรงกับตำแหน่งในภาพ — วางถูกครบ ${MITO_PARTS.length} จุดโดยผิดน้อยที่สุด</div>
-    <div class="bar"><i id="pb" style="width:0%"></i></div>
-    <div class="diagram" id="dg" style="aspect-ratio:1988.06/1314.68">
-      ${MITO_FALLBACK}
-      <img src="mitochondrion.jpg" alt="ภาพตัดขวางไมโทคอนเดรีย" onerror="this.remove()"
-           style="position:absolute;left:19.71%;top:26.04%;width:77.21%;border-radius:14px;
-                  box-shadow:0 5px 18px -6px rgba(8,74,36,.28)">
-      <svg viewBox="0 0 1988.06 1314.68" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
-        ${MITO_PARTS.map(p=>`<line x1="${p.x}" y1="${p.y}" x2="${p.ax}" y2="${p.ay}"
-            stroke="#04261E" stroke-width="3" stroke-dasharray="9 6" opacity=".7"/>
-          <circle cx="${p.ax}" cy="${p.ay}" r="10" fill="#F26716" stroke="#fff" stroke-width="3"/>`).join('')}
-      </svg>
-      ${MITO_PARTS.map(p=>`<div class="slot" data-key="${p.key}"
-          style="left:${p.x/1988.06*100}%;top:${p.y/1314.68*100}%">? ? ?</div>`).join('')}
-    </div>
-    <div class="bank" id="bank">
-      ${order.map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
-    </div>
-    <div class="feedback" id="fb"></div>
-    <div class="note key" style="margin-top:16px">
-      💡 <b>หัวใจของด่านนี้:</b> วัฏจักรเครบส์เกิดใน <b>เมทริกซ์</b> ส่วนการถ่ายทอดอิเล็กตรอนเกิดที่ <b>เยื่อชั้นใน (คริสตี)</b> —
-      โครงสร้างนี้คล้ายคลอโรพลาสต์: เยื่อชั้นในทำหน้าที่เดียวกับเยื่อไทลาคอยด์
-    </div>
-  `);
+  const draw = (src)=>{
+    app.innerHTML = stageShell('mito', `
+      <div class="note">🎯 <b>ภารกิจ:</b> ดูหมายเลข 1–${MITO_PARTS.length} บนภาพ แล้วแตะชื่อโครงสร้างด้านล่าง
+        ตามด้วยแตะช่องหมายเลขที่ตรงกัน — ผิดน้อยที่สุดยิ่งได้ดาวเยอะ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${mitoBoard(src)}
+      <div class="feedback" id="fb"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>หัวใจของด่านนี้:</b> วัฏจักรเครบส์เกิดใน <b>เมทริกซ์</b> ส่วนการถ่ายทอดอิเล็กตรอนเกิดที่ <b>เยื่อชั้นใน (คริสตี)</b> —
+        โครงสร้างนี้คล้ายคลอโรพลาสต์: เยื่อชั้นในทำหน้าที่เดียวกับเยื่อไทลาคอยด์
+      </div>
+    `);
+    bind();
+  };
+  withImage(MITO_PHOTO, ()=>draw(MITO_PHOTO),
+    ()=>withImage('mitochondrion.jpg', ()=>draw('mitochondrion.jpg'), ()=>draw(null)));
+  function bind(){
   const fb=document.getElementById('fb'), pb=document.getElementById('pb');
   app.querySelectorAll('#bank .tok').forEach(t=>{
     t.onclick = ()=>{
@@ -613,7 +629,9 @@ function stageMito(){
       if(!armed || sl.classList.contains('filled')) return;
       const part = MITO_PARTS.find(p=>p.key===armed);
       if(sl.dataset.key===armed){
-        sl.classList.add('filled'); sl.classList.remove('armed'); sl.textContent=part.label;
+        sl.classList.add('filled'); sl.classList.remove('armed');
+        sl.querySelector('.ans').textContent=part.label;
+        const pin=document.getElementById('pin-'+part.key); if(pin) pin.classList.add('done');
         app.querySelector(`.tok[data-key="${armed}"]`).classList.add('used');
         placed++; pb.style.width=(placed/MITO_PARTS.length*100)+'%';
         fb.className='feedback show good'; fb.innerHTML=`✅ <b>${part.label}</b> — ${part.info}`;
@@ -622,10 +640,11 @@ function stageMito(){
       }else{
         mistakes++; sl.classList.add('wrong'); setTimeout(()=>sl.classList.remove('wrong'),400);
         fb.className='feedback show bad';
-        fb.innerHTML=`❌ ตำแหน่งนี้ยังไม่ใช่ <b>${part.label}</b> — ลองดูว่ามันอยู่ชั้นไหนของไมโทคอนเดรีย`;
+        fb.innerHTML=`❌ หมายเลขนี้ยังไม่ใช่ <b>${part.label}</b> — ลองดูว่ามันอยู่ชั้นไหนของไมโทคอนเดรีย`;
       }
     };
   });
+  }
   function done(){
     const got = mistakes<=1?3:mistakes<=3?2:1;
     stageMiss=mistakes; finishStage('mito', got, 60-Math.min(mistakes*6,30), `
