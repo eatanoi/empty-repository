@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>โรงงานสร้างเซลล์ | เกมการแบ่งเซลล์ ม.4</title>
+<meta name="description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 เรื่องการแบ่งเซลล์ — โครโมโซม วัฏจักรเซลล์ ไมโทซิส ไมโอซิส และการแบ่งไซโทพลาซึม">
+<meta name="theme-color" content="#084A24">
+
+<!-- ไอคอน -->
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- เพิ่มลงหน้าจอโฮมได้ (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="โรงงานสร้างเซลล์">
+
+<!-- พรีวิวตอนแชร์ลิงก์ใน LINE / Facebook / Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gamesbiology.biologypremium.com/division/">
+<meta property="og:title" content="โรงงานสร้างเซลล์ — เกมการแบ่งเซลล์">
+<meta property="og:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 · วัฏจักรเซลล์ ไมโทซิส ไมโอซิส">
+<meta property="og:image" content="https://gamesbiology.biologypremium.com/division/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="โรงงานสร้างเซลล์ — เกมการแบ่งเซลล์">
+<meta name="twitter:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.4 · เล่นบนมือถือได้เลย">
+<meta name="twitter:image" content="https://gamesbiology.biologypremium.com/division/og-cover.png">
+<style>
+:root{
+  /* ── พาเลตเดียวกับเกมสังเคราะห์แสง: F2EDD5 · E7390D · F26716 · 084A24 · 04261E ── */
+  --cream:#F2EDD5; --cream-hi:#FBF8EC; --cream-lo:#E9E1BE;
+  --ink:#04261E; --deep:#084A24;
+  --bg0:#FBF8EC; --bg1:#F2EDD5; --bg2:#EAE4C6;
+  --panel:rgba(255,255,255,.58);
+  --panel2:rgba(255,255,255,.85);
+  --line:rgba(8,74,36,.18);
+  --green:#4E9370; --lime:#2F7D4F; --teal:#7CB894;
+  --gold:#F26716; --rose:#E7390D;
+  --violet:#5C90A6; --sky:#5C90A6;
+  --green-soft:#AFD2BC; --green-pale:#DCEBE1;
+  --orange-soft:#F7C39C; --orange-pale:#FBE4D2;
+  --red-soft:#F4B7A6; --blue-soft:#BCD6E0;
+  --text:#04261E; --muted:#6B8A76;
+  --ok:#2F7D4F; --bad:#D6350B;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh; color:var(--text);
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.55), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.42), transparent 60%),
+    radial-gradient(800px 600px at 50% 112%, rgba(188,214,224,.38), transparent 62%),
+    linear-gradient(rgba(251,248,236,.72),rgba(242,237,213,.80)),
+    linear-gradient(170deg,var(--bg0),var(--bg1) 45%,var(--bg2));
+  background-attachment:fixed;
+  line-height:1.65; letter-spacing:.01em;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 90px}
+
+.hud{
+  position:sticky;top:0;z-index:60;margin:-16px -16px 18px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(251,248,236,.96),rgba(242,237,213,.80));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.02rem;letter-spacing:.02em;color:var(--deep)}
+.brand .leaf{font-size:1.35rem;filter:drop-shadow(0 1px 3px rgba(8,74,36,.3))}
+.hud .spacer{flex:1}
+@media(max-width:520px){
+  .hud{gap:7px;padding:9px 12px;flex-wrap:nowrap}
+  .brand{font-size:.86rem;min-width:0}
+  .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand .leaf{font-size:1.1rem}
+  .chip{padding:4px 8px;font-size:.72rem}
+  .hud .btn.sm{padding:5px 9px;font-size:.75rem}
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:.82rem;font-weight:700;white-space:nowrap;
+}
+.chip b{color:var(--gold)}
+.chip.xp b{color:var(--lime)}
+
+button{font-family:inherit}
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  padding:11px 20px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:.16s transform,.16s background,.16s border-color;
+}
+.btn:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,#4E9370,#2F7D4F);color:#FBF8EC;border-color:transparent;box-shadow:0 8px 20px -10px rgba(8,74,36,.65)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;box-shadow:0 8px 20px -10px rgba(231,57,13,.5)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn.sm{padding:7px 14px;font-size:.85rem}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+h1,h2,h3{line-height:1.35;margin:0 0 .5em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.hidden{display:none !important}
+
+.pub{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
+.pub img{height:38px;width:auto;filter:drop-shadow(0 1px 2px rgba(8,74,36,.18))}
+.pub span{font-weight:800;font-size:1.05rem;color:var(--deep);letter-spacing:.02em}
+.pub span b{color:var(--gold)}
+/* ---- ระบบชั้นเรียน ---- */
+.classchip{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:8px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--deep);cursor:pointer;transition:.15s}
+.classchip:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.classchip.joined{background:rgba(175,210,188,.55);border-color:var(--green);cursor:default}
+.classchip .x{color:var(--rose);font-weight:800;margin-left:2px;cursor:pointer;padding:0 4px}
+.modalbg{position:fixed;inset:0;background:rgba(4,38,30,.5);backdrop-filter:blur(3px);z-index:300;display:grid;place-items:center;padding:16px}
+.modal{background:var(--cream-hi);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:380px;width:100%;box-shadow:0 22px 60px -20px rgba(0,0,0,.5)}
+.modal h3{margin:0 0 4px;color:var(--deep);font-size:1.15rem}
+.modal .msub{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.modal label{display:block;font-size:.82rem;font-weight:700;color:var(--deep);margin:10px 0 4px}
+.modal input{width:100%;font-family:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal input#jcode{text-transform:uppercase;letter-spacing:3px;font-weight:800}
+.modal .mrow{display:flex;gap:8px;margin-top:16px}
+.modal .mrow .btn{flex:1}
+.modal .mmsg{font-size:.85rem;margin-top:10px;min-height:1em;color:var(--muted)}
+.modal .mmsg.err{color:var(--bad)}
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 18px 40px -22px rgba(8,74,36,.55);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.certform input:focus{outline:none;border-color:var(--green)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .5s}
+.hero{text-align:center;padding:14px 12px 8px}
+.hero h1{font-size:clamp(1.7rem,5.2vw,2.6rem);margin-bottom:.25em;
+  background:linear-gradient(100deg,var(--deep),#2F7D4F 42%,var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#4A6A58;margin:0;font-size:.98rem}
+.eq{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;
+  background:rgba(175,210,188,.45);border:1px solid rgba(8,74,36,.25);color:var(--deep);
+  font-size:.9rem;font-weight:700;letter-spacing:.03em}
+.eq sub{font-size:.72em}
+
+.maplist{display:grid;gap:12px;margin-top:22px}
+@media(min-width:720px){.maplist{grid-template-columns:1fr 1fr}}
+.node{
+  display:flex;gap:14px;align-items:center;
+  padding:16px;border-radius:var(--r);cursor:pointer;position:relative;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);
+  transition:.18s transform,.18s border-color,.18s background;
+}
+.node:hover{transform:translateY(-3px);border-color:rgba(8,74,36,.38);background:var(--panel2)}
+.node.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.55)}
+.node.locked:hover{transform:none;border-color:var(--line);background:var(--panel)}
+.node .ic{
+  width:56px;height:56px;flex:0 0 56px;border-radius:15px;display:grid;place-items:center;font-size:1.7rem;
+  background:rgba(255,255,255,.75);border:1px solid var(--line);
+}
+.stage-ic-img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.stagehead .ic .stage-ic-img{width:46px;height:46px;padding:0}
+.node .body{flex:1;text-align:left}
+.node .body .t{font-weight:800;font-size:1.02rem}
+.node .body .d{font-size:.84rem;color:var(--muted);line-height:1.5}
+.node .stars{font-size:.9rem;letter-spacing:2px;color:var(--gold);margin-top:3px}
+.node .stars .off{color:rgba(8,74,36,.16)}
+.node.done{border-color:rgba(8,74,36,.4)}
+.node.done .ic{background:rgba(175,210,188,.65)}
+.node .no{position:absolute;top:8px;right:12px;font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.1em}
+
+.stagehead{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stagehead .ic{font-size:2rem}
+.stagehead h2{margin:0}
+.stagehead .sub{color:var(--muted);font-size:.88rem}
+.bar{height:7px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin:10px 0 18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--lime));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.note{
+  border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0;
+  border-left:4px solid var(--sky);background:rgba(92,144,166,.13);
+}
+.note.warn{border-left-color:var(--gold);background:rgba(242,103,22,.11)}
+.note.key{border-left-color:var(--lime);background:rgba(47,125,79,.11)}
+.note.miss{border-left-color:var(--rose);background:rgba(231,57,13,.09)}
+.note b{color:var(--deep)}
+
+.feedback{border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.9rem;display:none}
+.feedback.show{display:block;animation:pop .3s}
+.feedback.good{background:rgba(47,125,79,.14);border:1px solid rgba(47,125,79,.4)}
+.feedback.bad{background:rgba(231,57,13,.11);border:1px solid rgba(231,57,13,.35)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* labeling */
+.diagram{position:relative;width:100%;aspect-ratio:900/560;margin:6px 0 4px}
+.diagram svg{width:100%;height:100%;display:block}
+@supports (container-type:inline-size){
+  .diagram{container-type:inline-size}
+  .slot{min-width:11.5cqw;font-size:clamp(7px,2.5cqw,.76rem);padding:.7cqw 1.2cqw;border-radius:min(10px,1.4cqw)}
+}
+.slot{
+  position:absolute;transform:translate(-50%,-50%);
+  min-width:104px;padding:6px 10px;border-radius:10px;text-align:center;
+  font-size:.76rem;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.9);border:2px dashed rgba(8,74,36,.38);color:var(--muted);
+  transition:.15s;white-space:nowrap;box-shadow:0 1px 4px rgba(8,74,36,.08);
+}
+.slot:hover{border-color:var(--lime);color:var(--deep)}
+.slot.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.22)}
+.slot.filled{border-style:solid;border-color:var(--green);background:rgba(175,210,188,.85);color:var(--deep)}
+.slot.wrong{border-color:var(--bad);background:rgba(231,57,13,.16);animation:shake .35s}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(calc(-50% - 6px),-50%)}75%{transform:translate(calc(-50% + 6px),-50%)}}
+/* กระดานติดป้ายรอบภาพจริง (ด่าน 1)
+   จอกว้าง = ป้าย ??? วางรอบภาพ มีเส้นประชี้ไปยังจุดสีส้มบนภาพ
+   จอแคบ (มือถือ) = จุดบนภาพกลายเป็นหมายเลข แล้วป้ายเรียงเป็นรายการใต้ภาพแทน ไม่เบียดกัน
+   พิกัดทุกจุดคิดเป็นสัดส่วน จึงเปลี่ยนไฟล์ภาพได้โดยไม่ต้องแก้โครง */
+.mboard{position:relative;max-width:1000px;margin:10px auto 0;padding:20% 12.5% 12.5% 14.5%}
+.mimg{position:relative}
+.mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cwrap{position:absolute;inset:0;pointer-events:none}
+.anchor{position:absolute;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;
+  background:var(--gold);border:2px solid #fff;box-shadow:0 1px 5px rgba(8,74,36,.45);
+  display:grid;place-items:center;color:#FFF7F0;font-weight:800;font-size:0}
+.anchor.done{background:var(--lime)}
+.slot.callout{pointer-events:auto;min-width:92px;padding:5px 9px;font-size:.74rem}
+.slot.callout i{display:none}
+@media (max-width:640px){
+  .mboard{padding:0}
+  .leads{display:none}
+  .cwrap{position:static;display:grid;gap:8px;margin-top:14px;pointer-events:auto;
+    grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+  .slot.callout{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
+    min-width:0;left:auto!important;top:auto!important;text-align:left;white-space:normal;padding:9px 12px;font-size:.8rem}
+  .slot.callout i{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;
+    background:var(--gold);color:#FFF7F0;font-style:normal;font-weight:800;font-size:.78rem}
+  .slot.callout.filled i{background:var(--lime)}
+  .anchor{width:clamp(21px,5vw,27px);height:clamp(21px,5vw,27px);font-size:clamp(.62rem,2.3vw,.8rem)}
+}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tok{
+  padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--line);transition:.15s;
+}
+.tok:hover{border-color:var(--lime)}
+.tok.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;transform:translateY(-2px);
+  box-shadow:0 5px 14px -6px rgba(231,57,13,.6)}
+.tok.used{display:none}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:56px;
+  padding:14px;border-radius:14px;background:rgba(255,255,255,.66);border:1px solid var(--line)}
+.chain .ph{color:var(--muted);font-size:.85rem}
+.link{padding:8px 13px;border-radius:11px;font-size:.82rem;font-weight:700;color:var(--deep);
+  background:rgba(175,210,188,.8);border:1px solid rgba(8,74,36,.32);animation:pop .25s}
+.arrow{color:var(--muted);font-size:.9rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pool .tok{font-size:.82rem}
+.pool .tok.bad{animation:shake .35s;background:rgba(231,57,13,.16);border-color:var(--bad)}
+
+/* wheel / phases */
+.calvin{display:grid;gap:16px}
+@media(min-width:800px){.calvin{grid-template-columns:1fr 1.1fr}}
+.wheel{position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;width:100%}
+.wheel svg{width:100%;height:100%}
+.phase{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.66);margin-bottom:12px;transition:.2s}
+.phase.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.16)}
+.phase.solved{border-color:rgba(8,74,36,.42);background:rgba(175,210,188,.4)}
+.phase h4{margin:0 0 4px;font-size:.98rem}
+.phase .hintline{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.step{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:7px 0;flex-wrap:wrap}
+.step .nm{font-size:.88rem;font-weight:700}
+.stepper{display:flex;align-items:center;gap:4px;background:rgba(8,74,36,.07);border-radius:10px;padding:3px}
+.stepper button{width:30px;height:30px;border-radius:8px;border:none;background:rgba(255,255,255,.9);
+  color:var(--deep);font-size:1.05rem;font-weight:800;cursor:pointer;line-height:1}
+.stepper button:active{background:var(--green);color:#FBF8EC}
+.stepper .n{min-width:34px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ledger (sim) */
+.sim{display:grid;gap:16px}
+@media(min-width:820px){.sim{grid-template-columns:1fr 1.05fr}}
+.specbox{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:14px;padding:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.toggle{display:flex;gap:8px;margin:6px 0 14px}
+.toggle button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-weight:700;font-size:.82rem;cursor:pointer}
+.toggle button.on{background:rgba(175,210,188,.8);border-color:var(--green);color:var(--deep)}
+.tlabel{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:2px}
+.ledtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ledtable th,.ledtable td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+.ledtable th:first-child,.ledtable td:first-child{text-align:left}
+.ledtable th{color:var(--deep);font-size:.82rem}
+.ledtable tfoot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none;font-size:1rem;color:var(--deep)}
+.ledtable .zero{color:var(--muted);opacity:.6}
+.totbox{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-top:12px}
+.totbox .k{font-size:.78rem;color:var(--muted)}
+.totbox .v{font-size:2.4rem;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums;line-height:1.1}
+.mito-vis{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
+.mito-vis svg{width:100%;height:auto;display:block}
+
+/* scenarios */
+.scene{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{
+  text-align:left;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:.9rem;
+  background:var(--panel);border:1px solid var(--line);transition:.15s;
+}
+.opt:hover{background:var(--panel2);border-color:rgba(8,74,36,.38)}
+.opt.correct{background:rgba(47,125,79,.18);border-color:var(--ok)}
+.opt.incorrect{background:rgba(231,57,13,.13);border-color:var(--bad)}
+.opt.disabled{pointer-events:none;opacity:.75}
+
+/* flashcards */
+.deckbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.deckbar button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-size:.83rem;font-weight:700;cursor:pointer}
+.deckbar button.on{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent}
+.fcstage{perspective:1400px;margin:0 auto;max-width:560px}
+.fc{position:relative;width:100%;min-height:290px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.fc.flip{transform:rotateY(180deg)}
+.fc .side{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);box-shadow:0 6px 22px -10px rgba(8,74,36,.35);
+}
+.fc .front{background:linear-gradient(150deg,rgba(175,210,188,.72),rgba(220,235,225,.55)),#fff;align-items:center;text-align:center}
+.fc .back{background:linear-gradient(150deg,rgba(247,195,156,.6),rgba(251,228,210,.45)),#fff;transform:rotateY(180deg)}
+.fc .tag{font-size:.7rem;letter-spacing:.14em;color:#5F7D6B;text-transform:uppercase;margin-bottom:10px}
+.fc .term{font-size:1.5rem;font-weight:800;margin-bottom:6px;line-height:1.3;color:var(--deep)}
+.fc .en{font-size:.9rem;color:var(--muted);font-style:italic}
+.fc .def{font-size:.98rem;line-height:1.7}
+.fc .hint{margin-top:auto;padding-top:14px;font-size:.75rem;color:var(--muted);text-align:center}
+.fcnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+.fcnav .count{font-weight:800;font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+
+.result{text-align:center;padding:26px 16px}
+.result .big{font-size:3rem;letter-spacing:6px;color:var(--gold)}
+.result .big .off{color:rgba(8,74,36,.16)}
+.result h2{margin-top:10px}
+
+.footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.78rem;text-align:center;line-height:1.8}
+.footer .fb{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:9px}
+.footer .fb img{height:26px;width:auto;opacity:.92}
+.footer .fb span{font-weight:800;color:var(--deep);font-size:.92rem}
+.footer .fb span b{color:var(--gold)}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);
+  background:linear-gradient(135deg,#2F7D4F,#4E9370);color:#FBF8EC;
+  padding:11px 22px;border-radius:999px;font-weight:800;font-size:.9rem;z-index:200;
+  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.buckets{display:grid;gap:10px;margin-top:14px}
+@media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
+.bucket{background:rgba(255,255,255,.66);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:96px;transition:.15s}
+.bucket.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.bucket h4{margin:0 0 8px;font-size:.92rem;display:flex;align-items:center;gap:6px}
+.bucket .items{display:flex;flex-wrap:wrap;gap:6px}
+.bucket .items span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;
+  background:rgba(175,210,188,.75);border:1px solid rgba(8,74,36,.28);animation:pop .25s}
+.match{display:grid;gap:10px}
+@media(min-width:760px){.match{grid-template-columns:1fr 1fr}}
+.mcard{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:13px;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);cursor:pointer;transition:.15s}
+.mcard:hover{border-color:rgba(8,74,36,.4)}
+.mcard.armed{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.18)}
+.mcard.done{background:rgba(175,210,188,.5);border-color:var(--green);cursor:default}
+.mcard .em{font-size:1.5rem;line-height:1.2}
+.mcard .tx{flex:1;font-size:.87rem;line-height:1.55}
+.mcard .tx b{color:var(--deep)}
+.mcard .tx b.h{display:block;font-size:.95rem;margin-bottom:2px}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+.cmp{width:100%;border-collapse:collapse;font-size:.87rem}
+.cmp th,.cmp td{padding:8px;border-bottom:1px solid var(--line);text-align:center}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp .yes{color:var(--ok);font-weight:800}
+
+/* ---- เพิ่มเติมสำหรับเกมการแบ่งเซลล์ ---- */
+.cyc{max-width:420px;margin:0 auto;display:block}
+.cyc .seg{cursor:pointer;transition:.15s}
+.cyc .seg:hover{filter:brightness(1.06)}
+.cellview{display:grid;gap:12px;margin:14px 0}
+@media(min-width:760px){.cellview{grid-template-columns:1fr 1fr}}
+.cellbox{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.cellbox h4{margin:0 0 6px;font-size:.92rem}
+.cellbox .big{font-size:1.7rem;font-weight:800;color:var(--deep);font-variant-numeric:tabular-nums}
+.cellbox .lbl{font-size:.78rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hud">
+    <div class="brand"><span class="leaf">🧬</span><span>โรงงานสร้างเซลล์</span></div>
+    <div class="spacer"></div>
+    <div class="chip xp">⚡ XP <b id="hudXp">0</b></div>
+    <div class="chip">⭐ <b id="hudStars">0</b>/18</div>
+    <button class="btn sm ghost" id="btnHome">🗺️ แผนที่</button>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    <div class="fb"><img src="logo.png" alt="โลโก้ Biology" onerror="this.remove()"><span>Biology<b>.</b></span></div>
+    เกมประกอบตำราชีววิทยา ม.4 เล่ม 1 · บทที่ 3 เรื่อง <b>การแบ่งเซลล์</b><br>
+    อิงหลักสูตร สสวท. (ฉบับปรับปรุง พ.ศ. 2560) · ความก้าวหน้าถูกบันทึกไว้ในเครื่องของผู้เล่นเอง
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* =========================================================================
+   โรงงานสร้างเซลล์ — เกมประกอบการเรียนรู้ เรื่องการแบ่งเซลล์ (ม.4)
+   ไฟล์เดียว ทำงานออฟไลน์ · เข้าชุดกับเกมมหานครเซลล์ · ด่านศุลกากรเซลล์ · โรงไฟฟ้าไมโทคอนเดรีย
+   ========================================================================= */
+
+const app   = document.getElementById('app');
+const toastEl = document.getElementById('toast');
+const SAVE_KEY = 'cell-division-quest-v1';
+
+const defaultState = { xp:0, stars:{}, plays:{}, secs:{}, miss:{} };
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return structuredClone(defaultState);
+    return Object.assign(structuredClone(defaultState), JSON.parse(raw));
+  }catch(e){ return structuredClone(defaultState); }
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function totalStars(){ return Object.values(S.stars).reduce((a,b)=>a+b,0); }
+function syncHud(){
+  document.getElementById('hudXp').textContent = S.xp;
+  document.getElementById('hudStars').textContent = totalStars();
+}
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+function shuffle(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+  return r;
+}
+function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span class="off">★</span>'; return s; }
+
+const STAGES = [
+  { id:'chromo', ic:'🧵', title:'ห้องเก็บพิมพ์เขียว', desc:'โครมาทิน โครโมโซม โครมาทิด และเซนโทรเมียร์', req:0 },
+  { id:'count',  ic:'🔢', title:'ห้องนับโครโมโซม',    desc:'เซลล์ร่างกาย 2n · เซลล์สืบพันธุ์ n · ออโตโซมและโครโมโซมเพศ', req:1 },
+  { id:'cycle',  ic:'🔄', title:'วัฏจักรเซลล์',        desc:'อินเตอร์เฟส G1 · S · G2 แล้วเข้าสู่ระยะ M', req:2 },
+  { id:'mitosis',ic:'✂️', title:'สายพานไมโทซิส',      desc:'โพรเฟส เมทาเฟส แอนาเฟส เทโลเฟส และการแบ่งไซโทพลาซึม', req:3 },
+  { id:'meiosis',ic:'🧬', title:'สายการผลิตเซลล์สืบพันธุ์', desc:'ไมโอซิส I และ II · ครอสซิงโอเวอร์ · ลดจำนวนโครโมโซม', req:4 },
+  { id:'boss',   ic:'👹', title:'บอส: ห้องตรวจสอบคุณภาพ', desc:'เทียบไมโทซิสกับไมโอซิส และวินิจฉัยสถานการณ์จริง', req:5 }
+];
+
+function renderMap(){
+  syncHud();
+  const cleared = STAGES.filter(s=>S.stars[s.id]>0).length;
+  app.innerHTML = `
+    <div class="hero">
+      <div class="pub"><img src="logo.png" alt="โลโก้ Biology" onerror="this.remove()"><span>Biology<b>.</b></span></div>
+      <h1>โรงงานสร้างเซลล์</h1>
+      <p>เซลล์หนึ่งเซลล์กลายเป็นสองเซลล์ได้อย่างไร<br>
+         และทำไม<strong>เซลล์สืบพันธุ์</strong>จึงมีโครโมโซมเพียงครึ่งเดียว</p>
+      <div class="eq">1 เซลล์ (2n) → ไมโทซิส → 2 เซลล์ (2n) · ไมโอซิส → 4 เซลล์ (n)</div>
+      <div id="classSlot"></div>
+    </div>
+    <div class="maplist">
+      ${STAGES.map((s,i)=>{
+        const got=S.stars[s.id]||0, locked=cleared<s.req;
+        return `<div class="node ${locked?'locked':''} ${got?'done':''}" data-id="${s.id}">
+          <span class="no">ด่าน ${i+1}</span>
+          <div class="ic">${locked?'🔒':s.ic}</div>
+          <div class="body">
+            <div class="t">${s.title}</div>
+            <div class="d">${locked?`ผ่านด่านก่อนหน้าให้ครบ ${s.req} ด่านเพื่อปลดล็อก`:s.desc}</div>
+            ${locked?'':`<div class="stars">${stars(got)}</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:2rem">🃏</div>
+      <div style="flex:1;min-width:190px">
+        <div style="font-weight:800">การ์ดคำศัพท์</div>
+        <div class="small muted">${CARDS.length} การ์ด ทบทวนศัพท์ไทย–อังกฤษ พร้อมนิยาม เปิดเล่นได้ตลอดเวลา</div>
+      </div>
+      <button class="btn gold" id="btnCards">เปิดสำรับ</button>
+    </div>
+    ${certCardHtml()}
+    <div class="center" style="margin-top:18px">
+      <button class="btn ghost sm" id="btnReset">เริ่มใหม่ทั้งหมด</button>
+    </div>
+  `;
+  app.querySelectorAll('.node').forEach(n=>{
+    n.addEventListener('click',()=>{
+      if(n.classList.contains('locked')){ toast('🔒 ยังไม่ปลดล็อกด่านนี้'); return; }
+      openStage(n.dataset.id);
+    });
+  });
+  document.getElementById('btnCards').onclick = renderCards;
+  const certBtn = document.getElementById('btnCert');
+  if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
+  document.getElementById('btnReset').onclick = ()=>{
+    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+      S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
+    }
+  };
+  renderClassChip();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function stageShell(id, extraHtml=''){
+  const st = STAGES.find(s=>s.id===id);
+  return `<div class="stagehead">
+      <div class="ic">${st.ic}</div>
+      <div style="flex:1;min-width:200px"><h2>${st.title}</h2><div class="sub">${st.desc}</div></div>
+    </div>${extraHtml}`;
+}
+let stageT0 = 0;        // เวลาเริ่มด่าน ใช้คำนวณเวลาที่ใช้ต่อด่าน
+let stageMiss = 0;      // จำนวนครั้งที่ตอบผิดในด่านที่กำลังเล่น (ตั้งค่าก่อนเรียก finishStage)
+function openStage(id){
+  window.scrollTo({top:0});
+  stageT0 = Date.now(); stageMiss = 0;
+  ({chromo:stageChromo, count:stageCount, cycle:stageCycle,
+    mitosis:stageMitosis, meiosis:stageMeiosis, boss:stageBoss})[id]();
+}
+function finishStage(id, got, xp, summaryHtml){
+  const prev=S.stars[id]||0; if(got>prev) S.stars[id]=got;
+  S.plays = S.plays || {}; S.plays[id] = (S.plays[id]||0) + 1;
+  S.xp+=xp; save(); syncHud();
+  const secs = stageT0 ? Math.round((Date.now()-stageT0)/1000) : 0;
+  const misses = Math.max(0, stageMiss|0); stageMiss = 0;
+  S.secs = S.secs || {}; S.miss = S.miss || {};
+  S.secs[id] = secs; S.miss[id] = misses;   // เก็บไว้เผื่อเข้าร่วมห้องทีหลัง จะได้ส่งเวลาจริงตามไปด้วย
+  save();
+  sendScore(id, got, misses, secs);   // ส่งคะแนนให้ครู (ถ้าเข้าร่วมห้อง)
+  app.innerHTML = `
+    <div class="card result">
+      <div class="big">${stars(got)}</div>
+      <h2>${got===3?'สมบูรณ์แบบ!':got===2?'เก่งมาก!':got===1?'ผ่านแล้ว':'ยังไม่ผ่าน'}</h2>
+      <p class="muted">ได้รับ <b style="color:var(--lime)">+${xp} XP</b></p>
+      <div style="text-align:left;max-width:640px;margin:18px auto 0">${summaryHtml}</div>
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="again">เล่นด่านนี้อีกครั้ง</button>
+        <button class="btn primary" id="back">กลับแผนที่ →</button>
+      </div>
+    </div>`;
+  document.getElementById('again').onclick = ()=>openStage(id);
+  document.getElementById('back').onclick  = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- เครื่องมือที่ใช้ร่วมกันหลายด่าน ---------- */
+/* กระดานติดป้ายรอบภาพ (ใช้ในด่าน 1) — จอกว้างเป็นป้ายรอบภาพ จอแคบเป็นรายการหมายเลข */
+const MB = { w:1000, h:723, x0:0.145, y0:0.20, iw:0.73, ih:0.3978 };
+const mbX = u => (MB.x0 + u*MB.iw) * MB.w;
+const mbY = v => (MB.y0 + v*MB.ih) * MB.w;
+function calloutBoard(svg, ratio, parts){
+  const pcx = n => (n/MB.w*100).toFixed(2)+'%';
+  const pcy = n => (n/MB.h*100).toFixed(2)+'%';
+  const lines = parts.map(p=>`<line x1="${p.lx}" y1="${p.ly}" x2="${mbX(p.u)}" y2="${mbY(p.v)}"
+      stroke="#04261E" stroke-width="1.6" stroke-dasharray="7 5" opacity=".65" vector-effect="non-scaling-stroke"/>`).join('');
+  return `<div class="bank" id="bank">
+    ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+  </div>
+  <div class="mboard">
+    <div class="mimg" style="aspect-ratio:${ratio}">
+      ${svg}
+      ${parts.map((p,i)=>`<div class="anchor" id="pin-${p.key}"
+          style="left:${(p.u*100).toFixed(2)}%;top:${(p.v*100).toFixed(2)}%">${i+1}</div>`).join('')}
+    </div>
+    <svg class="leads" viewBox="0 0 ${MB.w} ${MB.h}" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
+    <div class="cwrap">
+      ${parts.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
+          style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+/* ผูกเหตุการณ์ให้กระดานติดป้าย แล้วเรียก onDone(จำนวนที่ผิด) เมื่อวางครบ */
+function bindCallout(parts, onDone){
+  let placed=0, mistakes=0, armed=null;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#bank .tok').forEach(t=>{
+    t.onclick = ()=>{
+      app.querySelectorAll('.tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.key){ armed=null; return; }
+      armed=t.dataset.key; t.classList.add('sel');
+      app.querySelectorAll('.slot:not(.filled)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.slot').forEach(sl=>{
+    sl.onclick = ()=>{
+      if(!armed || sl.classList.contains('filled')) return;
+      const part = parts.find(p=>p.key===armed);
+      if(sl.dataset.key===armed){
+        sl.classList.add('filled'); sl.classList.remove('armed');
+        sl.querySelector('.ans').textContent=part.label;
+        const pin=document.getElementById('pin-'+part.key); if(pin) pin.classList.add('done');
+        app.querySelector(`.tok[data-key="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/parts.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${part.label}</b> — ${part.info}`;
+        armed=null; app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+        if(placed===parts.length) setTimeout(()=>onDone(mistakes),950);
+      }else{
+        mistakes++; sl.classList.add('wrong'); setTimeout(()=>sl.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ หมายเลขนี้ยังไม่ใช่ <b>${part.label}</b> — ลองดูรูปร่างและตำแหน่งของมันอีกครั้ง`;
+      }
+    };
+  });
+}
+/* จัดกลุ่มลงกล่อง — items = [{n, g, e}] · groups = {key:'ชื่อกล่อง'} */
+function bindBuckets(items, groups, pbId, fbId, onDone){
+  let armed=null, placed=0, wrong=0;
+  const fb=document.getElementById(fbId), pb=document.getElementById(pbId);
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.n){ armed=null; return; }
+      armed=t.dataset.n; t.classList.add('sel');
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.bucket').forEach(b=>{
+    b.onclick=()=>{
+      if(!armed) return;
+      const it=items.find(x=>x.n===armed);
+      if(it.g===b.dataset.g){
+        document.getElementById('items-'+it.g).insertAdjacentHTML('beforeend', `<span>${it.n}</span>`);
+        app.querySelector(`#pool .tok[data-n="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/items.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${it.n}</b> — ${it.e}`;
+        armed=null; app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+        if(placed===items.length) setTimeout(()=>onDone(wrong),1000);
+      }else{
+        wrong++; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ <b>${it.n}</b> ยังไม่ใช่กล่องนี้ — ลองอ่านหัวข้อกล่องอีกครั้ง`;
+      }
+    };
+  });
+}
+/* เรียงลำดับขั้นตอน — steps = [{n, e}] เรียงถูกตามลำดับใน array */
+function orderBoard(steps, hint){
+  const pool = shuffle(steps.map((z,i)=>({...z,i})));
+  return `<div class="chain" id="chain"><span class="ph">${hint}</span></div>
+    <div class="pool" id="pool">${pool.map(p=>`<div class="tok" data-i="${p.i}">${p.n}</div>`).join('')}</div>`;
+}
+function bindOrder(steps, onDone){
+  let idx=0, wrong=0;
+  const chain=document.getElementById('chain'), fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      const i=+t.dataset.i;
+      if(i===idx){
+        if(idx===0) chain.innerHTML=''; else chain.insertAdjacentHTML('beforeend','<span class="arrow">→</span>');
+        chain.insertAdjacentHTML('beforeend', `<span class="link">${steps[i].n}</span>`);
+        t.classList.add('used');
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${steps[i].n}</b><br>${steps[i].e}`;
+        idx++; if(pb) pb.style.width=(idx/steps.length*100)+'%';
+        if(idx===steps.length) setTimeout(()=>onDone(wrong),1300);
+      }else{
+        wrong++; t.classList.add('bad'); setTimeout(()=>t.classList.remove('bad'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถึงคิวของ <b>${steps[i].n}</b> — ลองนึกว่าตอนนี้เซลล์อยู่ขั้นไหน`;
+      }
+    };
+  });
+}
+/* จับคู่การ์ด — pairs = [{k, n, em, h, d}] */
+function matchBoard(pairs){
+  const cards = shuffle(pairs);
+  return `<div class="bank" id="pool">${shuffle(pairs).map(j=>`<div class="tok" data-k="${j.k}">${j.n}</div>`).join('')}</div>
+    <div class="match" id="match" style="margin-top:14px">
+      ${cards.map(j=>`<div class="mcard" data-k="${j.k}">
+        <div class="em">${j.em}</div>
+        <div class="tx"><b class="h">${j.h}</b>${j.d}</div>
+      </div>`).join('')}
+    </div>`;
+}
+function bindMatch(pairs, onDone){
+  let armed=null, done=0, wrong=0;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.k){ armed=null; return; }
+      armed=t.dataset.k; t.classList.add('sel');
+      app.querySelectorAll('.mcard:not(.done)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.mcard').forEach(c=>{
+    c.onclick=()=>{
+      if(!armed || c.classList.contains('done')) return;
+      const j=pairs.find(x=>x.k===armed);
+      if(c.dataset.k===armed){
+        c.classList.add('done'); c.classList.remove('armed');
+        c.querySelector('.tx').insertAdjacentHTML('afterbegin', `<b class="h" style="color:var(--lime)">✅ ${j.n}</b>`);
+        app.querySelector(`#pool .tok[data-k="${armed}"]`).classList.add('used');
+        done++; if(pb) pb.style.width=(done/pairs.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${j.n}</b> — ${j.d}`;
+        armed=null; app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+        if(done===pairs.length) setTimeout(()=>onDone(wrong),1100);
+      }else{
+        wrong++; c.classList.add('wrong'); setTimeout(()=>c.classList.remove('wrong'),400);
+        fb.className='feedback show bad'; fb.innerHTML=`❌ <b>${j.n}</b> ยังไม่ใช่การ์ดนี้ ลองอ่านคำอธิบายอีกครั้ง`;
+      }
+    };
+  });
+}
+/* ชุดคำถามปรนัยท้ายด่าน — qs = [{q, o[], a, e}] */
+function quizRun(qs, hostId, onDone){
+  let qi=0, wrong=0;
+  const host=document.getElementById(hostId);
+  function draw(){
+    const q=qs[qi];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">คำถาม ${qi+1}/${qs.length}</div>
+      <h3 style="margin:6px 0 4px">${q.q}</h3>
+      <div class="opts">${q.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===q.a; if(!ok) wrong++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===q.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+q.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${qi===qs.length-1?'สรุปผล →':'ข้อถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ qi++; if(qi<qs.length){ draw(); window.scrollTo({top:0,behavior:'smooth'}); } else onDone(wrong); };
+      };
+    });
+  }
+  draw();
+}
+
+/* =========================================================================
+   ด่าน 1 — ห้องเก็บพิมพ์เขียว: โครมาทิน · โครโมโซม · โครมาทิด · เซนโทรเมียร์
+   ========================================================================= */
+const CHROMO_SVG = `
+<svg viewBox="0 0 1000 545" style="width:100%;display:block;border-radius:14px;background:#FBF8EC" aria-hidden="true">
+  <rect width="1000" height="545" fill="#FBF8EC"/>
+  <!-- ป้ายกำกับบรรยากาศ -->
+  <text x="150" y="512" text-anchor="middle" font-size="21" font-weight="700" fill="#6B8A76">ขณะเซลล์ยังไม่แบ่ง</text>
+  <text x="415" y="512" text-anchor="middle" font-size="21" font-weight="700" fill="#6B8A76">ขดตัวแน่น</text>
+  <text x="715" y="512" text-anchor="middle" font-size="21" font-weight="700" fill="#6B8A76">หลังจำลองตัวในระยะ S</text>
+  <!-- เส้นใยโครมาทิน -->
+  <path d="M70 110 C140 150 55 200 130 240 C205 280 85 320 150 360 C215 400 105 440 178 468"
+        fill="none" stroke="#7CB894" stroke-width="13" stroke-linecap="round"/>
+  <path d="M70 110 C140 150 55 200 130 240 C205 280 85 320 150 360 C215 400 105 440 178 468"
+        fill="none" stroke="#2F7D4F" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+  <!-- ลูกศร -->
+  <path d="M255 275 L330 275" stroke="#F26716" stroke-width="9" stroke-linecap="round"/>
+  <path d="M330 275 l-22 -14 v28 z" fill="#F26716"/>
+  <path d="M505 275 L575 275" stroke="#F26716" stroke-width="9" stroke-linecap="round"/>
+  <path d="M575 275 l-22 -14 v28 z" fill="#F26716"/>
+  <!-- โครโมโซม 1 โครมาทิด -->
+  <rect x="385" y="105" width="62" height="340" rx="31" fill="#4E9370" stroke="#084A24" stroke-width="5"/>
+  <rect x="385" y="258" width="62" height="30" fill="#FBF8EC" opacity=".55"/>
+  <!-- โครโมโซมที่มี 2 ซิสเตอร์โครมาทิด -->
+  <g stroke-linecap="round" fill="none">
+    <path d="M645 110 C636 195 690 240 707 275 C690 312 636 358 645 440" stroke="#084A24" stroke-width="42"/>
+    <path d="M785 110 C794 195 740 240 723 275 C740 312 794 358 785 440" stroke="#084A24" stroke-width="42"/>
+    <path d="M645 110 C636 195 690 240 707 275 C690 312 636 358 645 440" stroke="#2F7D4F" stroke-width="32"/>
+    <path d="M785 110 C794 195 740 240 723 275 C740 312 794 358 785 440" stroke="#2F7D4F" stroke-width="32"/>
+  </g>
+  <!-- เซนโทรเมียร์ (คอคอด) -->
+  <ellipse cx="715" cy="275" rx="30" ry="17" fill="#AFD2BC" stroke="#084A24" stroke-width="4"/>
+  <!-- ภาพขยายบริเวณเซนโทรเมียร์ -->
+  <g>
+    <line x1="742" y1="288" x2="856" y2="330" stroke="#6B8A76" stroke-width="3" stroke-dasharray="7 5"/>
+    <circle cx="880" cy="380" r="86" fill="#fff" stroke="#084A24" stroke-width="5"/>
+    <rect x="826" y="368" width="108" height="24" rx="12" fill="#AFD2BC" stroke="#084A24" stroke-width="3"/>
+    <circle cx="852" cy="352" r="15" fill="#F26716" stroke="#fff" stroke-width="3"/>
+    <circle cx="908" cy="352" r="15" fill="#F26716" stroke="#fff" stroke-width="3"/>
+    <path d="M852 337 L830 300 M908 337 L930 300" stroke="#5C90A6" stroke-width="7" stroke-linecap="round"/>
+  </g>
+</svg>`;
+const CHROMO_PARTS = [
+  { key:'chromatin', u:0.155, v:0.477, lx:140, ly:45, label:'โครมาทิน',
+    info:'Chromatin — สาย DNA พันกับโปรตีนเป็นเส้นยาว ๆ พบตอนเซลล์ยังไม่แบ่ง มองด้วยกล้องจุลทรรศน์แล้วเห็นเป็นเนื้อเยื่อเนียน ไม่เป็นแท่ง' },
+  { key:'chromo', u:0.410, v:0.312, lx:420, ly:38, label:'โครโมโซม',
+    info:'Chromosome — โครมาทินที่ขดตัวแน่นจนเห็นเป็นแท่งเมื่อเซลล์เริ่มแบ่ง · ก่อนจำลองตัวจะมีเพียง 1 โครมาทิด' },
+  { key:'chromatid', u:0.645, v:0.275, lx:700, ly:45, label:'ซิสเตอร์โครมาทิด',
+    info:'Sister chromatid — หลังจำลองตัวในระยะ S โครโมโซม 1 แท่งจะมี 2 โครมาทิดที่มี DNA <b>เหมือนกันทุกประการ</b> ยึดกันอยู่ที่เซนโทรเมียร์' },
+  { key:'centromere', u:0.715, v:0.499, lx:560, ly:690, label:'เซนโทรเมียร์',
+    info:'Centromere — บริเวณคอดที่ยึดซิสเตอร์โครมาทิดทั้งสองไว้ด้วยกัน เป็นจุดที่โครโมโซมจะถูกดึงแยกในระยะแอนาเฟส' },
+  { key:'kineto', u:0.880, v:0.646, lx:925, ly:640, label:'ไคนีโทคอร์',
+    info:'Kinetochore — กลุ่มโปรตีนที่อยู่บนเซนโทรเมียร์ เป็นจุดที่ <b>เส้นใยสปินเดิลมาเกาะ</b> เพื่อดึงโครโมโซมไปยังขั้วเซลล์' }
+];
+function stageChromo(){
+  app.innerHTML = stageShell('chromo', `
+    <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่อโครงสร้างในสำรับ แล้วแตะป้าย <b>? ? ?</b> ที่ชี้ไปยังตำแหน่งของมัน
+      — วางให้ครบ ${CHROMO_PARTS.length} จุดโดยผิดน้อยที่สุด
+      <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    ${calloutBoard(CHROMO_SVG, '1000/545', CHROMO_PARTS)}
+    <div class="feedback" id="fb"></div>
+    <div class="note key" style="margin-top:16px">
+      💡 <b>ลำดับที่ต้องจำ:</b> โครมาทิน (เส้นยาว) → ขดแน่นเป็น <b>โครโมโซม</b> →
+      จำลองตัวในระยะ S จึงมี <b>2 ซิสเตอร์โครมาทิด</b> ยึดกันที่ <b>เซนโทรเมียร์</b>
+    </div>
+  `);
+  bindCallout(CHROMO_PARTS, mistakes=>{
+    const got = mistakes<=1?3:mistakes<=3?2:1;
+    stageMiss=mistakes;
+    finishStage('chromo', got, 60-Math.min(mistakes*6,30), `
+      <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+        • <b>โครมาทิน</b> = DNA + โปรตีน เป็นเส้นยาว · <b>โครโมโซม</b> = โครมาทินที่ขดแน่นจนเห็นเป็นแท่ง<br>
+        • หลังระยะ S: 1 โครโมโซม = <b>2 ซิสเตอร์โครมาทิด</b> ที่มี DNA เหมือนกัน ยึดกันที่ <b>เซนโทรเมียร์</b><br>
+        • <b>ไคนีโทคอร์</b> เป็นโปรตีนบนเซนโทรเมียร์ ให้เส้นใยสปินเดิลมาเกาะเพื่อดึงโครโมโซม</div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> โครโมโซมที่มี 2 โครมาทิด <b>ยังนับเป็น 1 โครโมโซม</b>
+        ไม่ใช่ 2 โครโมโซม — จะนับเป็น 2 ก็ต่อเมื่อซิสเตอร์โครมาทิดแยกจากกันแล้วในระยะแอนาเฟส</div>
+      <div class="note">🔵 <b>ต่อยอด:</b> การขดตัวแน่นทำให้ DNA ที่ยาวมากถูกจัดเก็บและเคลื่อนย้ายได้โดยไม่พันกันหรือขาด
+        เหมือนม้วนสายไฟยาว ๆ ให้เป็นก้อนก่อนขนย้าย</div>
+      <div class="small muted">ผิดทั้งหมด ${mistakes} ครั้ง</div>`);
+  });
+}
+
+/* =========================================================================
+   ด่าน 2 — ห้องนับโครโมโซม: ดิพลอยด์ (2n) และแฮพลอยด์ (n)
+   ========================================================================= */
+const PLOIDY_ITEMS = [
+  { n:'เซลล์ผิวหนัง', g:'d', e:'เป็นเซลล์ร่างกาย จึงเป็นดิพลอยด์ 2n' },
+  { n:'เซลล์เม็ดเลือดขาว', g:'d', e:'เซลล์ร่างกายที่ยังแบ่งเพิ่มจำนวนได้ เป็น 2n' },
+  { n:'เซลล์กล้ามเนื้อ', g:'d', e:'เซลล์ร่างกาย 2n (และเป็นเซลล์ที่โดยปกติไม่แบ่งตัวเพิ่มแล้ว)' },
+  { n:'มีโครโมโซม 2 ชุด', g:'d', e:'ชุดหนึ่งจากพ่อ อีกชุดจากแม่ จึงมีฮอมอโลกัสโครโมโซมเป็นคู่ ๆ' },
+  { n:'มนุษย์: 46 โครโมโซม', g:'d', e:'2n = 46 คือจำนวนโครโมโซมของเซลล์ร่างกายมนุษย์' },
+  { n:'เซลล์อสุจิ', g:'h', e:'เป็นเซลล์สืบพันธุ์ จึงเป็นแฮพลอยด์ n' },
+  { n:'เซลล์ไข่', g:'h', e:'เซลล์สืบพันธุ์เพศเมีย เป็น n เช่นเดียวกับอสุจิ' },
+  { n:'มีโครโมโซม 1 ชุด', g:'h', e:'ลดจำนวนลงครึ่งหนึ่งจากเซลล์ร่างกาย' },
+  { n:'มนุษย์: 23 โครโมโซม', g:'h', e:'n = 23 คือจำนวนโครโมโซมของเซลล์สืบพันธุ์มนุษย์' },
+  { n:'ได้จากการแบ่งแบบไมโอซิส', g:'h', e:'ไมโอซิสคือการแบ่งเซลล์เพื่อสร้างเซลล์สืบพันธุ์' }
+];
+const PLOIDY_Q = [
+  { q:'เซลล์ร่างกายของสิ่งมีชีวิตชนิดหนึ่งมี 2n = 24 เซลล์สืบพันธุ์ของสิ่งมีชีวิตนี้มีกี่โครโมโซม?',
+    o:['12 โครโมโซม','24 โครโมโซม','48 โครโมโซม','6 โครโมโซม'], a:0,
+    e:'เซลล์สืบพันธุ์เป็นแฮพลอยด์ (n) = ครึ่งหนึ่งของเซลล์ร่างกาย → n = 24 ÷ 2 = <b>12 โครโมโซม</b>' },
+  { q:'ข้อใดอธิบาย <b>ฮอมอโลกัสโครโมโซม</b> ได้ถูกต้อง',
+    o:['โครโมโซม 2 แท่งที่เกิดจากการจำลองตัวของโครโมโซมเดียวกัน',
+       'โครโมโซมคู่ที่มีขนาด รูปร่าง และตำแหน่งยีน (โลคัส) ตรงกัน โดยแท่งหนึ่งมาจากพ่อ อีกแท่งมาจากแม่',
+       'โครโมโซมเพศ X และ Y เท่านั้น',
+       'โครโมโซมที่ขดตัวแน่นที่สุดในระยะเมทาเฟส'], a:1,
+    e:'ฮอมอโลกัสโครโมโซมคือ<b>โครโมโซมคู่เหมือน</b> — ขนาด รูปร่าง และโลคัสตรงกัน มาจากพ่อ 1 แท่งและแม่ 1 แท่ง ' +
+      '(ส่วน 2 แท่งที่เกิดจากการจำลองตัวเรียกว่า<b>ซิสเตอร์โครมาทิด</b> ไม่ใช่ฮอมอโลกัส)' },
+  { q:'โครโมโซมมนุษย์ 2n = 46 แบ่งออกเป็นอะไรบ้าง',
+    o:['ออโตโซม 23 คู่','ออโตโซม 22 คู่ และโครโมโซมเพศ 1 คู่','ออโตโซม 21 คู่ และโครโมโซมเพศ 2 คู่','โครโมโซมเพศ 23 คู่'], a:1,
+    e:'มนุษย์มี <b>ออโตโซม 22 คู่</b> (เหมือนกันทั้งชายและหญิง) และ <b>โครโมโซมเพศ 1 คู่</b> คือคู่ที่ 23 — เพศหญิง XX เพศชาย XY' }
+];
+function stageCount(){
+  let sortWrong = 0;
+  drawSort();
+
+  function drawSort(){
+    const B = { d:{t:'🧍 เซลล์ร่างกาย · ดิพลอยด์ (2n)'}, h:{t:'🥚 เซลล์สืบพันธุ์ · แฮพลอยด์ (n)'} };
+    app.innerHTML = stageShell('count', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะข้อความ แล้วแตะกล่องที่ถูกต้อง — จัดให้ครบ ${PLOIDY_ITEMS.length} ชิ้น</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(PLOIDY_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        🔵 <b>ตัวช่วยจำ:</b> 2n = สอง<b>ชุด</b> (ไม่ใช่สองแท่ง) · เซลล์ร่างกายทุกเซลล์ของคนเป็น 2n = 46
+        ส่วนอสุจิและไข่เป็น n = 23 เมื่อปฏิสนธิจึงกลับเป็น 46 พอดี
+      </div>
+    `);
+    bindBuckets(PLOIDY_ITEMS, B, 'pb', 'fb', wrong=>{
+      sortWrong = wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,700);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('count', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องการนับโครโมโซมให้ครบ ${PLOIDY_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(PLOIDY_Q, 'qhost', qWrong=>{
+      const miss = sortWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('count', got, 70-Math.min(miss*7,40), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>ดิพลอยด์ (2n)</b> = เซลล์ร่างกาย มีโครโมโซม 2 ชุด เป็นฮอมอโลกัสโครโมโซมเป็นคู่ ๆ<br>
+          • <b>แฮพลอยด์ (n)</b> = เซลล์สืบพันธุ์ มีโครโมโซม 1 ชุด ได้จากการแบ่งแบบไมโอซิส<br>
+          • มนุษย์ 2n = 46 (ออโตโซม 22 คู่ + โครโมโซมเพศ 1 คู่ · หญิง XX ชาย XY) · n = 23</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> <b>ฮอมอโลกัสโครโมโซม ≠ ซิสเตอร์โครมาทิด</b>
+          — ฮอมอโลกัสคือคู่ที่มาจากพ่อและแม่ (ยีนตำแหน่งเดียวกันแต่แอลลีลอาจต่างกัน)
+          ส่วนซิสเตอร์โครมาทิดเกิดจากการจำลองตัวจึงเหมือนกันทุกประการ</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> จำนวนโครโมโซมไม่ได้บอกความซับซ้อนของสิ่งมีชีวิต — ถั่วลันเตา 2n = 14
+          แมลงหวี่ 2n = 8 ส่วนเฟินบางชนิดมีมากกว่า 1,000 โครโมโซม</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 3 — วัฏจักรเซลล์: อินเตอร์เฟส (G1 · S · G2) และระยะ M
+   ========================================================================= */
+const CYCLE_STEPS = [
+  { n:'G₁ (First gap)', e:'เซลล์ลูกที่เพิ่งเกิดจะ<b>เติบโต ขนาดใหญ่ขึ้น</b> และสังเคราะห์สารต่าง ๆ โดยเฉพาะโปรตีน — เป็นระยะที่<b>ใช้เวลานานที่สุด</b>' },
+  { n:'S (Synthesis)', e:'<b>สังเคราะห์ DNA เพิ่มอีกชุดหนึ่ง</b> เมื่อสิ้นสุดระยะนี้ โครโมโซมแต่ละแท่งจะมี <b>2 ซิสเตอร์โครมาทิด</b> (จำนวนโครโมโซมยังเท่าเดิม)' },
+  { n:'G₂ (Second gap)', e:'DNA ขดตัวมากขึ้น เซลล์สร้างโปรตีนและออร์แกเนลล์เพิ่ม เช่น <b>เซนโทรโซม</b> ที่จะสร้างเส้นใยสปินเดิลในระยะถัดไป' },
+  { n:'M phase (แบ่งนิวเคลียส)', e:'ระยะที่<b>แบ่งนิวเคลียส</b> ใช้เวลาสั้น ๆ — ในไมโทซิสประกอบด้วย โพรเฟส เมทาเฟส แอนาเฟส เทโลเฟส' },
+  { n:'การแบ่งไซโทพลาซึม', e:'<b>Cytokinesis</b> — เมื่อแบ่งนิวเคลียสเสร็จจึงแบ่งไซโทพลาซึม ได้เซลล์ลูก 2 เซลล์ที่พร้อมเข้าสู่วัฏจักรเซลล์รอบใหม่' }
+];
+const CYCLE_Q = [
+  { q:'ระยะใดของวัฏจักรเซลล์ที่มีการ<b>จำลอง DNA</b>',
+    o:['ระยะ G₁','ระยะ S','ระยะ G₂','ระยะ M'], a:1,
+    e:'การจำลอง DNA เกิดใน <b>ระยะ S (Synthesis)</b> เท่านั้น เมื่อจบระยะนี้แต่ละโครโมโซมจึงมี 2 ซิสเตอร์โครมาทิด' },
+  { q:'เซลล์ในระยะ G₂ ของสิ่งมีชีวิตที่มี 2n = 8 มีจำนวนโครโมโซมและโครมาทิดเท่าใด',
+    o:['8 โครโมโซม · 8 โครมาทิด','8 โครโมโซม · 16 โครมาทิด','16 โครโมโซม · 16 โครมาทิด','4 โครโมโซม · 8 โครมาทิด'], a:1,
+    e:'ผ่านระยะ S มาแล้ว DNA จึงถูกจำลองครบ — <b>จำนวนโครโมโซมยังเท่าเดิม 8 แท่ง</b> แต่แต่ละแท่งมี 2 โครมาทิด รวมเป็น <b>16 โครมาทิด</b>' },
+  { q:'ข้อใดกล่าวถึง<b>ระยะอินเตอร์เฟส</b>ได้ถูกต้องที่สุด',
+    o:['เป็นระยะพักที่เซลล์ไม่ทำอะไรเลย','เป็นระยะที่เห็นโครโมโซมเป็นแท่งชัดเจนที่สุด',
+       'เป็นระยะเตรียมพร้อมก่อนแบ่งเซลล์ กินเวลานานที่สุดของวัฏจักรเซลล์','เป็นระยะที่นิวเคลียสแบ่งตัว'], a:2,
+    e:'อินเตอร์เฟสเป็นระยะ<b>เตรียมพร้อม</b> — เติบโต จำลอง DNA และสะสมสารที่จำเป็น ใช้เวลานานที่สุด ' +
+      'ไม่ใช่ระยะพัก และสารพันธุกรรมยังอยู่ในรูป<b>โครมาทิน</b> จึงยังไม่เห็นเป็นแท่งชัดเจน' }
+];
+function stageCycle(){
+  let orderWrong = 0;
+  drawOrder();
+
+  function drawOrder(){
+    app.innerHTML = stageShell('cycle', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เรียงวัฏจักรเซลล์ให้ถูกลำดับ — แตะการ์ดทีละใบตามลำดับที่เกิดจริง</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(CYCLE_STEPS, 'แตะการ์ดด้านล่างเพื่อเริ่มเรียงวัฏจักรเซลล์…')}
+      <div class="feedback" id="fb"></div>
+      <div class="note warn" style="margin-top:16px">
+        ⏱️ <b>สัดส่วนเวลา:</b> อินเตอร์เฟส (G₁ + S + G₂) กินเวลาเกือบทั้งวัฏจักร ส่วนระยะ M ใช้เวลาสั้นมาก
+        — เซลล์ส่วนใหญ่ที่เราส่องกล้องเห็นจึงอยู่ในระยะอินเตอร์เฟส
+      </div>
+    `);
+    bindOrder(CYCLE_STEPS, wrong=>{ orderWrong=wrong; toast('เก่งมาก! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,700); });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('cycle', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องวัฏจักรเซลล์ให้ครบ ${CYCLE_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(CYCLE_Q, 'qhost', qWrong=>{
+      const miss = orderWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('cycle', got, 80-Math.min(miss*8,45), `
+        <div class="note key">🟡 <b>สรุปวัฏจักรเซลล์</b><br>
+          <b>อินเตอร์เฟส</b> = G₁ (เติบโต สร้างโปรตีน · นานที่สุด) → S (จำลอง DNA) → G₂ (สร้างเซนโทรโซม เตรียมแบ่ง)<br>
+          <b>ระยะ M</b> = แบ่งนิวเคลียส (โพรเฟส → เมทาเฟส → แอนาเฟส → เทโลเฟส) แล้วตามด้วย<b>การแบ่งไซโทพลาซึม</b><br>
+          วัฏจักรเซลล์พบเฉพาะการแบ่งแบบ<b>ไมโทซิส</b> เพราะเซลล์ลูกกลับเข้าสู่วัฏจักรได้อีก (ขึ้นกับชนิดเซลล์)</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ระยะ S ทำให้ <b>ปริมาณ DNA เพิ่มเป็น 2 เท่า</b>
+          แต่ <b>จำนวนโครโมโซมยังเท่าเดิม</b> — เพราะ 2 โครมาทิดที่ติดกันที่เซนโทรเมียร์ยังนับเป็น 1 โครโมโซม</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> เซลล์บางชนิด เช่น เซลล์ประสาทและเซลล์กล้ามเนื้อของคน
+          จะออกจากวัฏจักรไปอยู่ในระยะ <b>G₀</b> และไม่แบ่งตัวอีก จึงเป็นเหตุผลที่เนื้อเยื่อประสาทฟื้นตัวได้ยากเมื่อเสียหาย</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 4 — สายพานไมโทซิส: 4 ระยะ + การแบ่งไซโทพลาซึม
+   ========================================================================= */
+const MITO_STEPS = [
+  { n:'โพรเฟส', e:'เยื่อหุ้มนิวเคลียสและนิวคลีโอลัส<b>เริ่มสลาย</b> · โครมาทินขดสั้นลงจนเห็นเป็นแท่งโครโมโซมที่มี 2 โครมาทิด · เซนโทรโซม 2 ชุดเคลื่อนแยกห่างกันและสร้าง<b>เส้นใยสปินเดิล</b>' },
+  { n:'เมทาเฟส', e:'เยื่อหุ้มนิวเคลียสสลายหมด · เส้นใยสปินเดิลจับกับ<b>ไคนีโทคอร์</b> · โครโมโซมถูกดึงมาเรียงกลางเซลล์ในแนวระนาบเดียวกันที่เรียกว่า <b>เมทาเฟสเพลท</b> และขดตัวมากที่สุดจึงเห็นชัดที่สุด' },
+  { n:'แอนาเฟส', e:'เส้นใยสปินเดิลหดสั้นลง ดึงให้<b>ซิสเตอร์โครมาทิดแยกออกจากกัน</b>ไปคนละขั้วเซลล์ — เมื่อแยกแล้วแต่ละโครมาทิดนับเป็น 1 โครโมโซม' },
+  { n:'เทโลเฟส', e:'เส้นใยสปินเดิลสลาย · <b>สร้างเยื่อหุ้มนิวเคลียสและนิวคลีโอลัสขึ้นใหม่</b> · โครโมโซมคลายตัวกลับเป็นโครมาทิน · เริ่มเห็นเป็น 2 นิวเคลียส' }
+];
+const CYTO_ITEMS = [
+  { n:'เยื่อหุ้มเซลล์คอดเข้าหากัน', g:'a', e:'เกิดจากการทำงานของ<b>ไมโครฟิลาเมนท์</b>ที่รัดรอบกลางเซลล์จนคอดขาดออกจากกัน' },
+  { n:'เกิดร่องแบ่งเซลล์ (cleavage furrow)', g:'a', e:'ร่องคอดที่ค่อย ๆ ลึกลงจนเซลล์หลุดออกเป็น 2 เซลล์' },
+  { n:'ไม่มีผนังเซลล์ขวางอยู่', g:'a', e:'เยื่อหุ้มเซลล์ยืดหยุ่นได้ จึงคอดเข้าหากันได้' },
+  { n:'สร้างแผ่นกั้นเซลล์ (cell plate)', g:'p', e:'สร้างขึ้นตรงกลางระหว่างนิวเคลียสใหม่ทั้งสอง แล้วขยายออกไปเชื่อมกับผนังเซลล์เดิม' },
+  { n:'ใช้เวสิเคิลจากกอลจิบอดี', g:'p', e:'เวสิเคิลบรรจุสารที่เป็นองค์ประกอบของผนังเซลล์มารวมกันตรงกลางเซลล์' },
+  { n:'สะสมเซลลูโลสเป็นผนังเซลล์ใหม่', g:'p', e:'ผนังเซลล์ใหม่กั้นเซลล์เดิมออกเป็น 2 เซลล์' }
+];
+function stageMitosis(){
+  let orderWrong = 0;
+  drawOrder();
+
+  function drawOrder(){
+    app.innerHTML = stageShell('mitosis', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เรียง 4 ระยะของการแบ่งนิวเคลียสแบบไมโทซิสให้ถูกลำดับ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(MITO_STEPS, 'แตะการ์ดด้านล่างเพื่อเริ่มเรียงระยะของไมโทซิส…')}
+      <div class="feedback" id="fb"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>ตัวช่วยจำ:</b> <b>P M A T</b> — <b>P</b>rophase เตรียมตัว · <b>M</b>etaphase เรียงกลาง ·
+        <b>A</b>naphase แยกออก · <b>T</b>elophase สร้างนิวเคลียสใหม่
+      </div>
+    `);
+    bindOrder(MITO_STEPS, wrong=>{ orderWrong=wrong; toast('ถูกต้อง! ไปดูการแบ่งไซโทพลาซึมกันต่อ'); setTimeout(drawSort,700); });
+  }
+
+  function drawSort(){
+    const B = { a:{t:'🐾 เซลล์สัตว์'}, p:{t:'🌿 เซลล์พืช'} };
+    app.innerHTML = stageShell('mitosis', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> การแบ่งไซโทพลาซึมของเซลล์พืชกับเซลล์สัตว์ต่างกัน — จัดให้ครบ ${CYTO_ITEMS.length} ชิ้น</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(CYTO_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        🔵 <b>ทำไมต่างกัน?</b> เซลล์พืชมี<b>ผนังเซลล์แข็ง</b> จึงคอดเข้าหากันไม่ได้ ต้องสร้างแผ่นกั้นเซลล์ขึ้นใหม่ตรงกลางแทน
+      </div>
+    `);
+    bindBuckets(CYTO_ITEMS, B, 'pb', 'fb', wrong=>{
+      const miss = orderWrong + wrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('mitosis', got, 85-Math.min(miss*8,50), `
+        <div class="note key">🟡 <b>สรุปไมโทซิส</b><br>
+          <b>โพรเฟส</b> เยื่อหุ้มนิวเคลียสสลาย เห็นโครโมโซม 2 โครมาทิด สร้างสปินเดิล →
+          <b>เมทาเฟส</b> เรียงกลางที่เมทาเฟสเพลท ขดสั้นที่สุด →
+          <b>แอนาเฟส</b> ซิสเตอร์โครมาทิดแยกไปคนละขั้ว →
+          <b>เทโลเฟส</b> สร้างนิวเคลียสใหม่ 2 นิวเคลียส<br>
+          ผลลัพธ์: เซลล์ลูก <b>2 เซลล์</b> · โครโมโซม<b>เท่าเดิม (2n → 2n)</b> · พันธุกรรม<b>เหมือนเซลล์แม่ทุกประการ</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> <b>เมทาเฟสของไมโทซิส โครโมโซมเรียงเป็นแถวเดี่ยว</b>
+          (ไม่ได้จับคู่กัน) — การเรียงเป็นคู่ของฮอมอโลกัสโครโมโซมเกิดในเมทาเฟส I ของไมโอซิสเท่านั้น</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ถ้าไม่มีการสร้างเส้นใยสปินเดิล ซิสเตอร์โครมาทิดจะ<b>ไม่ถูกดึงแยก</b>
+          เซลล์ลูกที่ได้จึงมีจำนวนโครโมโซมผิดปกติ (ยาบางชนิดที่ยับยั้งสปินเดิลจึงใช้หยุดการแบ่งตัวของเซลล์มะเร็ง)</div>
+        <div class="small muted">ผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 5 — สายการผลิตเซลล์สืบพันธุ์: ไมโอซิส I และ II
+   ========================================================================= */
+const MEIO_STEPS = [
+  { n:'โพรเฟส I', e:'ฮอมอโลกัสโครโมโซม<b>เข้าคู่กัน</b> และอาจเกิด <b>ครอสซิงโอเวอร์</b> — นอนซิสเตอร์โครมาทิดไขว้กันที่จุดที่เรียกว่า <b>ไคแอสมา</b> แล้วแลกเปลี่ยนชิ้นส่วนโครโมโซมกัน' },
+  { n:'เมทาเฟส I', e:'ฮอมอโลกัสโครโมโซมเรียงตัว<b>เป็นคู่</b>ตามแนวระนาบของเมทาเฟสเพลท (ต่างจากไมโทซิสที่เรียงเป็นแถวเดี่ยว)' },
+  { n:'แอนาเฟส I', e:'<b>ฮอมอโลกัสโครโมโซมแยกออกจากกัน</b>ไปคนละขั้วเซลล์ — ระยะนี้แต่ละโครโมโซมยังมี 2 โครมาทิดติดกันอยู่' },
+  { n:'เทโลเฟส I', e:'สร้างเยื่อหุ้มนิวเคลียส ได้ 2 นิวเคลียสที่มีจำนวนโครโมโซม<b>ลดลงครึ่งหนึ่ง (n)</b> จากนั้นเข้าสู่ <b>อินเตอร์ไคเนซิส</b> ซึ่ง<b>ไม่มีการจำลอง DNA</b>' },
+  { n:'โพรเฟส II', e:'เริ่มการแบ่งครั้งที่สอง เยื่อหุ้มนิวเคลียสสลายอีกครั้ง สร้างเส้นใยสปินเดิลชุดใหม่ — ขั้นตอนคล้ายไมโทซิส' },
+  { n:'เมทาเฟส II', e:'โครโมโซม (ที่ยังมี 2 โครมาทิด) เรียงตัว<b>เป็นแถวเดี่ยว</b>กลางเซลล์ เหมือนเมทาเฟสของไมโทซิส' },
+  { n:'แอนาเฟส II', e:'<b>ซิสเตอร์โครมาทิดแยกออกจากกัน</b>ไปคนละขั้ว (จุดต่างสำคัญจากแอนาเฟส I ที่แยกฮอมอโลกัส)' },
+  { n:'เทโลเฟส II', e:'สร้างนิวเคลียสใหม่ แล้วแบ่งไซโทพลาซึม ได้เซลล์ลูก <b>4 เซลล์</b> ที่เป็นแฮพลอยด์ (n) และมีพันธุกรรม<b>ต่างจากเซลล์แม่</b>' }
+];
+const MEIO_Q = [
+  { q:'ช่วงใดของไมโอซิสที่จำนวนโครโมโซมลดจาก 2n เป็น n',
+    o:['เมื่อสิ้นสุดโพรเฟส I','เมื่อสิ้นสุดไมโอซิส I','เมื่อสิ้นสุดแอนาเฟส II','เมื่อสิ้นสุดไมโอซิส II'], a:1,
+    e:'การลดจำนวนเกิดจาก<b>การแยกของฮอมอโลกัสโครโมโซม</b>ในแอนาเฟส I ดังนั้นเมื่อ<b>สิ้นสุดไมโอซิส I</b> เซลล์ลูกทั้ง 2 จึงเป็นแฮพลอยด์แล้ว ' +
+      'ส่วนไมโอซิส II เพียงแยกซิสเตอร์โครมาทิด จำนวนโครโมโซมต่อเซลล์จึงเท่าเดิม' },
+  { q:'ระยะแอนาเฟส I กับแอนาเฟส II ต่างกันอย่างไร',
+    o:['แอนาเฟส I แยกซิสเตอร์โครมาทิด · แอนาเฟส II แยกฮอมอโลกัสโครโมโซม',
+       'แอนาเฟส I แยกฮอมอโลกัสโครโมโซม · แอนาเฟส II แยกซิสเตอร์โครมาทิด',
+       'ทั้งสองระยะแยกซิสเตอร์โครมาทิดเหมือนกัน',
+       'ทั้งสองระยะไม่มีการแยกอะไรเลย'], a:1,
+    e:'<b>แอนาเฟส I แยกฮอมอโลกัสโครโมโซม</b> (แต่ละโครโมโซมยังมี 2 โครมาทิด) ส่วน <b>แอนาเฟส II แยกซิสเตอร์โครมาทิด</b> เหมือนแอนาเฟสของไมโทซิส' },
+  { q:'ครอสซิงโอเวอร์เกิดขึ้นที่ใดและมีผลอย่างไร',
+    o:['เกิดที่เมทาเฟส I ทำให้โครโมโซมเรียงกลางเซลล์',
+       'เกิดที่โพรเฟส I โดยนอนซิสเตอร์โครมาทิดของฮอมอโลกัสโครโมโซมแลกเปลี่ยนชิ้นส่วนกัน ทำให้เกิดความแปรผันทางพันธุกรรม',
+       'เกิดที่แอนาเฟส II ทำให้ได้เซลล์ลูก 4 เซลล์',
+       'เกิดที่ระยะ S ทำให้ DNA เพิ่มเป็น 2 เท่า'], a:1,
+    e:'ครอสซิงโอเวอร์เกิดใน <b>โพรเฟส I</b> ที่ตำแหน่ง <b>ไคแอสมา</b> — เป็นการแลกเปลี่ยนชิ้นส่วนระหว่างนอนซิสเตอร์โครมาทิดของฮอมอโลกัสโครโมโซม ' +
+      'ทำให้เซลล์สืบพันธุ์มีการผสมผสานยีนแบบใหม่ จึงเกิด<b>ความแปรผันทางพันธุกรรม</b>' }
+];
+function stageMeiosis(){
+  let orderWrong = 0;
+  drawOrder();
+
+  function drawOrder(){
+    app.innerHTML = stageShell('meiosis', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เรียง 8 ระยะของไมโอซิส I และ II ให้ถูกลำดับ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(MEIO_STEPS, 'แตะการ์ดด้านล่างเพื่อเริ่มเรียงระยะของไมโอซิส…')}
+      <div class="feedback" id="fb"></div>
+      <div class="note warn" style="margin-top:16px">
+        ⚠️ <b>จุดที่ต้องระวัง:</b> ระหว่างไมโอซิส I กับ II มีระยะ <b>อินเตอร์ไคเนซิส</b> คั่นอยู่
+        แต่ <b>ไม่มีการจำลอง DNA</b> อีก — DNA ถูกจำลองเพียงครั้งเดียวตั้งแต่ก่อนเริ่มไมโอซิส I
+      </div>
+    `);
+    bindOrder(MEIO_STEPS, wrong=>{ orderWrong=wrong; toast('เยี่ยม! ไปนับจำนวนโครโมโซมกันต่อ'); setTimeout(drawSim,700); });
+  }
+
+  function drawSim(){
+    let n2 = 8, answered = false;     // จำนวนโครโมโซมของเซลล์แม่ (2n)
+    app.innerHTML = stageShell('meiosis', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ปรับจำนวนโครโมโซมของเซลล์แม่ แล้วสังเกตผลของไมโอซิส I และ II
+        <br><span class="small muted">ภารกิจ: ตั้งค่าให้เซลล์แม่มี <b>2n = 12</b> แล้วอ่านผลให้ครบ</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="card">
+        <div class="step"><span class="nm">เซลล์แม่ 2n =</span>
+          <span class="stepper">
+            <button id="minus">−</button><span class="n" id="nval">8</span><button id="plus">+</button>
+          </span></div>
+        <div class="cellview" id="cv"></div>
+        <div class="note key" id="simNote"></div>
+      </div>
+      <div id="qhost"></div>
+    `);
+    const el=id=>document.getElementById(id);
+    function paint(){
+      const n = n2/2;
+      el('nval').textContent = n2;
+      el('cv').innerHTML = `
+        <div class="cellbox"><h4>เริ่มต้น · เซลล์แม่</h4><div class="big">1</div><div class="lbl">เซลล์</div>
+          <div class="big">${n2}</div><div class="lbl">โครโมโซม (2n) · ดิพลอยด์</div></div>
+        <div class="cellbox"><h4>สิ้นสุดไมโอซิส I</h4><div class="big">2</div><div class="lbl">เซลล์</div>
+          <div class="big">${n}</div><div class="lbl">โครโมโซมต่อเซลล์ (n) · แฮพลอยด์แล้ว</div></div>
+        <div class="cellbox"><h4>สิ้นสุดไมโอซิส II</h4><div class="big">4</div><div class="lbl">เซลล์</div>
+          <div class="big">${n}</div><div class="lbl">โครโมโซมต่อเซลล์ (n) · เท่าเดิม</div></div>
+        <div class="cellbox"><h4>เทียบกับไมโทซิส</h4><div class="big">2</div><div class="lbl">เซลล์</div>
+          <div class="big">${n2}</div><div class="lbl">โครโมโซมต่อเซลล์ (2n) · ไม่ลด</div></div>`;
+      el('simNote').innerHTML = `ℹ️ ไมโอซิสแบ่งนิวเคลียส <b>2 ครั้ง</b> แต่จำลอง DNA เพียง <b>ครั้งเดียว</b>
+        จำนวนโครโมโซมจึงลดครึ่งหนึ่งเมื่อสิ้นสุด<b>ไมโอซิส I</b> ส่วนไมโอซิส II ทำให้ได้ 4 เซลล์แต่จำนวนโครโมโซมต่อเซลล์เท่าเดิม`;
+      if(!answered && n2===12){
+        answered = true; el('pb').style.width='50%';
+        toast('🎉 ตั้งค่าสำเร็จ! ไปตอบคำถามกันต่อ');
+        setTimeout(drawQuiz, 900);
+      }
+    }
+    el('plus').onclick = ()=>{ n2=Math.min(46, n2+2); paint(); };
+    el('minus').onclick= ()=>{ n2=Math.max(2, n2-2); paint(); };
+    paint();
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('meiosis', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องไมโอซิสให้ครบ ${MEIO_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:50%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(MEIO_Q, 'qhost', qWrong=>{
+      const miss = orderWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('meiosis', got, 95-Math.min(miss*8,55), `
+        <div class="note key">🟡 <b>สรุปไมโอซิส</b><br>
+          <b>ไมโอซิส I (แบ่งลดจำนวน):</b> โพรเฟส I เข้าคู่ฮอมอโลกัส + <b>ครอสซิงโอเวอร์</b> →
+          เมทาเฟส I เรียงเป็นคู่ → แอนาเฟส I <b>แยกฮอมอโลกัส</b> → เทโลเฟส I ได้ 2 เซลล์ <b>n</b><br>
+          <b>ไมโอซิส II (คล้ายไมโทซิส):</b> แอนาเฟส II <b>แยกซิสเตอร์โครมาทิด</b> → ได้เซลล์ลูก <b>4 เซลล์ (n)</b>
+          ที่มีพันธุกรรม<b>ต่างจากเซลล์แม่</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ระหว่างไมโอซิส I กับ II (อินเตอร์ไคเนซิส)
+          <b>ไม่มีการจำลอง DNA</b> — ถ้าจำลองอีกครั้ง จำนวนโครโมโซมจะไม่ลดลงและเซลล์สืบพันธุ์จะผิดปกติ</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ความแปรผันของเซลล์สืบพันธุ์มาจาก 2 ทาง —
+          <b>ครอสซิงโอเวอร์</b>ในโพรเฟส I และ<b>การจัดเรียงอย่างอิสระ</b>ของฮอมอโลกัสแต่ละคู่ในเมทาเฟส I
+          จึงทำให้ลูกที่เกิดจากพ่อแม่คู่เดียวกันไม่เหมือนกันเลย</div>
+        <div class="small muted">ผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 6 — บอส: ห้องตรวจสอบคุณภาพ (เทียบไมโทซิส–ไมโอซิส + สถานการณ์)
+   ========================================================================= */
+function stageBoss(){
+  const SC = [
+    { icon:'🩹', title:'แผลถลอกที่หัวเข่า',
+      body:'เด็กคนหนึ่งหกล้มจนหัวเข่าถลอก ผ่านไปหนึ่งสัปดาห์ผิวหนังบริเวณนั้นกลับมาปกติ',
+      q:'ผิวหนังใหม่เกิดจากการแบ่งเซลล์แบบใด และเซลล์ใหม่มีพันธุกรรมอย่างไร',
+      o:['ไมโทซิส — เซลล์ใหม่มีโครโมโซมเท่าเดิมและพันธุกรรมเหมือนเซลล์เดิมทุกประการ',
+         'ไมโอซิส — เซลล์ใหม่มีโครโมโซมลดลงครึ่งหนึ่ง',
+         'ไมโทซิส — เซลล์ใหม่มีพันธุกรรมต่างจากเดิมเพื่อให้แข็งแรงขึ้น',
+         'ไมโอซิส — เพื่อสร้างความแปรผันให้ผิวหนัง'],
+      a:0, e:'การซ่อมแซมและทดแทนเซลล์ที่เสียหายใช้ <b>ไมโทซิส</b> ได้เซลล์ลูกที่มีจำนวนโครโมโซม<b>เท่าเดิม (2n)</b> และพันธุกรรม<b>เหมือนเซลล์แม่ทุกประการ</b> ' +
+        'ถ้าใช้ไมโอซิส ผิวหนังใหม่จะมีโครโมโซมเพียงครึ่งเดียวและทำงานไม่ได้' },
+
+    { icon:'🧪', title:'ทดลอง: ยับยั้งการสร้างเส้นใยสปินเดิล',
+      body:'นักวิจัยเติมสารที่ยับยั้งการสร้างเส้นใยสปินเดิลลงในเซลล์ที่กำลังจะแบ่งตัว',
+      q:'ผลที่เกิดกับเซลล์ลูกคือข้อใด',
+      o:['เซลล์ลูกมีจำนวนโครโมโซมเท่าเดิมทุกประการ',
+         'ซิสเตอร์โครมาทิดไม่ถูกดึงแยก เซลล์ลูกจึงอาจมีจำนวนโครโมโซมผิดปกติ',
+         'เซลล์แบ่งเร็วขึ้นเพราะไม่ต้องรอสปินเดิล',
+         'DNA จะถูกจำลองซ้ำอีกครั้ง'],
+      a:1, e:'เส้นใยสปินเดิลทำหน้าที่<b>ดึงโครโมโซมไปยังขั้วเซลล์</b> ถ้าไม่มีสปินเดิล ซิสเตอร์โครมาทิดจะ<b>ไม่แยกจากกัน</b> ' +
+        'เซลล์ลูกที่ได้จึงมีจำนวนโครโมโซมผิดปกติ (มากหรือน้อยเกินไป)' },
+
+    { icon:'🔢', title:'โจทย์คำนวณ: 2n = 32',
+      body:'เซลล์ตั้งต้นของสิ่งมีชีวิตชนิดหนึ่งมี 2n = 32 เข้าสู่การแบ่งเซลล์แบบไมโอซิส',
+      q:'หลังสิ้นสุดไมโอซิส I และไมโอซิส II เซลล์ลูกจะมีจำนวนโครโมโซมเท่าใดตามลำดับ',
+      o:['32 และ 32','16 และ 8','16 และ 16','32 และ 16'],
+      a:2, e:'สิ้นสุด<b>ไมโอซิส I</b> ได้ 2 เซลล์ที่มี <b>n = 16</b> (ฮอมอโลกัสแยกกัน) จากนั้น<b>ไมโอซิส II</b> แยกซิสเตอร์โครมาทิด ' +
+        'ได้ 4 เซลล์ที่ยังมี <b>n = 16</b> เท่าเดิม — จำนวนเซลล์เพิ่มแต่จำนวนโครโมโซมต่อเซลล์ไม่ลดอีก' },
+
+    { icon:'🔬', title:'ส่องกล้องดูปลายรากหอม',
+      body:'นักเรียนย้อมสีปลายรากหอมแล้วส่องกล้องจุลทรรศน์ พบว่าเซลล์ส่วนใหญ่ในภาพมีนิวเคลียสกลม ๆ มองไม่เห็นโครโมโซมเป็นแท่ง',
+      q:'เพราะเหตุใดจึงเห็นเซลล์ลักษณะนี้มากที่สุด',
+      o:['เซลล์เหล่านั้นตายแล้ว','เซลล์ส่วนใหญ่อยู่ในระยะอินเตอร์เฟสซึ่งกินเวลานานที่สุด สารพันธุกรรมยังเป็นโครมาทิน',
+         'เพราะย้อมสีไม่ติด','เพราะเซลล์พืชไม่แบ่งตัว'],
+      a:1, e:'อินเตอร์เฟสกินเวลา<b>นานที่สุด</b>ของวัฏจักรเซลล์ โอกาสที่จะจับภาพเซลล์ในระยะนี้จึงมากที่สุด ' +
+        'และในระยะนี้สารพันธุกรรมยังอยู่ในรูป<b>โครมาทิน</b> จึงยังไม่เห็นเป็นแท่งโครโมโซม' },
+
+    { icon:'🌱', title:'เลือกตัวอย่างสำหรับศึกษาไมโอซิส',
+      body:'ในกิจกรรมศึกษาไมโอซิส ครูให้เลือกใช้ดอกกุยช่าย และแนะนำให้เลือก<b>ดอกตูมขนาดเล็ก</b> ไม่ใช้ดอกที่บานแล้ว',
+      q:'เหตุผลที่ถูกต้องคือข้อใด',
+      o:['ดอกตูมย้อมสีติดง่ายกว่า','ดอกตูมมีอับเรณูที่กำลังสร้างเซลล์สืบพันธุ์ จึงพบเซลล์ที่กำลังแบ่งแบบไมโอซิส ส่วนดอกที่บานแล้วสร้างเสร็จไปแล้ว',
+         'ดอกที่บานแล้วมีเซลล์ตายหมด','ดอกตูมมีขนาดเล็กจึงวางบนสไลด์ง่าย'],
+      a:1, e:'ไมโอซิสในพืชเกิดในอับเรณูขณะกำลังสร้าง<b>ละอองเรณู</b> ซึ่งเกิดใน<b>ดอกตูมระยะอ่อน</b> ' +
+        'เมื่อดอกบานแล้วละอองเรณูสร้างเสร็จ (แบ่งเซลล์จบไปแล้ว) จึงไม่พบระยะต่าง ๆ ของไมโอซิสให้ศึกษา' },
+
+    { icon:'👨‍👩‍👧', title:'ทำไมพี่น้องท้องเดียวกันจึงไม่เหมือนกัน',
+      body:'พี่น้องที่เกิดจากพ่อแม่คู่เดียวกัน (ที่ไม่ใช่ฝาแฝดแท้) มีหน้าตาและลักษณะต่างกัน',
+      q:'กระบวนการใดในไมโอซิสที่อธิบายเรื่องนี้ได้ดีที่สุด',
+      o:['การจำลอง DNA ในระยะ S ที่ผิดพลาดทุกครั้ง',
+         'ครอสซิงโอเวอร์ในโพรเฟส I ร่วมกับการจัดเรียงอย่างอิสระของฮอมอโลกัสโครโมโซมในเมทาเฟส I',
+         'การแยกซิสเตอร์โครมาทิดในแอนาเฟส II',
+         'การแบ่งไซโทพลาซึมที่ไม่เท่ากัน'],
+      a:1, e:'<b>ครอสซิงโอเวอร์</b>ทำให้เกิดโครโมโซมลูกผสมชุดใหม่ และ<b>การจัดเรียงอย่างอิสระ</b>ของฮอมอโลกัสแต่ละคู่ในเมทาเฟส I ' +
+        'ทำให้เซลล์สืบพันธุ์แต่ละเซลล์ได้ชุดโครโมโซมไม่ซ้ำกัน เมื่อรวมกับการปฏิสนธิแบบสุ่ม ลูกแต่ละคนจึงต่างกัน' },
+
+    { icon:'🧠', title:'เซลล์ที่ไม่แบ่งตัวอีกแล้ว',
+      body:'เซลล์ประสาทและเซลล์กล้ามเนื้อของผู้ใหญ่โดยทั่วไปจะไม่แบ่งตัวเพิ่มจำนวน ต่างจากเซลล์ผิวหนังและเซลล์เม็ดเลือดขาว',
+      q:'ข้อสรุปใดถูกต้อง',
+      o:['เซลล์ประสาทไม่มี DNA จึงแบ่งไม่ได้',
+         'เซลล์แต่ละชนิดเข้าสู่วัฏจักรเซลล์ได้ไม่เท่ากัน บางชนิดออกจากวัฏจักรและหยุดแบ่งตัว ทำให้เนื้อเยื่อนั้นซ่อมแซมตัวเองได้ยาก',
+         'เซลล์ประสาทแบ่งแบบไมโอซิสแทน',
+         'เซลล์กล้ามเนื้อแบ่งตัวได้เร็วกว่าเซลล์ผิวหนัง'],
+      a:1, e:'เซลล์ลูกจากไมโทซิสจะกลับเข้าสู่วัฏจักรเซลล์ได้อีกหรือไม่ <b>ขึ้นอยู่กับชนิดของเซลล์</b> ' +
+        'เซลล์ประสาทและกล้ามเนื้อออกจากวัฏจักรไปแล้ว การบาดเจ็บของเนื้อเยื่อเหล่านี้จึงฟื้นตัวได้ยากกว่าผิวหนัง' },
+
+    { icon:'⚖️', title:'ตรวจสอบคุณภาพขั้นสุดท้าย',
+      body:'หัวหน้าโรงงานขอให้สรุปความแตกต่างระหว่างไมโทซิสกับไมโอซิสให้ครบถ้วน',
+      q:'ข้อใดสรุปได้<b>ถูกต้องทั้งหมด</b>',
+      o:['ไมโทซิส: 2 เซลล์ · 2n · เหมือนเซลล์แม่ || ไมโอซิส: 4 เซลล์ · n · ต่างจากเซลล์แม่',
+         'ไมโทซิส: 4 เซลล์ · n · ต่างจากเซลล์แม่ || ไมโอซิส: 2 เซลล์ · 2n · เหมือนเซลล์แม่',
+         'ไมโทซิส: 2 เซลล์ · n · ต่างจากเซลล์แม่ || ไมโอซิส: 4 เซลล์ · 2n · เหมือนเซลล์แม่',
+         'ทั้งสองแบบได้ 2 เซลล์ที่เหมือนเซลล์แม่ทุกประการ'],
+      a:0, e:'<b>ไมโทซิส</b> แบ่งนิวเคลียส 1 ครั้ง → 2 เซลล์ · โครโมโซมเท่าเดิม (2n) · พันธุกรรมเหมือนเซลล์แม่ · ใช้เพื่อเติบโตและซ่อมแซม<br>' +
+        '<b>ไมโอซิส</b> แบ่งนิวเคลียส 2 ครั้ง → 4 เซลล์ · โครโมโซมลดครึ่งหนึ่ง (n) · พันธุกรรมต่างจากเซลล์แม่ · ใช้สร้างเซลล์สืบพันธุ์' }
+  ];
+  let i=0, right=0;
+  app.innerHTML = stageShell('boss', `
+    <div class="note miss">👹 <b>ด่านบอส:</b> ${SC.length} สถานการณ์ ทดสอบว่าเข้าใจ “ทำไม” ไม่ใช่แค่ “คืออะไร” — ตอบถูกยิ่งมาก ยิ่งได้ดาวเยอะ</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="box"></div>
+  `);
+  const pb=document.getElementById('pb'), host=document.getElementById('box');
+  function step(){
+    pb.style.width=(i/SC.length*100)+'%';
+    if(i>=SC.length){
+      const got = right>=SC.length-1?3:right>=SC.length-3?2:right>=2?1:0;
+      stageMiss=SC.length-right;
+      finishStage('boss', got, right*17, `
+        <div class="note key">🟡 <b>ตารางเทียบที่ออกสอบบ่อยที่สุด</b>
+          <div style="overflow-x:auto"><table class="cmp" style="margin-top:8px">
+            <thead><tr><th>หัวข้อ</th><th>ไมโทซิส</th><th>ไมโอซิส</th></tr></thead>
+            <tbody>
+              <tr><td>จำนวนครั้งที่แบ่งนิวเคลียส</td><td>1 ครั้ง</td><td>2 ครั้ง</td></tr>
+              <tr><td>จำนวนเซลล์ลูก</td><td class="yes">2 เซลล์</td><td class="yes">4 เซลล์</td></tr>
+              <tr><td>จำนวนโครโมโซม</td><td>เท่าเดิม (2n)</td><td>ลดครึ่งหนึ่ง (n)</td></tr>
+              <tr><td>พันธุกรรมของเซลล์ลูก</td><td>เหมือนเซลล์แม่</td><td>ต่างจากเซลล์แม่</td></tr>
+              <tr><td>ครอสซิงโอเวอร์</td><td>ไม่มี</td><td>มี (โพรเฟส I)</td></tr>
+              <tr><td>เกิดที่ไหน</td><td>เซลล์ร่างกาย</td><td>อวัยวะสร้างเซลล์สืบพันธุ์</td></tr>
+              <tr><td>ประโยชน์</td><td>เติบโต ซ่อมแซม เพิ่มจำนวน</td><td>สร้างเซลล์สืบพันธุ์ · สร้างความแปรผัน</td></tr>
+            </tbody></table></div></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ไมโอซิสไม่ได้ “แบ่งครึ่ง 2 รอบ” จนเหลือ n/2
+          — DNA ถูกจำลอง<b>ครั้งเดียว</b>แต่แบ่งนิวเคลียส<b>สองครั้ง</b> จำนวนโครโมโซมจึงลดลงครึ่งหนึ่งเพียงครั้งเดียว
+          (เกิดเมื่อสิ้นสุดไมโอซิส I)</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ถ้าไมโอซิสผิดพลาดจนโครโมโซมไม่แยกกัน (non-disjunction)
+          เซลล์สืบพันธุ์จะมีโครโมโซมเกินหรือขาด เมื่อปฏิสนธิอาจเกิดกลุ่มอาการ เช่น ดาวน์ซินโดรม (โครโมโซมคู่ที่ 21 เกินมา 1 แท่ง)</div>
+        <div class="small muted">ตอบถูก ${right}/${SC.length} ข้อ</div>`);
+      return;
+    }
+    const s=SC[i];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">สถานการณ์ ${i+1}/${SC.length}</div>
+      <h3 style="margin:6px 0 4px">${s.icon} ${s.title}</h3>
+      <p style="margin:0 0 6px;font-size:.92rem">${s.body}</p>
+      <div style="font-weight:800;font-size:.95rem;margin-top:10px">${s.q}</div>
+      <div class="opts">${s.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===s.a; if(ok) right++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===s.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+s.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${i===SC.length-1?'สรุปผล →':'สถานการณ์ถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ i++; step(); window.scrollTo({top:0,behavior:'smooth'}); };
+      };
+    });
+  }
+  step();
+}
+
+/* =========================================================================
+   การ์ดคำศัพท์
+   ========================================================================= */
+const CARDS = [
+  ['พื้นฐาน','การแบ่งเซลล์','Cell division','กระบวนการที่เซลล์แม่ 1 เซลล์แบ่งเป็นเซลล์ลูก เพื่อการเติบโต ซ่อมแซม เพิ่มจำนวน และสร้างเซลล์สืบพันธุ์'],
+  ['พื้นฐาน','การแบ่งนิวเคลียส','Karyokinesis','ขั้นตอนแรกของการแบ่งเซลล์ยูแคริโอต แบ่งได้ 2 แบบคือ <b>ไมโทซิส</b> และ <b>ไมโอซิส</b>'],
+  ['พื้นฐาน','การแบ่งไซโทพลาซึม','Cytokinesis','ขั้นตอนหลังการแบ่งนิวเคลียส ทำให้เซลล์แยกออกจากกันจริง ๆ — เซลล์สัตว์คอดเข้า เซลล์พืชสร้างแผ่นกั้นเซลล์'],
+  ['พื้นฐาน','โครมาทิน','Chromatin','สาย DNA ที่พันกับโปรตีนเป็นเส้นยาว ๆ พบขณะเซลล์ยังไม่แบ่ง'],
+  ['พื้นฐาน','โครโมโซม','Chromosome','โครมาทินที่ขดตัวแน่นจนมองเห็นเป็นแท่งเมื่อเซลล์เริ่มแบ่ง'],
+  ['พื้นฐาน','โครมาทิด','Chromatid','แต่ละแท่งย่อยของโครโมโซมที่จำลองตัวแล้ว — 2 โครมาทิดของโครโมโซมเดียวกันเรียก <b>ซิสเตอร์โครมาทิด</b>'],
+  ['พื้นฐาน','เซนโทรเมียร์','Centromere','บริเวณคอดที่ยึดซิสเตอร์โครมาทิดไว้ด้วยกัน และเป็นจุดที่โครโมโซมถูกดึงแยกในระยะแอนาเฟส'],
+  ['พื้นฐาน','ไคนีโทคอร์','Kinetochore','กลุ่มโปรตีนบนเซนโทรเมียร์ที่<b>เส้นใยสปินเดิลมาเกาะ</b>เพื่อดึงโครโมโซม'],
+  ['พื้นฐาน','เส้นใยสปินเดิล','Spindle fiber','เส้นใยโปรตีนที่สร้างจากเซนโทรโซม ทำหน้าที่ดึงโครโมโซมไปยังขั้วเซลล์'],
+  ['พื้นฐาน','เซนโทรโซม','Centrosome','ออร์แกเนลล์ที่สร้างเพิ่มในระยะ G₂ ทำหน้าที่เป็นศูนย์จัดระเบียบเส้นใยสปินเดิล'],
+
+  ['จำนวนโครโมโซม','ฮอมอโลกัสโครโมโซม','Homologous chromosome','โครโมโซมคู่เหมือน — ขนาด รูปร่าง และโลคัสตรงกัน แท่งหนึ่งมาจากพ่อ อีกแท่งมาจากแม่'],
+  ['จำนวนโครโมโซม','ดิพลอยด์','Diploid (2n)','เซลล์ที่มีโครโมโซม 2 ชุด เช่น เซลล์ร่างกายมนุษย์ 2n = 46'],
+  ['จำนวนโครโมโซม','แฮพลอยด์','Haploid (n)','เซลล์ที่มีโครโมโซม 1 ชุด เช่น เซลล์สืบพันธุ์มนุษย์ n = 23'],
+  ['จำนวนโครโมโซม','ออโตโซม','Autosome','โครโมโซม 22 คู่แรกของมนุษย์ที่เหมือนกันทั้งเพศชายและเพศหญิง'],
+  ['จำนวนโครโมโซม','โครโมโซมเพศ','Sex chromosome','โครโมโซมคู่ที่ 23 ที่กำหนดเพศ — เพศหญิง XX เพศชาย XY'],
+  ['จำนวนโครโมโซม','โลคัส','Locus','ตำแหน่งของยีนบนโครโมโซม ฮอมอโลกัสโครโมโซมจะมีโลคัสตรงกัน'],
+
+  ['วัฏจักรเซลล์','วัฏจักรเซลล์','Cell cycle','รอบชีวิตของเซลล์ ประกอบด้วยระยะอินเตอร์เฟสและระยะ M พบเฉพาะการแบ่งแบบไมโทซิส'],
+  ['วัฏจักรเซลล์','อินเตอร์เฟส','Interphase','ระยะเตรียมพร้อมก่อนแบ่งเซลล์ ใช้เวลานานที่สุด ประกอบด้วย G₁ · S · G₂'],
+  ['วัฏจักรเซลล์','ระยะ G₁','First gap phase','เซลล์เติบโต ขนาดใหญ่ขึ้น สังเคราะห์โปรตีน — เป็นระยะที่ใช้เวลานานที่สุด'],
+  ['วัฏจักรเซลล์','ระยะ S','Synthesis phase','<b>จำลอง DNA เพิ่มอีกชุด</b> เมื่อจบระยะนี้แต่ละโครโมโซมมี 2 โครมาทิด'],
+  ['วัฏจักรเซลล์','ระยะ G₂','Second gap phase','DNA ขดตัวมากขึ้น สร้างโปรตีนและออร์แกเนลล์ เช่น เซนโทรโซม เตรียมแบ่งเซลล์'],
+  ['วัฏจักรเซลล์','ระยะ M','M phase','ระยะที่แบ่งนิวเคลียส (ใช้เวลาสั้น) แล้วตามด้วยการแบ่งไซโทพลาซึม'],
+
+  ['ไมโทซิส','ไมโทซิส','Mitosis','การแบ่งนิวเคลียสที่ได้เซลล์ลูก <b>2 เซลล์</b> ที่มีโครโมโซมเท่าเดิมและพันธุกรรมเหมือนเซลล์แม่'],
+  ['ไมโทซิส','โพรเฟส','Prophase','เยื่อหุ้มนิวเคลียสและนิวคลีโอลัสเริ่มสลาย เห็นโครโมโซม 2 โครมาทิด เซนโทรโซมแยกและสร้างสปินเดิล'],
+  ['ไมโทซิส','เมทาเฟส','Metaphase','โครโมโซมเรียงกลางเซลล์ที่ <b>เมทาเฟสเพลท</b> และขดตัวมากที่สุดจึงเห็นชัดที่สุด'],
+  ['ไมโทซิส','แอนาเฟส','Anaphase','<b>ซิสเตอร์โครมาทิดแยกจากกัน</b> ถูกดึงไปยังขั้วเซลล์ตรงข้ามด้วยเส้นใยสปินเดิลที่หดสั้นลง'],
+  ['ไมโทซิส','เทโลเฟส','Telophase','สปินเดิลสลาย สร้างเยื่อหุ้มนิวเคลียสและนิวคลีโอลัสใหม่ โครโมโซมคลายตัวเป็นโครมาทิน'],
+  ['ไมโทซิส','เมทาเฟสเพลท','Metaphase plate','แนวระนาบกึ่งกลางเซลล์ที่โครโมโซมมาเรียงตัวในระยะเมทาเฟส'],
+  ['ไมโทซิส','แผ่นกั้นเซลล์','Cell plate','แผ่นที่เซลล์พืชสร้างจากเวสิเคิลของกอลจิบอดี แล้วสะสมเซลลูโลสกลายเป็นผนังเซลล์ใหม่'],
+
+  ['ไมโอซิส','ไมโอซิส','Meiosis','การแบ่งนิวเคลียส 2 ครั้งเพื่อสร้างเซลล์สืบพันธุ์ ได้เซลล์ลูก <b>4 เซลล์</b> ที่เป็นแฮพลอยด์'],
+  ['ไมโอซิส','ครอสซิงโอเวอร์','Crossing over','การแลกเปลี่ยนชิ้นส่วนระหว่างนอนซิสเตอร์โครมาทิดของฮอมอโลกัสโครโมโซม เกิดในโพรเฟส I'],
+  ['ไมโอซิส','ไคแอสมา','Chiasma','ตำแหน่งที่นอนซิสเตอร์โครมาทิดไขว้กันขณะเกิดครอสซิงโอเวอร์'],
+  ['ไมโอซิส','นอนซิสเตอร์โครมาทิด','Non-sister chromatid','โครมาทิดที่อยู่คนละแท่งของฮอมอโลกัสโครโมโซมคู่เดียวกัน'],
+  ['ไมโอซิส','ไมโอซิส I','Meiosis I','ระยะแบ่งลดจำนวน — <b>ฮอมอโลกัสโครโมโซมแยกจากกัน</b> ได้ 2 เซลล์ที่เป็นแฮพลอยด์'],
+  ['ไมโอซิส','ไมโอซิส II','Meiosis II','ระยะที่คล้ายไมโทซิส — <b>ซิสเตอร์โครมาทิดแยกจากกัน</b> ได้เซลล์ลูกรวม 4 เซลล์'],
+  ['ไมโอซิส','อินเตอร์ไคเนซิส','Interkinesis','ช่วงคั่นระหว่างไมโอซิส I กับ II ที่<b>ไม่มีการจำลอง DNA</b>'],
+  ['ไมโอซิส','ความแปรผันทางพันธุกรรม','Genetic variation','ความแตกต่างของลูกหลาน เกิดจากครอสซิงโอเวอร์และการจัดเรียงอย่างอิสระของโครโมโซมในไมโอซิส']
+];
+function renderCards(){
+  const cats=[...new Set(CARDS.map(c=>c[0]))];
+  let cat='ทั้งหมด', deck=[], idx=0, flipped=false;
+  function build(){ deck=(cat==='ทั้งหมด'?CARDS:CARDS.filter(c=>c[0]===cat)); idx=0; flipped=false; }
+  build();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic">🃏</div>
+      <div style="flex:1;min-width:200px"><h2>การ์ดคำศัพท์</h2>
+        <div class="sub">แตะการ์ดเพื่อพลิกดูความหมาย · ${CARDS.length} คำศัพท์ ไทย–อังกฤษ</div></div>
+    </div>
+    <div class="deckbar" id="deckbar">
+      ${['ทั้งหมด',...cats].map(c=>`<button data-c="${c}" class="${c==='ทั้งหมด'?'on':''}">${c}</button>`).join('')}
+    </div>
+    <div class="fcstage"><div class="fc" id="fc"></div></div>
+    <div class="fcnav">
+      <button class="btn sm" id="prev">← ก่อนหน้า</button>
+      <span class="count" id="count"></span>
+      <button class="btn sm" id="next">ถัดไป →</button>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn ghost sm" id="shuf">🔀 สลับการ์ด</button>
+      <button class="btn primary sm" id="back">กลับแผนที่</button>
+    </div>
+    <div class="note" style="margin-top:20px">
+      💡 <b>วิธีใช้ให้ได้ผล:</b> อ่านคำศัพท์แล้ว<b>พูดนิยามออกมาเองก่อน</b> จึงค่อยพลิกดูเฉลย (active recall)
+    </div>`;
+  const fc=document.getElementById('fc'), cnt=document.getElementById('count');
+  function draw(){
+    const c=deck[idx];
+    if(!c){ fc.innerHTML='<div class="side front"><div class="term">ไม่มีการ์ดในหมวดนี้</div></div>'; return; }
+    fc.classList.remove('flip'); flipped=false;
+    fc.innerHTML = `
+      <div class="side front">
+        <div class="tag">${c[0]}</div><div class="term">${c[1]}</div><div class="en">${c[2]}</div>
+        <div class="hint">แตะเพื่อพลิก ↻</div>
+      </div>
+      <div class="side back">
+        <div class="tag">${c[1]} · ${c[2]}</div><div class="def">${c[3]}</div>
+        <div class="hint">แตะเพื่อพลิกกลับ ↻</div>
+      </div>`;
+    cnt.textContent = `${idx+1} / ${deck.length}`;
+  }
+  fc.onclick=()=>{ flipped=!flipped; fc.classList.toggle('flip',flipped); };
+  document.getElementById('prev').onclick=()=>{ idx=(idx-1+deck.length)%deck.length; draw(); };
+  document.getElementById('next').onclick=()=>{ idx=(idx+1)%deck.length; draw(); };
+  document.getElementById('shuf').onclick=()=>{ deck=shuffle(deck); idx=0; draw(); toast('สลับการ์ดแล้ว'); };
+  document.getElementById('back').onclick=renderMap;
+  document.querySelectorAll('#deckbar button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#deckbar button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); cat=b.dataset.c; build(); draw();
+    };
+  });
+  document.addEventListener('keydown', function nav(e){
+    if(!document.getElementById('fc')){ document.removeEventListener('keydown',nav); return; }
+    if(e.key==='ArrowRight') document.getElementById('next')?.click();
+    if(e.key==='ArrowLeft')  document.getElementById('prev')?.click();
+    if(e.key===' '){ e.preventDefault(); fc.click(); }
+  });
+  draw(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้) */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  nameX:0.633,            // จุดกึ่งกลางชื่อ (แนวนอน) — ตรงแกนเดียวกับข้อความอื่นในเกียรติบัตร
+  nameY:0.462,            // จุดกึ่งกลางชื่อ (แนวตั้ง) — ช่องว่างใต้ “ขอมอบเกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า”
+  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
+  nameSize:0.045,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
+  nameColor:'#0A0A0A'
+};
+const MAX_STARS = STAGES.length * 3;
+function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
+function certPassed(){
+  const allPlayed = STAGES.every(st => (S.stars[st.id]||0) > 0);
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  const j = (typeof getJoin==='function') ? getJoin() : null;
+  return localStorage.getItem('div-cert-name') || (j && j.name) || '';
+}
+function certCardHtml(){
+  const need=certNeed(), got=totalStars(), ok=certPassed();
+  const pct=Math.min(100, Math.round(got/need*100));
+  return `<div class="card ${ok?'':'lockcard'}" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      border-color:${ok?'rgba(242,103,22,.5)':'var(--line)'}">
+    <div style="font-size:2rem">${ok?'🏅':'🔒'}</div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800">เกียรติบัตร${ok?' — ผ่านเกณฑ์แล้ว!':''}</div>
+      <div class="small muted">${ok
+        ? `เรียนครบทุกด่านและได้ ${got}/${MAX_STARS} ดาว (เกณฑ์ ${Math.round(CERT.pass*100)}% = ${need} ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย`
+        : `เล่นให้ครบทั้ง ${STAGES.length} ด่าน และเก็บดาวให้ถึง <b>${need}/${MAX_STARS}</b> ดาว (${Math.round(CERT.pass*100)}%) · ตอนนี้ได้ ${got} ดาว`}</div>
+      ${ok?'':`<div class="certprog"><i style="width:${pct}%"></i></div>`}
+    </div>
+    <button class="btn ${ok?'gold':''}" id="btnCert" ${ok?'':'disabled'}>รับเกียรติบัตร</button>
+  </div>`;
+}
+
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  const W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); }
+  else { certFallback(c, W, H); }
+  // ---- ชื่อผู้เรียน (ย่อขนาดอัตโนมัติจนพอดีกรอบ) ----
+  const maxW = W * CERT.nameW;
+  let size = W * CERT.nameSize;
+  const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = CERT.nameColor; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  c.strokeStyle = '#084A24'; c.lineWidth = W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle = '#F26716'; c.lineWidth = W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  const f=(px,w=700)=>`${w} ${px}px "Sukhumvit Set","Noto Sans Thai",sans-serif`;
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.font=f(W*0.03,400); c.fillStyle='#6B8A76';
+  c.fillText('(ยังไม่ได้วางไฟล์ cert-bg.png จึงใช้กรอบสำรองชั่วคราว)', W/2, H*0.20);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.63);
+  c.fillStyle='#D6350B'; c.font=f(W*0.026);
+  c.fillText('หน่วยที่ 3 เซลล์และการทำงานของเซลล์ เรื่อง การแบ่งเซลล์', W/2, H*0.70);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.80);
+  // กรอบใส่ชื่อ
+  const bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  const gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+
+function renderCert(){
+  if(!certPassed()){ toast('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  let img = null, nameNow = certName();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic" style="font-size:2rem">🏅</div>
+      <div style="flex:1;min-width:200px"><h2>เกียรติบัตร</h2>
+        <div class="sub">ผ่านเกณฑ์ ${Math.round(CERT.pass*100)}% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</div></div>
+    </div>
+    <div class="note key">🎓 ได้ <b>${totalStars()}/${MAX_STARS} ดาว</b> จากทั้ง ${STAGES.length} ด่าน
+      (เกณฑ์ผ่าน ${certNeed()} ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>
+    <div class="certform">
+      <input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="${escHtml(nameNow)}">
+      <button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>
+    </div>
+    <div class="certwrap"><canvas id="ccv"></canvas></div>
+    <div class="certbar">
+      <button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>
+      <button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>
+      <button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>
+    </div>
+    <div class="note small" style="margin-top:14px">
+      📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b>
+    </div>`;
+  const cv = document.getElementById('ccv'), inp = document.getElementById('cname');
+  function paint(){
+    const nm = (inp.value||'').trim();
+    if(!nm){ toast('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    localStorage.setItem('div-cert-name', nm);
+    drawCert(cv, nm, img);
+    return true;
+  }
+  // โหลดภาพเกียรติบัตรของโรงเรียน ถ้าไม่มีก็ใช้กรอบสำรอง
+  const im = new Image();
+  im.onload = ()=>{ img = im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror = ()=>{ img = null; drawCert(cv, nameNow||'', null); };
+  im.src = CERT.src;
+
+  document.getElementById('cmake').onclick = paint;
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick = ()=>{
+    if(!paint()) return;
+    const nm = (inp.value||'').trim();
+    cv.toBlob(b=>{
+      const url = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = url; a.download = `เกียรติบัตร-${nm}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('บันทึกเกียรติบัตรแล้ว 🎉');
+    }, 'image/png');
+  };
+  document.getElementById('copen').onclick = ()=>{
+    if(!paint()) return;
+    cv.toBlob(b=>{ window.open(URL.createObjectURL(b), '_blank'); }, 'image/png');
+  };
+  document.getElementById('cback').onclick = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= ระบบชั้นเรียน =================
+   ใช้ฐานข้อมูล Supabase ชุดเดียวกับเกมอื่นในเว็บไซต์นี้ คะแนนจึงขึ้นแดชบอร์ดครูหน้าเดิม
+   นักเรียนกรอกรหัสห้อง (เช่น M401A) + ชื่อ → จบด่านแล้วคะแนนวิ่งเข้าตาราง scores
+   แถวของเกมนี้กำกับด้วยคอลัมน์ game = 'division' และเลขด่าน 51–56 เพื่อไม่ปนกับเกมอื่น
+   ถ้าไม่เข้าร่วมห้องหรือเน็ตหลุด เกมยังเล่นได้ปกติ คะแนนจะพักไว้แล้วส่งเองเมื่อกลับมาออนไลน์ */
+const SB_URL  = 'https://vgurqbcbovgeppvdwizr.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
+const GAME_KEY   = 'division';   // ใช้แยกคะแนนของแต่ละเกมในแดชบอร์ด
+const LEVEL_BASE = 50;           // ด่าน 1–6 ของเกมนี้ = เลข 51–56 ในตารางคะแนน
+
+function getJoin(){ try{ return JSON.parse(localStorage.getItem('div-class')||'null'); }catch(e){ return null; } }
+function setJoin(o){ localStorage.setItem('div-class', JSON.stringify(o)); }
+function clearJoin(){ localStorage.removeItem('div-class'); }
+function newSid(){ return 'S'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---- คิวคะแนน กันเน็ตหลุด ---- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem('div-outbox')||'[]'); }catch(e){ return []; } }
+function setOutbox(q){ try{ localStorage.setItem('div-outbox', JSON.stringify(q)); }catch(e){} }
+
+async function pushRow(row){
+  const r = await fetch(SB_URL+'/rest/v1/scores', {
+    method:'POST',
+    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON,
+              'Content-Type':'application/json', 'Prefer':'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  if(!r.ok){
+    let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
+    const err = new Error('http '+r.status+(d?' · '+d:'')); err.status = r.status; throw err;
+  }
+}
+/* ส่งคะแนนที่ค้างอยู่ในคิว (เงียบ ๆ ไม่บล็อกการเล่น) */
+async function flushPending(){
+  const q = outbox(); if(!q.length) return;
+  const keep = [];
+  for(const row of q){
+    try{ await pushRow(row); }
+    catch(e){ keep.push(row); if(e.status===400 || e.status===404) break; }
+  }
+  setOutbox(keep.slice(-200));
+}
+
+/* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
+function sendScore(stageId, starsGot, misses, seconds){
+  const j = getJoin(); if(!j || !j.room || !j.name) return;
+  const idx = STAGES.findIndex(x=>x.id===stageId);
+  const st  = STAGES[idx] || { title: stageId };
+  const row = {
+    uid: j.sid+'-'+stageId+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    room: j.room, student: String(j.name).trim().slice(0,60), sid: j.sid,
+    game: GAME_KEY,
+    level: LEVEL_BASE + (idx>=0?idx+1:9),
+    level_name: 'แบ่งเซลล์ · ด่าน '+(idx+1)+' '+st.title,
+    stars: starsGot, percent: Math.round(starsGot/3*100),
+    score: starsGot, max_score: 3,
+    seconds: Math.max(0, Math.min(seconds|0, 86400)),
+    misses: Math.max(0, Math.min(misses|0, 9999)),
+    total_stars: totalStars(),
+    attempt: (S.plays && S.plays[stageId]) || 1,
+    client_ts: new Date().toISOString()
+  };
+  const q = outbox(); q.push(row); setOutbox(q.slice(-200));
+  flushPending();
+}
+/* ส่งดาวที่เคยได้ทั้งหมดตอนเพิ่งเข้าร่วมห้อง (นับเป็นครั้งที่ 1) */
+function syncAllStars(){
+  STAGES.forEach(st=>{
+    const got = S.stars[st.id]||0; if(!got) return;
+    sendScore(st.id, got, (S.miss&&S.miss[st.id])||0, (S.secs&&S.secs[st.id])||0);
+  });
+}
+
+/* ---- ชิปสถานะชั้นเรียนบนหน้าแผนที่ ---- */
+function renderClassChip(){
+  const slot=document.getElementById('classSlot'); if(!slot) return;
+  const j=getJoin();
+  if(j && j.room){
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>`;
+    slot.querySelector('#leaveClass').onclick=()=>{
+      if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
+    };
+  }else{
+    slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
+    slot.querySelector('#joinBtn').onclick=openJoinModal;
+  }
+}
+
+function openJoinModal(){
+  const j = getJoin() || {};
+  const bg=document.createElement('div'); bg.className='modalbg';
+  bg.innerHTML=`<div class="modal">
+    <h3>🏫 เข้าร่วมชั้นเรียน</h3>
+    <div class="msub">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</div>
+    <label>รหัสห้อง</label><input id="jcode" maxlength="12" placeholder="เช่น M401A" autocomplete="off" autocapitalize="characters" value="${escHtml(j.room||'')}">
+    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
+    <div class="mmsg" id="jmsg"></div>
+    <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น<br>
+      <a href="../privacy/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">อ่านนโยบายความเป็นส่วนตัว</a></div>
+  </div>`;
+  document.body.appendChild(bg);
+  const close=()=>bg.remove();
+  bg.addEventListener('click',e=>{ if(e.target===bg) close(); });
+  bg.querySelector('#jcancel').onclick=close;
+  const codeEl=bg.querySelector('#jcode'), nameEl=bg.querySelector('#jname'), msg=bg.querySelector('#jmsg');
+  bg.querySelector('#jok').onclick=()=>{
+    const room=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
+    if(!room){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้องที่ครูให้'; return; }
+    if(!name){ msg.className='mmsg err'; msg.textContent='กรอกชื่อของคุณ'; return; }
+    const prev=getJoin();
+    setJoin({ room, name, sid:(prev&&prev.sid)||newSid() });
+    close(); renderClassChip(); toast('เข้าร่วมห้อง '+room+' แล้ว');
+    syncAllStars();
+  };
+  setTimeout(()=>codeEl.focus(),50);
+}
+
+/* ---------- boot ---------- */
+document.getElementById('btnHome').onclick = renderMap;
+renderMap();
+flushPending();
+window.addEventListener('online', flushPending);   // กลับมาออนไลน์เมื่อไร ส่งคะแนนที่ค้างทันที
+
+/* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
+   ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
