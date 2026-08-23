@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#2F7D5D">
-<title>แดชบอร์ดครู | ภารกิจพันธุกรรม</title>
+<title>แดชบอร์ดครู | เกมชีววิทยา ม.4</title>
 <style>
 :root{
   --cream:#FFF6E6; --cream2:#FFFDF7; --cream3:#F7EAD3;
@@ -89,7 +89,7 @@ td.num,th.num{text-align:center}
 <div class="wrap">
 
   <div class="topbar">
-    <div class="brand"><span class="logo">📊</span><span>แดชบอร์ดครู · ภารกิจพันธุกรรม</span></div>
+    <div class="brand"><span class="logo">📊</span><span id="brandName">แดชบอร์ดครู · ทุกเกม</span></div>
     <div class="spacer"></div>
     <span class="pill hidden" id="liveChip"><span class="dot"></span> เชื่อมต่อ…</span>
     <button class="btn sm ghost hidden" id="btnLogout">ออกจากระบบ</button>
@@ -265,6 +265,8 @@ function fillGameSelect(){
 function applyGame(){
   const g=$('#selGame').value||'';
   ROWS = g ? ALL.filter(r=>gameOf(r)===g) : ALL.slice();
+  const bn=$('#brandName');                      // ชื่อบนหัวเปลี่ยนตามเกมที่เลือก จะได้ไม่สับสนว่ากำลังดูเกมไหน
+  if(bn) bn.textContent = 'แดชบอร์ดครู · ' + (g ? gameName(g) : 'ทุกเกม');
 }
 function fillTermSelect(){
   const terms=Array.from(new Set(ROOMS.map(r=>r.term).filter(Boolean))).sort();
