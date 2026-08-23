@@ -1321,11 +1321,11 @@ const CARDS = [
 const CERT = {
   src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
   pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
-  nameX:0.50,             // จุดกึ่งกลางชื่อ (แนวนอน)
-  nameY:0.492,            // จุดกึ่งกลางชื่อ (แนวตั้ง) — กลางกรอบสีชมพู
-  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
-  nameSize:0.042,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
-  nameColor:'#0B2C1E'
+  nameX:0.504,            // จุดกึ่งกลางชื่อ (แนวนอน) — กลางแถบสีชมพู–ม่วง
+  nameY:0.498,            // จุดกึ่งกลางชื่อ (แนวตั้ง)
+  nameW:0.48,             // ความกว้างสูงสุดของชื่อ
+  nameSize:0.045,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
+  nameColor:'#FFFFFF'     // ตัวอักษรสีขาวให้อ่านชัดบนแถบสีเข้ม
 };
 const MAX_STARS = STAGES.length * 3;
 function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
@@ -1620,7 +1620,8 @@ function openJoinModal(){
     <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
     <div class="mmsg" id="jmsg"></div>
     <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
-    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น</div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น<br>
+      <a href="../privacy/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">อ่านนโยบายความเป็นส่วนตัว</a></div>
   </div>`;
   document.body.appendChild(bg);
   const close=()=>bg.remove();
