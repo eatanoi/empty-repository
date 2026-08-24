@@ -1,0 +1,20 @@
+{
+  "name": "ภารกิจสืบสายชีวิต — เกมการสืบพันธุ์ของมนุษย์",
+  "short_name": "สืบสายชีวิต",
+  "description": "เกมประกอบการเรียนรู้ชีววิทยา ม.6 เรื่องการสืบพันธุ์ของมนุษย์ — ระบบสืบพันธุ์เพศชายและเพศหญิง การสร้างสเปิร์มและเซลล์ไข่",
+  "lang": "th",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FBF8EC",
+  "theme_color": "#084A24",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

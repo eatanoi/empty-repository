@@ -676,14 +676,21 @@ async function flushOutbox(){
   if(!ep || flushing || !SAVE.outbox.length) return {sent:0,left:SAVE.outbox.length};
   if(navigator.onLine===false){ lastFlushErr='ออฟไลน์อยู่ — จะส่งให้อัตโนมัติเมื่อกลับมาออนไลน์'; updateClassChip(); return {sent:0,left:SAVE.outbox.length}; }
   flushing=true; updateClassChip();
-  const left=[]; let sent=0; lastFlushErr='';
-  for(const item of SAVE.outbox.slice()){
-    let ok=false;
-    try{ ok=await sendOne(ep,item); }
-    catch(e){ ok=false; lastFlushErr=(e&&e.message)?e.message:'เครือข่ายมีปัญหา'; }
-    if(ok) sent++; else left.push(item);
+  let sent=0; lastFlushErr='';
+  /* วนซ้ำจนคิวหมด เพราะระหว่างกำลังส่งอาจมีคะแนนเข้าคิวเพิ่ม */
+  while(SAVE.outbox.length){
+    const done=[];
+    for(const item of SAVE.outbox.slice()){
+      let ok=false;
+      try{ ok=await sendOne(ep,item); }
+      catch(e){ ok=false; lastFlushErr=(e&&e.message)?e.message:'เครือข่ายมีปัญหา'; }
+      if(ok){ sent++; done.push(item); }
+    }
+    /* เอาออกเฉพาะรายการที่ส่งสำเร็จ คะแนนที่เพิ่งเข้าคิวระหว่างนี้จึงไม่หายไปด้วย */
+    SAVE.outbox=SAVE.outbox.filter(function(x){ return done.indexOf(x)<0; });
+    if(!done.length) break;               // รอบนี้ส่งไม่ผ่านเลยสักรายการ วนซ้ำไปก็ไม่ผ่าน
   }
-  SAVE.outbox=left;
+  const left=SAVE.outbox;
   if(sent) SAVE.lastSent=new Date().toISOString();
   save(); flushing=false; updateClassChip();
   return {sent:sent,left:left.length};
