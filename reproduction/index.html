@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ภารกิจสืบสายชีวิต | เกมการสืบพันธุ์ของมนุษย์ ม.6</title>
+<meta name="description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.6 เรื่องการสืบพันธุ์ของมนุษย์ — ระบบสืบพันธุ์เพศชายและเพศหญิง การสร้างสเปิร์ม และการสร้างเซลล์ไข่">
+<meta name="theme-color" content="#084A24">
+
+<!-- ไอคอน -->
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- เพิ่มลงหน้าจอโฮมได้ (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ภารกิจสืบสายชีวิต">
+
+<!-- พรีวิวตอนแชร์ลิงก์ใน LINE / Facebook / Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gamesbiology.biologypremium.com/reproduction/">
+<meta property="og:title" content="ภารกิจสืบสายชีวิต — เกมการสืบพันธุ์ของมนุษย์">
+<meta property="og:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.6 · ระบบสืบพันธุ์ · การสร้างสเปิร์มและเซลล์ไข่">
+<meta property="og:image" content="https://gamesbiology.biologypremium.com/reproduction/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ภารกิจสืบสายชีวิต — เกมการสืบพันธุ์ของมนุษย์">
+<meta name="twitter:description" content="เกมประกอบการเรียนรู้ชีววิทยา ม.6 · เล่นบนมือถือได้เลย">
+<meta name="twitter:image" content="https://gamesbiology.biologypremium.com/reproduction/og-cover.png">
+<style>
+:root{
+  /* ── พาเลตเดียวกับเกมสังเคราะห์แสง: F2EDD5 · E7390D · F26716 · 084A24 · 04261E ── */
+  --cream:#F2EDD5; --cream-hi:#FBF8EC; --cream-lo:#E9E1BE;
+  --ink:#04261E; --deep:#084A24;
+  --bg0:#FBF8EC; --bg1:#F2EDD5; --bg2:#EAE4C6;
+  --panel:rgba(255,255,255,.58);
+  --panel2:rgba(255,255,255,.85);
+  --line:rgba(8,74,36,.18);
+  --green:#4E9370; --lime:#2F7D4F; --teal:#7CB894;
+  --gold:#F26716; --rose:#E7390D;
+  --violet:#5C90A6; --sky:#5C90A6;
+  --green-soft:#AFD2BC; --green-pale:#DCEBE1;
+  --orange-soft:#F7C39C; --orange-pale:#FBE4D2;
+  --red-soft:#F4B7A6; --blue-soft:#BCD6E0;
+  --text:#04261E; --muted:#6B8A76;
+  --ok:#2F7D4F; --bad:#D6350B;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh; color:var(--text);
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.55), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.42), transparent 60%),
+    radial-gradient(800px 600px at 50% 112%, rgba(188,214,224,.38), transparent 62%),
+    linear-gradient(rgba(251,248,236,.72),rgba(242,237,213,.80)),
+    linear-gradient(170deg,var(--bg0),var(--bg1) 45%,var(--bg2));
+  background-attachment:fixed;
+  line-height:1.65; letter-spacing:.01em;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 90px}
+
+.hud{
+  position:sticky;top:0;z-index:60;margin:-16px -16px 18px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(251,248,236,.96),rgba(242,237,213,.80));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.02rem;letter-spacing:.02em;color:var(--deep)}
+.brand .leaf{font-size:1.35rem;filter:drop-shadow(0 1px 3px rgba(8,74,36,.3))}
+.hud .spacer{flex:1}
+@media(max-width:520px){
+  .hud{gap:7px;padding:9px 12px;flex-wrap:nowrap}
+  .brand{font-size:.86rem;min-width:0}
+  .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand .leaf{font-size:1.1rem}
+  .chip{padding:4px 8px;font-size:.72rem}
+  .hud .btn.sm{padding:5px 9px;font-size:.75rem}
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:.82rem;font-weight:700;white-space:nowrap;
+}
+.chip b{color:var(--gold)}
+.chip.xp b{color:var(--lime)}
+
+button{font-family:inherit}
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  padding:11px 20px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:.16s transform,.16s background,.16s border-color;
+}
+.btn:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,#4E9370,#2F7D4F);color:#FBF8EC;border-color:transparent;box-shadow:0 8px 20px -10px rgba(8,74,36,.65)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;box-shadow:0 8px 20px -10px rgba(231,57,13,.5)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn.sm{padding:7px 14px;font-size:.85rem}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+h1,h2,h3{line-height:1.35;margin:0 0 .5em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.hidden{display:none !important}
+
+.pub{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
+.pub img{height:38px;width:auto;filter:drop-shadow(0 1px 2px rgba(8,74,36,.18))}
+.pub span{font-weight:800;font-size:1.05rem;color:var(--deep);letter-spacing:.02em}
+.pub span b{color:var(--gold)}
+/* ---- ระบบชั้นเรียน ---- */
+.classchip{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:8px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--deep);cursor:pointer;transition:.15s}
+.classchip:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.classchip.joined{background:rgba(175,210,188,.55);border-color:var(--green);cursor:default}
+.classchip.stuck{display:block;margin-top:6px;background:rgba(242,103,22,.14);border-color:var(--gold);color:var(--deep);cursor:pointer;font-size:.78rem}
+.classchip .x{color:var(--rose);font-weight:800;margin-left:2px;cursor:pointer;padding:0 4px}
+.modalbg{position:fixed;inset:0;background:rgba(4,38,30,.5);backdrop-filter:blur(3px);z-index:300;display:grid;place-items:center;padding:16px}
+.modal{background:var(--cream-hi);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:380px;width:100%;box-shadow:0 22px 60px -20px rgba(0,0,0,.5)}
+.modal h3{margin:0 0 4px;color:var(--deep);font-size:1.15rem}
+.modal .msub{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.modal label{display:block;font-size:.82rem;font-weight:700;color:var(--deep);margin:10px 0 4px}
+.modal input{width:100%;font-family:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal input#jcode{text-transform:uppercase;letter-spacing:3px;font-weight:800}
+.modal .mrow{display:flex;gap:8px;margin-top:16px}
+.modal .mrow .btn{flex:1}
+.modal .mmsg{font-size:.85rem;margin-top:10px;min-height:1em;color:var(--muted)}
+.modal .mmsg.err{color:var(--bad)}
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 18px 40px -22px rgba(8,74,36,.55);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.certform input:focus{outline:none;border-color:var(--green)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .5s}
+.hero{text-align:center;padding:14px 12px 8px}
+.hero h1{font-size:clamp(1.7rem,5.2vw,2.6rem);margin-bottom:.25em;
+  background:linear-gradient(100deg,var(--deep),#2F7D4F 42%,var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#4A6A58;margin:0;font-size:.98rem}
+.eq{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;
+  background:rgba(175,210,188,.45);border:1px solid rgba(8,74,36,.25);color:var(--deep);
+  font-size:.9rem;font-weight:700;letter-spacing:.03em}
+.eq sub{font-size:.72em}
+
+.maplist{display:grid;gap:12px;margin-top:22px}
+@media(min-width:720px){.maplist{grid-template-columns:1fr 1fr}}
+.node{
+  display:flex;gap:14px;align-items:center;
+  padding:16px;border-radius:var(--r);cursor:pointer;position:relative;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);
+  transition:.18s transform,.18s border-color,.18s background;
+}
+.node:hover{transform:translateY(-3px);border-color:rgba(8,74,36,.38);background:var(--panel2)}
+.node.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.55)}
+.node.locked:hover{transform:none;border-color:var(--line);background:var(--panel)}
+.node .ic{
+  width:56px;height:56px;flex:0 0 56px;border-radius:15px;display:grid;place-items:center;font-size:1.7rem;
+  background:rgba(255,255,255,.75);border:1px solid var(--line);
+}
+.stage-ic-img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.stagehead .ic .stage-ic-img{width:46px;height:46px;padding:0}
+.node .body{flex:1;text-align:left}
+.node .body .t{font-weight:800;font-size:1.02rem}
+.node .body .d{font-size:.84rem;color:var(--muted);line-height:1.5}
+.node .stars{font-size:.9rem;letter-spacing:2px;color:var(--gold);margin-top:3px}
+.node .stars .off{color:rgba(8,74,36,.16)}
+.node.done{border-color:rgba(8,74,36,.4)}
+.node.done .ic{background:rgba(175,210,188,.65)}
+.node .no{position:absolute;top:8px;right:12px;font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.1em}
+
+.stagehead{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stagehead .ic{font-size:2rem}
+.stagehead h2{margin:0}
+.stagehead .sub{color:var(--muted);font-size:.88rem}
+.bar{height:7px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin:10px 0 18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--lime));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.note{
+  border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0;
+  border-left:4px solid var(--sky);background:rgba(92,144,166,.13);
+}
+.note.warn{border-left-color:var(--gold);background:rgba(242,103,22,.11)}
+.note.key{border-left-color:var(--lime);background:rgba(47,125,79,.11)}
+.note.miss{border-left-color:var(--rose);background:rgba(231,57,13,.09)}
+.note b{color:var(--deep)}
+
+.feedback{border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.9rem;display:none}
+.feedback.show{display:block;animation:pop .3s}
+.feedback.good{background:rgba(47,125,79,.14);border:1px solid rgba(47,125,79,.4)}
+.feedback.bad{background:rgba(231,57,13,.11);border:1px solid rgba(231,57,13,.35)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* labeling */
+.diagram{position:relative;width:100%;aspect-ratio:900/560;margin:6px 0 4px}
+.diagram svg{width:100%;height:100%;display:block}
+@supports (container-type:inline-size){
+  .diagram{container-type:inline-size}
+  .slot{min-width:11.5cqw;font-size:clamp(7px,2.5cqw,.76rem);padding:.7cqw 1.2cqw;border-radius:min(10px,1.4cqw)}
+}
+.slot{
+  position:absolute;transform:translate(-50%,-50%);
+  min-width:104px;padding:6px 10px;border-radius:10px;text-align:center;
+  font-size:.76rem;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.9);border:2px dashed rgba(8,74,36,.38);color:var(--muted);
+  transition:.15s;white-space:nowrap;box-shadow:0 1px 4px rgba(8,74,36,.08);
+}
+.slot:hover{border-color:var(--lime);color:var(--deep)}
+.slot.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.22)}
+.slot.filled{border-style:solid;border-color:var(--green);background:rgba(175,210,188,.85);color:var(--deep)}
+.slot.wrong{border-color:var(--bad);background:rgba(231,57,13,.16);animation:shake .35s}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(calc(-50% - 6px),-50%)}75%{transform:translate(calc(-50% + 6px),-50%)}}
+/* กระดานติดป้ายรอบภาพจริง (ด่าน 1)
+   จอกว้าง = ป้าย ??? วางรอบภาพ มีเส้นประชี้ไปยังจุดสีส้มบนภาพ
+   จอแคบ (มือถือ) = จุดบนภาพกลายเป็นหมายเลข แล้วป้ายเรียงเป็นรายการใต้ภาพแทน ไม่เบียดกัน
+   พิกัดทุกจุดคิดเป็นสัดส่วน จึงเปลี่ยนไฟล์ภาพได้โดยไม่ต้องแก้โครง */
+.mboard{position:relative;max-width:1000px;margin:10px auto 0;padding:20% 12.5% 12.5% 14.5%}
+.mimg{position:relative}
+.mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cwrap{position:absolute;inset:0;pointer-events:none}
+.anchor{position:absolute;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;
+  background:var(--gold);border:2px solid #fff;box-shadow:0 1px 5px rgba(8,74,36,.45);
+  display:grid;place-items:center;color:#FFF7F0;font-weight:800;font-size:0}
+.anchor.done{background:var(--lime)}
+.slot.callout{pointer-events:auto;min-width:92px;padding:5px 9px;font-size:.74rem}
+.slot.callout i{display:none}
+@media (max-width:640px){
+  .mboard{padding:0}
+  .leads{display:none}
+  .cwrap{position:static;display:grid;gap:8px;margin-top:14px;pointer-events:auto;
+    grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+  .slot.callout{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
+    min-width:0;left:auto!important;top:auto!important;text-align:left;white-space:normal;padding:9px 12px;font-size:.8rem}
+  .slot.callout i{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;
+    background:var(--gold);color:#FFF7F0;font-style:normal;font-weight:800;font-size:.78rem}
+  .slot.callout.filled i{background:var(--lime)}
+  .anchor{width:clamp(21px,5vw,27px);height:clamp(21px,5vw,27px);font-size:clamp(.62rem,2.3vw,.8rem)}
+}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tok{
+  padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--line);transition:.15s;
+}
+.tok:hover{border-color:var(--lime)}
+.tok.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;transform:translateY(-2px);
+  box-shadow:0 5px 14px -6px rgba(231,57,13,.6)}
+.tok.used{display:none}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:56px;
+  padding:14px;border-radius:14px;background:rgba(255,255,255,.66);border:1px solid var(--line)}
+.chain .ph{color:var(--muted);font-size:.85rem}
+.link{padding:8px 13px;border-radius:11px;font-size:.82rem;font-weight:700;color:var(--deep);
+  background:rgba(175,210,188,.8);border:1px solid rgba(8,74,36,.32);animation:pop .25s}
+.arrow{color:var(--muted);font-size:.9rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pool .tok{font-size:.82rem}
+.pool .tok.bad{animation:shake .35s;background:rgba(231,57,13,.16);border-color:var(--bad)}
+
+/* wheel / phases */
+.calvin{display:grid;gap:16px}
+@media(min-width:800px){.calvin{grid-template-columns:1fr 1.1fr}}
+.wheel{position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;width:100%}
+.wheel svg{width:100%;height:100%}
+.phase{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.66);margin-bottom:12px;transition:.2s}
+.phase.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.16)}
+.phase.solved{border-color:rgba(8,74,36,.42);background:rgba(175,210,188,.4)}
+.phase h4{margin:0 0 4px;font-size:.98rem}
+.phase .hintline{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.step{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:7px 0;flex-wrap:wrap}
+.step .nm{font-size:.88rem;font-weight:700}
+.stepper{display:flex;align-items:center;gap:4px;background:rgba(8,74,36,.07);border-radius:10px;padding:3px}
+.stepper button{width:30px;height:30px;border-radius:8px;border:none;background:rgba(255,255,255,.9);
+  color:var(--deep);font-size:1.05rem;font-weight:800;cursor:pointer;line-height:1}
+.stepper button:active{background:var(--green);color:#FBF8EC}
+.stepper .n{min-width:34px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ledger (sim) */
+.sim{display:grid;gap:16px}
+@media(min-width:820px){.sim{grid-template-columns:1fr 1.05fr}}
+.specbox{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:14px;padding:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.toggle{display:flex;gap:8px;margin:6px 0 14px}
+.toggle button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-weight:700;font-size:.82rem;cursor:pointer}
+.toggle button.on{background:rgba(175,210,188,.8);border-color:var(--green);color:var(--deep)}
+.tlabel{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:2px}
+.ledtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ledtable th,.ledtable td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+.ledtable th:first-child,.ledtable td:first-child{text-align:left}
+.ledtable th{color:var(--deep);font-size:.82rem}
+.ledtable tfoot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none;font-size:1rem;color:var(--deep)}
+.ledtable .zero{color:var(--muted);opacity:.6}
+.totbox{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-top:12px}
+.totbox .k{font-size:.78rem;color:var(--muted)}
+.totbox .v{font-size:2.4rem;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums;line-height:1.1}
+.mito-vis{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
+.mito-vis svg{width:100%;height:auto;display:block}
+
+/* scenarios */
+.scene{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{
+  text-align:left;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:.9rem;
+  background:var(--panel);border:1px solid var(--line);transition:.15s;
+}
+.opt:hover{background:var(--panel2);border-color:rgba(8,74,36,.38)}
+.opt.correct{background:rgba(47,125,79,.18);border-color:var(--ok)}
+.opt.incorrect{background:rgba(231,57,13,.13);border-color:var(--bad)}
+.opt.disabled{pointer-events:none;opacity:.75}
+
+/* flashcards */
+.deckbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.deckbar button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-size:.83rem;font-weight:700;cursor:pointer}
+.deckbar button.on{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent}
+.fcstage{perspective:1400px;margin:0 auto;max-width:560px}
+.fc{position:relative;width:100%;min-height:290px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.fc.flip{transform:rotateY(180deg)}
+.fc .side{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);box-shadow:0 6px 22px -10px rgba(8,74,36,.35);
+}
+.fc .front{background:linear-gradient(150deg,rgba(175,210,188,.72),rgba(220,235,225,.55)),#fff;align-items:center;text-align:center}
+.fc .back{background:linear-gradient(150deg,rgba(247,195,156,.6),rgba(251,228,210,.45)),#fff;transform:rotateY(180deg)}
+.fc .tag{font-size:.7rem;letter-spacing:.14em;color:#5F7D6B;text-transform:uppercase;margin-bottom:10px}
+.fc .term{font-size:1.5rem;font-weight:800;margin-bottom:6px;line-height:1.3;color:var(--deep)}
+.fc .en{font-size:.9rem;color:var(--muted);font-style:italic}
+.fc .def{font-size:.98rem;line-height:1.7}
+.fc .hint{margin-top:auto;padding-top:14px;font-size:.75rem;color:var(--muted);text-align:center}
+.fcnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+.fcnav .count{font-weight:800;font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+
+.result{text-align:center;padding:26px 16px}
+.result .big{font-size:3rem;letter-spacing:6px;color:var(--gold)}
+.result .big .off{color:rgba(8,74,36,.16)}
+.result h2{margin-top:10px}
+
+.footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.78rem;text-align:center;line-height:1.8}
+.footer .fb{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:9px}
+.footer .fb img{height:26px;width:auto;opacity:.92}
+.footer .fb span{font-weight:800;color:var(--deep);font-size:.92rem}
+.footer .fb span b{color:var(--gold)}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);
+  background:linear-gradient(135deg,#2F7D4F,#4E9370);color:#FBF8EC;
+  padding:11px 22px;border-radius:999px;font-weight:800;font-size:.9rem;z-index:200;
+  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);
+  /* ซ่อนสนิทตอนไม่มีข้อความ ไม่ให้โผล่เป็นแถบเขียวที่ขอบล่างจอ */
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .25s linear, visibility 0s linear .35s;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .2s linear, visibility 0s}
+
+.buckets{display:grid;gap:10px;margin-top:14px}
+@media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
+.bucket{background:rgba(255,255,255,.66);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:96px;transition:.15s}
+.bucket.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.bucket h4{margin:0 0 8px;font-size:.92rem;display:flex;align-items:center;gap:6px}
+.bucket .items{display:flex;flex-wrap:wrap;gap:6px}
+.bucket .items span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;
+  background:rgba(175,210,188,.75);border:1px solid rgba(8,74,36,.28);animation:pop .25s}
+.match{display:grid;gap:10px}
+@media(min-width:760px){.match{grid-template-columns:1fr 1fr}}
+.mcard{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:13px;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);cursor:pointer;transition:.15s}
+.mcard:hover{border-color:rgba(8,74,36,.4)}
+.mcard.armed{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.18)}
+.mcard.done{background:rgba(175,210,188,.5);border-color:var(--green);cursor:default}
+.mcard .em{font-size:1.5rem;line-height:1.2}
+.mcard .tx{flex:1;font-size:.87rem;line-height:1.55}
+.mcard .tx b{color:var(--deep)}
+.mcard .tx b.h{display:block;font-size:.95rem;margin-bottom:2px}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+.cmp{width:100%;border-collapse:collapse;font-size:.87rem}
+.cmp th,.cmp td{padding:8px;border-bottom:1px solid var(--line);text-align:center}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp .yes{color:var(--ok);font-weight:800}
+
+/* ---- เพิ่มเติมสำหรับเกมการแบ่งเซลล์ ---- */
+.cyc{max-width:420px;margin:0 auto;display:block}
+.cyc .seg{cursor:pointer;transition:.15s}
+.cyc .seg:hover{filter:brightness(1.06)}
+.cellview{display:grid;gap:12px;margin:14px 0}
+@media(min-width:760px){.cellview{grid-template-columns:1fr 1fr}}
+.cellbox{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.cellbox h4{margin:0 0 6px;font-size:.92rem}
+.cellbox .big{font-size:1.7rem;font-weight:800;color:var(--deep);font-variant-numeric:tabular-nums}
+.cellbox .lbl{font-size:.78rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hud">
+    <div class="brand"><span class="leaf">🧬</span><span>ภารกิจสืบสายชีวิต</span></div>
+    <div class="spacer"></div>
+    <div class="chip xp">⚡ XP <b id="hudXp">0</b></div>
+    <div class="chip">⭐ <b id="hudStars">0</b>/18</div>
+    <button class="btn sm ghost" id="btnHome">🗺️ แผนที่</button>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    <div class="fb"><img src="logo.png" alt="โลโก้ Biology" onerror="this.remove()"><span>Biology<b>.</b></span></div>
+    เกมประกอบตำราชีววิทยา ม.6 เล่ม 5 · บทที่ 21 เรื่อง <b>การสืบพันธุ์ของมนุษย์</b><br>
+    อิงหลักสูตร สสวท. (ฉบับปรับปรุง พ.ศ. 2560) · ความก้าวหน้าถูกบันทึกไว้ในเครื่องของผู้เล่นเอง
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* =========================================================================
+   ภารกิจสืบสายชีวิต — เกมประกอบการเรียนรู้ เรื่องการสืบพันธุ์ของมนุษย์ (ม.6)
+   ไฟล์เดียว ทำงานออฟไลน์ · เข้าชุดกับเกมมหานครเซลล์ · ด่านศุลกากรเซลล์ · โรงไฟฟ้าไมโทคอนเดรีย · โรงงานสร้างเซลล์
+   ========================================================================= */
+
+const app   = document.getElementById('app');
+const toastEl = document.getElementById('toast');
+const SAVE_KEY = 'human-repro-quest-v1';
+
+const defaultState = { xp:0, stars:{}, plays:{}, secs:{}, miss:{} };
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return structuredClone(defaultState);
+    return Object.assign(structuredClone(defaultState), JSON.parse(raw));
+  }catch(e){ return structuredClone(defaultState); }
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function totalStars(){ return Object.values(S.stars).reduce((a,b)=>a+b,0); }
+function syncHud(){
+  document.getElementById('hudXp').textContent = S.xp;
+  document.getElementById('hudStars').textContent = totalStars();
+}
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+function shuffle(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+  return r;
+}
+function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span class="off">★</span>'; return s; }
+
+const STAGES = [
+  { id:'male',   ic:'♂️', title:'สายผลิตฝั่งชาย',   desc:'อัณฑะ ถุงอัณฑะ หลอดสร้างอสุจิ และเส้นทางลำเลียงสเปิร์ม', req:0 },
+  { id:'glands', ic:'💧', title:'ห้องผสมน้ำเลี้ยง',  desc:'ต่อมสร้างน้ำเลี้ยงอสุจิ ต่อมลูกหมาก และต่อมคาวเปอร์', req:1 },
+  { id:'sperm',  ic:'🏊', title:'สายพานสร้างสเปิร์ม', desc:'สเปอร์มาโทโกเนียม → สเปิร์ม และโครงสร้างของสเปิร์ม', req:2 },
+  { id:'female', ic:'♀️', title:'สายผลิตฝั่งหญิง',   desc:'รังไข่ ท่อนำไข่ มดลูก เอนโดมีเทรียม และช่องคลอด', req:3 },
+  { id:'egg',    ic:'🥚', title:'สายพานสร้างเซลล์ไข่', desc:'โอโอโกเนียม → เซลล์ไข่ · จุดหยุดพัก · การตกไข่', req:4 },
+  { id:'boss',   ic:'👹', title:'บอส: ห้องตรวจสายพันธุ์', desc:'เทียบสเปิร์มกับเซลล์ไข่ และวินิจฉัยสถานการณ์จริง', req:5 }
+];
+
+function renderMap(){
+  syncHud();
+  const cleared = STAGES.filter(s=>S.stars[s.id]>0).length;
+  app.innerHTML = `
+    <div class="hero">
+      <div class="pub"><img src="logo.png" alt="โลโก้ Biology" onerror="this.remove()"><span>Biology<b>.</b></span></div>
+      <h1>ภารกิจสืบสายชีวิต</h1>
+      <p>ร่างกายสร้าง<strong>สเปิร์ม</strong>และ<strong>เซลล์ไข่</strong>ขึ้นมาได้อย่างไร<br>
+         และอวัยวะแต่ละชิ้นทำหน้าที่อะไรในเส้นทางนั้น</p>
+      <div class="eq">สเปอร์มาโทไซต์ระยะแรก 1 เซลล์ → สเปิร์ม 4 เซลล์ · โอโอไซต์ระยะแรก 1 เซลล์ → เซลล์ไข่ 1 เซลล์</div>
+      <div id="classSlot"></div>
+    </div>
+    <div class="maplist">
+      ${STAGES.map((s,i)=>{
+        const got=S.stars[s.id]||0, locked=cleared<s.req;
+        return `<div class="node ${locked?'locked':''} ${got?'done':''}" data-id="${s.id}">
+          <span class="no">ด่าน ${i+1}</span>
+          <div class="ic">${locked?'🔒':s.ic}</div>
+          <div class="body">
+            <div class="t">${s.title}</div>
+            <div class="d">${locked?`ผ่านด่านก่อนหน้าให้ครบ ${s.req} ด่านเพื่อปลดล็อก`:s.desc}</div>
+            ${locked?'':`<div class="stars">${stars(got)}</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:2rem">🃏</div>
+      <div style="flex:1;min-width:190px">
+        <div style="font-weight:800">การ์ดคำศัพท์</div>
+        <div class="small muted">${CARDS.length} การ์ด ทบทวนศัพท์ไทย–อังกฤษ พร้อมนิยาม เปิดเล่นได้ตลอดเวลา</div>
+      </div>
+      <button class="btn gold" id="btnCards">เปิดสำรับ</button>
+    </div>
+    ${certCardHtml()}
+    <div class="center" style="margin-top:18px">
+      <button class="btn ghost sm" id="btnReset">เริ่มใหม่ทั้งหมด</button>
+    </div>
+  `;
+  app.querySelectorAll('.node').forEach(n=>{
+    n.addEventListener('click',()=>{
+      if(n.classList.contains('locked')){ toast('🔒 ยังไม่ปลดล็อกด่านนี้'); return; }
+      openStage(n.dataset.id);
+    });
+  });
+  document.getElementById('btnCards').onclick = renderCards;
+  const certBtn = document.getElementById('btnCert');
+  if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
+  document.getElementById('btnReset').onclick = ()=>{
+    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+      S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
+    }
+  };
+  renderClassChip();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function stageShell(id, extraHtml=''){
+  const st = STAGES.find(s=>s.id===id);
+  return `<div class="stagehead">
+      <div class="ic">${st.ic}</div>
+      <div style="flex:1;min-width:200px"><h2>${st.title}</h2><div class="sub">${st.desc}</div></div>
+    </div>${extraHtml}`;
+}
+let stageT0 = 0;        // เวลาเริ่มด่าน ใช้คำนวณเวลาที่ใช้ต่อด่าน
+let stageMiss = 0;      // จำนวนครั้งที่ตอบผิดในด่านที่กำลังเล่น (ตั้งค่าก่อนเรียก finishStage)
+function openStage(id){
+  window.scrollTo({top:0});
+  stageT0 = Date.now(); stageMiss = 0;
+  ({male:stageMale, glands:stageGlands, sperm:stageSperm,
+    female:stageFemale, egg:stageEgg, boss:stageBoss})[id]();
+}
+function finishStage(id, got, xp, summaryHtml){
+  const prev=S.stars[id]||0; if(got>prev) S.stars[id]=got;
+  S.plays = S.plays || {}; S.plays[id] = (S.plays[id]||0) + 1;
+  S.xp+=xp; save(); syncHud();
+  const secs = stageT0 ? Math.round((Date.now()-stageT0)/1000) : 0;
+  const misses = Math.max(0, stageMiss|0); stageMiss = 0;
+  S.secs = S.secs || {}; S.miss = S.miss || {};
+  S.secs[id] = secs; S.miss[id] = misses;   // เก็บไว้เผื่อเข้าร่วมห้องทีหลัง จะได้ส่งเวลาจริงตามไปด้วย
+  save();
+  sendScore(id, got, misses, secs);   // ส่งคะแนนให้ครู (ถ้าเข้าร่วมห้อง)
+  app.innerHTML = `
+    <div class="card result">
+      <div class="big">${stars(got)}</div>
+      <h2>${got===3?'สมบูรณ์แบบ!':got===2?'เก่งมาก!':got===1?'ผ่านแล้ว':'ยังไม่ผ่าน'}</h2>
+      <p class="muted">ได้รับ <b style="color:var(--lime)">+${xp} XP</b></p>
+      <div style="text-align:left;max-width:640px;margin:18px auto 0">${summaryHtml}</div>
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="again">เล่นด่านนี้อีกครั้ง</button>
+        <button class="btn primary" id="back">กลับแผนที่ →</button>
+      </div>
+    </div>`;
+  document.getElementById('again').onclick = ()=>openStage(id);
+  document.getElementById('back').onclick  = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- เครื่องมือที่ใช้ร่วมกันหลายด่าน ---------- */
+/* กระดานติดป้ายรอบภาพ (ใช้ในด่าน 1) — จอกว้างเป็นป้ายรอบภาพ จอแคบเป็นรายการหมายเลข */
+const MB = { w:1000, h:723, x0:0.145, y0:0.20, iw:0.73, ih:0.3978 };
+const mbX = u => (MB.x0 + u*MB.iw) * MB.w;
+const mbY = v => (MB.y0 + v*MB.ih) * MB.w;
+function calloutBoard(svg, ratio, parts){
+  const pcx = n => (n/MB.w*100).toFixed(2)+'%';
+  const pcy = n => (n/MB.h*100).toFixed(2)+'%';
+  const lines = parts.map(p=>`<line x1="${p.lx}" y1="${p.ly}" x2="${mbX(p.u)}" y2="${mbY(p.v)}"
+      stroke="#04261E" stroke-width="1.6" stroke-dasharray="7 5" opacity=".65" vector-effect="non-scaling-stroke"/>`).join('');
+  return `<div class="bank" id="bank">
+    ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+  </div>
+  <div class="mboard">
+    <div class="mimg" style="aspect-ratio:${ratio}">
+      ${svg}
+      ${parts.map((p,i)=>`<div class="anchor" id="pin-${p.key}"
+          style="left:${(p.u*100).toFixed(2)}%;top:${(p.v*100).toFixed(2)}%">${i+1}</div>`).join('')}
+    </div>
+    <svg class="leads" viewBox="0 0 ${MB.w} ${MB.h}" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
+    <div class="cwrap">
+      ${parts.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
+          style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+/* ผูกเหตุการณ์ให้กระดานติดป้าย แล้วเรียก onDone(จำนวนที่ผิด) เมื่อวางครบ */
+function bindCallout(parts, onDone){
+  let placed=0, mistakes=0, armed=null;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#bank .tok').forEach(t=>{
+    t.onclick = ()=>{
+      app.querySelectorAll('.tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.key){ armed=null; return; }
+      armed=t.dataset.key; t.classList.add('sel');
+      app.querySelectorAll('.slot:not(.filled)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.slot').forEach(sl=>{
+    sl.onclick = ()=>{
+      if(!armed || sl.classList.contains('filled')) return;
+      const part = parts.find(p=>p.key===armed);
+      if(sl.dataset.key===armed){
+        sl.classList.add('filled'); sl.classList.remove('armed');
+        sl.querySelector('.ans').textContent=part.label;
+        const pin=document.getElementById('pin-'+part.key); if(pin) pin.classList.add('done');
+        app.querySelector(`.tok[data-key="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/parts.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${part.label}</b> — ${part.info}`;
+        armed=null; app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+        if(placed===parts.length) setTimeout(()=>onDone(mistakes),950);
+      }else{
+        mistakes++; sl.classList.add('wrong'); setTimeout(()=>sl.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ หมายเลขนี้ยังไม่ใช่ <b>${part.label}</b> — ลองดูรูปร่างและตำแหน่งของมันอีกครั้ง`;
+      }
+    };
+  });
+}
+/* จัดกลุ่มลงกล่อง — items = [{n, g, e}] · groups = {key:'ชื่อกล่อง'} */
+function bindBuckets(items, groups, pbId, fbId, onDone){
+  let armed=null, placed=0, wrong=0;
+  const fb=document.getElementById(fbId), pb=document.getElementById(pbId);
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.n){ armed=null; return; }
+      armed=t.dataset.n; t.classList.add('sel');
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.bucket').forEach(b=>{
+    b.onclick=()=>{
+      if(!armed) return;
+      const it=items.find(x=>x.n===armed);
+      if(it.g===b.dataset.g){
+        document.getElementById('items-'+it.g).insertAdjacentHTML('beforeend', `<span>${it.n}</span>`);
+        app.querySelector(`#pool .tok[data-n="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/items.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${it.n}</b> — ${it.e}`;
+        armed=null; app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+        if(placed===items.length) setTimeout(()=>onDone(wrong),1000);
+      }else{
+        wrong++; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ <b>${it.n}</b> ยังไม่ใช่กล่องนี้ — ลองอ่านหัวข้อกล่องอีกครั้ง`;
+      }
+    };
+  });
+}
+/* เรียงลำดับขั้นตอน — steps = [{n, e}] เรียงถูกตามลำดับใน array */
+function orderBoard(steps, hint){
+  const pool = shuffle(steps.map((z,i)=>({...z,i})));
+  return `<div class="chain" id="chain"><span class="ph">${hint}</span></div>
+    <div class="pool" id="pool">${pool.map(p=>`<div class="tok" data-i="${p.i}">${p.n}</div>`).join('')}</div>`;
+}
+function bindOrder(steps, onDone){
+  let idx=0, wrong=0;
+  const chain=document.getElementById('chain'), fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      const i=+t.dataset.i;
+      if(i===idx){
+        if(idx===0) chain.innerHTML=''; else chain.insertAdjacentHTML('beforeend','<span class="arrow">→</span>');
+        chain.insertAdjacentHTML('beforeend', `<span class="link">${steps[i].n}</span>`);
+        t.classList.add('used');
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${steps[i].n}</b><br>${steps[i].e}`;
+        idx++; if(pb) pb.style.width=(idx/steps.length*100)+'%';
+        if(idx===steps.length) setTimeout(()=>onDone(wrong),1300);
+      }else{
+        wrong++; t.classList.add('bad'); setTimeout(()=>t.classList.remove('bad'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถึงคิวของ <b>${steps[i].n}</b> — ลองนึกว่าตอนนี้เซลล์อยู่ขั้นไหน`;
+      }
+    };
+  });
+}
+/* จับคู่การ์ด — pairs = [{k, n, em, h, d}] */
+function matchBoard(pairs){
+  const cards = shuffle(pairs);
+  return `<div class="bank" id="pool">${shuffle(pairs).map(j=>`<div class="tok" data-k="${j.k}">${j.n}</div>`).join('')}</div>
+    <div class="match" id="match" style="margin-top:14px">
+      ${cards.map(j=>`<div class="mcard" data-k="${j.k}">
+        <div class="em">${j.em}</div>
+        <div class="tx"><b class="h">${j.h}</b>${j.d}</div>
+      </div>`).join('')}
+    </div>`;
+}
+function bindMatch(pairs, onDone){
+  let armed=null, done=0, wrong=0;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.k){ armed=null; return; }
+      armed=t.dataset.k; t.classList.add('sel');
+      app.querySelectorAll('.mcard:not(.done)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.mcard').forEach(c=>{
+    c.onclick=()=>{
+      if(!armed || c.classList.contains('done')) return;
+      const j=pairs.find(x=>x.k===armed);
+      if(c.dataset.k===armed){
+        c.classList.add('done'); c.classList.remove('armed');
+        c.querySelector('.tx').insertAdjacentHTML('afterbegin', `<b class="h" style="color:var(--lime)">✅ ${j.n}</b>`);
+        app.querySelector(`#pool .tok[data-k="${armed}"]`).classList.add('used');
+        done++; if(pb) pb.style.width=(done/pairs.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${j.n}</b> — ${j.d}`;
+        armed=null; app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+        if(done===pairs.length) setTimeout(()=>onDone(wrong),1100);
+      }else{
+        wrong++; c.classList.add('wrong'); setTimeout(()=>c.classList.remove('wrong'),400);
+        fb.className='feedback show bad'; fb.innerHTML=`❌ <b>${j.n}</b> ยังไม่ใช่การ์ดนี้ ลองอ่านคำอธิบายอีกครั้ง`;
+      }
+    };
+  });
+}
+/* ชุดคำถามปรนัยท้ายด่าน — qs = [{q, o[], a, e}] */
+function quizRun(qs, hostId, onDone){
+  let qi=0, wrong=0;
+  const host=document.getElementById(hostId);
+  function draw(){
+    const q=qs[qi];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">คำถาม ${qi+1}/${qs.length}</div>
+      <h3 style="margin:6px 0 4px">${q.q}</h3>
+      <div class="opts">${q.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===q.a; if(!ok) wrong++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===q.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+q.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${qi===qs.length-1?'สรุปผล →':'ข้อถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ qi++; if(qi<qs.length){ draw(); window.scrollTo({top:0,behavior:'smooth'}); } else onDone(wrong); };
+      };
+    });
+  }
+  draw();
+}
+
+
+/* =========================================================================
+   ด่าน 1 — สายผลิตฝั่งชาย: อวัยวะในระบบสืบพันธุ์เพศชาย และเส้นทางลำเลียงสเปิร์ม
+   (ภาพวาดเชิงแผนภาพ มองจากด้านข้าง หันหน้าไปทางซ้าย)
+   ========================================================================= */
+const MALE_SVG = `
+<svg viewBox="0 0 1000 545" style="width:100%;display:block;border-radius:14px;background:#FBF8EC" aria-hidden="true">
+  <rect width="1000" height="545" fill="#FBF8EC"/>
+  <!-- บริเวณภายในลำตัว (ด้านขวา) กับภายนอกลำตัว (ด้านซ้าย) -->
+  <path d="M1000 0 L1000 545 L566 545 C524 470 514 382 550 308 C584 238 598 120 596 0 Z" fill="#EFE9D2"/>
+  <!-- กระเพาะปัสสาวะ -->
+  <ellipse cx="762" cy="120" rx="106" ry="78" fill="#DCEAF1" stroke="#5C90A6" stroke-width="7"/>
+  <text x="762" y="128" text-anchor="middle" font-size="21" font-weight="700" fill="#3F7690">กระเพาะปัสสาวะ</text>
+
+  <!-- ต่อมต่าง ๆ (เรียนละเอียดในด่าน 2) -->
+  <path d="M856 168 C910 156 954 184 958 222 C962 262 934 290 900 296 C881 299 867 287 871 271 C875 248 854 244 848 224 C841 203 842 172 856 168 Z"
+        fill="#F3D7E4" stroke="#C97BA0" stroke-width="6"/>
+  <ellipse cx="742" cy="262" rx="57" ry="45" fill="#F7E1CA" stroke="#D08A46" stroke-width="6"/>
+  <circle cx="692" cy="328" r="18" fill="#E6DFC2" stroke="#A79445" stroke-width="5"/>
+  <circle cx="652" cy="350" r="15" fill="#E6DFC2" stroke="#A79445" stroke-width="5"/>
+
+  <!-- ถุงอัณฑะ -->
+  <path d="M236 380 C176 440 186 520 292 532 C396 543 450 500 442 436 C438 400 422 384 408 374 Z"
+        fill="#FBE8D8" stroke="#C08A63" stroke-width="7"/>
+
+  <!-- องคชาต -->
+  <path d="M520 286 L150 286 C98 286 78 308 78 330 C78 352 98 374 150 374 L520 374 Z"
+        fill="#F7E3D2" stroke="#C08A63" stroke-width="7"/>
+  <ellipse cx="112" cy="330" rx="36" ry="44" fill="#EFCBB4" stroke="#C08A63" stroke-width="6"/>
+
+  <!-- ท่อปัสสาวะ: จากกระเพาะปัสสาวะ ผ่านต่อมลูกหมาก ไปออกที่ปลายองคชาต -->
+  <path d="M762 198 C766 228 746 232 742 262 C736 300 714 318 654 330 C590 343 430 336 92 331"
+        fill="none" stroke="#5C90A6" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- หลอดนำอสุจิ: จากหลอดเก็บอสุจิ อ้อมขึ้นไปรวมที่ต่อมลูกหมาก -->
+  <path d="M400 404 C450 414 492 408 528 388 C572 364 580 316 604 286 C630 254 678 234 718 244"
+        fill="none" stroke="#2F7D4F" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- หลอดเก็บอสุจิ -->
+  <path d="M368 414 C412 426 428 464 410 494" fill="none" stroke="#D98E52" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- อัณฑะ + หลอดสร้างอสุจิที่ขดอยู่ภายใน -->
+  <ellipse cx="322" cy="456" rx="58" ry="43" fill="#F8DFCE" stroke="#E7390D" stroke-width="7"/>
+  <g stroke="#D6350B" stroke-width="7" fill="none" stroke-linecap="round" opacity=".9">
+    <path d="M282 438 C302 426 318 442 304 456 C290 470 308 484 330 476"/>
+    <path d="M288 476 C306 490 328 494 348 484 C364 476 360 458 346 454"/>
+    <path d="M344 430 C360 434 372 446 368 464"/>
+  </g>
+
+  <text x="34" y="48" text-anchor="start" font-size="21" font-weight="700" fill="#A79E76">ภายนอกลำตัว</text>
+  <text x="966" y="48" text-anchor="end" font-size="21" font-weight="700" fill="#A79E76">ภายในลำตัว</text>
+  <text x="966" y="516" text-anchor="end" font-size="19" font-weight="700" fill="#B08098">ต่อมต่าง ๆ · เรียนในด่าน 2</text>
+</svg>`;
+const MALE_PARTS = [
+  { key:'testis', u:0.288, v:0.785, lx:300, ly:706, label:'อัณฑะ',
+    info:'Testis — ทำหน้าที่<b>สร้างสเปิร์ม</b>และฮอร์โมนเพศชาย <b>เทสโทสเทอโรน</b> อยู่นอกช่องท้อง' },
+  { key:'scrotum', u:0.209, v:0.9, lx:125, ly:648, label:'ถุงอัณฑะ',
+    info:'Scrotum — ถุงที่ห่อหุ้มอัณฑะไว้นอกช่องท้อง อุณหภูมิภายในจะ<b>ต่ำกว่าอุณหภูมิร่างกายประมาณ 2–3 °C</b> ซึ่งเหมาะกับการเจริญของสเปิร์ม' },
+  { key:'semtub', u:0.336, v:0.892, lx:585, ly:700, label:'หลอดสร้างอสุจิ',
+    info:'Seminiferous tubule — ท่อยาวขดไปมาอยู่<b>ภายในอัณฑะ</b> ผนังท่อมีเซลล์ต้นกำเนิดที่จะแบ่งเซลล์และเจริญไปเป็นสเปิร์ม' },
+  { key:'epi', u:0.412, v:0.82, lx:845, ly:648, label:'หลอดเก็บอสุจิ',
+    info:'Epididymis — สเปิร์มจากหลอดสร้างอสุจิเคลื่อนมา<b>พักเก็บไว้ที่นี่</b> ก่อนจะเคลื่อนต่อเมื่อมีการหลั่งน้ำอสุจิ' },
+  { key:'vas', u:0.574, v:0.626, lx:700, ly:45, label:'หลอดนำอสุจิ',
+    info:'Vas deferens — ท่อที่<b>ลำเลียงสเปิร์ม</b>จากหลอดเก็บอสุจิขึ้นไปรวมกับท่อปัสสาวะ · เป็นตำแหน่งที่ตัดและผูกเพื่อ<b>ทำหมันชาย</b>' },
+  { key:'urethra', u:0.418, v:0.618, lx:400, ly:42, label:'ท่อปัสสาวะ',
+    info:'Urethra — ท่อร่วมที่ใช้ทั้ง<b>ขับปัสสาวะ</b>และ<b>ลำเลียงน้ำอสุจิ</b>ออกนอกร่างกาย (แต่ไม่ออกพร้อมกัน)' },
+  { key:'penis', u:0.21, v:0.55, lx:150, ly:90, label:'องคชาต',
+    info:'Penis — อวัยวะที่มีท่อปัสสาวะทอดผ่าน ทำหน้าที่<b>นำน้ำอสุจิเข้าสู่ระบบสืบพันธุ์เพศหญิง</b>' }
+];
+function stageMale(){
+  app.innerHTML = stageShell('male', `
+    <div class="note">🎯 <b>ภารกิจ:</b> แตะชื่ออวัยวะในสำรับ แล้วแตะป้าย <b>? ? ?</b> ที่ชี้ไปยังตำแหน่งของมัน
+      — วางให้ครบ ${MALE_PARTS.length} จุดโดยผิดน้อยที่สุด
+      <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    ${calloutBoard(MALE_SVG, '1000/545', MALE_PARTS)}
+    <div class="feedback" id="fb"></div>
+    <div class="note key" style="margin-top:16px">
+      💡 <b>เส้นทางเดินของสเปิร์มที่ต้องจำให้ขึ้นใจ:</b><br>
+      หลอดสร้างอสุจิ (ในอัณฑะ) → หลอดเก็บอสุจิ → หลอดนำอสุจิ → ท่อปัสสาวะ → ออกทางองคชาต
+    </div>
+  `);
+  bindCallout(MALE_PARTS, mistakes=>{
+    const got = mistakes<=1?3:mistakes<=3?2:1;
+    stageMiss=mistakes;
+    finishStage('male', got, 60-Math.min(mistakes*6,30), `
+      <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+        • <b>อัณฑะ</b> สร้างสเปิร์มและฮอร์โมนเทสโทสเทอโรน · ภายในมี <b>หลอดสร้างอสุจิ</b> ขดไปมา<br>
+        • <b>ถุงอัณฑะ</b> ทำให้อุณหภูมิต่ำกว่าร่างกาย <b>2–3 °C</b> เหมาะกับการสร้างสเปิร์ม<br>
+        • เส้นทาง: หลอดสร้างอสุจิ → <b>หลอดเก็บอสุจิ</b> → <b>หลอดนำอสุจิ</b> → <b>ท่อปัสสาวะ</b> → องคชาต</div>
+      <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> <b>หลอดสร้างอสุจิ ≠ หลอดเก็บอสุจิ ≠ หลอดนำอสุจิ</b>
+        — สร้าง (อยู่ในอัณฑะ) · เก็บ (พักไว้ข้างอัณฑะ) · นำ (ลำเลียงขึ้นไปหาท่อปัสสาวะ) ชื่อไทยบอกหน้าที่ไว้แล้ว</div>
+      <div class="note">🔵 <b>ต่อยอด:</b> อัณฑะเจริญอยู่ในช่องท้องแล้วเคลื่อนลงถุงอัณฑะก่อนคลอด
+        ถ้าไม่เคลื่อนลงมา อุณหภูมิในช่องท้องจะสูงเกินไปจนสร้างสเปิร์มได้ไม่ดี
+        และผู้ที่อัณฑะเคลื่อนลงมาเพียงข้างเดียวจะสร้างสเปิร์มได้น้อยกว่าปกติ</div>
+      <div class="small muted">ผิดทั้งหมด ${mistakes} ครั้ง</div>`);
+  });
+}
+
+/* =========================================================================
+   ด่าน 2 — ห้องผสมน้ำเลี้ยง: ต่อมสร้างน้ำเลี้ยงอสุจิ · ต่อมลูกหมาก · ต่อมคาวเปอร์
+   ========================================================================= */
+const GLAND_ITEMS = [
+  { n:'หลั่งของเหลวที่มีน้ำตาลฟรักโทส', g:'sv', e:'ฟรักโทสเป็น<b>แหล่งพลังงาน</b>ให้สเปิร์มใช้ว่ายไปหาเซลล์ไข่' },
+  { n:'เป็นแหล่งพลังงานของสเปิร์ม', g:'sv', e:'พลังงานจากฟรักโทสถูกไมโทคอนเดรียที่ลำตัวสเปิร์มนำไปใช้โบกหาง' },
+  { n:'หลั่งเมือกและสารอื่น ๆ ปนมาด้วย', g:'sv', e:'ของเหลวจากต่อมนี้เป็นส่วนประกอบหลักของน้ำเลี้ยงอสุจิ' },
+  { n:'ของเหลวมีสมบัติเป็นเบส', g:'pr', e:'ความเป็นเบสช่วย<b>ลบล้างสภาพกรด</b>ที่สเปิร์มจะไปเจอ' },
+  { n:'ช่วยให้สเปิร์มรอดในช่องคลอดที่เป็นกรด', g:'pr', e:'ช่องคลอดมีสภาพเป็นกรด ถ้าไม่มีของเหลวเป็นเบสมาช่วย สเปิร์มจะเคลื่อนที่และอยู่รอดได้ยาก' },
+  { n:'ถ้าโตผิดปกติจะไปเบียดท่อปัสสาวะ', g:'pr', e:'ต่อมนี้ล้อมรอบท่อปัสสาวะอยู่ ถ้าโตผิดปกติจึงทำให้เกิดอาการ<b>ปัสสาวะขัด</b>' },
+  { n:'หลั่งของเหลวหล่อลื่นท่อปัสสาวะ', g:'cw', e:'ช่วยให้น้ำอสุจิเคลื่อนผ่านท่อปัสสาวะได้สะดวก' },
+  { n:'ลดความเป็นกรดภายในท่อปัสสาวะ', g:'cw', e:'ท่อปัสสาวะเคยมีปัสสาวะซึ่งเป็นกรดผ่าน ต่อมนี้จึงช่วยปรับสภาพก่อนสเปิร์มจะผ่าน' },
+  { n:'อีกชื่อหนึ่งคือ bulbourethral gland', g:'cw', e:'ต่อมคาวเปอร์ = bulbourethral gland เป็นต่อมเล็ก ๆ ใต้ต่อมลูกหมาก' }
+];
+const GLAND_Q = [
+  { q:'ถ้าตัดต่อม<b>สร้างน้ำเลี้ยงอสุจิ</b>ออกไป สิ่งใดน่าจะได้รับผลกระทบมากที่สุด',
+    o:['สเปิร์มจะไม่ถูกสร้างขึ้นเลย','สเปิร์มขาดแหล่งพลังงาน จึงเคลื่อนที่ได้แย่ลง',
+       'ท่อปัสสาวะจะตีบตัน','จำนวนโครโมโซมของสเปิร์มจะผิดปกติ'], a:1,
+    e:'ต่อมสร้างน้ำเลี้ยงอสุจิหลั่ง<b>น้ำตาลฟรักโทส</b>ซึ่งเป็นแหล่งพลังงานของสเปิร์ม — สเปิร์มยังถูกสร้างที่หลอดสร้างอสุจิได้ตามปกติ แต่จะขาดพลังงานสำหรับการเคลื่อนที่' },
+  { q:'เพราะเหตุใดของเหลวจาก<b>ต่อมลูกหมาก</b>จึงต้องมีสมบัติเป็นเบส',
+    o:['เพื่อฆ่าเชื้อโรคในน้ำอสุจิ','เพื่อให้สเปิร์มเคลื่อนที่และอยู่รอดได้เมื่อเข้าสู่ช่องคลอดซึ่งมีสภาพเป็นกรด',
+       'เพื่อทำให้สเปิร์มแบ่งตัวเพิ่มจำนวน','เพื่อทำให้น้ำอสุจิข้นขึ้น'], a:1,
+    e:'<b>ช่องคลอดมีสภาพเป็นกรด</b> ของเหลวที่เป็นเบสจากต่อมลูกหมากจะช่วยปรับสภาพให้สเปิร์มเคลื่อนที่และมีชีวิตรอดต่อไปได้' },
+  { q:'ชายวัยกลางคนคนหนึ่งมีอาการ<b>ปัสสาวะขัด</b> แพทย์วินิจฉัยว่าเกิดจากอวัยวะในระบบสืบพันธุ์ อวัยวะนั้นคือข้อใด',
+    o:['ต่อมคาวเปอร์','หลอดเก็บอสุจิ','ต่อมลูกหมากโตผิดปกติจนไปเบียดท่อปัสสาวะ','ถุงอัณฑะ'], a:2,
+    e:'<b>ต่อมลูกหมาก</b>อยู่ล้อมรอบท่อปัสสาวะ เมื่อโตผิดปกติจึงไปเบียดท่อปัสสาวะ ทำให้ปัสสาวะไม่สะดวกหรือปัสสาวะขัด' },
+  { q:'การ<b>ทำหมันชาย</b>โดยตัดและผูกหลอดนำอสุจิทั้งสองข้าง ส่งผลอย่างไร',
+    o:['อัณฑะหยุดสร้างสเปิร์มทันที','สเปิร์มเคลื่อนไปยังท่อปัสสาวะไม่ได้ น้ำอสุจิที่หลั่งออกมาจึงไม่มีสเปิร์ม',
+       'ต่อมลูกหมากหยุดหลั่งของเหลว','ร่างกายหยุดสร้างฮอร์โมนเทสโทสเทอโรน'], a:1,
+    e:'อัณฑะยัง<b>สร้างสเปิร์มและฮอร์โมนได้ตามปกติ</b> แต่เมื่อหลอดนำอสุจิถูกตัดและผูก สเปิร์มจึงเดินทางไปยังท่อปัสสาวะไม่ได้ น้ำอสุจิที่หลั่งออกมาจึงไม่มีสเปิร์ม ทำให้เป็นหมัน' }
+];
+function stageGlands(){
+  let sortWrong = 0;
+  drawSort();
+
+  function drawSort(){
+    const B = { sv:{t:'🍯 ต่อมสร้างน้ำเลี้ยงอสุจิ<br><span class="small muted">seminal vesicle</span>'},
+                pr:{t:'🧪 ต่อมลูกหมาก<br><span class="small muted">prostate gland</span>'},
+                cw:{t:'💧 ต่อมคาวเปอร์<br><span class="small muted">Cowper&#39;s gland</span>'} };
+    app.innerHTML = stageShell('glands', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> น้ำอสุจิไม่ได้มีแต่สเปิร์ม — แตะข้อความ แล้วแตะต่อมที่หลั่งของเหลวนั้น
+        (ครบ ${GLAND_ITEMS.length} ชิ้น)</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(GLAND_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        🔵 <b>ตัวช่วยจำ:</b> <b>เลี้ยง</b> = ให้อาหาร (ฟรักโทส) · <b>ลูกหมาก</b> = ปรับให้เป็นเบสสู้กรดในช่องคลอด ·
+        <b>คาวเปอร์</b> = หล่อลื่นและล้างกรดใน<b>ท่อปัสสาวะ</b>ของฝ่ายชายเอง
+      </div>
+    `);
+    bindBuckets(GLAND_ITEMS, B, 'pb', 'fb', wrong=>{
+      sortWrong = wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,700);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('glands', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องต่อมและน้ำเลี้ยงอสุจิให้ครบ ${GLAND_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(GLAND_Q, 'qhost', qWrong=>{
+      const miss = sortWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('glands', got, 70-Math.min(miss*7,40), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>ต่อมสร้างน้ำเลี้ยงอสุจิ</b> — หลั่งของเหลวที่มี<b>ฟรักโทส</b> เป็นแหล่งพลังงานของสเปิร์ม<br>
+          • <b>ต่อมลูกหมาก</b> — หลั่งของเหลวที่เป็น<b>เบส</b> ช่วยให้สเปิร์มรอดในช่องคลอดที่เป็นกรด<br>
+          • <b>ต่อมคาวเปอร์</b> — หล่อลื่นและ<b>ลดความเป็นกรดในท่อปัสสาวะ</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ต่อมทั้งสามนี้<b>ไม่ได้สร้างสเปิร์ม</b>
+          — สเปิร์มถูกสร้างที่<b>หลอดสร้างอสุจิในอัณฑะ</b>เท่านั้น ต่อมเหล่านี้สร้างเฉพาะ “ของเหลว” ที่ผสมเป็นน้ำอสุจิ</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ต่อมลูกหมากโตเป็นภาวะที่พบบ่อยในผู้ชายสูงอายุ อาการเด่นคือปัสสาวะขัด
+          ปัสสาวะบ่อยตอนกลางคืน — เป็นตัวอย่างที่ดีว่า “ตำแหน่งของอวัยวะ” อธิบายอาการของโรคได้</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 3 — สายพานสร้างสเปิร์ม: spermatogenesis และโครงสร้างของสเปิร์ม
+   ========================================================================= */
+const SPERM_STEPS = [
+  { n:'สเปอร์มาโทโกเนียม', e:'Spermatogonium — <b>เซลล์ต้นกำเนิด</b>ที่ผนังหลอดสร้างอสุจิ เป็น<b>ดิพลอยด์ (2n)</b> เมื่อเข้าสู่วัยรุ่นจะแบ่งแบบ<b>ไมโทซิส</b>เพื่อเพิ่มจำนวน' },
+  { n:'สเปอร์มาโทไซต์ระยะแรก', e:'Primary spermatocyte — สเปอร์มาโทโกเนียมส่วนหนึ่งพัฒนาให้<b>ขนาดใหญ่ขึ้น</b> ยังเป็น <b>2n</b> และกำลังจะเริ่มแบ่งแบบไมโอซิส' },
+  { n:'สเปอร์มาโทไซต์ระยะที่สอง', e:'Secondary spermatocyte — ได้เมื่อสิ้นสุด<b>ไมโอซิส I</b> · จาก 1 เซลล์ได้ 2 เซลล์ และกลายเป็น<b>แฮพลอยด์ (n)</b> แล้ว' },
+  { n:'สเปอร์มาทิด', e:'Spermatid — ได้เมื่อสิ้นสุด<b>ไมโอซิส II</b> · จาก 1 สเปอร์มาโทไซต์ระยะแรกจะได้สเปอร์มาทิด <b>4 เซลล์</b> ที่เป็น n' },
+  { n:'สเปิร์ม', e:'Sperm — สเปอร์มาทิด<b>เปลี่ยนสภาพ</b> (differentiation) จนมีหัว ลำตัว และหาง พร้อมเคลื่อนที่ไปหาเซลล์ไข่' }
+];
+const SPERM_PARTS = [
+  { k:'acro', n:'อะโครโซม', em:'🎯', h:'ส่วนหัว — ถุงที่อยู่ด้านหน้าสุด',
+    d:'เป็นถุงที่บรรจุ<b>เอนไซม์สำหรับย่อยเยื่อหุ้มเซลล์ไข่</b> เพื่อให้สเปิร์มเจาะเข้าไปได้' },
+  { k:'nucl', n:'นิวเคลียส', em:'🧬', h:'ส่วนหัว — แกนกลางถัดจากถุงด้านหน้า',
+    d:'บรรจุ<b>โครโมโซม 1 ชุด (แฮพลอยด์ n)</b> ที่จะไปรวมกับโครโมโซมของเซลล์ไข่' },
+  { k:'mito', n:'ไมโทคอนเดรีย', em:'⚡', h:'ส่วนลำตัว',
+    d:'<b>สร้างพลังงาน</b>ให้สเปิร์มใช้ในการเคลื่อนที่ไปสู่เซลล์ไข่' },
+  { k:'tail', n:'แฟลเจลลัม (หาง)', em:'🌊', h:'ส่วนหาง',
+    d:'โบกไปมาเพื่อ<b>ขับเคลื่อน</b>ให้สเปิร์มว่ายไปข้างหน้าได้' }
+];
+const SPERM_Q = [
+  { q:'ถ้ามี<b>สเปอร์มาโทไซต์ระยะแรก 400 เซลล์</b> จะสร้างสเปิร์มได้กี่เซลล์',
+    o:['400 เซลล์','800 เซลล์','1,600 เซลล์','100 เซลล์'], a:2,
+    e:'สเปอร์มาโทไซต์ระยะแรก 1 เซลล์ → ไมโอซิส I ได้ 2 เซลล์ → ไมโอซิส II ได้ <b>4 สเปอร์มาทิด</b> → เปลี่ยนสภาพเป็นสเปิร์ม 4 เซลล์<br>ดังนั้น 400 × 4 = <b>1,600 เซลล์</b>' },
+  { q:'สเปอร์มาโทไซต์<b>ระยะแรก</b>กับ<b>ระยะที่สอง</b> มีจำนวนโครโมโซมต่างกันหรือไม่ อย่างไร',
+    o:['เท่ากัน เพราะยังไม่แบ่งเซลล์','ต่างกัน — ระยะแรกเป็น 2n ส่วนระยะที่สองเป็น n เพราะผ่านไมโอซิส I มาแล้ว',
+       'ต่างกัน — ระยะแรกเป็น n ส่วนระยะที่สองเป็น 2n','เท่ากัน เพราะไมโอซิส I ไม่ลดจำนวนโครโมโซม'], a:1,
+    e:'<b>สเปอร์มาโทไซต์ระยะแรกเป็นดิพลอยด์ (2n)</b> มีโครโมโซมเท่าเซลล์ร่างกาย ส่วน<b>สเปอร์มาโทไซต์ระยะที่สองเกิดจากไมโอซิส I</b> จึงเป็น<b>แฮพลอยด์ (n)</b> มีโครโมโซมเป็นครึ่งหนึ่งของเซลล์ร่างกาย' },
+  { q:'ไมโอซิสในกระบวนการสร้างสเปิร์มทำให้เกิด<b>ความหลากหลายทางพันธุกรรมในรุ่นลูก</b>ได้อย่างไร',
+    o:['เพราะจำลอง DNA ผิดพลาดทุกครั้ง',
+       'เพราะเกิดครอสซิงโอเวอร์ในโพรเฟส I ร่วมกับการแยกและการรวมกลุ่มอย่างอิสระของฮอมอโลกัสโครโมโซม',
+       'เพราะสเปอร์มาทิดเปลี่ยนสภาพไม่เหมือนกัน',
+       'เพราะไมโทคอนเดรียในลำตัวมีจำนวนไม่เท่ากัน'], a:1,
+    e:'ในไมโอซิสเกิด<b>ครอสซิงโอเวอร์</b>ที่โพรเฟส I และฮอมอโลกัสโครโมโซม<b>แยกออกจากกันและรวมกลุ่มอย่างอิสระ</b> สเปิร์มแต่ละเซลล์จึงได้ชุดยีนไม่ซ้ำกัน ส่งผลให้รุ่นลูกมีความหลากหลาย' }
+];
+function stageSperm(){
+  let orderWrong = 0, matchWrong = 0;
+  drawOrder();
+
+  function drawOrder(){
+    app.innerHTML = stageShell('sperm', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เรียงลำดับการสร้างสเปิร์มภายใน<b>หลอดสร้างอสุจิ</b> — แตะการ์ดตามลำดับจากเซลล์ต้นกำเนิดไปจนถึงสเปิร์ม</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(SPERM_STEPS, 'แตะการ์ดด้านล่างเรียงตามลำดับ…')}
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        💡 <b>ใบ้:</b> ไมโทซิสมาก่อน (เพิ่มจำนวน) แล้วจึงไมโอซิส I และ II (ลดจำนวนโครโมโซม)
+        ขั้นสุดท้ายคือ<b>การเปลี่ยนสภาพ</b> ไม่ใช่การแบ่งเซลล์
+      </div>
+    `);
+    bindOrder(SPERM_STEPS, wrong=>{ orderWrong=wrong; toast('ถูกต้อง! ไปดูโครงสร้างสเปิร์มกัน'); setTimeout(drawMatch,900); });
+  }
+
+  function drawMatch(){
+    app.innerHTML = stageShell('sperm', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> สเปิร์มมี 3 ส่วนคือ หัว ลำตัว และหาง — จับคู่ชื่อโครงสร้างกับหน้าที่ให้ครบ ${SPERM_PARTS.length} คู่</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(SPERM_PARTS)}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindMatch(SPERM_PARTS, wrong=>{ matchWrong=wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz,900); });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('sperm', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องการสร้างสเปิร์มให้ครบ ${SPERM_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(SPERM_Q, 'qhost', qWrong=>{
+      const miss = orderWrong + matchWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('sperm', got, 80-Math.min(miss*7,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • สเปอร์มาโทโกเนียม <span class="muted">(2n)</span> —ไมโทซิส→ <b>สเปอร์มาโทไซต์ระยะแรก</b> <span class="muted">(2n)</span>
+            —ไมโอซิส I→ <b>สเปอร์มาโทไซต์ระยะที่สอง</b> <span class="muted">(n)</span>
+            —ไมโอซิส II→ <b>สเปอร์มาทิด</b> <span class="muted">(n)</span> —เปลี่ยนสภาพ→ <b>สเปิร์ม</b><br>
+          • 1 สเปอร์มาโทไซต์ระยะแรก → <b>สเปิร์ม 4 เซลล์</b><br>
+          • สเปิร์ม: <b>อะโครโซม</b> (เอนไซม์ย่อยเยื่อหุ้มเซลล์ไข่) · <b>นิวเคลียส</b> (n) · <b>ไมโทคอนเดรีย</b> ที่ลำตัว · <b>แฟลเจลลัม</b> เป็นหาง</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ขั้นสุดท้าย <b>“สเปอร์มาทิด → สเปิร์ม” ไม่ใช่การแบ่งเซลล์</b>
+          จำนวนเซลล์ไม่เพิ่มขึ้นอีก เป็นเพียง<b>การเปลี่ยนสภาพ</b>ให้มีรูปร่างเหมาะกับการเคลื่อนที่</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> การหลั่งน้ำอสุจิแต่ละครั้งมีสเปิร์มประมาณ <b>300–500 ล้านเซลล์</b>
+          และเพศชายสร้างสเปิร์มได้ตั้งแต่วัยเจริญพันธุ์ไปตลอดชีวิต ต่างจากเพศหญิงที่ตกไข่เพียงรอบละ 1 เซลล์</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 4 — สายผลิตฝั่งหญิง: อวัยวะในระบบสืบพันธุ์เพศหญิง (ภาพเชิงแผนภาพ มองด้านหน้า)
+   ========================================================================= */
+const FEMALE_SVG = `
+<svg viewBox="0 0 1000 545" style="width:100%;display:block;border-radius:14px;background:#FBF8EC" aria-hidden="true">
+  <rect width="1000" height="545" fill="#FBF8EC"/>
+  <ellipse cx="500" cy="300" rx="440" ry="250" fill="#EFE9D2"/>
+
+  <!-- ท่อนำไข่ทั้งสองข้าง -->
+  <path d="M388 200 C340 148 268 138 213 170" fill="none" stroke="#C98BA6" stroke-width="17" stroke-linecap="round"/>
+  <path d="M612 200 C660 148 732 138 787 170" fill="none" stroke="#C98BA6" stroke-width="17" stroke-linecap="round"/>
+  <!-- ปลายเปิดคล้ายปากแตร (ฟิมเบรีย) -->
+  <g stroke="#C98BA6" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M215 162 L180 132"/><path d="M209 172 L166 162"/><path d="M210 186 L168 196"/><path d="M218 196 L188 224"/>
+    <path d="M785 162 L820 132"/><path d="M791 172 L834 162"/><path d="M790 186 L832 196"/><path d="M782 196 L812 224"/>
+  </g>
+
+  <!-- รังไข่ทั้งสองข้าง + เอ็นยึดกับมดลูก -->
+  <path d="M308 252 L384 236" stroke="#C9A98F" stroke-width="8" stroke-linecap="round"/>
+  <path d="M692 252 L616 236" stroke="#C9A98F" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="250" cy="248" rx="60" ry="43" fill="#F6DFAC" stroke="#C79A2E" stroke-width="6"/>
+  <ellipse cx="750" cy="248" rx="60" ry="43" fill="#F6DFAC" stroke="#C79A2E" stroke-width="6"/>
+  <g fill="#FBF8EC" stroke="#C79A2E" stroke-width="3">
+    <circle cx="232" cy="240" r="11"/><circle cx="266" cy="234" r="8"/><circle cx="258" cy="264" r="13"/>
+    <circle cx="732" cy="240" r="11"/><circle cx="766" cy="234" r="8"/><circle cx="758" cy="264" r="13"/>
+  </g>
+
+  <!-- มดลูก: ชั้นกล้ามเนื้อ -->
+  <path d="M385 205 C395 163 430 148 500 148 C570 148 605 163 615 205 C625 250 600 322 578 358 L422 358 C400 322 375 250 385 205 Z"
+        fill="#E9BCA9" stroke="#B5654A" stroke-width="6"/>
+  <!-- เยื่อบุมดลูก (เอนโดมีเทรียม) -->
+  <path d="M418 218 C428 190 458 178 500 178 C542 178 572 190 582 218 C590 252 574 308 558 338 L442 338 C426 308 410 252 418 218 Z"
+        fill="#F3A9BE" stroke="#D2657F" stroke-width="5"/>
+  <!-- โพรงมดลูก -->
+  <path d="M452 232 C466 212 534 212 548 232 C556 258 540 306 528 322 L472 322 C460 306 444 258 452 232 Z" fill="#FBF8EC"/>
+
+  <!-- ปากมดลูก -->
+  <path d="M452 358 L548 358 L548 412 L452 412 Z" fill="#DDBFAE" stroke="#A87A63" stroke-width="6"/>
+  <!-- ช่องคลอด -->
+  <path d="M450 412 L550 412 L566 522 L434 522 Z" fill="#F2D5C8" stroke="#B5786A" stroke-width="6"/>
+  <path d="M500 414 L500 518" stroke="#B5786A" stroke-width="5" stroke-dasharray="9 8" opacity=".8"/>
+
+  <text x="60" y="452" text-anchor="start" font-size="19" font-weight="700" fill="#A79E76">มองจากด้านหน้า</text>
+</svg>`;
+const FEMALE_PARTS = [
+  { key:'ovary', u:0.250, v:0.450, lx:145, ly:55, label:'รังไข่',
+    info:'Ovary — ทำหน้าที่<b>สร้างเซลล์ไข่</b>และ<b>ฮอร์โมนเพศหญิง (อีสโทรเจน)</b> อยู่สองข้างของมดลูกในอุ้งเชิงกราน' },
+  { key:'oviduct', u:0.696, v:0.284, lx:555, ly:38, label:'ท่อนำไข่',
+    info:'Oviduct / fallopian tube — ทางเดินของเซลล์ไข่ไปยังมดลูก เป็น<b>บริเวณที่เกิดการปฏิสนธิ</b> และเป็นตำแหน่งที่ผูก ตัด หรือจี้ด้วยไฟฟ้าเพื่อ<b>ทำหมันหญิง</b>' },
+  { key:'fimbriae', u:0.795, v:0.321, lx:855, ly:95, label:'ปลายเปิดคล้ายปากแตร',
+    info:'ปลายเปิดของท่อนำไข่ที่แผ่ออกคล้ายปากแตร ทำหน้าที่<b>รับเซลล์ไข่ที่ตกจากรังไข่</b>เข้าสู่ท่อนำไข่' },
+  { key:'uterus', u:0.572, v:0.635, lx:905, ly:530, label:'มดลูก',
+    info:'Uterus — อวัยวะที่<b>เอ็มบริโอเจริญเติบโต</b> ผนังชั้นกล้ามเนื้อจะ<b>บีบตัวระหว่างการคลอด</b>' },
+  { key:'endo', u:0.420, v:0.532, lx:135, ly:650, label:'เอนโดมีเทรียม',
+    info:'Endometrium — เยื่อบุชั้นในของมดลูกที่มีหลอดเลือดมาหล่อเลี้ยงมาก เป็นบริเวณที่<b>เอ็มบริโอฝังตัว</b> และเป็นชั้นที่<b>สลายกลายเป็นประจำเดือน</b>' },
+  { key:'cervix', u:0.500, v:0.701, lx:400, ly:700, label:'ปากมดลูก',
+    info:'Cervix — ส่วนล่างสุดของมดลูกที่ต่อกับช่องคลอด' },
+  { key:'vagina', u:0.500, v:0.862, lx:760, ly:665, label:'ช่องคลอด',
+    info:'Vagina — ทางผ่านของสเปิร์มเข้าสู่ระบบสืบพันธุ์เพศหญิง และเป็น<b>ช่องทางคลอด</b> · ภายในมีสภาพเป็น<b>กรด</b>' }
+];
+const FEMALE_Q = [
+  { q:'อวัยวะใดทำหน้าที่<b>ผลิตเซลล์ไข่และฮอร์โมนอีสโทรเจน</b>',
+    o:['ท่อนำไข่','รังไข่','เอนโดมีเทรียม','ปากมดลูก'], a:1,
+    e:'<b>รังไข่ (ovary)</b> ทำหน้าที่สร้างเซลล์ไข่และฮอร์โมนเพศหญิง เทียบได้กับอัณฑะของเพศชายที่สร้างสเปิร์มและเทสโทสเทอโรน' },
+  { q:'บริเวณใดที่<b>ผูก ตัด หรือจี้ด้วยไฟฟ้าเพื่อทำหมัน</b>ในเพศหญิง',
+    o:['ช่องคลอด','ปากมดลูก','ท่อนำไข่','เอนโดมีเทรียม'], a:2,
+    e:'การทำหมันหญิงทำที่<b>ท่อนำไข่ (oviduct / fallopian tube)</b> เพื่อไม่ให้เซลล์ไข่กับสเปิร์มมาพบกัน — เทียบได้กับการตัดและผูกหลอดนำอสุจิของเพศชาย' },
+  { q:'ส่วนใดที่<b>เยื่อบุผิวสลายกลายเป็นประจำเดือน</b> และเป็น<b>บริเวณที่เอ็มบริโอฝังตัว</b>',
+    o:['เอนโดมีเทรียม','ชั้นกล้ามเนื้อของมดลูก','รังไข่','ท่อนำไข่'], a:0,
+    e:'<b>เอนโดมีเทรียม</b> คือเยื่อบุชั้นในของมดลูก มีหลอดเลือดหล่อเลี้ยงมาก — ถ้ามีการปฏิสนธิ เอ็มบริโอจะมาฝังตัวที่นี่ ถ้าไม่มี เยื่อบุนี้จะสลายออกมาเป็นประจำเดือน' },
+  { q:'โดยปกติ<b>การปฏิสนธิ</b>เกิดขึ้นที่บริเวณใด',
+    o:['ในรังไข่','ในท่อนำไข่','ในมดลูก','ในช่องคลอด'], a:1,
+    e:'การปฏิสนธิเกิดใน<b>ท่อนำไข่</b> — เซลล์ไข่ที่ตกออกมาถูกปลายคล้ายปากแตรรับเข้าท่อ แล้วเคลื่อนไปตามท่อด้วยการพัดโบกของ<b>ซิเลีย</b> ระหว่างทางจึงพบกับสเปิร์ม' }
+];
+function stageFemale(){
+  let boardWrong = 0;
+  drawBoard();
+
+  function drawBoard(){
+    app.innerHTML = stageShell('female', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะชื่ออวัยวะในสำรับ แล้วแตะป้าย <b>? ? ?</b> ที่ชี้ไปยังตำแหน่งของมัน
+        — วางให้ครบ ${FEMALE_PARTS.length} จุด
+        <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${calloutBoard(FEMALE_SVG, '1000/545', FEMALE_PARTS)}
+      <div class="feedback" id="fb"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>เส้นทางของเซลล์ไข่:</b> รังไข่ → ตกไข่ → ปลายเปิดคล้ายปากแตรรับเข้า <b>ท่อนำไข่</b>
+        (ซิเลียพัดโบกพาเคลื่อนที่ · เป็นที่เกิดการปฏิสนธิ) → <b>มดลูก</b> ฝังตัวที่เอนโดมีเทรียม
+      </div>
+    `);
+    bindCallout(FEMALE_PARTS, mistakes=>{
+      boardWrong = mistakes; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,900);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('female', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ระบุอวัยวะที่ตรงกับข้อความให้ครบ ${FEMALE_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(FEMALE_Q, 'qhost', qWrong=>{
+      const miss = boardWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('female', got, 75-Math.min(miss*7,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>รังไข่</b> — สร้างเซลล์ไข่ + อีสโทรเจน<br>
+          • <b>ท่อนำไข่</b> — ปลายคล้ายปากแตรรับไข่ · ซิเลียพัดโบกพาไข่เคลื่อนที่ · <b>เกิดการปฏิสนธิ</b> · จุดทำหมันหญิง<br>
+          • <b>มดลูก</b> — ชั้นกล้ามเนื้อบีบตัวตอนคลอด · ชั้นใน <b>เอนโดมีเทรียม</b> = ที่ฝังตัวของเอ็มบริโอ และสลายเป็นประจำเดือน<br>
+          • <b>ปากมดลูก</b> และ <b>ช่องคลอด</b> — ทางผ่านของสเปิร์มและช่องทางคลอด</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> การปฏิสนธิ<b>ไม่ได้เกิดในมดลูก</b>
+          แต่เกิดใน<b>ท่อนำไข่</b> — มดลูกเป็นที่ที่เอ็มบริโอมา<b>ฝังตัวและเจริญต่อ</b>หลังปฏิสนธิแล้ว</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ถ้าเอ็มบริโอฝังตัวผิดที่ เช่น ยังอยู่ในท่อนำไข่ จะเรียกว่า<b>การตั้งครรภ์นอกมดลูก</b>
+          ซึ่งเป็นภาวะอันตราย เพราะท่อนำไข่ขยายรองรับการเจริญของเอ็มบริโอไม่ได้เหมือนมดลูก</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 5 — สายพานสร้างเซลล์ไข่: oogenesis · จุดหยุดพัก · การตกไข่
+   ========================================================================= */
+const EGG_STEPS = [
+  { n:'โอโอโกเนียม', e:'Oogonium — <b>เซลล์ต้นกำเนิดในรังไข่</b> เริ่มมีตั้งแต่ยังเป็นเอ็มบริโอในครรภ์ · แบ่งแบบ<b>ไมโทซิส</b>เพื่อเพิ่มจำนวน' },
+  { n:'โอโอไซต์ระยะแรก (หยุดที่โพรเฟส I)', e:'Primary oocyte — แบ่งแบบ<b>ไมโอซิส I</b> แล้ว<b>หยุดค้างไว้ที่ระยะโพรเฟส I ตั้งแต่ก่อนคลอด</b> · ยังเป็น<b>ดิพลอยด์ (2n)</b> อยู่ในถุงที่เรียกว่า<b>ฟอลลิเคิล</b>' },
+  { n:'ฟอลลิเคิลเจริญเต็มที่', e:'เมื่อถึง<b>วัยเจริญพันธุ์</b> ในแต่ละรอบประจำเดือนจะมี<b>เพียงฟอลลิเคิลเดียว</b>ที่ถูกกระตุ้นให้เจริญเต็มที่' },
+  { n:'โอโอไซต์ระยะที่สอง + โพลาร์บอดี (หยุดที่เมทาเฟส II)', e:'โอโอไซต์ระยะแรกแบ่ง<b>ไมโอซิส I ต่อจนจบ</b> ได้โอโอไซต์ระยะที่สอง (n) กับ<b>โพลาร์บอดี</b> แล้วแบ่งไมโอซิส II ต่อจน<b>หยุดที่ระยะเมทาเฟส II</b>' },
+  { n:'การตกไข่ เข้าสู่ท่อนำไข่', e:'Ovulation — ฟอลลิเคิลถูกกระตุ้นให้<b>แตกออก</b> ปล่อย<b>โอโอไซต์ระยะที่สอง</b>จากรังไข่เข้าสู่ท่อนำไข่' },
+  { n:'สเปิร์มเจาะ → ไมโอซิส II ต่อ → เซลล์ไข่', e:'เมื่อ<b>สเปิร์มเจาะที่ผิว</b> โอโอไซต์ระยะที่สองจึงแบ่ง<b>ไมโอซิส II ต่อจนจบ</b> ได้เซลล์ไข่ที่ปฏิสนธิแล้วกับโพลาร์บอดีอีกใบ ส่วนฟอลลิเคิลกลายเป็น<b>คอร์ปัสลูเทียม</b>' }
+];
+const EGG_ITEMS = [
+  { n:'โอโอโกเนียมแบ่งแบบไมโทซิส', g:'b', e:'เกิดตั้งแต่ยังเป็น<b>เอ็มบริโอในครรภ์</b> — เพศหญิงจึงมีเซลล์ต้นกำเนิดครบตั้งแต่ก่อนเกิด' },
+  { n:'ได้โอโอไซต์ระยะแรกที่หยุดอยู่ที่โพรเฟส I', g:'b', e:'หยุดค้างไว้ตั้งแต่<b>ก่อนคลอด</b> และรอจนถึงวัยเจริญพันธุ์' },
+  { n:'เซลล์ทุกเซลล์ยังเป็นดิพลอยด์ (2n)', g:'b', e:'โอโอไซต์ระยะแรกยังไม่จบไมโอซิส I จึงยังเป็น 2n' },
+  { n:'มีฟอลลิเคิลเดียวเจริญเต็มที่ในแต่ละรอบ', g:'a', e:'เกิดใน<b>วัยเจริญพันธุ์</b> รอบละ 1 ฟอลลิเคิล จึงตกไข่ครั้งละ 1 เซลล์' },
+  { n:'ไมโอซิส I แบ่งต่อจนจบ ได้โพลาร์บอดี', g:'a', e:'เริ่มเดินต่อเมื่อฟอลลิเคิลถูกกระตุ้นในวัยเจริญพันธุ์' },
+  { n:'ได้โอโอไซต์ระยะที่สองที่หยุดอยู่ที่เมทาเฟส II', g:'a', e:'จุดหยุดพัก<b>จุดที่สอง</b> รอสเปิร์มมากระตุ้น' },
+  { n:'การตกไข่เข้าสู่ท่อนำไข่', g:'a', e:'ฟอลลิเคิลแตกออก ปล่อยโอโอไซต์ระยะที่สองเข้าสู่ท่อนำไข่' },
+  { n:'ฟอลลิเคิลที่แตกแล้วกลายเป็นคอร์ปัสลูเทียม', g:'a', e:'ถ้าไม่มีการตั้งครรภ์ คอร์ปัสลูเทียมจะสลายไป' }
+];
+const EGG_Q = [
+  { q:'ผู้หญิงคนหนึ่งมีประจำเดือนครั้งแรกเมื่ออายุ 12 ปี และหมดประจำเดือนเมื่ออายุ 50 ปี ถ้าตกไข่รอบละ 1 เซลล์ เดือนละ 1 รอบ จะตกไข่ทั้งหมดประมาณกี่เซลล์',
+    o:['ประมาณ 38 เซลล์','ประมาณ 228 เซลล์','ประมาณ 456 เซลล์','ประมาณ 600 เซลล์'], a:2,
+    e:'ช่วงที่มีประจำเดือน = 50 − 12 = <b>38 ปี</b> · 1 ปีตกไข่ประมาณ 12 เซลล์<br>ดังนั้น 38 × 12 = <b>ประมาณ 456 เซลล์</b>' },
+  { q:'โอโอไซต์ระยะแรกแต่ละเซลล์ในรังไข่มีข้อมูลทางพันธุกรรม<b>เหมือนหรือแตกต่างกัน</b> เพราะเหตุใด',
+    o:['แตกต่างกัน เพราะเกิดจากไมโอซิสที่จบแล้ว','เหมือนกัน เพราะเกิดจากการแบ่งแบบไมโทซิสของโอโอโกเนียม และยังหยุดอยู่ที่โพรเฟส I โดยยังเป็นดิพลอยด์',
+       'แตกต่างกัน เพราะแต่ละเซลล์อยู่คนละฟอลลิเคิล','เหมือนกัน เพราะทุกเซลล์เป็นแฮพลอยด์แล้ว'], a:1,
+    e:'โอโอไซต์ระยะแรกเกิดจาก<b>ไมโทซิส</b>ของโอโอโกเนียม จึงมีพันธุกรรม<b>เหมือนกัน</b> และเนื่องจากยังหยุดอยู่ที่<b>โพรเฟส I</b> แต่ละเซลล์จึงยังเป็น<b>ดิพลอยด์</b>' },
+  { q:'ถ้า<b>ไม่เกิดการปฏิสนธิ</b>ภายในประมาณ 24 ชั่วโมงหลังตกไข่ จะเกิดอะไรขึ้น',
+    o:['โอโอไซต์ระยะที่สองแบ่งไมโอซิส II ต่อจนได้เซลล์ไข่','โอโอไซต์ระยะที่สองและคอร์ปัสลูเทียมสลายไป แล้วรอบถัดไปจะมีฟอลลิเคิลชุดใหม่เจริญขึ้น',
+       'ฟอลลิเคิลจะกลับเข้าไปในรังไข่ตามเดิม','เอนโดมีเทรียมจะหนาขึ้นเรื่อย ๆ ไม่สลาย'], a:1,
+    e:'เมื่อไม่มีการปฏิสนธิ <b>โอโอไซต์ระยะที่สองและคอร์ปัสลูเทียมจะสลายไป</b> และในรอบประจำเดือนถัดไปจะมี<b>ฟอลลิเคิลชุดใหม่</b>เจริญขึ้นมาแทน' }
+];
+function stageEgg(){
+  let orderWrong = 0, sortWrong = 0;
+  drawOrder();
+
+  function drawOrder(){
+    app.innerHTML = stageShell('egg', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เรียงลำดับการสร้างเซลล์ไข่ตั้งแต่ยังเป็นเอ็มบริโอในครรภ์ จนถึงตอนที่สเปิร์มมาถึง</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(EGG_STEPS, 'แตะการ์ดด้านล่างเรียงตามลำดับ…')}
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        💡 <b>ใบ้:</b> การสร้างเซลล์ไข่มี <b>“จุดหยุดพัก” 2 จุด</b> — หยุดที่<b>โพรเฟส I</b> ตั้งแต่ก่อนคลอด
+        และหยุดที่<b>เมทาเฟส II</b> ตอนตกไข่ · จะเดินต่อจนจบก็ต่อเมื่อ<b>สเปิร์มมาเจาะที่ผิว</b>
+      </div>
+    `);
+    bindOrder(EGG_STEPS, wrong=>{ orderWrong=wrong; toast('ถูกต้อง! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawSort,1000); });
+  }
+
+  function drawSort(){
+    const B = { b:{t:'🤰 ก่อนคลอด (ตอนเป็นเอ็มบริโอในครรภ์)'}, a:{t:'🌷 เมื่อเข้าสู่วัยเจริญพันธุ์'} };
+    app.innerHTML = stageShell('egg', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> เหตุการณ์ไหนเกิด<b>ก่อนคลอด</b> เหตุการณ์ไหนเกิดเมื่อ<b>เข้าสู่วัยเจริญพันธุ์</b>
+        — จัดให้ครบ ${EGG_ITEMS.length} ชิ้น</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(EGG_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+    `);
+    bindBuckets(EGG_ITEMS, B, 'pb', 'fb', wrong=>{
+      sortWrong = wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz,800);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('egg', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องการสร้างเซลล์ไข่ให้ครบ ${EGG_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(EGG_Q, 'qhost', qWrong=>{
+      const miss = orderWrong + sortWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('egg', got, 80-Math.min(miss*7,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>ก่อนคลอด:</b> โอโอโกเนียม —ไมโทซิส→ แล้วเริ่มไมโอซิส I แต่<b>หยุดที่โพรเฟส I</b> ได้ <b>โอโอไซต์ระยะแรก (2n)</b> ในฟอลลิเคิล<br>
+          • <b>วัยเจริญพันธุ์:</b> รอบละ 1 ฟอลลิเคิลเจริญเต็มที่ → ไมโอซิส I จบได้ <b>โอโอไซต์ระยะที่สอง (n) + โพลาร์บอดี</b>
+            แล้วไมโอซิส II <b>หยุดที่เมทาเฟส II</b> → <b>ตกไข่</b>เข้าสู่ท่อนำไข่<br>
+          • <b>เมื่อสเปิร์มเจาะที่ผิว:</b> ไมโอซิส II เดินต่อจนจบ ได้<b>เซลล์ไข่</b> · ฟอลลิเคิลกลายเป็น<b>คอร์ปัสลูเทียม</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> สิ่งที่<b>ตกออกมาจากรังไข่คือโอโอไซต์ระยะที่สอง</b> ไม่ใช่ “เซลล์ไข่” ที่สมบูรณ์
+          — จะเรียกว่าเซลล์ไข่ก็ต่อเมื่อไมโอซิส II เดินต่อจนจบหลังสเปิร์มมาเจาะแล้วเท่านั้น</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> 1 โอโอไซต์ระยะแรก ให้<b>เซลล์ไข่เพียง 1 เซลล์</b> (ที่เหลือเป็นโพลาร์บอดีที่สลายไป)
+          ต่างจากฝ่ายชายที่ 1 สเปอร์มาโทไซต์ระยะแรกให้สเปิร์มถึง 4 เซลล์
+          — เพราะเซลล์ไข่ต้องเก็บไซโทพลาซึมและสารอาหารไว้เลี้ยงเอ็มบริโอในระยะแรก</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 6 — บอส: ห้องตรวจสายพันธุ์ (สถานการณ์จริง + ตารางเทียบสเปิร์มกับเซลล์ไข่)
+   ========================================================================= */
+function stageBoss(){
+  const SC = [
+    { icon:'🌡️', title:'อัณฑะที่ไม่เคลื่อนลงถุงอัณฑะ',
+      body:'ทารกชายคนหนึ่งเกิดมาโดยที่อัณฑะข้างหนึ่งยังค้างอยู่ในช่องท้อง ไม่เคลื่อนลงมาอยู่ในถุงอัณฑะ',
+      q:'ผลที่น่าจะเกิดขึ้นกับการสร้างสเปิร์มคือข้อใด',
+      o:['ไม่มีผล เพราะอัณฑะสร้างสเปิร์มได้ทุกที่',
+         'อุณหภูมิในช่องท้องสูงเกินไป จึงไม่เหมาะกับการสร้างสเปิร์ม ทำให้สร้างสเปิร์มได้น้อยกว่าปกติ',
+         'สเปิร์มจะมีโครโมโซมเป็น 2n แทนที่จะเป็น n',
+         'ต่อมลูกหมากจะหยุดหลั่งของเหลว'],
+      a:1, e:'ถุงอัณฑะทำให้อุณหภูมิ<b>ต่ำกว่าอุณหภูมิร่างกายประมาณ 2–3 °C</b> ซึ่งเหมาะกับการเจริญของสเปิร์ม ' +
+        'ถ้าอัณฑะค้างอยู่ในช่องท้องซึ่งร้อนกว่า การสร้างสเปิร์มจะทำได้ไม่ดี และผู้ที่อัณฑะลงมาเพียงข้างเดียวจะสร้างสเปิร์มได้น้อยกว่าปกติ' },
+
+    { icon:'✂️', title:'ตรวจน้ำอสุจิหลังทำหมันชาย',
+      body:'ชายคนหนึ่งทำหมันโดยตัดและผูกหลอดนำอสุจิทั้งสองข้าง หลังจากนั้นแพทย์นำน้ำอสุจิไปตรวจ',
+      q:'ผลตรวจที่คาดว่าจะพบคือข้อใด',
+      o:['ไม่มีน้ำอสุจิหลั่งออกมาเลย',
+         'มีน้ำอสุจิตามปกติแต่ไม่พบสเปิร์ม เพราะสเปิร์มเดินทางไปยังท่อปัสสาวะไม่ได้',
+         'พบสเปิร์มปกติ แต่สเปิร์มเคลื่อนที่ไม่ได้',
+         'พบสเปิร์มที่มีโครโมโซม 2n'],
+      a:1, e:'ต่อมต่าง ๆ ยังหลั่งของเหลวตามปกติจึงยังมี<b>น้ำอสุจิ</b> และอัณฑะยังสร้างสเปิร์มอยู่ ' +
+        'แต่เมื่อ<b>หลอดนำอสุจิถูกตัดและผูก</b> สเปิร์มจึงไปถึงท่อปัสสาวะไม่ได้ น้ำอสุจิที่หลั่งออกมาจึง<b>ไม่มีสเปิร์ม</b>' },
+
+    { icon:'🔢', title:'โจทย์คำนวณ: นับเซลล์สืบพันธุ์',
+      body:'ห้องปฏิบัติการมีสเปอร์มาโทไซต์ระยะแรก 250 เซลล์ และโอโอไซต์ระยะแรก 250 เซลล์',
+      q:'ถ้าทุกเซลล์เจริญจนครบกระบวนการ จะได้สเปิร์มและเซลล์ไข่อย่างละกี่เซลล์',
+      o:['สเปิร์ม 250 เซลล์ · เซลล์ไข่ 250 เซลล์',
+         'สเปิร์ม 1,000 เซลล์ · เซลล์ไข่ 250 เซลล์',
+         'สเปิร์ม 1,000 เซลล์ · เซลล์ไข่ 1,000 เซลล์',
+         'สเปิร์ม 500 เซลล์ · เซลล์ไข่ 500 เซลล์'],
+      a:1, e:'1 สเปอร์มาโทไซต์ระยะแรก → <b>สเปิร์ม 4 เซลล์</b> จึงได้ 250 × 4 = <b>1,000 เซลล์</b><br>' +
+        'ส่วน 1 โอโอไซต์ระยะแรก → <b>เซลล์ไข่เพียง 1 เซลล์</b> (อีก 3 เซลล์เป็นโพลาร์บอดีที่สลายไป) จึงได้ <b>250 เซลล์</b>' },
+
+    { icon:'🚼', title:'ทำไมโพลาร์บอดีจึงเล็กกว่ามาก',
+      body:'ในการสร้างเซลล์ไข่ การแบ่งไซโทพลาซึมจะไม่เท่ากัน เซลล์หนึ่งใหญ่ อีกเซลล์เล็กมากเรียกว่าโพลาร์บอดี',
+      q:'เหตุผลที่อธิบายเรื่องนี้ได้ดีที่สุดคือข้อใด',
+      o:['เพราะโพลาร์บอดีมีโครโมโซมน้อยกว่า',
+         'เพื่อให้เซลล์ไข่เก็บไซโทพลาซึมและสารอาหารไว้มากพอสำหรับเลี้ยงเอ็มบริโอในระยะแรก',
+         'เพราะโพลาร์บอดีไม่ได้ผ่านไมโอซิส',
+         'เพราะโพลาร์บอดีจะเจริญเป็นสเปิร์มต่อไป'],
+      a:1, e:'โพลาร์บอดีมีจำนวนโครโมโซม<b>เท่ากับ</b>โอโอไซต์ระยะที่สอง (เป็น n เหมือนกัน) แต่ได้ไซโทพลาซึมน้อยมาก ' +
+        'การแบ่งแบบไม่เท่ากันนี้ทำให้<b>เซลล์ไข่เพียงเซลล์เดียวได้สารอาหารเกือบทั้งหมด</b> เพื่อเลี้ยงเอ็มบริโอในระยะแรก' },
+
+    { icon:'🧫', title:'ส่องกล้องดูรังไข่ของทารกแรกเกิด',
+      body:'นักวิจัยศึกษารังไข่ของทารกเพศหญิงแรกเกิด พบเซลล์จำนวนมากที่หยุดค้างอยู่ในระยะหนึ่งของการแบ่งเซลล์',
+      q:'เซลล์เหล่านั้นคือเซลล์ใด และหยุดอยู่ที่ระยะใด',
+      o:['โอโอไซต์ระยะที่สอง หยุดที่เมทาเฟส II',
+         'โอโอไซต์ระยะแรก หยุดที่โพรเฟส I',
+         'โอโอโกเนียม หยุดที่แอนาเฟส',
+         'เซลล์ไข่ที่สมบูรณ์แล้ว รอการปฏิสนธิ'],
+      a:1, e:'การสร้างเซลล์ไข่เริ่มตั้งแต่เป็นเอ็มบริโอในครรภ์ — โอโอโกเนียมแบ่งไมโทซิสแล้วเข้าสู่ไมโอซิส I และ<b>หยุดค้างที่โพรเฟส I ตั้งแต่ก่อนคลอด</b> ' +
+        'ได้เป็น<b>โอโอไซต์ระยะแรก</b> ที่จะรอจนถึงวัยเจริญพันธุ์จึงแบ่งต่อ' },
+
+    { icon:'🩺', title:'ท่อนำไข่อุดตันทั้งสองข้าง',
+      body:'ผู้ป่วยหญิงคนหนึ่งมีท่อนำไข่อุดตันทั้งสองข้างจากการอักเสบ แต่รังไข่และมดลูกยังทำงานปกติ',
+      q:'ผลที่เกิดขึ้นคือข้อใด',
+      o:['รังไข่จะหยุดตกไข่ทันที',
+         'ยังตกไข่ได้ตามปกติ แต่สเปิร์มกับเซลล์ไข่มาพบกันไม่ได้ จึงไม่เกิดการปฏิสนธิ',
+         'เอ็มบริโอจะฝังตัวที่รังไข่แทน',
+         'ประจำเดือนจะหยุดทันที'],
+      a:1, e:'<b>ท่อนำไข่เป็นบริเวณที่เกิดการปฏิสนธิ</b> เมื่ออุดตัน เซลล์ไข่กับสเปิร์มจึงมาพบกันไม่ได้ ' +
+        'รังไข่ยังตกไข่และมดลูกยังมีรอบประจำเดือนตามปกติ — นี่คือหลักการเดียวกับ<b>การทำหมันหญิง</b>' },
+
+    { icon:'📅', title:'เอนโดมีเทรียมกับประจำเดือน',
+      body:'ในแต่ละรอบ ถ้าไม่มีการปฏิสนธิ เยื่อบุชั้นในของมดลูกจะสลายออกมาเป็นประจำเดือน',
+      q:'ข้อสรุปใดถูกต้องที่สุด',
+      o:['ชั้นกล้ามเนื้อของมดลูกสลายกลายเป็นประจำเดือน',
+         'เอนโดมีเทรียมเป็นทั้งบริเวณที่เอ็มบริโอฝังตัว และเป็นชั้นที่สลายกลายเป็นประจำเดือนเมื่อไม่มีการฝังตัว',
+         'ประจำเดือนคือเซลล์ไข่ที่ไม่ได้ปฏิสนธิ',
+         'รังไข่เป็นบริเวณที่สลายกลายเป็นประจำเดือน'],
+      a:1, e:'<b>เอนโดมีเทรียม</b>คือเยื่อบุชั้นในของมดลูกที่มีหลอดเลือดหล่อเลี้ยงมาก ' +
+        'ถ้ามีการปฏิสนธิ เอ็มบริโอจะมา<b>ฝังตัว</b>ที่นี่ ถ้าไม่มี เยื่อบุนี้จะ<b>สลายออกมาเป็นประจำเดือน</b> ' +
+        '(ประจำเดือนไม่ใช่ตัวเซลล์ไข่ และไม่ใช่ชั้นกล้ามเนื้อที่ใช้บีบตัวตอนคลอด)' },
+
+    { icon:'⚖️', title:'ตรวจสอบขั้นสุดท้าย: เทียบสองสายการผลิต',
+      body:'หัวหน้าห้องตรวจขอให้สรุปความแตกต่างระหว่างสเปิร์มกับเซลล์ไข่ให้ครบถ้วน',
+      q:'ข้อใดสรุปได้<b>ถูกต้องทั้งหมด</b>',
+      o:['สเปิร์ม: n · เล็ก · เคลื่อนที่เองได้ · 1 เซลล์ตั้งต้นได้ 4 เซลล์ || เซลล์ไข่: n · ใหญ่ · เคลื่อนที่เองไม่ได้ · 1 เซลล์ตั้งต้นได้ 1 เซลล์',
+         'สเปิร์ม: 2n · ใหญ่ · เคลื่อนที่เองไม่ได้ || เซลล์ไข่: n · เล็ก · เคลื่อนที่เองได้',
+         'ทั้งสองเป็น 2n และเคลื่อนที่เองได้เหมือนกัน',
+         'สเปิร์ม: n · 1 เซลล์ตั้งต้นได้ 1 เซลล์ || เซลล์ไข่: n · 1 เซลล์ตั้งต้นได้ 4 เซลล์'],
+      a:0, e:'ทั้งสเปิร์มและเซลล์ไข่เป็น<b>แฮพลอยด์ (n) เหมือนกัน</b> แต่ต่างกันที่ขนาด รูปร่าง การเคลื่อนที่ ' +
+        'จำนวนที่สร้างได้ และช่วงเวลาที่สร้าง — ดูตารางสรุปหลังจบด่านนี้' }
+  ];
+  let i=0, right=0;
+  app.innerHTML = stageShell('boss', `
+    <div class="note miss">👹 <b>ด่านบอส:</b> ${SC.length} สถานการณ์ ทดสอบว่าเข้าใจ “ทำไม” ไม่ใช่แค่ “คืออะไร” — ตอบถูกยิ่งมาก ยิ่งได้ดาวเยอะ</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="box"></div>
+  `);
+  const pb=document.getElementById('pb'), host=document.getElementById('box');
+  function step(){
+    pb.style.width=(i/SC.length*100)+'%';
+    if(i>=SC.length){
+      const got = right>=SC.length-1?3:right>=SC.length-3?2:right>=2?1:0;
+      stageMiss=SC.length-right;
+      finishStage('boss', got, right*17, `
+        <div class="note key">🟡 <b>ตารางเทียบสเปิร์มกับเซลล์ไข่ (ออกสอบบ่อยที่สุด)</b>
+          <div style="overflow-x:auto"><table class="cmp" style="margin-top:8px">
+            <thead><tr><th>ข้อเปรียบเทียบ</th><th>สเปิร์ม</th><th>เซลล์ไข่</th></tr></thead>
+            <tbody>
+              <tr><td>จำนวนชุดโครโมโซม</td><td class="yes">1 ชุด (n)</td><td class="yes">1 ชุด (n)</td></tr>
+              <tr><td>ขนาด</td><td>ขนาดเล็ก</td><td>ขนาดใหญ่</td></tr>
+              <tr><td>รูปร่าง</td><td>ยาว มีส่วนหัว ลำตัว และหาง</td><td>กลม</td></tr>
+              <tr><td>การเคลื่อนที่</td><td>เคลื่อนที่เองได้</td><td>เคลื่อนที่เองไม่ได้</td></tr>
+              <tr><td>ระยะเวลาในการสร้าง</td><td>ตั้งแต่วัยเจริญพันธุ์จนตลอดชีวิต · หลั่งครั้งละประมาณ 300–500 ล้านเซลล์</td>
+                  <td>เฉพาะช่วงวัยเจริญพันธุ์ · รอบประจำเดือนละ 1 เซลล์</td></tr>
+              <tr><td>ผลจากการแบ่งเซลล์</td><td>สเปอร์มาโทไซต์ระยะแรก 1 เซลล์ → สเปิร์ม 4 เซลล์</td>
+                  <td>โอโอไซต์ระยะแรก 1 เซลล์ → เซลล์ไข่ 1 เซลล์</td></tr>
+              <tr><td>อวัยวะที่สร้าง</td><td>หลอดสร้างอสุจิ ในอัณฑะ</td><td>ฟอลลิเคิล ในรังไข่</td></tr>
+            </tbody></table></div></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> สเปิร์มกับเซลล์ไข่<b>มีจำนวนชุดโครโมโซมเท่ากัน (n เหมือนกัน)</b>
+          ที่ต่างกันคือขนาด รูปร่าง การเคลื่อนที่ และจำนวนที่สร้างได้ ไม่ใช่จำนวนโครโมโซม</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> เพศชายสร้างสเปิร์มใหม่ได้ตลอดชีวิต แต่เพศหญิงมีโอโอไซต์ระยะแรกครบตั้งแต่<b>ก่อนคลอด</b>
+          และใช้ไปทีละเซลล์ในแต่ละรอบ — จึงเป็นเหตุผลว่าทำไมอายุของฝ่ายหญิงจึงมีผลต่อคุณภาพของเซลล์ไข่มากกว่า</div>
+        <div class="small muted">ตอบถูก ${right}/${SC.length} ข้อ</div>`);
+      return;
+    }
+    const s=SC[i];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">สถานการณ์ ${i+1}/${SC.length}</div>
+      <h3 style="margin:6px 0 4px">${s.icon} ${s.title}</h3>
+      <p style="margin:0 0 6px;font-size:.92rem">${s.body}</p>
+      <div style="font-weight:800;font-size:.95rem;margin-top:10px">${s.q}</div>
+      <div class="opts">${s.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===s.a; if(ok) right++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===s.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+s.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${i===SC.length-1?'สรุปผล →':'สถานการณ์ถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ i++; step(); window.scrollTo({top:0,behavior:'smooth'}); };
+      };
+    });
+  }
+  step();
+}
+
+/* =========================================================================
+   การ์ดคำศัพท์
+   ========================================================================= */
+const CARDS = [
+  ['ภาพรวม','ระบบสืบพันธุ์','Reproductive system','ระบบอวัยวะที่ทำหน้าที่สร้างเซลล์สืบพันธุ์และทำให้เกิดการสืบพันธุ์แบบอาศัยเพศ'],
+  ['ภาพรวม','การปฏิสนธิภายใน','Internal fertilization','การรวมกันของสเปิร์มกับเซลล์ไข่ภายในร่างกายของเพศหญิง — มนุษย์ปฏิสนธิภายในและออกลูกเป็นตัวเช่นเดียวกับสัตว์มีกระดูกสันหลังหลายชนิด'],
+  ['ภาพรวม','แฮพลอยด์','Haploid (n)','เซลล์ที่มีโครโมโซม 1 ชุด — <b>ทั้งสเปิร์มและเซลล์ไข่เป็นแฮพลอยด์</b>'],
+  ['ภาพรวม','ดิพลอยด์','Diploid (2n)','เซลล์ที่มีโครโมโซม 2 ชุด เช่น เซลล์ร่างกาย สเปอร์มาโทโกเนียม สเปอร์มาโทไซต์ระยะแรก และโอโอไซต์ระยะแรก'],
+
+  ['เพศชาย','อัณฑะ','Testis','อวัยวะที่สร้าง<b>สเปิร์ม</b>และฮอร์โมน<b>เทสโทสเทอโรน</b> อยู่นอกช่องท้อง'],
+  ['เพศชาย','ถุงอัณฑะ','Scrotum','ถุงห่อหุ้มอัณฑะ อุณหภูมิภายในต่ำกว่าอุณหภูมิร่างกายประมาณ <b>2–3 °C</b> เหมาะกับการเจริญของสเปิร์ม'],
+  ['เพศชาย','หลอดสร้างอสุจิ','Seminiferous tubule','ท่อยาวขดไปมาภายในอัณฑะ เป็นที่<b>สร้างสเปิร์ม</b> ผนังท่อมีเซลล์ต้นกำเนิดอยู่'],
+  ['เพศชาย','หลอดเก็บอสุจิ','Epididymis','ที่พัก<b>เก็บสเปิร์ม</b>ที่สร้างเสร็จแล้ว ก่อนเคลื่อนต่อเมื่อมีการหลั่งน้ำอสุจิ'],
+  ['เพศชาย','หลอดนำอสุจิ','Vas deferens','ท่อ<b>ลำเลียงสเปิร์ม</b>ขึ้นไปยังท่อปัสสาวะ · เป็นตำแหน่งที่ตัดและผูกเพื่อ<b>ทำหมันชาย</b>'],
+  ['เพศชาย','ท่อปัสสาวะ','Urethra','ท่อร่วมที่ใช้ทั้งขับปัสสาวะและลำเลียงน้ำอสุจิออกนอกร่างกาย'],
+  ['เพศชาย','องคชาต','Penis','อวัยวะที่นำน้ำอสุจิเข้าสู่ระบบสืบพันธุ์เพศหญิง'],
+  ['เพศชาย','ต่อมสร้างน้ำเลี้ยงอสุจิ','Seminal vesicle','หลั่งของเหลวที่มี<b>น้ำตาลฟรักโทส</b> ซึ่งเป็นแหล่งพลังงานของสเปิร์ม พร้อมเมือกและสารอื่น ๆ'],
+  ['เพศชาย','ต่อมลูกหมาก','Prostate gland','หลั่งของเหลวที่เป็น<b>เบส</b> ช่วยให้สเปิร์มเคลื่อนที่และอยู่รอดในช่องคลอดที่เป็นกรด · ถ้าโตผิดปกติจะเบียดท่อปัสสาวะ ทำให้ปัสสาวะขัด'],
+  ['เพศชาย','ต่อมคาวเปอร์','Cowper&#39;s gland','หรือ bulbourethral gland — หลั่งของเหลวเพื่อ<b>หล่อลื่นและลดความเป็นกรดในท่อปัสสาวะ</b>'],
+
+  ['สร้างสเปิร์ม','กระบวนการสร้างสเปิร์ม','Spermatogenesis','กระบวนการสร้างสเปิร์มภายใน<b>หลอดสร้างอสุจิ</b> เริ่มเมื่อเข้าสู่วัยรุ่นและสร้างได้ตลอดชีวิต'],
+  ['สร้างสเปิร์ม','สเปอร์มาโทโกเนียม','Spermatogonium','เซลล์ต้นกำเนิด (2n) ที่ผนังหลอดสร้างอสุจิ แบ่งแบบ<b>ไมโทซิส</b>เพื่อเพิ่มจำนวน'],
+  ['สร้างสเปิร์ม','สเปอร์มาโทไซต์ระยะแรก','Primary spermatocyte','เซลล์ (2n) ที่มีขนาดใหญ่ขึ้นและกำลังจะแบ่งแบบไมโอซิส — 1 เซลล์ให้สเปิร์ม 4 เซลล์'],
+  ['สร้างสเปิร์ม','สเปอร์มาโทไซต์ระยะที่สอง','Secondary spermatocyte','เซลล์ที่ได้เมื่อสิ้นสุด<b>ไมโอซิส I</b> เป็น<b>แฮพลอยด์ (n)</b> แล้ว'],
+  ['สร้างสเปิร์ม','สเปอร์มาทิด','Spermatid','เซลล์ที่ได้เมื่อสิ้นสุด<b>ไมโอซิส II</b> · ยังไม่มีหาง ต้องเปลี่ยนสภาพก่อนจึงเป็นสเปิร์ม'],
+  ['สร้างสเปิร์ม','การเปลี่ยนสภาพ','Differentiation','ขั้นตอนที่สเปอร์มาทิดเปลี่ยนรูปร่างเป็นสเปิร์ม — <b>ไม่ใช่การแบ่งเซลล์</b> จำนวนเซลล์จึงไม่เพิ่ม'],
+  ['สร้างสเปิร์ม','อะโครโซม','Acrosome','ถุงที่ส่วนหัวของสเปิร์ม บรรจุ<b>เอนไซม์ย่อยเยื่อหุ้มเซลล์ไข่</b>'],
+  ['สร้างสเปิร์ม','แฟลเจลลัม','Flagellum','ส่วนหางของสเปิร์มที่โบกไปมาเพื่อ<b>ช่วยในการเคลื่อนที่</b>'],
+
+  ['เพศหญิง','รังไข่','Ovary','อวัยวะที่สร้าง<b>เซลล์ไข่</b>และ<b>ฮอร์โมนเพศหญิง (อีสโทรเจน)</b> อยู่สองข้างของมดลูก'],
+  ['เพศหญิง','ท่อนำไข่','Oviduct / Fallopian tube','ทางเดินของเซลล์ไข่ · เป็นบริเวณที่เกิด<b>การปฏิสนธิ</b> และเป็นจุดที่ผูก ตัด หรือจี้เพื่อ<b>ทำหมันหญิง</b>'],
+  ['เพศหญิง','ปลายเปิดคล้ายปากแตร','Fimbriae','ปลายเปิดของท่อนำไข่ที่แผ่ออก ทำหน้าที่รับเซลล์ไข่ที่ตกจากรังไข่'],
+  ['เพศหญิง','ซิเลีย','Cilia','ขนเล็ก ๆ ที่เซลล์เยื่อบุผิวของท่อนำไข่ <b>พัดโบกพาเซลล์ไข่</b>ให้เคลื่อนไปตามท่อ'],
+  ['เพศหญิง','มดลูก','Uterus','อวัยวะที่เอ็มบริโอเจริญเติบโต · ชั้นกล้ามเนื้อทำหน้าที่<b>บีบตัวระหว่างการคลอด</b>'],
+  ['เพศหญิง','เอนโดมีเทรียม','Endometrium','เยื่อบุชั้นในของมดลูก มีหลอดเลือดหล่อเลี้ยงมาก เป็นที่<b>ฝังตัวของเอ็มบริโอ</b> และเป็นชั้นที่<b>สลายเป็นประจำเดือน</b>'],
+  ['เพศหญิง','ปากมดลูก','Cervix','ส่วนล่างสุดของมดลูกที่ต่อกับช่องคลอด'],
+  ['เพศหญิง','ช่องคลอด','Vagina','ทางผ่านของสเปิร์มเข้าสู่ระบบสืบพันธุ์เพศหญิง และเป็นช่องทางคลอด · ภายในมีสภาพเป็น<b>กรด</b>'],
+
+  ['สร้างเซลล์ไข่','กระบวนการสร้างเซลล์ไข่','Oogenesis','กระบวนการสร้างเซลล์ไข่ภายใน<b>รังไข่</b> เริ่มตั้งแต่ยังเป็นเอ็มบริโอในครรภ์'],
+  ['สร้างเซลล์ไข่','โอโอโกเนียม','Oogonium','เซลล์ต้นกำเนิดในรังไข่ที่จะเจริญเป็นเซลล์ไข่ · แบ่งแบบ<b>ไมโทซิส</b>เพื่อเพิ่มจำนวน'],
+  ['สร้างเซลล์ไข่','โอโอไซต์ระยะแรก','Primary oocyte','เซลล์ (2n) ที่<b>หยุดค้างอยู่ที่ระยะโพรเฟส I ตั้งแต่ก่อนคลอด</b> อยู่ในฟอลลิเคิล'],
+  ['สร้างเซลล์ไข่','ฟอลลิเคิล','Follicle','ถุงที่ห่อหุ้มโอโอไซต์ไว้ในรังไข่ — แต่ละรอบประจำเดือนมีเพียง<b>ฟอลลิเคิลเดียว</b>ที่เจริญเต็มที่'],
+  ['สร้างเซลล์ไข่','โอโอไซต์ระยะที่สอง','Secondary oocyte','เซลล์ (n) ที่ได้หลังไมโอซิส I และ<b>หยุดค้างที่ระยะเมทาเฟส II</b> — เป็นเซลล์ที่<b>ตกไข่ออกมา</b>'],
+  ['สร้างเซลล์ไข่','โพลาร์บอดี','Polar body','เซลล์เล็ก ๆ ที่ได้จากการแบ่งไซโทพลาซึม<b>อย่างไม่เท่ากัน</b> มีโครโมโซม n เท่ากันแต่ได้ไซโทพลาซึมน้อยมาก แล้วสลายไป'],
+  ['สร้างเซลล์ไข่','การตกไข่','Ovulation','การที่ฟอลลิเคิลเจริญเต็มที่แล้ว<b>แตกออก</b> ปล่อยโอโอไซต์ระยะที่สองจากรังไข่เข้าสู่ท่อนำไข่ · ปกติรอบละ 1 เซลล์'],
+  ['สร้างเซลล์ไข่','คอร์ปัสลูเทียม','Corpus luteum','สิ่งที่ฟอลลิเคิลกลายเป็นหลังการตกไข่ — ถ้าไม่มีการตั้งครรภ์จะ<b>สลายไป</b>'],
+  ['สร้างเซลล์ไข่','เซลล์ไข่','Egg cell / Ovum','เซลล์สืบพันธุ์เพศหญิงที่สมบูรณ์ เกิดเมื่อ<b>สเปิร์มเจาะที่ผิว</b>แล้วโอโอไซต์ระยะที่สองแบ่งไมโอซิส II ต่อจนจบ']
+];
+function renderCards(){
+  const cats=[...new Set(CARDS.map(c=>c[0]))];
+  let cat='ทั้งหมด', deck=[], idx=0, flipped=false;
+  function build(){ deck=(cat==='ทั้งหมด'?CARDS:CARDS.filter(c=>c[0]===cat)); idx=0; flipped=false; }
+  build();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic">🃏</div>
+      <div style="flex:1;min-width:200px"><h2>การ์ดคำศัพท์</h2>
+        <div class="sub">แตะการ์ดเพื่อพลิกดูความหมาย · ${CARDS.length} คำศัพท์ ไทย–อังกฤษ</div></div>
+    </div>
+    <div class="deckbar" id="deckbar">
+      ${['ทั้งหมด',...cats].map(c=>`<button data-c="${c}" class="${c==='ทั้งหมด'?'on':''}">${c}</button>`).join('')}
+    </div>
+    <div class="fcstage"><div class="fc" id="fc"></div></div>
+    <div class="fcnav">
+      <button class="btn sm" id="prev">← ก่อนหน้า</button>
+      <span class="count" id="count"></span>
+      <button class="btn sm" id="next">ถัดไป →</button>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn ghost sm" id="shuf">🔀 สลับการ์ด</button>
+      <button class="btn primary sm" id="back">กลับแผนที่</button>
+    </div>
+    <div class="note" style="margin-top:20px">
+      💡 <b>วิธีใช้ให้ได้ผล:</b> อ่านคำศัพท์แล้ว<b>พูดนิยามออกมาเองก่อน</b> จึงค่อยพลิกดูเฉลย (active recall)
+    </div>`;
+  const fc=document.getElementById('fc'), cnt=document.getElementById('count');
+  function draw(){
+    const c=deck[idx];
+    if(!c){ fc.innerHTML='<div class="side front"><div class="term">ไม่มีการ์ดในหมวดนี้</div></div>'; return; }
+    fc.classList.remove('flip'); flipped=false;
+    fc.innerHTML = `
+      <div class="side front">
+        <div class="tag">${c[0]}</div><div class="term">${c[1]}</div><div class="en">${c[2]}</div>
+        <div class="hint">แตะเพื่อพลิก ↻</div>
+      </div>
+      <div class="side back">
+        <div class="tag">${c[1]} · ${c[2]}</div><div class="def">${c[3]}</div>
+        <div class="hint">แตะเพื่อพลิกกลับ ↻</div>
+      </div>`;
+    cnt.textContent = `${idx+1} / ${deck.length}`;
+  }
+  fc.onclick=()=>{ flipped=!flipped; fc.classList.toggle('flip',flipped); };
+  document.getElementById('prev').onclick=()=>{ idx=(idx-1+deck.length)%deck.length; draw(); };
+  document.getElementById('next').onclick=()=>{ idx=(idx+1)%deck.length; draw(); };
+  document.getElementById('shuf').onclick=()=>{ deck=shuffle(deck); idx=0; draw(); toast('สลับการ์ดแล้ว'); };
+  document.getElementById('back').onclick=renderMap;
+  document.querySelectorAll('#deckbar button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#deckbar button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); cat=b.dataset.c; build(); draw();
+    };
+  });
+  document.addEventListener('keydown', function nav(e){
+    if(!document.getElementById('fc')){ document.removeEventListener('keydown',nav); return; }
+    if(e.key==='ArrowRight') document.getElementById('next')?.click();
+    if(e.key==='ArrowLeft')  document.getElementById('prev')?.click();
+    if(e.key===' '){ e.preventDefault(); fc.click(); }
+  });
+  draw(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้) */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  nameX:0.496,            // จุดกึ่งกลางชื่อ (แนวนอน) — ตรงแกนเดียวกับข้อความอื่นในเกียรติบัตร
+  nameY:0.502,            // จุดกึ่งกลางชื่อ (แนวตั้ง) — ช่องว่างใต้ “ขอมอบเกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า”
+  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
+  nameSize:0.042,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
+  nameColor:'#0A0A0A'
+};
+const MAX_STARS = STAGES.length * 3;
+function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
+function certPassed(){
+  const allPlayed = STAGES.every(st => (S.stars[st.id]||0) > 0);
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  const j = (typeof getJoin==='function') ? getJoin() : null;
+  return localStorage.getItem('repro-cert-name') || (j && j.name) || '';
+}
+function certCardHtml(){
+  const need=certNeed(), got=totalStars(), ok=certPassed();
+  const pct=Math.min(100, Math.round(got/need*100));
+  return `<div class="card ${ok?'':'lockcard'}" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      border-color:${ok?'rgba(242,103,22,.5)':'var(--line)'}">
+    <div style="font-size:2rem">${ok?'🏅':'🔒'}</div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800">เกียรติบัตร${ok?' — ผ่านเกณฑ์แล้ว!':''}</div>
+      <div class="small muted">${ok
+        ? `เรียนครบทุกด่านและได้ ${got}/${MAX_STARS} ดาว (เกณฑ์ ${Math.round(CERT.pass*100)}% = ${need} ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย`
+        : `เล่นให้ครบทั้ง ${STAGES.length} ด่าน และเก็บดาวให้ถึง <b>${need}/${MAX_STARS}</b> ดาว (${Math.round(CERT.pass*100)}%) · ตอนนี้ได้ ${got} ดาว`}</div>
+      ${ok?'':`<div class="certprog"><i style="width:${pct}%"></i></div>`}
+    </div>
+    <button class="btn ${ok?'gold':''}" id="btnCert" ${ok?'':'disabled'}>รับเกียรติบัตร</button>
+  </div>`;
+}
+
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  const W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); }
+  else { certFallback(c, W, H); }
+  // ---- ชื่อผู้เรียน (ย่อขนาดอัตโนมัติจนพอดีกรอบ) ----
+  const maxW = W * CERT.nameW;
+  let size = W * CERT.nameSize;
+  const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = CERT.nameColor; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  c.strokeStyle = '#084A24'; c.lineWidth = W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle = '#F26716'; c.lineWidth = W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  const f=(px,w=700)=>`${w} ${px}px "Sukhumvit Set","Noto Sans Thai",sans-serif`;
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.645);
+  c.fillStyle='#D6350B'; c.font=f(W*0.022);
+  c.fillText('บทที่ 21 ระบบสืบพันธุ์และการเจริญเติบโต เรื่อง \u201Cการสืบพันธุ์ของมนุษย์\u201D', W/2, H*0.70);
+  c.fillText('สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 6', W/2, H*0.745);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.82);
+  // กรอบใส่ชื่อ
+  const bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  const gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+
+function renderCert(){
+  if(!certPassed()){ toast('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  let img = null, nameNow = certName();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic" style="font-size:2rem">🏅</div>
+      <div style="flex:1;min-width:200px"><h2>เกียรติบัตร</h2>
+        <div class="sub">ผ่านเกณฑ์ ${Math.round(CERT.pass*100)}% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</div></div>
+    </div>
+    <div class="note key">🎓 ได้ <b>${totalStars()}/${MAX_STARS} ดาว</b> จากทั้ง ${STAGES.length} ด่าน
+      (เกณฑ์ผ่าน ${certNeed()} ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>
+    <div class="certform">
+      <input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="${escHtml(nameNow)}">
+      <button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>
+    </div>
+    <div class="certwrap"><canvas id="ccv"></canvas></div>
+    <div class="certbar">
+      <button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>
+      <button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>
+      <button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>
+    </div>
+    <div class="note small" style="margin-top:14px">
+      📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b>
+    </div>`;
+  const cv = document.getElementById('ccv'), inp = document.getElementById('cname');
+  function paint(){
+    const nm = (inp.value||'').trim();
+    if(!nm){ toast('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    localStorage.setItem('repro-cert-name', nm);
+    drawCert(cv, nm, img);
+    return true;
+  }
+  // โหลดภาพเกียรติบัตรของโรงเรียน ถ้าไม่มีก็ใช้กรอบสำรอง
+  const im = new Image();
+  im.onload = ()=>{ img = im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror = ()=>{ img = null; drawCert(cv, nameNow||'', null); };
+  im.src = CERT.src;
+
+  document.getElementById('cmake').onclick = paint;
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick = ()=>{
+    if(!paint()) return;
+    const nm = (inp.value||'').trim();
+    cv.toBlob(b=>{
+      const url = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = url; a.download = `เกียรติบัตร-${nm}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('บันทึกเกียรติบัตรแล้ว 🎉');
+    }, 'image/png');
+  };
+  document.getElementById('copen').onclick = ()=>{
+    if(!paint()) return;
+    cv.toBlob(b=>{ window.open(URL.createObjectURL(b), '_blank'); }, 'image/png');
+  };
+  document.getElementById('cback').onclick = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= ระบบชั้นเรียน =================
+   ใช้ฐานข้อมูล Supabase ชุดเดียวกับเกมอื่นในเว็บไซต์นี้ คะแนนจึงขึ้นแดชบอร์ดครูหน้าเดิม
+   นักเรียนกรอกรหัสห้อง (เช่น M401A) + ชื่อ → จบด่านแล้วคะแนนวิ่งเข้าตาราง scores
+   แถวของเกมนี้กำกับด้วยคอลัมน์ game = 'reproduction' และเลขด่าน 1–6 เพื่อไม่ปนกับเกมอื่น
+   ถ้าไม่เข้าร่วมห้องหรือเน็ตหลุด เกมยังเล่นได้ปกติ คะแนนจะพักไว้แล้วส่งเองเมื่อกลับมาออนไลน์ */
+const SB_URL  = 'https://vgurqbcbovgeppvdwizr.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
+const GAME_KEY   = 'reproduction';   // ใช้แยกคะแนนของแต่ละเกมในแดชบอร์ด
+const LEVEL_BASE = 0;            // เลขด่านในตารางคะแนน = 1–6 (ฐานข้อมูลรับเลขด่าน 0–20 · แยกเกมด้วยคอลัมน์ game)
+
+function getJoin(){ try{ return JSON.parse(localStorage.getItem('repro-class')||'null'); }catch(e){ return null; } }
+function setJoin(o){ localStorage.setItem('repro-class', JSON.stringify(o)); }
+function clearJoin(){ localStorage.removeItem('repro-class'); }
+function newSid(){ return 'S'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---- คิวคะแนน กันเน็ตหลุด ---- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem('repro-outbox')||'[]'); }catch(e){ return []; } }
+function setOutbox(q){ try{ localStorage.setItem('repro-outbox', JSON.stringify(q)); }catch(e){} }
+
+async function pushRow(row){
+  const r = await fetch(SB_URL+'/rest/v1/scores', {
+    method:'POST',
+    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON,
+              'Content-Type':'application/json', 'Prefer':'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  if(r.status===409) return;   // แถวนี้อยู่ในฐานข้อมูลแล้ว (uid ซ้ำ) ถือว่าส่งสำเร็จ เอาออกจากคิวได้
+  if(!r.ok){
+    let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
+    if(/23505|duplicate key/i.test(d)) return;   // ซ้ำเหมือนกัน แต่ฐานข้อมูลตอบมาคนละรหัส
+    const err = new Error('http '+r.status+(d?' · '+d:'')); err.status = r.status; throw err;
+  }
+}
+/* ส่งคะแนนที่ค้างอยู่ในคิว — ถ้าส่งไม่สำเร็จจะบอกให้รู้ ไม่เงียบหาย */
+let lastSendErr = '';
+function sendErrMsg(e){
+  const s = e && e.status;
+  if(s===401) return 'คีย์ของห้องไม่ถูกต้อง — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===403) return 'ฐานข้อมูลปฏิเสธคะแนนนี้ — ห้องอาจถูกปิด หรือกฎความปลอดภัยไม่รับค่าที่ส่ง';
+  if(s===404) return 'ไม่พบตารางคะแนนในฐานข้อมูล — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===400) return 'รูปแบบข้อมูลไม่ตรงกับตารางคะแนน — แจ้งครูให้ตรวจคอลัมน์ในตาราง';
+  return (e && e.message) ? e.message : 'เครือข่ายมีปัญหา';
+}
+/* ซ่อมแถวเก่าที่ค้างในคิวให้ตรงกับกติกาปัจจุบันก่อนส่ง
+   (แถวที่ถูกเก็บไว้ตอนใช้เลขด่านชุดเก่า เช่น 21–26 จะถูกแปลงเป็น 1–6 ให้อัตโนมัติ) */
+function fixRow(row){
+  const r = Object.assign({}, row);
+  if(typeof r.level === 'number' && r.level > 20) r.level = ((r.level - 1) % 10) + 1;
+  r.stars   = Math.max(0, Math.min(3, Math.round(r.stars||0)));
+  r.percent = Math.max(0, Math.min(100, Math.round(r.percent||0)));
+  r.seconds = Math.max(0, Math.min(86400, Math.round(r.seconds||0)));
+  r.misses  = Math.max(0, Math.min(9999, Math.round(r.misses||0)));
+  r.attempt = Math.max(1, Math.min(9999, Math.round(r.attempt||1)));
+  delete r.tries;                                   // ตัวนับความพยายาม เก็บไว้ในเครื่องเท่านั้น
+  return r;
+}
+let flushing = false;
+async function flushPending(opts){
+  if(flushing) return;              // กันส่งซ้ำซ้อนตอนจบด่านพร้อมกับรอบส่งอัตโนมัติ
+  if(!outbox().length) return;
+  flushing = true;
+  const tried = {};                 // uid -> จำนวนครั้งที่พยายามส่ง
+  let failed = false, sent = 0, dropped = 0, stop = false;
+  /* วนซ้ำจนคิวหมด เพราะระหว่างกำลังส่งอาจมีคะแนนเข้าคิวเพิ่ม
+     (เช่นตอนกดเข้าร่วมห้องแล้วส่งดาวเก่าทุกด่านพร้อมกัน) */
+  while(!stop){
+    const q = outbox(); if(!q.length) break;
+    const settled = new Set();      // uid ที่ส่งสำเร็จหรือทิ้งถาวรแล้วในรอบนี้
+    let progressed = false;
+    for(const row of q){
+      if(stop) break;               // ปัญหาการตั้งค่า ส่งแถวที่เหลือต่อไปก็ไม่ผ่าน
+      try{ await pushRow(fixRow(row)); settled.add(row.uid); sent++; progressed = true; }
+      catch(e){
+        failed = true; lastSendErr = sendErrMsg(e);
+        const permanent = (e.status===400 || e.status===403 || e.status===422);
+        tried[row.uid] = (row.tries||0) + 1;
+        /* แถวที่ฐานข้อมูลไม่รับจริง ๆ จะถูกทิ้งหลังพยายาม 3 ครั้ง
+           เพื่อไม่ให้แถวเดียวค้างจนบล็อกคะแนนที่เหลือทั้งคิว */
+        if(permanent && tried[row.uid] >= 3){ settled.add(row.uid); dropped++; progressed = true; continue; }
+        if(e.status===401 || e.status===404) stop = true;
+      }
+    }
+    /* อ่านคิวใหม่อีกครั้ง แล้วเอาออกเฉพาะแถวที่จัดการเสร็จแล้ว
+       คะแนนที่เพิ่งเข้าคิวระหว่างนี้จึงไม่หายไปพร้อมกับการเคลียร์คิว */
+    const keep = outbox().filter(r=>!settled.has(r.uid));
+    keep.forEach(r=>{ if(tried[r.uid]) r.tries = tried[r.uid]; });
+    setOutbox(keep.slice(-200));
+    if(!progressed) break;          // รอบนี้ส่งไม่ผ่านเลยสักแถว วนซ้ำไปก็ไม่ผ่าน
+  }
+  const left = outbox();
+  flushing = false;
+  renderClassChip();
+  if(failed && !(opts && opts.quiet)){
+    toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr + (dropped?(' · ข้ามที่ส่งไม่ได้ '+dropped+' รายการ'):''));
+  }else if(!left.length && sent>1){
+    toast('✅ ส่งคะแนนที่ค้างครบแล้ว ' + sent + ' รายการ');
+  }
+}
+
+/* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
+function sendScore(stageId, starsGot, misses, seconds){
+  const j = getJoin(); if(!j || !j.room || !j.name) return;
+  const idx = STAGES.findIndex(x=>x.id===stageId);
+  const st  = STAGES[idx] || { title: stageId };
+  const row = {
+    uid: j.sid+'-'+stageId+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    room: j.room, student: String(j.name).trim().slice(0,60), sid: j.sid,
+    game: GAME_KEY,
+    level: LEVEL_BASE + (idx>=0?idx+1:9),
+    level_name: 'สืบพันธุ์ · ด่าน '+(idx+1)+' '+st.title,
+    stars: starsGot, percent: Math.round(starsGot/3*100),
+    score: starsGot, max_score: 3,
+    seconds: Math.max(0, Math.min(seconds|0, 86400)),
+    misses: Math.max(0, Math.min(misses|0, 9999)),
+    total_stars: totalStars(),
+    attempt: (S.plays && S.plays[stageId]) || 1,
+    client_ts: new Date().toISOString()
+  };
+  const q = outbox(); q.push(row); setOutbox(q.slice(-200));
+  flushPending();
+}
+/* ส่งดาวที่เคยได้ทั้งหมดตอนเพิ่งเข้าร่วมห้อง (นับเป็นครั้งที่ 1) */
+function syncAllStars(){
+  STAGES.forEach(st=>{
+    const got = S.stars[st.id]||0; if(!got) return;
+    sendScore(st.id, got, (S.miss&&S.miss[st.id])||0, (S.secs&&S.secs[st.id])||0);
+  });
+}
+
+/* ---- ชิปสถานะชั้นเรียนบนหน้าแผนที่ ---- */
+function renderClassChip(){
+  const slot=document.getElementById('classSlot'); if(!slot) return;
+  const j=getJoin();
+  if(j && j.room){
+    const stuck = outbox().length;
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>` +
+      (stuck ? `<div class="classchip stuck" id="retrySend" title="แตะเพื่อลองส่งอีกครั้ง">⚠️ คะแนนค้างส่ง ${stuck} รายการ · แตะเพื่อลองใหม่</div>` : '');
+    slot.querySelector('#leaveClass').onclick=()=>{
+      if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
+    };
+    const rs = slot.querySelector('#retrySend');
+    if(rs) rs.onclick=async ()=>{
+      toast('กำลังลองส่งอีกครั้ง…');
+      await flushPending({quiet:true});
+      const left = outbox();
+      if(!left.length){ toast('✅ ส่งคะแนนที่ค้างครบแล้ว'); return; }
+      /* ยังส่งไม่ได้ — แสดงรายละเอียดให้ครูถ่ายหน้าจอส่งต่อได้ */
+      const r0 = left[0] || {};
+      alert('ส่งคะแนนไม่สำเร็จ\n\n' +
+        'ค้างอยู่ ' + left.length + ' รายการ\n' +
+        'สาเหตุล่าสุด: ' + (lastSendErr || 'ไม่ทราบ') + '\n\n' +
+        'รายการแรกในคิว\n' +
+        '· เกม: ' + (r0.game||'-') + '\n' +
+        '· ด่าน: ' + (r0.level||'-') + ' (' + (r0.level_name||'-') + ')\n' +
+        '· ห้อง: ' + (r0.room||'-') + ' · ชื่อ: ' + (r0.student||'-') + '\n' +
+        '· พยายามส่งแล้ว: ' + (r0.tries||1) + ' ครั้ง');
+    };
+  }else{
+    slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
+    slot.querySelector('#joinBtn').onclick=openJoinModal;
+  }
+}
+
+function openJoinModal(){
+  const j = getJoin() || {};
+  const bg=document.createElement('div'); bg.className='modalbg';
+  bg.innerHTML=`<div class="modal">
+    <h3>🏫 เข้าร่วมชั้นเรียน</h3>
+    <div class="msub">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</div>
+    <label>รหัสห้อง</label><input id="jcode" maxlength="12" placeholder="เช่น M401A" autocomplete="off" autocapitalize="characters" value="${escHtml(j.room||'')}">
+    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
+    <div class="mmsg" id="jmsg"></div>
+    <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น<br>
+      <a href="../privacy/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">อ่านนโยบายความเป็นส่วนตัว</a></div>
+  </div>`;
+  document.body.appendChild(bg);
+  const close=()=>bg.remove();
+  bg.addEventListener('click',e=>{ if(e.target===bg) close(); });
+  bg.querySelector('#jcancel').onclick=close;
+  const codeEl=bg.querySelector('#jcode'), nameEl=bg.querySelector('#jname'), msg=bg.querySelector('#jmsg');
+  bg.querySelector('#jok').onclick=()=>{
+    const room=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
+    if(!room){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้องที่ครูให้'; return; }
+    if(!name){ msg.className='mmsg err'; msg.textContent='กรอกชื่อของคุณ'; return; }
+    const prev=getJoin();
+    setJoin({ room, name, sid:(prev&&prev.sid)||newSid() });
+    close(); renderClassChip(); toast('เข้าร่วมห้อง '+room+' แล้ว');
+    syncAllStars();
+  };
+  setTimeout(()=>codeEl.focus(),50);
+}
+
+/* ---------- boot ---------- */
+document.getElementById('btnHome').onclick = renderMap;
+renderMap();
+flushPending();
+window.addEventListener('online', flushPending);   // กลับมาออนไลน์เมื่อไร ส่งคะแนนที่ค้างทันที
+
+/* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
+   ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

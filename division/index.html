@@ -366,9 +366,13 @@ h3{font-size:1.05rem}
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);
   background:linear-gradient(135deg,#2F7D4F,#4E9370);color:#FBF8EC;
   padding:11px 22px;border-radius:999px;font-weight:800;font-size:.9rem;z-index:200;
-  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);
+  /* ซ่อนสนิทตอนไม่มีข้อความ ไม่ให้โผล่เป็นแถบเขียวที่ขอบล่างจอ */
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .25s linear, visibility 0s linear .35s;
 }
-.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .2s linear, visibility 0s}
 
 .buckets{display:grid;gap:10px;margin-top:14px}
 @media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
@@ -1636,31 +1640,42 @@ function fixRow(row){
 let flushing = false;
 async function flushPending(opts){
   if(flushing) return;              // กันส่งซ้ำซ้อนตอนจบด่านพร้อมกับรอบส่งอัตโนมัติ
-  const q = outbox(); if(!q.length) return;
+  if(!outbox().length) return;
   flushing = true;
-  const keep = [];
-  let failed = false, sent = 0, dropped = 0;
-  for(const row of q){
-    try{ await pushRow(fixRow(row)); sent++; }
-    catch(e){
-      failed = true; lastSendErr = sendErrMsg(e);
-      const permanent = (e.status===400 || e.status===403 || e.status===422);
-      row.tries = (row.tries||0) + 1;
-      /* แถวที่ฐานข้อมูลไม่รับจริง ๆ จะถูกทิ้งหลังพยายาม 3 ครั้ง
-         เพื่อไม่ให้แถวเดียวค้างจนบล็อกคะแนนที่เหลือทั้งคิว */
-      if(permanent && row.tries >= 3){ dropped++; continue; }
-      keep.push(row);
-      if(e.status===401 || e.status===404) {        // ปัญหาการตั้งค่า ส่งต่อไปก็ไม่ผ่าน
-        keep.push(...q.slice(q.indexOf(row)+1)); break;
+  const tried = {};                 // uid -> จำนวนครั้งที่พยายามส่ง
+  let failed = false, sent = 0, dropped = 0, stop = false;
+  /* วนซ้ำจนคิวหมด เพราะระหว่างกำลังส่งอาจมีคะแนนเข้าคิวเพิ่ม
+     (เช่นตอนกดเข้าร่วมห้องแล้วส่งดาวเก่าทุกด่านพร้อมกัน) */
+  while(!stop){
+    const q = outbox(); if(!q.length) break;
+    const settled = new Set();      // uid ที่ส่งสำเร็จหรือทิ้งถาวรแล้วในรอบนี้
+    let progressed = false;
+    for(const row of q){
+      if(stop) break;               // ปัญหาการตั้งค่า ส่งแถวที่เหลือต่อไปก็ไม่ผ่าน
+      try{ await pushRow(fixRow(row)); settled.add(row.uid); sent++; progressed = true; }
+      catch(e){
+        failed = true; lastSendErr = sendErrMsg(e);
+        const permanent = (e.status===400 || e.status===403 || e.status===422);
+        tried[row.uid] = (row.tries||0) + 1;
+        /* แถวที่ฐานข้อมูลไม่รับจริง ๆ จะถูกทิ้งหลังพยายาม 3 ครั้ง
+           เพื่อไม่ให้แถวเดียวค้างจนบล็อกคะแนนที่เหลือทั้งคิว */
+        if(permanent && tried[row.uid] >= 3){ settled.add(row.uid); dropped++; progressed = true; continue; }
+        if(e.status===401 || e.status===404) stop = true;
       }
     }
+    /* อ่านคิวใหม่อีกครั้ง แล้วเอาออกเฉพาะแถวที่จัดการเสร็จแล้ว
+       คะแนนที่เพิ่งเข้าคิวระหว่างนี้จึงไม่หายไปพร้อมกับการเคลียร์คิว */
+    const keep = outbox().filter(r=>!settled.has(r.uid));
+    keep.forEach(r=>{ if(tried[r.uid]) r.tries = tried[r.uid]; });
+    setOutbox(keep.slice(-200));
+    if(!progressed) break;          // รอบนี้ส่งไม่ผ่านเลยสักแถว วนซ้ำไปก็ไม่ผ่าน
   }
-  setOutbox(keep.slice(-200));
+  const left = outbox();
   flushing = false;
   renderClassChip();
   if(failed && !(opts && opts.quiet)){
     toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr + (dropped?(' · ข้ามที่ส่งไม่ได้ '+dropped+' รายการ'):''));
-  }else if(!keep.length && sent>1){
+  }else if(!left.length && sent>1){
     toast('✅ ส่งคะแนนที่ค้างครบแล้ว ' + sent + ' รายการ');
   }
 }

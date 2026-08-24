@@ -3,7 +3,7 @@
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'genetics-v1';
+const CACHE = 'genetics-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -41,7 +41,7 @@ self.addEventListener('fetch', e=>{
   if(url.origin !== location.origin) return;             // ไฟล์ข้ามโดเมน → ไม่แคช
   // ไฟล์ในโฟลเดอร์เกมอื่น ปล่อยให้ service worker ของเกมนั้นดูแลเอง
   const BASE = new URL('./', self.location).pathname;
-  if(['cell/','transport/','respiration/','privacy/'].some(d=>url.pathname.startsWith(BASE+d))) return;
+  if(['cell/','transport/','respiration/','division/','reproduction/','privacy/'].some(d=>url.pathname.startsWith(BASE+d))) return;
 
   // หน้าเว็บ (index.html): เอาจากเน็ตก่อนเสมอ เพื่อให้ได้เวอร์ชันล่าสุดทันทีที่ครูอัปเดตเกม
   if(req.mode === 'navigate' || req.destination === 'document'){
