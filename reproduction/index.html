@@ -234,6 +234,7 @@ h3{font-size:1.05rem}
 /* ภาพทรงตั้ง: จำกัดความกว้างบนจอใหญ่ ไม่ให้กระดานสูงจนต้องเลื่อนหาป้าย
    (บนมือถือ .mboard เต็มความกว้างอยู่แล้ว จึงไม่กระทบ) */
 .mboard.tall{max-width:720px}
+.mboard.taller{max-width:560px}
 .mimg{position:relative;overflow:hidden;border-radius:14px;background:#fff;
   box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
 .mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
@@ -598,7 +599,8 @@ function mbFit(ratio){
 function calloutBoard(svg, ratio, parts){
   mbFit(ratio);
   const ra = String(ratio).split('/').map(Number);
-  const tall = (ra.length===2 && ra[0]/ra[1] < 1.2) ? ' tall' : '';
+  const ar = (ra.length===2 && ra[1]) ? ra[0]/ra[1] : 99;
+  const tall = ar < 0.8 ? ' taller' : ar < 1.2 ? ' tall' : '';
   const pcx = n => (n/MB.w*100).toFixed(2)+'%';
   const pcy = n => (n/MB.h*100).toFixed(2)+'%';
   const lines = parts.map(p=>`<line x1="${p.lx}" y1="${p.ly}" x2="${mbX(p.u)}" y2="${mbY(p.v)}"
@@ -1192,7 +1194,7 @@ const FEMALE_SVG = `
 
   <text x="60" y="452" text-anchor="start" font-size="19" font-weight="700" fill="#A79E76">มองจากด้านหน้า</text>
 </svg>`;
-const FEMALE_PARTS = [
+const FEMALE_SVG_PARTS = [
   { key:'ovary', u:0.250, v:0.450, lx:145, ly:55, label:'รังไข่',
     info:'Ovary — ทำหน้าที่<b>สร้างเซลล์ไข่</b>และ<b>ฮอร์โมนเพศหญิง (อีสโทรเจน)</b> อยู่สองข้างของมดลูกในอุ้งเชิงกราน' },
   { key:'oviduct', u:0.696, v:0.284, lx:555, ly:38, label:'ท่อนำไข่',
@@ -1222,24 +1224,51 @@ const FEMALE_Q = [
     o:['ในรังไข่','ในท่อนำไข่','ในมดลูก','ในช่องคลอด'], a:1,
     e:'การปฏิสนธิเกิดใน<b>ท่อนำไข่</b> — เซลล์ไข่ที่ตกออกมาถูกปลายคล้ายปากแตรรับเข้าท่อ แล้วเคลื่อนไปตามท่อด้วยการพัดโบกของ<b>ซิเลีย</b> ระหว่างทางจึงพบกับสเปิร์ม' }
 ];
+/* ภาพประกอบด่าน 4 — ระบบสืบพันธุ์เพศหญิง (ไฟล์ female-repro.png ขนาด 1020 × 1697)
+   ประกอบจากภาพต้นฉบับของสไลด์ สสวท. 21.2.2: ภาพตัดด้านข้าง (บน) และภาพด้านหน้า (ล่าง)
+   ชื่ออวัยวะทั้งหมดใช้ตามหน้า 5 ของสไลด์
+   พิกัด u,v ของแต่ละอวัยวะคิดเป็นสัดส่วนของทั้งภาพ (0–1) วัดจากไฟล์จริง */
+const FEMALE_PHOTO = 'female-repro.png';
+const FEMALE_PHOTO_RATIO = '1020/1697';
+const FEMALE_PHOTO_PARTS = [
+  { key:'uterus', u:0.5098, v:0.2239, lx:95, ly:400, label:'มดลูก',
+    info:'Uterus — อวัยวะที่<b>เอ็มบริโอเจริญเติบโต</b> ผนังชั้นกล้ามเนื้อจะ<b>บีบตัวระหว่างการคลอด</b>' },
+  { key:'vagina', u:0.5725, v:0.3559, lx:95, ly:720, label:'ช่องคลอด',
+    info:'Vagina — ทางผ่านของสเปิร์มเข้าสู่ระบบสืบพันธุ์เพศหญิง และเป็น<b>ช่องทางคลอด</b> · ภายในมีสภาพเป็น<b>กรด</b>' },
+  { key:'oviduct', u:0.8088, v:0.5934, lx:905, ly:760, label:'ท่อนำไข่',
+    info:'Oviduct / fallopian tube — ทางเดินของเซลล์ไข่ไปยังมดลูก เป็น<b>บริเวณที่เกิดการปฏิสนธิ</b> และเป็นตำแหน่งที่ผูก ตัด หรือจี้ด้วยไฟฟ้าเพื่อ<b>ทำหมันหญิง</b>' },
+  { key:'ovary', u:0.7902, v:0.6718, lx:905, ly:1030, label:'รังไข่',
+    info:'Ovary — ทำหน้าที่<b>สร้างเซลล์ไข่</b>และ<b>ฮอร์โมนเพศหญิง (อีสโทรเจน)</b> · ในภาพด้านหน้าผ่ารังไข่ข้างขวาให้เห็นฟอลลิเคิลข้างใน' },
+  { key:'fimbriae', u:0.1392, v:0.6635, lx:250, ly:1470, label:'ปลายเปิดคล้ายปากแตร',
+    info:'Fimbriae — ปลายเปิดของท่อนำไข่ที่แผ่ออกคล้ายปากแตร ทำหน้าที่<b>รับเซลล์ไข่ที่ตกจากรังไข่</b>เข้าสู่ท่อนำไข่' },
+  { key:'endo', u:0.5784, v:0.6953, lx:900, ly:1290, label:'เอนโดมีเทรียม',
+    info:'Endometrium — เยื่อบุชั้นในของมดลูกที่มีหลอดเลือดมาหล่อเลี้ยงมาก เป็นบริเวณที่<b>เอ็มบริโอฝังตัว</b> และเป็นชั้นที่<b>สลายกลายเป็นประจำเดือน</b>' },
+  { key:'cervix', u:0.4824, v:0.8203, lx:640, ly:1470, label:'ปากมดลูก',
+    info:'Cervix — ส่วนล่างสุดของมดลูกที่ยื่นต่อเข้าไปในช่องคลอด' }
+];
+
 function stageFemale(){
   let boardWrong = 0;
-  drawBoard();
+  withImage(FEMALE_PHOTO, ()=>drawBoard(FEMALE_PHOTO), ()=>drawBoard(null));
 
-  function drawBoard(){
+  function drawBoard(photo){
+    const PARTS = photo ? FEMALE_PHOTO_PARTS : FEMALE_SVG_PARTS;
+    const body  = photo ? `<img src="${photo}" alt="แผนภาพระบบสืบพันธุ์เพศหญิง" style="width:100%;display:block">` : FEMALE_SVG;
+    const ratio = photo ? FEMALE_PHOTO_RATIO : '1000/545';
     app.innerHTML = stageShell('female', `
       <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะชื่ออวัยวะในสำรับ แล้วแตะป้าย <b>? ? ?</b> ที่ชี้ไปยังตำแหน่งของมัน
-        — วางให้ครบ ${FEMALE_PARTS.length} จุด
+        — วางให้ครบ ${PARTS.length} จุด
         <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
+      ${photo?`<div class="note small">🖼️ ภาพบนเป็น<b>ภาพตัดตามยาว มองจากด้านข้าง</b> · ภาพล่างเป็น<b>ภาพมองจากด้านหน้า</b> ที่ผ่ามดลูกและรังไข่ให้เห็นข้างใน</div>`:''}
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      ${calloutBoard(FEMALE_SVG, '1000/545', FEMALE_PARTS)}
+      ${calloutBoard(body, ratio, PARTS)}
       <div class="feedback" id="fb"></div>
       <div class="note key" style="margin-top:16px">
         💡 <b>เส้นทางของเซลล์ไข่:</b> รังไข่ → ตกไข่ → ปลายเปิดคล้ายปากแตรรับเข้า <b>ท่อนำไข่</b>
         (ซิเลียพัดโบกพาเคลื่อนที่ · เป็นที่เกิดการปฏิสนธิ) → <b>มดลูก</b> ฝังตัวที่เอนโดมีเทรียม
       </div>
     `);
-    bindCallout(FEMALE_PARTS, mistakes=>{
+    bindCallout(PARTS, mistakes=>{
       boardWrong = mistakes; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,900);
     });
   }
