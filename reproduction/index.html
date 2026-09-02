@@ -234,16 +234,19 @@ h3{font-size:1.05rem}
 /* ภาพทรงตั้ง: จำกัดความกว้างบนจอใหญ่ ไม่ให้กระดานสูงจนต้องเลื่อนหาป้าย
    (บนมือถือ .mboard เต็มความกว้างอยู่แล้ว จึงไม่กระทบ) */
 .mboard.tall{max-width:720px}
-.mboard.taller{max-width:560px}
+.mboard.taller{max-width:700px}
 .mimg{position:relative;overflow:hidden;border-radius:14px;background:#fff;
   box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
 .mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
 .leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .cwrap{position:absolute;inset:0;pointer-events:none}
-.anchor{position:absolute;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;
-  background:var(--gold);border:2px solid #fff;box-shadow:0 1px 5px rgba(8,74,36,.45);
+/* จุดยึดบนภาพ: บนจอกว้างทำเป็นวงแหวนโปร่ง จะได้มองเห็นอวัยวะที่อยู่ใต้จุด
+   ส่วนบนมือถือกลับไปเป็นจุดทึบ เพราะต้องอ่านตัวเลขในจุดได้ชัด */
+.anchor{position:absolute;transform:translate(-50%,-50%);width:15px;height:15px;border-radius:50%;
+  background:rgba(255,255,255,.45);border:3px solid var(--gold);
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.95),0 1px 4px rgba(8,74,36,.4);
   display:grid;place-items:center;color:#FFF7F0;font-weight:800;font-size:0}
-.anchor.done{background:var(--lime)}
+.anchor.done{background:var(--lime);border-color:#fff}
 .slot.callout{pointer-events:auto;min-width:92px;padding:5px 9px;font-size:.74rem}
 .slot.callout i{display:none}
 @media (max-width:640px){
@@ -256,7 +259,8 @@ h3{font-size:1.05rem}
   .slot.callout i{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;
     background:var(--gold);color:#FFF7F0;font-style:normal;font-weight:800;font-size:.78rem}
   .slot.callout.filled i{background:var(--lime)}
-  .anchor{width:clamp(21px,5vw,27px);height:clamp(21px,5vw,27px);font-size:clamp(.62rem,2.3vw,.8rem)}
+  .anchor{width:clamp(21px,5vw,27px);height:clamp(21px,5vw,27px);font-size:clamp(.62rem,2.3vw,.8rem);
+    background:var(--gold);border:2px solid #fff;box-shadow:0 1px 5px rgba(8,74,36,.45)}
 }
 .bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .tok{
@@ -879,17 +883,17 @@ const MALE_PHOTO_PARTS = [
   /* ---- ภาพตัดด้านข้าง (ครึ่งบนของภาพ) ---- */
   { key:'rectum', u:0.2315, v:0.1515, lx:140, ly:300, label:'ไส้ตรง',
     info:'Rectum — ส่วนปลายของลำไส้ใหญ่ ไม่ใช่อวัยวะสืบพันธุ์ แต่อยู่ติดกัน จึงเห็นในภาพตัดด้านข้างเสมอ' },
-  { key:'ureter', u:0.3426, v:0.1414, lx:880, ly:300, label:'ท่อไต',
+  { key:'ureter', u:0.3704, v:0.1449, lx:880, ly:300, label:'ท่อไต',
     info:'Ureter — ท่อที่นำปัสสาวะจาก<b>ไต</b>ลงมาสู่กระเพาะปัสสาวะ เป็นระบบขับถ่าย ไม่ใช่ทางเดินของสเปิร์ม' },
   { key:'bladder', u:0.5185, v:0.1869, lx:880, ly:470, label:'กระเพาะปัสสาวะ',
     info:'Urinary bladder — ที่พักปัสสาวะก่อนขับออกทางท่อปัสสาวะ · <b>หลอดนำอสุจิจะอ้อมกระเพาะปัสสาวะ</b>ไปรวมกับท่อปัสสาวะ' },
-  { key:'seminal', u:0.3472, v:0.2020, lx:140, ly:470, label:'ต่อมสร้างน้ำเลี้ยงอสุจิ',
+  { key:'seminal', u:0.3583, v:0.2141, lx:140, ly:470, label:'ต่อมสร้างน้ำเลี้ยงอสุจิ',
     info:'Seminal vesicle (สีน้ำเงินในภาพ) — หลั่งของเหลวที่มี<b>น้ำตาลฟรักโทส</b> ซึ่งเป็นแหล่งพลังงานของสเปิร์ม' },
   { key:'prostate', u:0.5000, v:0.2323, lx:880, ly:640, label:'ต่อมลูกหมาก',
     info:'Prostate gland (สีน้ำตาลในภาพ) — หลั่งของเหลวที่เป็น<b>เบส</b> ช่วยให้สเปิร์มรอดในช่องคลอดที่เป็นกรด · ล้อมรอบท่อปัสสาวะอยู่' },
   { key:'cowper', u:0.4306, v:0.2667, lx:140, ly:640, label:'ต่อมคาวเปอร์',
     info:'Cowper&#39;s gland (สีเขียวในภาพ) — ต่อมเล็ก ๆ ใต้ต่อมลูกหมาก หลั่งของเหลว<b>หล่อลื่นและลดความเป็นกรดในท่อปัสสาวะ</b>' },
-  { key:'anus', u:0.3704, v:0.3106, lx:140, ly:810, label:'ทวารหนัก',
+  { key:'anus', u:0.3843, v:0.3273, lx:140, ly:810, label:'ทวารหนัก',
     info:'Anus — ปลายทางของระบบทางเดินอาหาร อยู่ต่อจากไส้ตรง ไม่เกี่ยวกับระบบสืบพันธุ์' },
   { key:'testis', u:0.6991, v:0.3788, lx:880, ly:810, label:'อัณฑะ',
     info:'Testis — ก้อนรูปไข่ในถุงอัณฑะ ทำหน้าที่<b>สร้างสเปิร์ม</b>และฮอร์โมนเพศชาย <b>เทสโทสเทอโรน</b>' },
@@ -900,7 +904,7 @@ const MALE_PHOTO_PARTS = [
     info:'Epididymis — ท่อสีเหลืองที่พาดอยู่<b>ด้านนอก</b>ของอัณฑะ สเปิร์มที่สร้างเสร็จจะเคลื่อนมา<b>พักเก็บไว้ที่นี่</b>' },
   { key:'semtub', u:0.3889, v:0.8687, lx:700, ly:1600, label:'หลอดสร้างอสุจิ',
     info:'Seminiferous tubule — ท่อยาวขดไปมาอยู่<b>ภายในอัณฑะ</b> (ภาพผ่าอัณฑะข้างซ้ายให้เห็นเป็นพู ๆ สีเหลือง) ผนังท่อมีเซลล์ต้นกำเนิดที่จะเจริญไปเป็นสเปิร์ม' },
-  { key:'scrotum', u:0.2898, v:0.8712, lx:140, ly:1400, label:'ถุงอัณฑะ',
+  { key:'scrotum', u:0.2963, v:0.9091, lx:140, ly:1400, label:'ถุงอัณฑะ',
     info:'Scrotum — ถุงที่ห่อหุ้มอัณฑะไว้นอกช่องท้อง อุณหภูมิภายในจะ<b>ต่ำกว่าอุณหภูมิร่างกายประมาณ 2–3 °C</b> ซึ่งเหมาะกับการเจริญของสเปิร์ม' },
   { key:'penis', u:0.4676, v:0.8333, lx:300, ly:1600, label:'องคชาต',
     info:'Penis — อวัยวะที่มีท่อปัสสาวะทอดผ่าน ทำหน้าที่<b>นำน้ำอสุจิเข้าสู่ระบบสืบพันธุ์เพศหญิง</b>' },
