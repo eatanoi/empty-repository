@@ -230,7 +230,12 @@ h3{font-size:1.05rem}
    จอกว้าง = ป้าย ??? วางรอบภาพ มีเส้นประชี้ไปยังจุดสีส้มบนภาพ
    จอแคบ (มือถือ) = จุดบนภาพกลายเป็นหมายเลข แล้วป้ายเรียงเป็นรายการใต้ภาพแทน ไม่เบียดกัน
    พิกัดทุกจุดคิดเป็นสัดส่วน จึงเปลี่ยนไฟล์ภาพได้โดยไม่ต้องแก้โครง */
-.mboard{position:relative;max-width:1000px;margin:10px auto 0;padding:20% 12.5% 12.5% 14.5%}
+/* ตัวจำกัดความกว้างต้องเป็น "กล่องแม่" ของ .mboard เสมอ
+   เพราะ CSS คิด padding ที่เป็น % จากความกว้างของกล่องแม่ ไม่ใช่ของตัวเอง
+   ถ้าจำกัดความกว้างที่ .mboard โดยตรง ขอบรอบภาพจะกว้างผิดสัดส่วนบนจอใหญ่
+   แล้วเส้นประจะเลื่อนไปจากจุดบนภาพ */
+.mwrap{max-width:1000px;margin:10px auto 0}
+.mboard{position:relative;width:100%;padding:20% 12.5% 12.5% 14.5%}
 .mimg{position:relative}
 .mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
 .leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -592,7 +597,7 @@ function calloutBoard(svg, ratio, parts){
   return `<div class="bank" id="bank">
     ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
   </div>
-  <div class="mboard">
+  <div class="mwrap"><div class="mboard">
     <div class="mimg" style="aspect-ratio:${ratio}">
       ${svg}
       ${parts.map((p,i)=>`<div class="anchor" id="pin-${p.key}"
@@ -603,7 +608,7 @@ function calloutBoard(svg, ratio, parts){
       ${parts.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
           style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
     </div>
-  </div>`;
+  </div></div>`;
 }
 /* ผูกเหตุการณ์ให้กระดานติดป้าย แล้วเรียก onDone(จำนวนที่ผิด) เมื่อวางครบ */
 function bindCallout(parts, onDone){
