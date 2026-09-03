@@ -438,7 +438,7 @@ h3{font-size:1.05rem}
 
   <div class="footer">
     <div class="fb"><img src="logo.png" alt="โลโก้ Chemistry" onerror="this.remove()"><span>Chemistry<b>.</b></span></div>
-    เกมประกอบตำราเคมี ม.4 เล่ม 2 · บทที่ 2 เรื่อง <b>พันธะโคเวเลนต์</b><br>
+    เกมประกอบตำราเคมี ม.4 · หน่วยที่ 3 พันธะเคมี เรื่อง <b>พันธะโคเวเลนต์</b><br>
     อิงหลักสูตร สสวท. (ฉบับปรับปรุง พ.ศ. 2560) · ความก้าวหน้าถูกบันทึกไว้ในเครื่องของผู้เล่นเอง
   </div>
 </div>
@@ -1535,11 +1535,12 @@ function renderCards(){
 const CERT = {
   src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
   pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
-  nameX:0.4965,           // จุดกึ่งกลางชื่อ (แนวนอน) — วัดจากกึ่งกลางกล่องสีขาวใน cert-bg.png
-  nameY:0.4954,           // จุดกึ่งกลางชื่อ (แนวตั้ง) — ช่องว่างใต้ “ขอมอบเกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า”
-  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
+  nameX:0.4940,           // จุดกึ่งกลางชื่อ (แนวนอน) — วัดจากกึ่งกลางแคปซูลน้ำเงินใน cert-bg.png
+  nameY:0.4310,           // จุดกึ่งกลางชื่อ (แนวตั้ง) — แคปซูลใต้ “ขอมอบเกียรติบัตรฉบับนี้ เพื่อแสดงว่า”
+  nameW:0.40,             // ความกว้างสูงสุดของชื่อ (แคปซูลกว้างราว 0.46 ของภาพ)
   nameSize:0.042,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
-  nameColor:'#0A0A0A'
+  nameColor:'#FFFFFF',    // แคปซูลของแบบนี้เป็นสีน้ำเงินเข้ม ชื่อจึงต้องเป็นสีขาว
+  nameColorFallback:'#0A0A0A'  // สีชื่อตอนใช้กรอบสำรอง (แคปซูลสีอ่อน)
 };
 const MAX_STARS = STAGES.length * 3;
 function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
@@ -1582,7 +1583,8 @@ function drawCert(canvas, name, img){
   const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
   c.font = font(size);
   while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
-  c.fillStyle = CERT.nameColor; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillStyle = img ? CERT.nameColor : (CERT.nameColorFallback || CERT.nameColor);
+  c.textAlign = 'center'; c.textBaseline = 'middle';
   c.fillText(name, W*CERT.nameX, H*CERT.nameY);
   return canvas;
 }
@@ -1599,7 +1601,7 @@ function certFallback(c, W, H){
   c.fillStyle='#04261E'; c.font=f(W*0.028,400);
   c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.645);
   c.fillStyle='#D6350B'; c.font=f(W*0.022);
-  c.fillText('บทที่ 2 พันธะเคมี เรื่อง “พันธะโคเวเลนต์”', W/2, H*0.70);
+  c.fillText('หน่วยที่ 3 พันธะเคมี เรื่อง “พันธะโคเวเลนต์”', W/2, H*0.70);
   c.fillText('สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 4', W/2, H*0.745);
   c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
   c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.82);
