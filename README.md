@@ -11,6 +11,7 @@ education
 | ด่านศุลกากรเซลล์ | [`transport/index.html`](transport/) | การลำเลียงสารเข้าและออกจากเซลล์ (ม.4) — ดูรายละเอียดใน [transport/README.md](transport/README.md) |
 | โรงงานสร้างเซลล์ | [`division/index.html`](division/) | การแบ่งเซลล์ · ไมโทซิสและไมโอซิส (ม.4) — ดูรายละเอียดใน [division/README.md](division/README.md) |
 | ภารกิจสืบสายชีวิต | [`reproduction/index.html`](reproduction/) | การสืบพันธุ์ของมนุษย์ · ระบบสืบพันธุ์และการสร้างเซลล์สืบพันธุ์ (ม.6) — ดูรายละเอียดใน [reproduction/README.md](reproduction/README.md) |
+| โรงเชื่อมอิเล็กตรอน | [`covalent/index.html`](covalent/) | พันธะโคเวเลนต์ · เคมี ม.4 — ดูรายละเอียดใน [covalent/README.md](covalent/README.md) |
 
 แดชบอร์ดครู: [`dashboard.html`](dashboard.html) · ตัวตรวจการเชื่อมต่อ: [`check.html`](check.html)
 วิธีตั้งค่า: [SETUPSUPABASE.md](SETUPSUPABASE.md) · [SETUPCLASSROOM.md](SETUPCLASSROOM.md)

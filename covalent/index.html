@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>โรงเชื่อมอิเล็กตรอน | เกมพันธะโคเวเลนต์ ม.4</title>
+<meta name="description" content="เกมประกอบการเรียนรู้เคมี ม.4 เรื่องพันธะโคเวเลนต์ — การเกิดพันธะ ชนิดของพันธะ สูตรและชื่อสาร ความยาวและพลังงานพันธะ และสมบัติของสารโคเวเลนต์">
+<meta name="theme-color" content="#084A24">
+
+<!-- ไอคอน -->
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- เพิ่มลงหน้าจอโฮมได้ (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="โรงเชื่อมอิเล็กตรอน">
+
+<!-- พรีวิวตอนแชร์ลิงก์ใน LINE / Facebook / Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gamesbiology.biologypremium.com/covalent/">
+<meta property="og:title" content="โรงเชื่อมอิเล็กตรอน — เกมพันธะโคเวเลนต์">
+<meta property="og:description" content="เกมประกอบการเรียนรู้เคมี ม.4 · พันธะโคเวเลนต์ · สูตรโครงสร้าง · สมบัติของสาร">
+<meta property="og:image" content="https://gamesbiology.biologypremium.com/covalent/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="โรงเชื่อมอิเล็กตรอน — เกมพันธะโคเวเลนต์">
+<meta name="twitter:description" content="เกมประกอบการเรียนรู้เคมี ม.4 · เล่นบนมือถือได้เลย">
+<meta name="twitter:image" content="https://gamesbiology.biologypremium.com/covalent/og-cover.png">
+<style>
+:root{
+  /* ── พาเลตเดียวกับเกมสังเคราะห์แสง: F2EDD5 · E7390D · F26716 · 084A24 · 04261E ── */
+  --cream:#F2EDD5; --cream-hi:#FBF8EC; --cream-lo:#E9E1BE;
+  --ink:#04261E; --deep:#084A24;
+  --bg0:#FBF8EC; --bg1:#F2EDD5; --bg2:#EAE4C6;
+  --panel:rgba(255,255,255,.58);
+  --panel2:rgba(255,255,255,.85);
+  --line:rgba(8,74,36,.18);
+  --green:#4E9370; --lime:#2F7D4F; --teal:#7CB894;
+  --gold:#F26716; --rose:#E7390D;
+  --violet:#5C90A6; --sky:#5C90A6;
+  --green-soft:#AFD2BC; --green-pale:#DCEBE1;
+  --orange-soft:#F7C39C; --orange-pale:#FBE4D2;
+  --red-soft:#F4B7A6; --blue-soft:#BCD6E0;
+  --text:#04261E; --muted:#6B8A76;
+  --ok:#2F7D4F; --bad:#D6350B;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh; color:var(--text);
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.55), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.42), transparent 60%),
+    radial-gradient(800px 600px at 50% 112%, rgba(188,214,224,.38), transparent 62%),
+    linear-gradient(rgba(251,248,236,.72),rgba(242,237,213,.80)),
+    linear-gradient(170deg,var(--bg0),var(--bg1) 45%,var(--bg2));
+  background-attachment:fixed;
+  line-height:1.65; letter-spacing:.01em;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 90px}
+
+.hud{
+  position:sticky;top:0;z-index:60;margin:-16px -16px 18px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(251,248,236,.96),rgba(242,237,213,.80));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.02rem;letter-spacing:.02em;color:var(--deep)}
+.brand .leaf{font-size:1.35rem;filter:drop-shadow(0 1px 3px rgba(8,74,36,.3))}
+.hud .spacer{flex:1}
+@media(max-width:520px){
+  .hud{gap:7px;padding:9px 12px;flex-wrap:nowrap}
+  .brand{font-size:.86rem;min-width:0}
+  .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand .leaf{font-size:1.1rem}
+  .chip{padding:4px 8px;font-size:.72rem}
+  .hud .btn.sm{padding:5px 9px;font-size:.75rem}
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:.82rem;font-weight:700;white-space:nowrap;
+}
+.chip b{color:var(--gold)}
+.chip.xp b{color:var(--lime)}
+
+button{font-family:inherit}
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  padding:11px 20px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:.16s transform,.16s background,.16s border-color;
+}
+.btn:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,#4E9370,#2F7D4F);color:#FBF8EC;border-color:transparent;box-shadow:0 8px 20px -10px rgba(8,74,36,.65)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;box-shadow:0 8px 20px -10px rgba(231,57,13,.5)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn.sm{padding:7px 14px;font-size:.85rem}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+h1,h2,h3{line-height:1.35;margin:0 0 .5em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.hidden{display:none !important}
+
+.pub{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
+.pub img{height:38px;width:auto;filter:drop-shadow(0 1px 2px rgba(8,74,36,.18))}
+.pub span{font-weight:800;font-size:1.05rem;color:var(--deep);letter-spacing:.02em}
+.pub span b{color:var(--gold)}
+/* ---- ระบบชั้นเรียน ---- */
+.classchip{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:8px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--deep);cursor:pointer;transition:.15s}
+.classchip:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.classchip.joined{background:rgba(175,210,188,.55);border-color:var(--green);cursor:default}
+.classchip.stuck{display:block;margin-top:6px;background:rgba(242,103,22,.14);border-color:var(--gold);color:var(--deep);cursor:pointer;font-size:.78rem}
+.classchip .x{color:var(--rose);font-weight:800;margin-left:2px;cursor:pointer;padding:0 4px}
+.modalbg{position:fixed;inset:0;background:rgba(4,38,30,.5);backdrop-filter:blur(3px);z-index:300;display:grid;place-items:center;padding:16px}
+.modal{background:var(--cream-hi);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:380px;width:100%;box-shadow:0 22px 60px -20px rgba(0,0,0,.5)}
+.modal h3{margin:0 0 4px;color:var(--deep);font-size:1.15rem}
+.modal .msub{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.modal label{display:block;font-size:.82rem;font-weight:700;color:var(--deep);margin:10px 0 4px}
+.modal input{width:100%;font-family:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal input#jcode{text-transform:uppercase;letter-spacing:3px;font-weight:800}
+.modal .mrow{display:flex;gap:8px;margin-top:16px}
+.modal .mrow .btn{flex:1}
+.modal .mmsg{font-size:.85rem;margin-top:10px;min-height:1em;color:var(--muted)}
+.modal .mmsg.err{color:var(--bad)}
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 18px 40px -22px rgba(8,74,36,.55);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.certform input:focus{outline:none;border-color:var(--green)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .5s}
+.hero{text-align:center;padding:14px 12px 8px}
+.hero h1{font-size:clamp(1.7rem,5.2vw,2.6rem);margin-bottom:.25em;
+  background:linear-gradient(100deg,var(--deep),#2F7D4F 42%,var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#4A6A58;margin:0;font-size:.98rem}
+.eq{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;
+  background:rgba(175,210,188,.45);border:1px solid rgba(8,74,36,.25);color:var(--deep);
+  font-size:.9rem;font-weight:700;letter-spacing:.03em}
+.eq sub{font-size:.72em}
+
+.maplist{display:grid;gap:12px;margin-top:22px}
+@media(min-width:720px){.maplist{grid-template-columns:1fr 1fr}}
+.node{
+  display:flex;gap:14px;align-items:center;
+  padding:16px;border-radius:var(--r);cursor:pointer;position:relative;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);
+  transition:.18s transform,.18s border-color,.18s background;
+}
+.node:hover{transform:translateY(-3px);border-color:rgba(8,74,36,.38);background:var(--panel2)}
+.node.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.55)}
+.node.locked:hover{transform:none;border-color:var(--line);background:var(--panel)}
+.node .ic{
+  width:56px;height:56px;flex:0 0 56px;border-radius:15px;display:grid;place-items:center;font-size:1.7rem;
+  background:rgba(255,255,255,.75);border:1px solid var(--line);
+}
+.stage-ic-img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.stagehead .ic .stage-ic-img{width:46px;height:46px;padding:0}
+.node .body{flex:1;text-align:left}
+.node .body .t{font-weight:800;font-size:1.02rem}
+.node .body .d{font-size:.84rem;color:var(--muted);line-height:1.5}
+.node .stars{font-size:.9rem;letter-spacing:2px;color:var(--gold);margin-top:3px}
+.node .stars .off{color:rgba(8,74,36,.16)}
+.node.done{border-color:rgba(8,74,36,.4)}
+.node.done .ic{background:rgba(175,210,188,.65)}
+.node .no{position:absolute;top:8px;right:12px;font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.1em}
+
+.stagehead{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stagehead .ic{font-size:2rem}
+.stagehead h2{margin:0}
+.stagehead .sub{color:var(--muted);font-size:.88rem}
+.bar{height:7px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin:10px 0 18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--lime));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.note{
+  border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0;
+  border-left:4px solid var(--sky);background:rgba(92,144,166,.13);
+}
+.note.warn{border-left-color:var(--gold);background:rgba(242,103,22,.11)}
+.note.key{border-left-color:var(--lime);background:rgba(47,125,79,.11)}
+.note.miss{border-left-color:var(--rose);background:rgba(231,57,13,.09)}
+.note b{color:var(--deep)}
+
+.feedback{border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.9rem;display:none}
+.feedback.show{display:block;animation:pop .3s}
+.feedback.good{background:rgba(47,125,79,.14);border:1px solid rgba(47,125,79,.4)}
+.feedback.bad{background:rgba(231,57,13,.11);border:1px solid rgba(231,57,13,.35)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* labeling */
+.diagram{position:relative;width:100%;aspect-ratio:900/560;margin:6px 0 4px}
+.diagram svg{width:100%;height:100%;display:block}
+@supports (container-type:inline-size){
+  .diagram{container-type:inline-size}
+  .slot{min-width:11.5cqw;font-size:clamp(7px,2.5cqw,.76rem);padding:.7cqw 1.2cqw;border-radius:min(10px,1.4cqw)}
+}
+.slot{
+  position:absolute;transform:translate(-50%,-50%);
+  min-width:104px;padding:6px 10px;border-radius:10px;text-align:center;
+  font-size:.76rem;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.9);border:2px dashed rgba(8,74,36,.38);color:var(--muted);
+  transition:.15s;white-space:nowrap;box-shadow:0 1px 4px rgba(8,74,36,.08);
+}
+.slot:hover{border-color:var(--lime);color:var(--deep)}
+.slot.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.22)}
+.slot.filled{border-style:solid;border-color:var(--green);background:rgba(175,210,188,.85);color:var(--deep)}
+.slot.wrong{border-color:var(--bad);background:rgba(231,57,13,.16);animation:shake .35s}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(calc(-50% - 6px),-50%)}75%{transform:translate(calc(-50% + 6px),-50%)}}
+/* กระดานติดป้ายรอบภาพจริง (ด่าน 1)
+   จอกว้าง = ป้าย ??? วางรอบภาพ มีเส้นประชี้ไปยังจุดสีส้มบนภาพ
+   จอแคบ (มือถือ) = จุดบนภาพกลายเป็นหมายเลข แล้วป้ายเรียงเป็นรายการใต้ภาพแทน ไม่เบียดกัน
+   พิกัดทุกจุดคิดเป็นสัดส่วน จึงเปลี่ยนไฟล์ภาพได้โดยไม่ต้องแก้โครง */
+/* ตัวจำกัดความกว้างต้องเป็น "กล่องแม่" ของ .mboard เสมอ
+   เพราะ CSS คิด padding ที่เป็น % จากความกว้างของกล่องแม่ ไม่ใช่ของตัวเอง
+   ถ้าไปจำกัดความกว้างที่ .mboard โดยตรง ขอบรอบภาพจะกว้างผิดสัดส่วน
+   แล้วเส้นประกับป้ายจะเลื่อนไปจากจุดบนภาพทั้งกระดาน */
+.mwrap{max-width:1000px;margin:10px auto 0}
+.mwrap.tall{max-width:720px}
+.mwrap.taller{max-width:700px}
+.mboard{position:relative;width:100%;padding:20% 12.5% 12.5% 14.5%}
+.mimg{position:relative;overflow:hidden;border-radius:14px;background:#fff;
+  box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.mimg img{width:100%;display:block;border-radius:14px;box-shadow:0 5px 18px -8px rgba(8,74,36,.3)}
+.leads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cwrap{position:absolute;inset:0;pointer-events:none}
+/* จุดยึดบนภาพ: บนจอกว้างทำเป็นวงแหวนโปร่ง จะได้มองเห็นภาพที่อยู่ใต้จุด
+   ส่วนบนมือถือกลับไปเป็นจุดทึบ เพราะต้องอ่านตัวเลขในจุดได้ชัด */
+.anchor{position:absolute;transform:translate(-50%,-50%);width:15px;height:15px;border-radius:50%;
+  background:rgba(255,255,255,.45);border:3px solid var(--gold);
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.95),0 1px 4px rgba(8,74,36,.4);
+  display:grid;place-items:center;color:#FFF7F0;font-weight:800;font-size:0}
+.anchor.done{background:var(--lime);border-color:#fff}
+.slot.callout{pointer-events:auto;min-width:92px;padding:5px 9px;font-size:.74rem}
+.slot.callout i{display:none}
+@media (max-width:640px){
+  .mboard{padding:0}
+  .leads{display:none}
+  .cwrap{position:static;display:grid;gap:8px;margin-top:14px;pointer-events:auto;
+    grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+  .slot.callout{position:static;transform:none;display:flex;align-items:center;gap:9px;width:100%;
+    min-width:0;left:auto!important;top:auto!important;text-align:left;white-space:normal;padding:9px 12px;font-size:.8rem}
+  .slot.callout i{flex:0 0 auto;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;
+    background:var(--gold);color:#FFF7F0;font-style:normal;font-weight:800;font-size:.78rem}
+  .slot.callout.filled i{background:var(--lime)}
+  .anchor{width:clamp(21px,5vw,27px);height:clamp(21px,5vw,27px);font-size:clamp(.62rem,2.3vw,.8rem);
+    background:var(--gold);border:2px solid #fff;box-shadow:0 1px 5px rgba(8,74,36,.45)}
+}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tok{
+  padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--line);transition:.15s;
+}
+.tok:hover{border-color:var(--lime)}
+.tok.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;transform:translateY(-2px);
+  box-shadow:0 5px 14px -6px rgba(231,57,13,.6)}
+.tok.used{display:none}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:56px;
+  padding:14px;border-radius:14px;background:rgba(255,255,255,.66);border:1px solid var(--line)}
+.chain .ph{color:var(--muted);font-size:.85rem}
+.link{padding:8px 13px;border-radius:11px;font-size:.82rem;font-weight:700;color:var(--deep);
+  background:rgba(175,210,188,.8);border:1px solid rgba(8,74,36,.32);animation:pop .25s}
+.arrow{color:var(--muted);font-size:.9rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pool .tok{font-size:.82rem}
+.pool .tok.bad{animation:shake .35s;background:rgba(231,57,13,.16);border-color:var(--bad)}
+
+/* wheel / phases */
+.calvin{display:grid;gap:16px}
+@media(min-width:800px){.calvin{grid-template-columns:1fr 1.1fr}}
+.wheel{position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;width:100%}
+.wheel svg{width:100%;height:100%}
+.phase{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.66);margin-bottom:12px;transition:.2s}
+.phase.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.16)}
+.phase.solved{border-color:rgba(8,74,36,.42);background:rgba(175,210,188,.4)}
+.phase h4{margin:0 0 4px;font-size:.98rem}
+.phase .hintline{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.step{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:7px 0;flex-wrap:wrap}
+.step .nm{font-size:.88rem;font-weight:700}
+.stepper{display:flex;align-items:center;gap:4px;background:rgba(8,74,36,.07);border-radius:10px;padding:3px}
+.stepper button{width:30px;height:30px;border-radius:8px;border:none;background:rgba(255,255,255,.9);
+  color:var(--deep);font-size:1.05rem;font-weight:800;cursor:pointer;line-height:1}
+.stepper button:active{background:var(--green);color:#FBF8EC}
+.stepper .n{min-width:34px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ledger (sim) */
+.sim{display:grid;gap:16px}
+@media(min-width:820px){.sim{grid-template-columns:1fr 1.05fr}}
+.specbox{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:14px;padding:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.toggle{display:flex;gap:8px;margin:6px 0 14px}
+.toggle button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-weight:700;font-size:.82rem;cursor:pointer}
+.toggle button.on{background:rgba(175,210,188,.8);border-color:var(--green);color:var(--deep)}
+.tlabel{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:2px}
+.ledtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ledtable th,.ledtable td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+.ledtable th:first-child,.ledtable td:first-child{text-align:left}
+.ledtable th{color:var(--deep);font-size:.82rem}
+.ledtable tfoot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none;font-size:1rem;color:var(--deep)}
+.ledtable .zero{color:var(--muted);opacity:.6}
+.totbox{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-top:12px}
+.totbox .k{font-size:.78rem;color:var(--muted)}
+.totbox .v{font-size:2.4rem;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums;line-height:1.1}
+.mito-vis{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
+.mito-vis svg{width:100%;height:auto;display:block}
+
+/* scenarios */
+.scene{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{
+  text-align:left;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:.9rem;
+  background:var(--panel);border:1px solid var(--line);transition:.15s;
+}
+.opt:hover{background:var(--panel2);border-color:rgba(8,74,36,.38)}
+.opt.correct{background:rgba(47,125,79,.18);border-color:var(--ok)}
+.opt.incorrect{background:rgba(231,57,13,.13);border-color:var(--bad)}
+.opt.disabled{pointer-events:none;opacity:.75}
+
+/* flashcards */
+.deckbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.deckbar button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-size:.83rem;font-weight:700;cursor:pointer}
+.deckbar button.on{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent}
+.fcstage{perspective:1400px;margin:0 auto;max-width:560px}
+.fc{position:relative;width:100%;min-height:290px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.fc.flip{transform:rotateY(180deg)}
+.fc .side{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);box-shadow:0 6px 22px -10px rgba(8,74,36,.35);
+}
+.fc .front{background:linear-gradient(150deg,rgba(175,210,188,.72),rgba(220,235,225,.55)),#fff;align-items:center;text-align:center}
+.fc .back{background:linear-gradient(150deg,rgba(247,195,156,.6),rgba(251,228,210,.45)),#fff;transform:rotateY(180deg)}
+.fc .tag{font-size:.7rem;letter-spacing:.14em;color:#5F7D6B;text-transform:uppercase;margin-bottom:10px}
+.fc .term{font-size:1.5rem;font-weight:800;margin-bottom:6px;line-height:1.3;color:var(--deep)}
+.fc .en{font-size:.9rem;color:var(--muted);font-style:italic}
+.fc .def{font-size:.98rem;line-height:1.7}
+.fc .hint{margin-top:auto;padding-top:14px;font-size:.75rem;color:var(--muted);text-align:center}
+.fcnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+.fcnav .count{font-weight:800;font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+
+.result{text-align:center;padding:26px 16px}
+.result .big{font-size:3rem;letter-spacing:6px;color:var(--gold)}
+.result .big .off{color:rgba(8,74,36,.16)}
+.result h2{margin-top:10px}
+
+.footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.78rem;text-align:center;line-height:1.8}
+.footer .fb{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:9px}
+.footer .fb img{height:26px;width:auto;opacity:.92}
+.footer .fb span{font-weight:800;color:var(--deep);font-size:.92rem}
+.footer .fb span b{color:var(--gold)}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);
+  background:linear-gradient(135deg,#2F7D4F,#4E9370);color:#FBF8EC;
+  padding:11px 22px;border-radius:999px;font-weight:800;font-size:.9rem;z-index:200;
+  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);
+  /* ซ่อนสนิทตอนไม่มีข้อความ ไม่ให้โผล่เป็นแถบเขียวที่ขอบล่างจอ */
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .25s linear, visibility 0s linear .35s;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .2s linear, visibility 0s}
+
+.buckets{display:grid;gap:10px;margin-top:14px}
+@media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
+.bucket{background:rgba(255,255,255,.66);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:96px;transition:.15s}
+.bucket.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.bucket h4{margin:0 0 8px;font-size:.92rem;display:flex;align-items:center;gap:6px}
+.bucket .items{display:flex;flex-wrap:wrap;gap:6px}
+.bucket .items span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;
+  background:rgba(175,210,188,.75);border:1px solid rgba(8,74,36,.28);animation:pop .25s}
+.match{display:grid;gap:10px}
+@media(min-width:760px){.match{grid-template-columns:1fr 1fr}}
+.mcard{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:13px;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);cursor:pointer;transition:.15s}
+.mcard:hover{border-color:rgba(8,74,36,.4)}
+.mcard.armed{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.18)}
+.mcard.done{background:rgba(175,210,188,.5);border-color:var(--green);cursor:default}
+.mcard .em{font-size:1.5rem;line-height:1.2}
+.mcard .tx{flex:1;font-size:.87rem;line-height:1.55}
+.mcard .tx b{color:var(--deep)}
+.mcard .tx b.h{display:block;font-size:.95rem;margin-bottom:2px}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+.cmp{width:100%;border-collapse:collapse;font-size:.87rem}
+.cmp th,.cmp td{padding:8px;border-bottom:1px solid var(--line);text-align:center}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp .yes{color:var(--ok);font-weight:800}
+
+/* ---- เพิ่มเติมสำหรับเกมการแบ่งเซลล์ ---- */
+.cyc{max-width:420px;margin:0 auto;display:block}
+.cyc .seg{cursor:pointer;transition:.15s}
+.cyc .seg:hover{filter:brightness(1.06)}
+.cellview{display:grid;gap:12px;margin:14px 0}
+@media(min-width:760px){.cellview{grid-template-columns:1fr 1fr}}
+.cellbox{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.cellbox h4{margin:0 0 6px;font-size:.92rem}
+.cellbox .big{font-size:1.7rem;font-weight:800;color:var(--deep);font-variant-numeric:tabular-nums}
+.cellbox .lbl{font-size:.78rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hud">
+    <div class="brand"><span class="leaf">⚛️</span><span>โรงเชื่อมอิเล็กตรอน</span></div>
+    <div class="spacer"></div>
+    <div class="chip xp">⚡ XP <b id="hudXp">0</b></div>
+    <div class="chip">⭐ <b id="hudStars">0</b>/18</div>
+    <button class="btn sm ghost" id="btnHome">🗺️ แผนที่</button>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    <div class="fb"><img src="logo.png" alt="โลโก้ Chemistry" onerror="this.remove()"><span>Chemistry<b>.</b></span></div>
+    เกมประกอบตำราเคมี ม.4 เล่ม 2 · บทที่ 2 เรื่อง <b>พันธะโคเวเลนต์</b><br>
+    อิงหลักสูตร สสวท. (ฉบับปรับปรุง พ.ศ. 2560) · ความก้าวหน้าถูกบันทึกไว้ในเครื่องของผู้เล่นเอง
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* =========================================================================
+   โรงเชื่อมอิเล็กตรอน — เกมประกอบการเรียนรู้ เรื่องพันธะโคเวเลนต์ (เคมี ม.4)
+   ไฟล์เดียว ทำงานออฟไลน์ · ใช้โครงเดียวกับเกมชีววิทยาชุดเดิมในเว็บไซต์นี้
+   ========================================================================= */
+
+const app   = document.getElementById('app');
+const toastEl = document.getElementById('toast');
+const SAVE_KEY = 'covalent-quest-v1';
+
+const defaultState = { xp:0, stars:{}, plays:{}, secs:{}, miss:{} };
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return structuredClone(defaultState);
+    return Object.assign(structuredClone(defaultState), JSON.parse(raw));
+  }catch(e){ return structuredClone(defaultState); }
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function totalStars(){ return Object.values(S.stars).reduce((a,b)=>a+b,0); }
+function syncHud(){
+  document.getElementById('hudXp').textContent = S.xp;
+  document.getElementById('hudStars').textContent = totalStars();
+}
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+function shuffle(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+  return r;
+}
+function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span class="off">★</span>'; return s; }
+
+const STAGES = [
+  { id:'share',  ic:'⚛️', title:'ห้องจับคู่อิเล็กตรอน', desc:'การเกิดพันธะโคเวเลนต์ · กฎออกเตต · สัญลักษณ์แบบจุดของลิวอิส', req:0 },
+  { id:'types',  ic:'🔗', title:'สายพานเดี่ยว–คู่–สาม', desc:'พันธะเดี่ยว พันธะคู่ พันธะสาม และสูตรโครงสร้าง', req:1 },
+  { id:'naming', ic:'🏷️', title:'ห้องตั้งชื่อสาร',      desc:'การเขียนสูตรโมเลกุลและการเรียกชื่อสารโคเวเลนต์', req:2 },
+  { id:'energy', ic:'📏', title:'ห้องวัดพันธะ',         desc:'ความยาวพันธะ พลังงานพันธะ และเรโซแนนซ์', req:3 },
+  { id:'props',  ic:'💎', title:'คลังสมบัติสาร',        desc:'สมบัติของสารโคเวเลนต์และสารโคเวเลนต์โครงร่างตาข่าย', req:4 },
+  { id:'boss',   ic:'👹', title:'บอส: ห้องตรวจคุณภาพ',  desc:'วินิจฉัยสารที่ไม่รู้จัก และสรุปภาพรวมพันธะโคเวเลนต์', req:5 }
+];
+
+function renderMap(){
+  syncHud();
+  const cleared = STAGES.filter(s=>S.stars[s.id]>0).length;
+  app.innerHTML = `
+    <div class="hero">
+      <div class="pub"><img src="logo.png" alt="โลโก้ Chemistry" onerror="this.remove()"><span>Chemistry<b>.</b></span></div>
+      <h1>โรงเชื่อมอิเล็กตรอน</h1>
+      <p>ทำไมอะตอมถึงต้อง<strong>ใช้อิเล็กตรอนร่วมกัน</strong><br>
+         และการใช้ร่วมกันนั้นกำหนดหน้าตากับสมบัติของสารอย่างไร</p>
+      <div class="eq">พันธะโคเวเลนต์ = อะตอม<b>อโลหะ</b>ใช้อิเล็กตรอนร่วมกัน เพื่อให้เวเลนซ์อิเล็กตรอนครบ 8 (H ครบ 2)</div>
+      <div id="classSlot"></div>
+    </div>
+    <div class="maplist">
+      ${STAGES.map((s,i)=>{
+        const got=S.stars[s.id]||0, locked=cleared<s.req;
+        return `<div class="node ${locked?'locked':''} ${got?'done':''}" data-id="${s.id}">
+          <span class="no">ด่าน ${i+1}</span>
+          <div class="ic">${locked?'🔒':s.ic}</div>
+          <div class="body">
+            <div class="t">${s.title}</div>
+            <div class="d">${locked?`ผ่านด่านก่อนหน้าให้ครบ ${s.req} ด่านเพื่อปลดล็อก`:s.desc}</div>
+            ${locked?'':`<div class="stars">${stars(got)}</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:2rem">🃏</div>
+      <div style="flex:1;min-width:190px">
+        <div style="font-weight:800">การ์ดคำศัพท์</div>
+        <div class="small muted">${CARDS.length} การ์ด ทบทวนศัพท์ไทย–อังกฤษ พร้อมนิยาม เปิดเล่นได้ตลอดเวลา</div>
+      </div>
+      <button class="btn gold" id="btnCards">เปิดสำรับ</button>
+    </div>
+    ${certCardHtml()}
+    <div class="center" style="margin-top:18px">
+      <button class="btn ghost sm" id="btnReset">เริ่มใหม่ทั้งหมด</button>
+    </div>
+  `;
+  app.querySelectorAll('.node').forEach(n=>{
+    n.addEventListener('click',()=>{
+      if(n.classList.contains('locked')){ toast('🔒 ยังไม่ปลดล็อกด่านนี้'); return; }
+      openStage(n.dataset.id);
+    });
+  });
+  document.getElementById('btnCards').onclick = renderCards;
+  const certBtn = document.getElementById('btnCert');
+  if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
+  document.getElementById('btnReset').onclick = ()=>{
+    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+      S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
+    }
+  };
+  renderClassChip();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function stageShell(id, extraHtml=''){
+  const st = STAGES.find(s=>s.id===id);
+  return `<div class="stagehead">
+      <div class="ic">${st.ic}</div>
+      <div style="flex:1;min-width:200px"><h2>${st.title}</h2><div class="sub">${st.desc}</div></div>
+    </div>${extraHtml}`;
+}
+let stageT0 = 0;        // เวลาเริ่มด่าน ใช้คำนวณเวลาที่ใช้ต่อด่าน
+let stageMiss = 0;      // จำนวนครั้งที่ตอบผิดในด่านที่กำลังเล่น (ตั้งค่าก่อนเรียก finishStage)
+function openStage(id){
+  window.scrollTo({top:0});
+  stageT0 = Date.now(); stageMiss = 0;
+  ({share:stageShare, types:stageTypes, naming:stageNaming,
+    energy:stageEnergy, props:stageProps, boss:stageBoss})[id]();
+}
+function finishStage(id, got, xp, summaryHtml){
+  const prev=S.stars[id]||0; if(got>prev) S.stars[id]=got;
+  S.plays = S.plays || {}; S.plays[id] = (S.plays[id]||0) + 1;
+  S.xp+=xp; save(); syncHud();
+  const secs = stageT0 ? Math.round((Date.now()-stageT0)/1000) : 0;
+  const misses = Math.max(0, stageMiss|0); stageMiss = 0;
+  S.secs = S.secs || {}; S.miss = S.miss || {};
+  S.secs[id] = secs; S.miss[id] = misses;   // เก็บไว้เผื่อเข้าร่วมห้องทีหลัง จะได้ส่งเวลาจริงตามไปด้วย
+  save();
+  sendScore(id, got, misses, secs);   // ส่งคะแนนให้ครู (ถ้าเข้าร่วมห้อง)
+  app.innerHTML = `
+    <div class="card result">
+      <div class="big">${stars(got)}</div>
+      <h2>${got===3?'สมบูรณ์แบบ!':got===2?'เก่งมาก!':got===1?'ผ่านแล้ว':'ยังไม่ผ่าน'}</h2>
+      <p class="muted">ได้รับ <b style="color:var(--lime)">+${xp} XP</b></p>
+      <div style="text-align:left;max-width:640px;margin:18px auto 0">${summaryHtml}</div>
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="again">เล่นด่านนี้อีกครั้ง</button>
+        <button class="btn primary" id="back">กลับแผนที่ →</button>
+      </div>
+    </div>`;
+  document.getElementById('again').onclick = ()=>openStage(id);
+  document.getElementById('back').onclick  = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- เครื่องมือที่ใช้ร่วมกันหลายด่าน ---------- */
+/* กระดานติดป้ายรอบภาพ (ใช้ในด่าน 1) — จอกว้างเป็นป้ายรอบภาพ จอแคบเป็นรายการหมายเลข */
+const MB = { w:1000, h:723, x0:0.145, y0:0.20, iw:0.73, ih:0.3978 };
+const mbX = u => (MB.x0 + u*MB.iw) * MB.w;
+const mbY = v => (MB.y0 + v*MB.ih) * MB.w;
+/* คำนวณความสูงของกรอบใหม่ตามสัดส่วนภาพ (เช่น '1920/1080') เพื่อให้เส้นประชี้ตรงจุดเสมอ
+   ไม่ว่าจะเปลี่ยนไปใช้ภาพที่สัดส่วนต่างจากเดิม */
+function mbFit(ratio){
+  const a = String(ratio).split('/').map(Number);
+  if(a.length===2 && a[0]>0 && a[1]>0) MB.ih = MB.iw * (a[1]/a[0]);
+  MB.h = Math.round((MB.y0 + MB.ih + 0.125) * MB.w);   // ขอบบน + ภาพ + ขอบล่าง (ตรงกับ padding ของ .mboard)
+}
+function calloutBoard(svg, ratio, parts){
+  mbFit(ratio);
+  const ra = String(ratio).split('/').map(Number);
+  const ar = (ra.length===2 && ra[1]) ? ra[0]/ra[1] : 99;
+  const tall = ar < 0.8 ? ' taller' : ar < 1.2 ? ' tall' : '';
+  const pcx = n => (n/MB.w*100).toFixed(2)+'%';
+  const pcy = n => (n/MB.h*100).toFixed(2)+'%';
+  const lines = parts.map(p=>`<line x1="${p.lx}" y1="${p.ly}" x2="${mbX(p.u)}" y2="${mbY(p.v)}"
+      stroke="#04261E" stroke-width="1.6" stroke-dasharray="7 5" opacity=".65" vector-effect="non-scaling-stroke"/>`).join('');
+  return `<div class="bank" id="bank">
+    ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+  </div>
+  <div class="mwrap${tall}"><div class="mboard">
+    <div class="mimg" style="aspect-ratio:${ratio}">
+      ${svg}
+      ${parts.map((p,i)=>`<div class="anchor" id="pin-${p.key}"
+          style="left:${(p.u*100).toFixed(2)}%;top:${(p.v*100).toFixed(2)}%">${i+1}</div>`).join('')}
+    </div>
+    <svg class="leads" viewBox="0 0 ${MB.w} ${MB.h}" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
+    <div class="cwrap">
+      ${parts.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
+          style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+    </div>
+  </div></div>`;
+}
+/* ผูกเหตุการณ์ให้กระดานติดป้าย แล้วเรียก onDone(จำนวนที่ผิด) เมื่อวางครบ */
+function bindCallout(parts, onDone){
+  let placed=0, mistakes=0, armed=null;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#bank .tok').forEach(t=>{
+    t.onclick = ()=>{
+      app.querySelectorAll('.tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.key){ armed=null; return; }
+      armed=t.dataset.key; t.classList.add('sel');
+      app.querySelectorAll('.slot:not(.filled)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.slot').forEach(sl=>{
+    sl.onclick = ()=>{
+      if(!armed || sl.classList.contains('filled')) return;
+      const part = parts.find(p=>p.key===armed);
+      if(sl.dataset.key===armed){
+        sl.classList.add('filled'); sl.classList.remove('armed');
+        sl.querySelector('.ans').textContent=part.label;
+        const pin=document.getElementById('pin-'+part.key); if(pin) pin.classList.add('done');
+        app.querySelector(`.tok[data-key="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/parts.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${part.label}</b> — ${part.info}`;
+        armed=null; app.querySelectorAll('.slot').forEach(x=>x.classList.remove('armed'));
+        if(placed===parts.length) setTimeout(()=>onDone(mistakes),950);
+      }else{
+        mistakes++; sl.classList.add('wrong'); setTimeout(()=>sl.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ หมายเลขนี้ยังไม่ใช่ <b>${part.label}</b> — ลองดูรูปร่างและตำแหน่งของมันอีกครั้ง`;
+      }
+    };
+  });
+}
+/* จัดกลุ่มลงกล่อง — items = [{n, g, e}] · groups = {key:'ชื่อกล่อง'} */
+function bindBuckets(items, groups, pbId, fbId, onDone){
+  let armed=null, placed=0, wrong=0;
+  const fb=document.getElementById(fbId), pb=document.getElementById(pbId);
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.n){ armed=null; return; }
+      armed=t.dataset.n; t.classList.add('sel');
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.bucket').forEach(b=>{
+    b.onclick=()=>{
+      if(!armed) return;
+      const it=items.find(x=>x.n===armed);
+      if(it.g===b.dataset.g){
+        document.getElementById('items-'+it.g).insertAdjacentHTML('beforeend', `<span>${it.n}</span>`);
+        app.querySelector(`#pool .tok[data-n="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/items.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${it.n}</b> — ${it.e}`;
+        armed=null; app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+        if(placed===items.length) setTimeout(()=>onDone(wrong),1000);
+      }else{
+        wrong++; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ <b>${it.n}</b> ยังไม่ใช่กล่องนี้ — ลองอ่านหัวข้อกล่องอีกครั้ง`;
+      }
+    };
+  });
+}
+/* เรียงลำดับขั้นตอน — steps = [{n, e}] เรียงถูกตามลำดับใน array */
+function orderBoard(steps, hint){
+  const pool = shuffle(steps.map((z,i)=>({...z,i})));
+  return `<div class="chain" id="chain"><span class="ph">${hint}</span></div>
+    <div class="pool" id="pool">${pool.map(p=>`<div class="tok" data-i="${p.i}">${p.n}</div>`).join('')}</div>`;
+}
+function bindOrder(steps, onDone){
+  let idx=0, wrong=0;
+  const chain=document.getElementById('chain'), fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      const i=+t.dataset.i;
+      if(i===idx){
+        if(idx===0) chain.innerHTML=''; else chain.insertAdjacentHTML('beforeend','<span class="arrow">→</span>');
+        chain.insertAdjacentHTML('beforeend', `<span class="link">${steps[i].n}</span>`);
+        t.classList.add('used');
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${steps[i].n}</b><br>${steps[i].e}`;
+        idx++; if(pb) pb.style.width=(idx/steps.length*100)+'%';
+        if(idx===steps.length) setTimeout(()=>onDone(wrong),1300);
+      }else{
+        wrong++; t.classList.add('bad'); setTimeout(()=>t.classList.remove('bad'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถึงคิวของ <b>${steps[i].n}</b> — ลองนึกว่าตอนนี้เซลล์อยู่ขั้นไหน`;
+      }
+    };
+  });
+}
+/* จับคู่การ์ด — pairs = [{k, n, em, h, d}] */
+function matchBoard(pairs){
+  const cards = shuffle(pairs);
+  return `<div class="bank" id="pool">${shuffle(pairs).map(j=>`<div class="tok" data-k="${j.k}">${j.n}</div>`).join('')}</div>
+    <div class="match" id="match" style="margin-top:14px">
+      ${cards.map(j=>`<div class="mcard" data-k="${j.k}">
+        <div class="em">${j.em}</div>
+        <div class="tx"><b class="h">${j.h}</b>${j.d}</div>
+      </div>`).join('')}
+    </div>`;
+}
+function bindMatch(pairs, onDone){
+  let armed=null, done=0, wrong=0;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.k){ armed=null; return; }
+      armed=t.dataset.k; t.classList.add('sel');
+      app.querySelectorAll('.mcard:not(.done)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.mcard').forEach(c=>{
+    c.onclick=()=>{
+      if(!armed || c.classList.contains('done')) return;
+      const j=pairs.find(x=>x.k===armed);
+      if(c.dataset.k===armed){
+        c.classList.add('done'); c.classList.remove('armed');
+        c.querySelector('.tx').insertAdjacentHTML('afterbegin', `<b class="h" style="color:var(--lime)">✅ ${j.n}</b>`);
+        app.querySelector(`#pool .tok[data-k="${armed}"]`).classList.add('used');
+        done++; if(pb) pb.style.width=(done/pairs.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${j.n}</b> — ${j.d}`;
+        armed=null; app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+        if(done===pairs.length) setTimeout(()=>onDone(wrong),1100);
+      }else{
+        wrong++; c.classList.add('wrong'); setTimeout(()=>c.classList.remove('wrong'),400);
+        fb.className='feedback show bad'; fb.innerHTML=`❌ <b>${j.n}</b> ยังไม่ใช่การ์ดนี้ ลองอ่านคำอธิบายอีกครั้ง`;
+      }
+    };
+  });
+}
+/* ชุดคำถามปรนัยท้ายด่าน — qs = [{q, o[], a, e}] */
+function quizRun(qs, hostId, onDone){
+  let qi=0, wrong=0;
+  const host=document.getElementById(hostId);
+  function draw(){
+    const q=qs[qi];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">คำถาม ${qi+1}/${qs.length}</div>
+      <h3 style="margin:6px 0 4px">${q.q}</h3>
+      <div class="opts">${q.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===q.a; if(!ok) wrong++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===q.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+q.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${qi===qs.length-1?'สรุปผล →':'ข้อถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ qi++; if(qi<qs.length){ draw(); window.scrollTo({top:0,behavior:'smooth'}); } else onDone(wrong); };
+      };
+    });
+  }
+  draw();
+}
+
+
+
+/* =========================================================================
+   ด่าน 1 — ห้องจับคู่อิเล็กตรอน: การเกิดพันธะโคเวเลนต์ · กฎออกเตต · โครงสร้างลิวอิส
+   ========================================================================= */
+const LEWIS_SVG = `
+<svg viewBox="0 0 1000 545" style="width:100%;display:block;border-radius:14px;background:#FBF8EC" aria-hidden="true">
+  <rect width="1000" height="545" fill="#FBF8EC"/>
+  <g font-family="'Sukhumvit Set','Noto Sans Thai',sans-serif" text-anchor="middle">
+
+    <!-- ── ก่อนเกิดพันธะ: อะตอมแยกกัน ── -->
+    <text x="95" y="252" font-size="46" font-weight="800" fill="#5C90A6">H</text>
+    <circle cx="128" cy="238" r="8" fill="#5C90A6"/>
+    <text x="95" y="382" font-size="46" font-weight="800" fill="#5C90A6">H</text>
+    <circle cx="128" cy="368" r="8" fill="#5C90A6"/>
+    <text x="215" y="288" font-size="52" font-weight="800" fill="#E7390D">O</text>
+    <g fill="#E7390D">
+      <circle cx="200" cy="213" r="8"/><circle cx="230" cy="213" r="8"/>
+      <circle cx="266" cy="256" r="8"/><circle cx="266" cy="286" r="8"/>
+      <circle cx="215" cy="330" r="8"/><circle cx="164" cy="271" r="8"/>
+    </g>
+    <text x="180" y="440" font-size="22" font-weight="700" fill="#6B8A76">ก่อนเกิดพันธะ</text>
+
+    <path d="M312 271 L356 271" stroke="#8AA394" stroke-width="5" marker-end="url(#cvArr)"/>
+
+    <!-- ── โครงสร้างลิวอิสของน้ำ ── -->
+    <text x="395" y="358" font-size="46" font-weight="800" fill="#5C90A6">H</text>
+    <text x="605" y="358" font-size="46" font-weight="800" fill="#5C90A6">H</text>
+    <text x="500" y="288" font-size="52" font-weight="800" fill="#E7390D">O</text>
+    <g fill="#E7390D">
+      <circle cx="485" cy="212" r="8"/><circle cx="515" cy="212" r="8"/>
+      <circle cx="556" cy="256" r="8"/><circle cx="556" cy="286" r="8"/>
+    </g>
+    <g fill="#2F7D4F">
+      <circle cx="452" cy="300" r="8"/><circle cx="466" cy="316" r="8"/>
+      <circle cx="534" cy="316" r="8"/><circle cx="548" cy="300" r="8"/>
+    </g>
+    <text x="500" y="440" font-size="22" font-weight="700" fill="#6B8A76">ใช้อิเล็กตรอนร่วมกัน</text>
+
+    <path d="M648 271 L692 271" stroke="#8AA394" stroke-width="5" marker-end="url(#cvArr)"/>
+
+    <!-- ── สูตรโครงสร้างแบบเส้น ── -->
+    <text x="722" y="288" font-size="46" font-weight="800" fill="#5C90A6">H</text>
+    <text x="832" y="288" font-size="52" font-weight="800" fill="#E7390D">O</text>
+    <text x="942" y="288" font-size="46" font-weight="800" fill="#5C90A6">H</text>
+    <path d="M748 271 L806 271" stroke="#2F7D4F" stroke-width="7" stroke-linecap="round"/>
+    <path d="M858 271 L916 271" stroke="#2F7D4F" stroke-width="7" stroke-linecap="round"/>
+    <g fill="#E7390D">
+      <circle cx="818" cy="216" r="8"/><circle cx="846" cy="216" r="8"/>
+      <circle cx="818" cy="326" r="8"/><circle cx="846" cy="326" r="8"/>
+    </g>
+    <text x="832" y="440" font-size="22" font-weight="700" fill="#6B8A76">สูตรโครงสร้าง</text>
+  </g>
+  <defs>
+    <marker id="cvArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8AA394"/>
+    </marker>
+  </defs>
+</svg>`;
+const LEWIS_PARTS = [
+  { key:'symbol', u:0.215, v:0.495, lx:140, ly:660, label:'สัญลักษณ์ธาตุ',
+    info:'ตัวอักษรย่อของธาตุ ใช้แทน<b>นิวเคลียสกับอิเล็กตรอนชั้นในทั้งหมด</b> เหลือไว้แต่เวเลนซ์อิเล็กตรอนที่เขียนเป็นจุดรอบ ๆ' },
+  { key:'valence', u:0.215, v:0.391, lx:150, ly:55, label:'เวเลนซ์อิเล็กตรอน',
+    info:'อิเล็กตรอนในระดับพลังงานนอกสุด เขียนเป็น<b>จุดรอบสัญลักษณ์ธาตุ</b> — ออกซิเจนมี 6 จุด ไฮโดรเจนมี 1 จุด · เป็นอิเล็กตรอนที่ใช้สร้างพันธะ' },
+  { key:'lone', u:0.500, v:0.389, lx:480, ly:45, label:'อิเล็กตรอนคู่โดดเดี่ยว',
+    info:'Lone pair — คู่อิเล็กตรอนที่<b>ไม่ได้ใช้ร่วมกับอะตอมอื่น</b> ยังอยู่กับอะตอมเดิม · ในน้ำ ออกซิเจนมีคู่โดดเดี่ยว 2 คู่' },
+  { key:'shared', u:0.458, v:0.565, lx:450, ly:690, label:'อิเล็กตรอนคู่ร่วมพันธะ',
+    info:'Bonding pair — คู่อิเล็กตรอนที่<b>อะตอมสองอะตอมใช้ร่วมกัน</b> · นับให้ทั้งสองอะตอม ออกซิเจนจึงครบ 8 และไฮโดรเจนครบ 2' },
+  { key:'bond', u:0.775, v:0.495, lx:900, ly:300, label:'พันธะเดี่ยว',
+    info:'เส้นหนึ่งเส้นในสูตรโครงสร้าง แทน<b>อิเล็กตรอนคู่ร่วมพันธะ 1 คู่ (2 อิเล็กตรอน)</b> — เขียนแบบเส้นเพื่อให้อ่านง่ายกว่าการวาดจุด' }
+];
+const LEWIS_Q = [
+  { q:'เพราะเหตุใดอะตอมของธาตุ<b>อโลหะ</b>จึงสร้างพันธะโคเวเลนต์ด้วยการใช้อิเล็กตรอนร่วมกัน แทนที่จะให้หรือรับอิเล็กตรอน',
+    o:['เพราะอโลหะมีเวเลนซ์อิเล็กตรอนน้อยมาก จึงให้อิเล็กตรอนได้ง่าย',
+       'เพราะอโลหะต่างก็มีค่าพลังงานไอออไนเซชันและอิเล็กโทรเนกาติวิตีสูงทั้งคู่ ไม่มีฝ่ายใดเสียอิเล็กตรอนได้ง่าย จึงใช้ร่วมกันเพื่อให้ครบออกเตตทั้งสองฝ่าย',
+       'เพราะอโลหะเป็นแก๊สทั้งหมด','เพราะอโลหะไม่มีเวเลนซ์อิเล็กตรอน'], a:1,
+    e:'การให้–รับอิเล็กตรอน (พันธะไอออนิก) เกิดเมื่อฝ่ายหนึ่ง<b>เสียอิเล็กตรอนง่าย</b> (โลหะ) กับอีกฝ่ายที่<b>รับง่าย</b> (อโลหะ)<br>' +
+      'แต่ถ้าเป็นอโลหะทั้งคู่ ต่างก็ดึงอิเล็กตรอนเก่งพอ ๆ กัน จึง<b>ใช้อิเล็กตรอนร่วมกัน</b> แล้วนับคู่ที่ใช้ร่วมให้ทั้งสองอะตอม ทำให้ครบออกเตตพร้อมกัน' },
+  { q:'ในโมเลกุล H₂O อะตอมออกซิเจนมีอิเล็กตรอนคู่<b>ร่วมพันธะ</b>และคู่<b>โดดเดี่ยว</b>อย่างละกี่คู่',
+    o:['ร่วมพันธะ 1 คู่ · โดดเดี่ยว 3 คู่','ร่วมพันธะ 2 คู่ · โดดเดี่ยว 2 คู่',
+       'ร่วมพันธะ 3 คู่ · โดดเดี่ยว 1 คู่','ร่วมพันธะ 4 คู่ · ไม่มีคู่โดดเดี่ยว'], a:1,
+    e:'ออกซิเจนมีเวเลนซ์อิเล็กตรอน 6 → ใช้ร่วมกับ H สองอะตอม อะตอมละ 1 คู่ = <b>คู่ร่วมพันธะ 2 คู่</b><br>' +
+      'เหลืออีก 4 อิเล็กตรอนจับกันเป็น <b>คู่โดดเดี่ยว 2 คู่</b> · รวมรอบออกซิเจน 4 คู่ = 8 อิเล็กตรอน ครบออกเตตพอดี' },
+  { q:'ข้อใดกล่าวถึง<b>กฎออกเตต</b>ได้ถูกต้องที่สุด',
+    o:['ทุกอะตอมต้องมีเวเลนซ์อิเล็กตรอนครบ 8 เสมอ ไม่มีข้อยกเว้น',
+       'อะตอมมีแนวโน้มจัดเวเลนซ์อิเล็กตรอนให้ครบ 8 เหมือนแก๊สมีสกุล แต่ไฮโดรเจนครบเพียง 2 และยังมีข้อยกเว้นอื่น เช่น BF₃ PCl₅ SF₆',
+       'อะตอมต้องเสียอิเล็กตรอนให้ครบ 8 ตัว','กฎออกเตตใช้ได้เฉพาะกับโลหะ'], a:1,
+    e:'กฎออกเตตคือ<b>แนวโน้ม</b>ที่อะตอมจะจัดเวเลนซ์อิเล็กตรอนให้ครบ 8 เหมือนแก๊สมีสกุล<br>' +
+      'ข้อยกเว้นที่ต้องจำ: <b>H และ He ครบ 2</b> · <b>BF₃</b> รอบ B มีแค่ 6 · <b>PCl₅ SF₆</b> รอบอะตอมกลางมีมากกว่า 8' }
+];
+function stageShare(){
+  let boardWrong = 0;
+  drawBoard();
+
+  function drawBoard(){
+    app.innerHTML = stageShell('share', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะชื่อส่วนประกอบในสำรับ แล้วแตะป้าย <b>? ? ?</b> ที่ชี้ไปยังตำแหน่งของมัน
+        — วางให้ครบ ${LEWIS_PARTS.length} จุด
+        <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${calloutBoard(LEWIS_SVG, '1000/545', LEWIS_PARTS)}
+      <div class="feedback" id="fb"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>อ่านภาพจากซ้ายไปขวา:</b> อะตอมแยกกันมีเวเลนซ์อิเล็กตรอนของตัวเอง →
+        นำมาใช้ร่วมกันจนครบออกเตต → เขียนย่อเป็นเส้น โดย <b>1 เส้น = 1 คู่ร่วมพันธะ</b>
+      </div>
+    `);
+    bindCallout(LEWIS_PARTS, mistakes=>{
+      boardWrong = mistakes; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,900);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('share', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องการเกิดพันธะและกฎออกเตตให้ครบ ${LEWIS_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(LEWIS_Q, 'qhost', qWrong=>{
+      const miss = boardWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('share', got, 70-Math.min(miss*7,40), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>พันธะโคเวเลนต์</b> = อะตอม<b>อโลหะกับอโลหะ</b>ใช้เวเลนซ์อิเล็กตรอนร่วมกัน<br>
+          • คู่ที่ใช้ร่วมกันเรียก <b>อิเล็กตรอนคู่ร่วมพันธะ</b> · คู่ที่เหลือเรียก <b>อิเล็กตรอนคู่โดดเดี่ยว</b><br>
+          • <b>กฎออกเตต</b>: จัดให้ครบ 8 เหมือนแก๊สมีสกุล (H ครบ 2) · <b>1 เส้น = 1 คู่ร่วมพันธะ</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> อิเล็กตรอนคู่ร่วมพันธะ <b>นับให้ทั้งสองอะตอม</b>
+          ไม่ใช่แบ่งกันคนละครึ่ง — ในน้ำ ออกซิเจนจึงนับได้ 8 และไฮโดรเจนแต่ละตัวนับได้ 2</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ข้อยกเว้นกฎออกเตตที่พบบ่อย — <b>BF₃</b> รอบ B มีแค่ 6 อิเล็กตรอน
+          ส่วน <b>PCl₅</b> และ <b>SF₆</b> รอบอะตอมกลางมีมากกว่า 8 ได้ เพราะอะตอมกลางอยู่คาบที่ 3 ขึ้นไป</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 2 — สายพานเดี่ยว–คู่–สาม: ชนิดของพันธะโคเวเลนต์
+   ========================================================================= */
+const BOND_ITEMS = [
+  { n:'H₂ (H–H)', g:'s', e:'ไฮโดรเจนแต่ละอะตอมมีเวเลนซ์อิเล็กตรอน 1 ใช้ร่วมกัน <b>1 คู่</b> ก็ครบ 2 ทั้งคู่' },
+  { n:'Cl₂ (Cl–Cl)', g:'s', e:'คลอรีนมีเวเลนซ์อิเล็กตรอน 7 ใช้ร่วมกัน <b>1 คู่</b> ก็ครบ 8 ทั้งสองอะตอม' },
+  { n:'CH₄ (C–H)', g:'s', e:'คาร์บอนสร้างพันธะเดี่ยวกับไฮโดรเจน 4 พันธะ รอบคาร์บอนจึงครบ 8' },
+  { n:'O₂ (O=O)', g:'d', e:'ออกซิเจนมีเวเลนซ์อิเล็กตรอน 6 ต้องใช้ร่วมกัน <b>2 คู่</b> จึงจะครบ 8 ทั้งสองอะตอม' },
+  { n:'CO₂ (O=C=O)', g:'d', e:'คาร์บอนสร้าง<b>พันธะคู่</b>กับออกซิเจนทั้งสองข้าง รอบคาร์บอนจึงครบ 8' },
+  { n:'C₂H₄ (C=C)', g:'d', e:'อีทีน — คาร์บอนสองอะตอมใช้อิเล็กตรอนร่วมกัน <b>2 คู่</b>' },
+  { n:'N₂ (N≡N)', g:'t', e:'ไนโตรเจนมีเวเลนซ์อิเล็กตรอน 5 ต้องใช้ร่วมกันถึง <b>3 คู่</b> จึงจะครบ 8' },
+  { n:'C₂H₂ (C≡C)', g:'t', e:'อะเซทิลีน — คาร์บอนสองอะตอมใช้อิเล็กตรอนร่วมกัน <b>3 คู่</b>' },
+  { n:'HCN (C≡N)', g:'t', e:'ระหว่างคาร์บอนกับไนโตรเจนเป็น<b>พันธะสาม</b> ส่วน C–H เป็นพันธะเดี่ยว' }
+];
+const BOND_Q = [
+  { q:'พันธะสามใช้อิเล็กตรอนร่วมกันทั้งหมดกี่<b>อิเล็กตรอน</b>',
+    o:['2 อิเล็กตรอน','3 อิเล็กตรอน','4 อิเล็กตรอน','6 อิเล็กตรอน'], a:3,
+    e:'พันธะสาม = ใช้ร่วมกัน <b>3 คู่</b> · 1 คู่ = 2 อิเล็กตรอน → 3 × 2 = <b>6 อิเล็กตรอน</b><br>' +
+      'เทียบ: พันธะเดี่ยว 2 อิเล็กตรอน · พันธะคู่ 4 อิเล็กตรอน' },
+  { q:'อะตอมไนโตรเจนมีเวเลนซ์อิเล็กตรอน 5 เมื่อรวมกันเป็นโมเลกุล N₂ จะเกิดพันธะชนิดใด และเพราะเหตุใด',
+    o:['พันธะเดี่ยว เพราะใช้ร่วมกัน 1 คู่ก็พอ',
+       'พันธะคู่ เพราะขาดอีก 2 อิเล็กตรอน',
+       'พันธะสาม เพราะแต่ละอะตอมขาดอีก 3 อิเล็กตรอนจึงจะครบ 8 จึงต้องใช้ร่วมกัน 3 คู่',
+       'ไม่เกิดพันธะ เพราะไนโตรเจนเป็นแก๊สเฉื่อย'], a:2,
+    e:'N มีเวเลนซ์อิเล็กตรอน 5 ขาดอีก <b>3</b> จึงจะครบ 8 · เมื่อ N สองอะตอมมาเจอกันจึงใช้อิเล็กตรอนร่วมกัน <b>3 คู่</b> เกิดเป็น <b>พันธะสาม (N≡N)</b>' },
+  { q:'ในโมเลกุล HCN พันธะระหว่างอะตอมเป็นอย่างไร',
+    o:['H–C เป็นพันธะเดี่ยว และ C≡N เป็นพันธะสาม','ทั้งสองพันธะเป็นพันธะคู่',
+       'H=C เป็นพันธะคู่ และ C–N เป็นพันธะเดี่ยว','ทั้งสองพันธะเป็นพันธะเดี่ยว'], a:0,
+    e:'ไฮโดรเจนต้องการอีกเพียง 1 อิเล็กตรอน จึงเกิด<b>พันธะเดี่ยว</b> H–C<br>' +
+      'ส่วนคาร์บอน (ขาด 4) กับไนโตรเจน (ขาด 3) ต้องใช้ร่วมกัน 3 คู่ เป็น <b>พันธะสาม C≡N</b> รอบคาร์บอนจึงครบ 8 พอดี' }
+];
+function stageTypes(){
+  let sortWrong = 0;
+  drawSort();
+
+  function drawSort(){
+    const B = { s:{t:'➖ พันธะเดี่ยว<br><span class="small muted">ใช้ร่วมกัน 1 คู่</span>'},
+                d:{t:'🟰 พันธะคู่<br><span class="small muted">ใช้ร่วมกัน 2 คู่</span>'},
+                t:{t:'☰ พันธะสาม<br><span class="small muted">ใช้ร่วมกัน 3 คู่</span>'} };
+    app.innerHTML = stageShell('types', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะโมเลกุล แล้วแตะกล่องที่ตรงกับ<b>ชนิดพันธะที่วงเล็บระบุไว้</b>
+        — จัดให้ครบ ${BOND_ITEMS.length} ชิ้น</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(BOND_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        🔵 <b>วิธีคิดเร็ว:</b> ดูว่าอะตอม<b>ขาดอิเล็กตรอนกี่ตัว</b>จึงจะครบ 8 — ขาด 1 ใช้ร่วม 1 คู่ ·
+        ขาด 2 ใช้ร่วม 2 คู่ · ขาด 3 ใช้ร่วม 3 คู่
+      </div>
+    `);
+    bindBuckets(BOND_ITEMS, B, 'pb', 'fb', wrong=>{
+      sortWrong = wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,700);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('types', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องชนิดของพันธะให้ครบ ${BOND_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(BOND_Q, 'qhost', qWrong=>{
+      const miss = sortWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('types', got, 70-Math.min(miss*7,40), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>พันธะเดี่ยว</b> ใช้ร่วมกัน 1 คู่ = 2 อิเล็กตรอน · เขียนเป็น <b>–</b><br>
+          • <b>พันธะคู่</b> ใช้ร่วมกัน 2 คู่ = 4 อิเล็กตรอน · เขียนเป็น <b>=</b><br>
+          • <b>พันธะสาม</b> ใช้ร่วมกัน 3 คู่ = 6 อิเล็กตรอน · เขียนเป็น <b>≡</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> “พันธะคู่” ไม่ได้แปลว่า <b>2 พันธะแยกกัน</b>
+          แต่เป็น<b>พันธะเดียว</b>ที่ใช้อิเล็กตรอนร่วมกัน 2 คู่ — เวลานับจำนวนพันธะรอบอะตอมกลางจึงนับเป็น 1 ตำแหน่ง</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> นอกจากสามแบบนี้ยังมี <b>พันธะโคออร์ดิเนตโคเวเลนต์</b>
+          ซึ่งอะตอมหนึ่งเป็นผู้ให้อิเล็กตรอนคู่ร่วมพันธะ<b>ฝ่ายเดียว</b> เช่นพันธะที่ 4 ใน NH₄⁺
+          แต่เมื่อเกิดแล้วจะแยกไม่ออกจากพันธะเดี่ยวปกติ</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 3 — ห้องตั้งชื่อสาร: สูตรโมเลกุลและการเรียกชื่อสารโคเวเลนต์
+   ========================================================================= */
+const NAME_PAIRS = [
+  { k:'co', n:'คาร์บอนมอนอกไซด์', em:'CO', h:'คาร์บอน 1 · ออกซิเจน 1',
+    d:'ธาตุแรกมี 1 อะตอม <b>ไม่ต้องใส่ “มอนอ”</b> · ธาตุหลังมี 1 อะตอมจึงเป็น <b>มอนอ</b>ออกไซด์' },
+  { k:'co2', n:'คาร์บอนไดออกไซด์', em:'CO₂', h:'คาร์บอน 1 · ออกซิเจน 2',
+    d:'ออกซิเจน 2 อะตอม → <b>ได</b>ออกไซด์ · แก๊สที่พืชใช้สังเคราะห์ด้วยแสง' },
+  { k:'n2o5', n:'ไดไนโตรเจนเพนตะออกไซด์', em:'N₂O₅', h:'ไนโตรเจน 2 · ออกซิเจน 5',
+    d:'ธาตุแรกมี 2 อะตอมจึงต้องใส่ <b>ได</b> · ออกซิเจน 5 อะตอม → <b>เพนตะ</b>ออกไซด์' },
+  { k:'pcl5', n:'ฟอสฟอรัสเพนตะคลอไรด์', em:'PCl₅', h:'ฟอสฟอรัส 1 · คลอรีน 5',
+    d:'ตัวอย่างสารที่<b>ไม่เป็นไปตามกฎออกเตต</b> — รอบฟอสฟอรัสมีอิเล็กตรอน 10' },
+  { k:'sf6', n:'ซัลเฟอร์เฮกซะฟลูออไรด์', em:'SF₆', h:'ซัลเฟอร์ 1 · ฟลูออรีน 6',
+    d:'รอบกำมะถันมีอิเล็กตรอนถึง 12 — เป็นข้อยกเว้นของกฎออกเตตเช่นกัน' },
+  { k:'ccl4', n:'คาร์บอนเตตระคลอไรด์', em:'CCl₄', h:'คาร์บอน 1 · คลอรีน 4',
+    d:'คลอรีน 4 อะตอม → <b>เตตระ</b>คลอไรด์ · โมเลกุลรูปทรงสี่หน้า' }
+];
+const NAME_Q = [
+  { q:'สาร N₂O มีชื่อว่าอะไร',
+    o:['ไนโตรเจนออกไซด์','ไดไนโตรเจนมอนอกไซด์','ไนโตรเจนไดออกไซด์','มอนอไนโตรเจนไดออกไซด์'], a:1,
+    e:'ไนโตรเจน 2 อะตอม → <b>ได</b>ไนโตรเจน · ออกซิเจน 1 อะตอม → <b>มอนอ</b>ออกไซด์<br>' +
+      'รวมเป็น <b>ไดไนโตรเจนมอนอกไซด์</b> (แก๊สหัวเราะ)' },
+  { q:'เพราะเหตุใด CO จึงอ่านว่า “คาร์บอนมอนอกไซด์” ไม่ใช่ “มอนอคาร์บอนมอนอกไซด์”',
+    o:['เพราะคาร์บอนเป็นธาตุแรกเสมอ','เพราะถ้าธาตุแรกมีเพียง 1 อะตอม จะไม่ใส่คำอุปสรรค “มอนอ”',
+       'เพราะ CO เป็นแก๊สพิษ','เพราะออกซิเจนมีอิเล็กโทรเนกาติวิตีสูงกว่า'], a:1,
+    e:'กติกาการเรียกชื่อสารโคเวเลนต์: <b>ธาตุแรกที่มีเพียง 1 อะตอม ไม่ต้องใส่ “มอนอ”</b><br>' +
+      'แต่ธาตุหลังต้องใส่เสมอ จึงเป็น “คาร์บอน<b>มอนอก</b>ไซด์” ส่วน N₂O ต้องใส่เพราะไนโตรเจนมี 2 อะตอม' },
+  { q:'ชื่อ “ไดฟอสฟอรัสเพนตะออกไซด์” ตรงกับสูตรใด',
+    o:['P₂O₅','PO₅','P₅O₂','P₂O₃'], a:0,
+    e:'<b>ได</b>ฟอสฟอรัส = P 2 อะตอม · <b>เพนตะ</b>ออกไซด์ = O 5 อะตอม → <b>P₂O₅</b>' },
+  { q:'คำอุปสรรคชุดใดเรียงจำนวนอะตอม 1 ถึง 6 ได้ถูกต้อง',
+    o:['มอนอ · ได · ไตร · เตตระ · เพนตะ · เฮกซะ','มอนอ · ได · เตตระ · ไตร · เฮกซะ · เพนตะ',
+       'ยูนิ · ไบ · ไตร · ควอด · เพนตะ · เฮกซะ','มอนอ · ไบ · ไตร · เตตระ · เพนตะ · เซปตะ'], a:0,
+    e:'1 <b>มอนอ</b> · 2 <b>ได</b> · 3 <b>ไตร</b> · 4 <b>เตตระ</b> · 5 <b>เพนตะ</b> · 6 <b>เฮกซะ</b><br>' +
+      'ต่อไปคือ 7 เฮปตะ · 8 ออกตะ · 9 โนนะ · 10 เดคะ' }
+];
+function stageNaming(){
+  let matchWrong = 0;
+  drawMatch();
+
+  function drawMatch(){
+    app.innerHTML = stageShell('naming', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะชื่อสารในสำรับ แล้วแตะการ์ดสูตรที่ตรงกัน — ให้ครบ ${NAME_PAIRS.length} คู่</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(NAME_PAIRS)}
+      <div class="feedback" id="fb"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>กติกาเรียกชื่อ:</b> [คำอุปสรรค]ธาตุแรก + [คำอุปสรรค]ธาตุหลังลงท้าย <b>-ไ-ด์</b><br>
+        ธาตุแรกที่มี 1 อะตอม <b>ไม่ใส่ “มอนอ”</b> · 1 มอนอ · 2 ได · 3 ไตร · 4 เตตระ · 5 เพนตะ · 6 เฮกซะ
+      </div>
+    `);
+    bindMatch(NAME_PAIRS, wrong=>{ matchWrong=wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,900); });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('naming', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องการเรียกชื่อให้ครบ ${NAME_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(NAME_Q, 'qhost', qWrong=>{
+      const miss = matchWrong + qWrong;
+      const got = miss<=1?3:miss<=3?2:1;
+      stageMiss = miss;
+      finishStage('naming', got, 70-Math.min(miss*7,40), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • เรียงชื่อ <b>ธาตุแรก → ธาตุหลัง</b> แล้วเปลี่ยนท้ายธาตุหลังเป็น <b>-ไ-ด์</b> (ออกไซด์ คลอไรด์ ฟลูออไรด์)<br>
+          • ใส่คำอุปสรรคบอกจำนวนอะตอม: มอนอ ได ไตร เตตระ เพนตะ เฮกซะ เฮปตะ ออกตะ โนนะ เดคะ<br>
+          • <b>ธาตุแรกที่มี 1 อะตอม ไม่ต้องใส่ “มอนอ”</b> แต่ธาตุหลังต้องใส่เสมอ</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> สารโคเวเลนต์ใช้ระบบชื่อ<b>คนละแบบ</b>กับสารประกอบไอออนิก
+          — ไอออนิกไม่ใส่คำอุปสรรคบอกจำนวน (NaCl = โซเดียมคลอไรด์ ไม่ใช่ “โซเดียมมอนอคลอไรด์”)</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> สารบางตัวมี<b>ชื่อสามัญ</b>ที่ใช้กันจนติดปาก เช่น H₂O = น้ำ ·
+          NH₃ = แอมโมเนีย · CH₄ = มีเทน จึงไม่นิยมเรียกตามระบบว่า “ไดไฮโดรเจนมอนอกไซด์”</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 4 — ห้องวัดพันธะ: ความยาวพันธะ พลังงานพันธะ และเรโซแนนซ์
+   ========================================================================= */
+const LEN_PAIRS = [
+  { k:'cc', n:'C–C (พันธะเดี่ยว)', em:'154 pm', h:'พลังงานพันธะ 348 kJ/mol',
+    d:'ใช้อิเล็กตรอนร่วมกัน 1 คู่ — แรงดึงดูดน้อยที่สุด พันธะจึง<b>ยาวที่สุดและอ่อนแอที่สุด</b>ในสามแบบนี้' },
+  { k:'cc2', n:'C=C (พันธะคู่)', em:'134 pm', h:'พลังงานพันธะ 614 kJ/mol',
+    d:'ใช้ร่วมกัน 2 คู่ — ดึงอะตอมเข้าใกล้กันมากขึ้น <b>สั้นลงและแข็งแรงขึ้น</b>' },
+  { k:'cc3', n:'C≡C (พันธะสาม)', em:'120 pm', h:'พลังงานพันธะ 839 kJ/mol',
+    d:'ใช้ร่วมกัน 3 คู่ — <b>สั้นที่สุดและแข็งแรงที่สุด</b>ในบรรดาพันธะระหว่างคาร์บอน' },
+  { k:'nn3', n:'N≡N (พันธะสามของไนโตรเจน)', em:'110 pm', h:'พลังงานพันธะ 946 kJ/mol',
+    d:'พลังงานพันธะสูงมาก ต้องใช้พลังงานมหาศาลจึงจะสลายได้ — เป็นเหตุผลที่<b>แก๊สไนโตรเจนเฉื่อย</b>' }
+];
+const LEN_STEPS = [
+  { n:'C–C · 348 kJ/mol', e:'พันธะเดี่ยวระหว่างคาร์บอน — ใช้อิเล็กตรอนร่วมกัน 1 คู่ <b>อ่อนแอที่สุด</b>' },
+  { n:'C=C · 614 kJ/mol', e:'พันธะคู่ — ใช้ร่วมกัน 2 คู่ พลังงานเพิ่มขึ้นเกือบเท่าตัว' },
+  { n:'C≡C · 839 kJ/mol', e:'พันธะสามระหว่างคาร์บอน — ใช้ร่วมกัน 3 คู่' },
+  { n:'N≡N · 946 kJ/mol', e:'พันธะสามของไนโตรเจน — <b>แข็งแรงที่สุด</b> ในชุดนี้ จึงต้องใช้พลังงานสูงมากในการสลาย' }
+];
+const LEN_Q = [
+  { q:'ความสัมพันธ์ระหว่าง<b>ความยาวพันธะ</b>กับ<b>พลังงานพันธะ</b>เป็นอย่างไร',
+    o:['พันธะยิ่งยาว ยิ่งใช้พลังงานสลายมาก','พันธะยิ่งสั้น ยิ่งแข็งแรง และใช้พลังงานสลายมากขึ้น',
+       'ไม่มีความสัมพันธ์กัน','พันธะยิ่งสั้น ยิ่งสลายง่าย'], a:1,
+    e:'จำนวนคู่อิเล็กตรอนที่ใช้ร่วมกันยิ่งมาก แรงดึงดูดระหว่างนิวเคลียสกับอิเล็กตรอนยิ่งมาก<br>' +
+      'อะตอมจึงเข้าใกล้กันมากขึ้น (<b>พันธะสั้นลง</b>) และต้องใช้พลังงานมากขึ้นในการแยกออก (<b>พลังงานพันธะสูงขึ้น</b>)' },
+  { q:'โมเลกุล O₃ (โอโซน) เขียนสูตรโครงสร้างได้ 2 แบบ คือ O=O–O และ O–O=O ผลการทดลองพบว่าพันธะทั้งสองมีความยาว<b>เท่ากัน</b> อธิบายด้วยเรื่องใด',
+    o:['ไอโซโทป','เรโซแนนซ์ — โครงสร้างจริงเป็นการเฉลี่ยของทุกโครงสร้างที่เขียนได้ พันธะจึงเหมือนกันและมีความยาวอยู่ระหว่างพันธะเดี่ยวกับพันธะคู่',
+       'พันธะไฮโดรเจน','กฎออกเตต'], a:1,
+    e:'<b>เรโซแนนซ์</b> คือกรณีที่เขียนสูตรโครงสร้างที่สมเหตุสมผลได้มากกว่าหนึ่งแบบ<br>' +
+      'โครงสร้างจริงไม่ได้สลับไปมา แต่เป็น<b>โครงสร้างเดียวที่เฉลี่ยจากทุกแบบ</b> พันธะ O–O ในโอโซนจึงยาวเท่ากันทั้งคู่ (128 pm) ' +
+      'ซึ่งอยู่ระหว่างพันธะเดี่ยว (148 pm) กับพันธะคู่ (121 pm)' },
+  { q:'เพราะเหตุใดแก๊สไนโตรเจน (N₂) จึงทำปฏิกิริยากับสารอื่นได้ยากมากที่อุณหภูมิห้อง',
+    o:['เพราะไนโตรเจนเป็นแก๊สมีสกุล','เพราะโมเลกุลมีขนาดใหญ่',
+       'เพราะพันธะสาม N≡N มีพลังงานพันธะสูงถึง 946 kJ/mol ต้องใช้พลังงานมากในการสลาย',
+       'เพราะไนโตรเจนไม่มีเวเลนซ์อิเล็กตรอน'], a:2,
+    e:'ไนโตรเจน<b>ไม่ใช่</b>แก๊สมีสกุล แต่โมเลกุล N₂ ยึดกันด้วย<b>พันธะสาม</b>ที่มีพลังงานพันธะสูงมาก (946 kJ/mol)<br>' +
+      'การจะให้ N₂ ทำปฏิกิริยาจึงต้องใช้พลังงานสูงหรือมีตัวเร่งปฏิกิริยา เช่นในกระบวนการฮาเบอร์ที่ใช้ผลิตแอมโมเนีย' }
+];
+function stageEnergy(){
+  let matchWrong = 0, orderWrong = 0;
+  drawMatch();
+
+  function drawMatch(){
+    app.innerHTML = stageShell('energy', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะชื่อพันธะในสำรับ แล้วแตะการ์ด<b>ความยาวพันธะ</b>ที่ตรงกัน — ให้ครบ ${LEN_PAIRS.length} คู่
+        <span class="small muted">(pm = พิโกเมตร = 10⁻¹² เมตร)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(LEN_PAIRS)}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindMatch(LEN_PAIRS, wrong=>{ matchWrong=wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawOrder,900); });
+  }
+
+  function drawOrder(){
+    app.innerHTML = stageShell('energy', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> เรียงพันธะจาก<b>พลังงานพันธะน้อยที่สุดไปมากที่สุด</b>
+        (จากสลายง่ายที่สุดไปยากที่สุด)</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(LEN_STEPS, 'แตะการ์ดด้านล่างเรียงจากน้อยไปมาก…')}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindOrder(LEN_STEPS, wrong=>{ orderWrong=wrong; toast('ถูกต้อง! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz,1000); });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('energy', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องความยาวพันธะ พลังงานพันธะ และเรโซแนนซ์ให้ครบ ${LEN_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(LEN_Q, 'qhost', qWrong=>{
+      const miss = matchWrong + orderWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('energy', got, 80-Math.min(miss*7,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • ใช้อิเล็กตรอนร่วมกันมากคู่ขึ้น → <b>พันธะสั้นลง</b> และ <b>พลังงานพันธะสูงขึ้น</b><br>
+          • ความยาว: C–C 154 &gt; C=C 134 &gt; C≡C 120 pm · พลังงาน: 348 &lt; 614 &lt; 839 kJ/mol<br>
+          • <b>เรโซแนนซ์</b> — เขียนโครงสร้างได้หลายแบบ โครงสร้างจริงเป็นการเฉลี่ย พันธะจึงเท่ากันหมด</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> โครงสร้างเรโซแนนซ์<b>ไม่ได้สลับไปมา</b>
+          โมเลกุลมีโครงสร้างเดียวที่เป็นค่าเฉลี่ยตลอดเวลา — เครื่องหมาย ↔ ไม่ได้แปลว่าเปลี่ยนกลับไปกลับมา</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ใช้พลังงานพันธะคำนวณพลังงานของปฏิกิริยาได้
+          <b>ΔH = พลังงานสลายพันธะสารตั้งต้น − พลังงานสร้างพันธะผลิตภัณฑ์</b>
+          ถ้าได้ค่าติดลบแปลว่าปฏิกิริยา<b>คายพลังงาน</b></div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 5 — คลังสมบัติสาร: สมบัติของสารโคเวเลนต์และสารโคเวเลนต์โครงร่างตาข่าย
+   ========================================================================= */
+const PROP_ITEMS = [
+  { n:'จุดหลอมเหลวและจุดเดือดต่ำ', g:'m', e:'เพราะต้องออกแรงเอาชนะเพียง<b>แรงยึดเหนี่ยวระหว่างโมเลกุล</b>ที่อ่อน ไม่ได้สลายพันธะโคเวเลนต์' },
+  { n:'ที่อุณหภูมิห้องมีทั้งแก๊ส ของเหลว และของแข็ง', g:'m', e:'เช่น CO₂ เป็นแก๊ส · H₂O เป็นของเหลว · I₂ เป็นของแข็ง' },
+  { n:'ระเหิดหรือระเหยง่าย', g:'m', e:'แรงระหว่างโมเลกุลอ่อน โมเลกุลจึงหลุดออกจากกันได้ง่าย เช่น น้ำแข็งแห้ง (CO₂) ระเหิด' },
+  { n:'ส่วนใหญ่ไม่นำไฟฟ้าทั้งของแข็งและของเหลว', g:'m', e:'ไม่มีอิเล็กตรอนอิสระและไม่แตกตัวเป็นไอออน' },
+  { n:'ตัวอย่าง: H₂O · CO₂ · I₂ · NH₃', g:'m', e:'ทั้งหมดเป็นสารโคเวเลนต์ที่อยู่เป็น<b>โมเลกุลเล็ก ๆ</b> แยกจากกัน' },
+  { n:'จุดหลอมเหลวสูงมาก (เกิน 1,000 °C)', g:'n', e:'เพราะการหลอมเหลวต้อง<b>สลายพันธะโคเวเลนต์</b>ที่แข็งแรงทั้งผลึก ไม่ใช่แค่แรงระหว่างโมเลกุล' },
+  { n:'อะตอมทุกอะตอมยึดกันด้วยพันธะโคเวเลนต์ต่อเนื่องทั้งผลึก', g:'n', e:'ทั้งก้อนถือเป็น<b>โมเลกุลยักษ์โมเลกุลเดียว</b> จึงไม่มีสูตรโมเลกุลที่แน่นอน เขียนเป็นสูตรอย่างง่ายแทน' },
+  { n:'แข็งมากและไม่ละลายในตัวทำละลายใด ๆ', g:'n', e:'พันธะที่ยึดกันทั้งผลึกแข็งแรงเกินกว่าตัวทำละลายจะแยกออกได้' },
+  { n:'ตัวอย่าง: เพชร · แกรไฟต์ · ควอตซ์ (SiO₂)', g:'n', e:'ทั้งสามเป็น<b>สารโคเวเลนต์โครงร่างตาข่าย</b> ไม่ได้อยู่เป็นโมเลกุลเล็ก ๆ' }
+];
+const NET_PAIRS = [
+  { k:'diamond', n:'เพชร', em:'💎', h:'คาร์บอนต่อกันเป็นทรงสี่หน้า',
+    d:'คาร์บอน 1 อะตอมสร้างพันธะโคเวเลนต์กับคาร์บอนอีก <b>4 อะตอม</b> ต่อกันทั้งผลึก — <b>แข็งที่สุดในธรรมชาติ</b> จุดหลอมเหลวสูงมาก และ<b>ไม่นำไฟฟ้า</b>เพราะไม่มีอิเล็กตรอนอิสระ' },
+  { k:'graphite', n:'แกรไฟต์', em:'✏️', h:'คาร์บอนต่อกันเป็นแผ่นหกเหลี่ยม',
+    d:'คาร์บอน 1 อะตอมสร้างพันธะกับคาร์บอนอีก <b>3 อะตอม</b> เหลืออิเล็กตรอนอีก 1 ตัวเคลื่อนที่ได้ จึง<b>นำไฟฟ้าได้</b> · แผ่นแต่ละชั้นยึดกันด้วยแรงอ่อน จึง<b>ลื่นและเขียนติดกระดาษ</b>' },
+  { k:'quartz', n:'ซิลิคอนไดออกไซด์ (ควอตซ์)', em:'🏖️', h:'ซิลิคอนสลับกับออกซิเจน',
+    d:'ซิลิคอน 1 อะตอมสร้างพันธะกับออกซิเจน <b>4 อะตอม</b> ต่อกันทั้งผลึก — เป็นองค์ประกอบหลักของ<b>ทรายและแก้ว</b> จุดหลอมเหลวสูงราว 1,700 °C' }
+];
+const PROP_Q = [
+  { q:'เพราะเหตุใด<b>เพชร</b>กับ<b>แก๊สคาร์บอนไดออกไซด์</b>ต่างก็เป็นสารโคเวเลนต์ แต่จุดหลอมเหลวต่างกันมหาศาล',
+    o:['เพราะเพชรมีพันธะไอออนิกปนอยู่',
+       'เพราะการหลอมเพชรต้องสลายพันธะโคเวเลนต์ที่ยึดทั้งผลึก แต่การทำให้ CO₂ กลายเป็นแก๊สเพียงเอาชนะแรงยึดเหนี่ยวระหว่างโมเลกุลที่อ่อนกว่ามาก',
+       'เพราะคาร์บอนไดออกไซด์ไม่มีพันธะโคเวเลนต์',
+       'เพราะเพชรหนักกว่า'], a:1,
+    e:'CO₂ อยู่เป็น<b>โมเลกุลเล็ก ๆ</b> การเปลี่ยนสถานะเพียงแยกโมเลกุลออกจากกัน ใช้พลังงานน้อย<br>' +
+      'ส่วนเพชรเป็น<b>โครงร่างตาข่าย</b> ทั้งก้อนคือโมเลกุลเดียว การหลอมต้องหักพันธะโคเวเลนต์จำนวนมหาศาล จุดหลอมเหลวจึงสูงมาก' },
+  { q:'เพชรกับแกรไฟต์ประกอบด้วย<b>คาร์บอนเหมือนกัน</b> เหตุใดแกรไฟต์จึงนำไฟฟ้าได้แต่เพชรไม่ได้',
+    o:['เพราะแกรไฟต์มีโลหะเจือปน',
+       'เพราะในแกรไฟต์ คาร์บอนสร้างพันธะกับเพื่อนบ้านเพียง 3 อะตอม เหลืออิเล็กตรอนอิสระ 1 ตัวที่เคลื่อนที่ได้ ส่วนในเพชรใช้ครบทั้ง 4 จึงไม่มีอิเล็กตรอนอิสระ',
+       'เพราะแกรไฟต์มีจุดหลอมเหลวต่ำกว่า','เพราะเพชรแข็งเกินไป'], a:1,
+    e:'คาร์บอนมีเวเลนซ์อิเล็กตรอน 4 — ใน<b>เพชร</b>ใช้สร้างพันธะครบทั้ง 4 จึงไม่เหลืออิเล็กตรอนอิสระ<br>' +
+      'ส่วนใน<b>แกรไฟต์</b>ใช้เพียง 3 เหลืออีก 1 ตัวเคลื่อนที่ไปมาระหว่างแผ่นได้ จึงนำไฟฟ้าได้' },
+  { q:'สารโคเวเลนต์ที่เป็นโมเลกุลส่วนใหญ่ไม่นำไฟฟ้า เพราะเหตุใด',
+    o:['เพราะโมเลกุลมีขนาดเล็กเกินไป','เพราะไม่มีอิเล็กตรอนอิสระและไม่แตกตัวให้ไอออนที่เคลื่อนที่ได้',
+       'เพราะจุดเดือดต่ำ','เพราะละลายน้ำไม่ได้'], a:1,
+    e:'การนำไฟฟ้าต้องมี<b>อนุภาคที่มีประจุและเคลื่อนที่ได้</b> — สารโคเวเลนต์ที่เป็นโมเลกุลไม่มีทั้งอิเล็กตรอนอิสระและไอออน<br>' +
+      '(ข้อยกเว้นคือสารบางชนิดที่ละลายน้ำแล้วแตกตัวเป็นไอออน เช่น HCl จึงนำไฟฟ้าได้เมื่ออยู่ในสารละลาย)' }
+];
+function stageProps(){
+  let sortWrong = 0, matchWrong = 0;
+  drawSort();
+
+  function drawSort(){
+    const B = { m:{t:'🫧 สารโคเวเลนต์ที่เป็นโมเลกุล<br><span class="small muted">โมเลกุลเล็ก ๆ แยกจากกัน</span>'},
+                n:{t:'💎 สารโคเวเลนต์โครงร่างตาข่าย<br><span class="small muted">อะตอมต่อกันทั้งผลึก</span>'} };
+    app.innerHTML = stageShell('props', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะข้อความ แล้วแตะกล่องที่ถูกต้อง — จัดให้ครบ ${PROP_ITEMS.length} ชิ้น</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(PROP_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        🔵 <b>คำถามที่ใช้ตัดสินได้เสมอ:</b> เวลาหลอมเหลว ต้องสลาย<b>พันธะโคเวเลนต์</b>ไหม?
+        ถ้าต้อง → โครงร่างตาข่าย (จุดหลอมเหลวสูงมาก) · ถ้าแค่แยกโมเลกุลออกจากกัน → สารโมเลกุล (จุดหลอมเหลวต่ำ)
+      </div>
+    `);
+    bindBuckets(PROP_ITEMS, B, 'pb', 'fb', wrong=>{
+      sortWrong = wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawMatch,800);
+    });
+  }
+
+  function drawMatch(){
+    app.innerHTML = stageShell('props', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> จับคู่สารโคเวเลนต์โครงร่างตาข่ายกับโครงสร้างและสมบัติของมัน — ให้ครบ ${NET_PAIRS.length} คู่</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(NET_PAIRS)}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindMatch(NET_PAIRS, wrong=>{ matchWrong=wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz,900); });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('props', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องสมบัติของสารโคเวเลนต์ให้ครบ ${PROP_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(PROP_Q, 'qhost', qWrong=>{
+      const miss = sortWrong + matchWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('props', got, 80-Math.min(miss*7,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>สารโคเวเลนต์ที่เป็นโมเลกุล</b> — จุดหลอมเหลว/จุดเดือด<b>ต่ำ</b> ระเหยง่าย ส่วนใหญ่ไม่นำไฟฟ้า<br>
+          • <b>สารโคเวเลนต์โครงร่างตาข่าย</b> — จุดหลอมเหลว<b>สูงมาก</b> แข็ง ไม่ละลาย เช่น เพชร แกรไฟต์ ควอตซ์<br>
+          • <b>แกรไฟต์</b> เป็นข้อยกเว้นที่<b>นำไฟฟ้าได้</b> เพราะเหลืออิเล็กตรอนอิสระ 1 ตัวต่อคาร์บอน 1 อะตอม</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> จุดหลอมเหลวต่ำของสารโคเวเลนต์<b>ไม่ได้แปลว่าพันธะโคเวเลนต์อ่อนแอ</b>
+          — พันธะในโมเลกุลแข็งแรงมาก แต่สิ่งที่ถูกทำลายตอนหลอมเหลวคือ<b>แรงยึดเหนี่ยวระหว่างโมเลกุล</b>ต่างหาก</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> เพชรกับแกรไฟต์เป็น <b>อัญรูป (allotrope)</b> ของคาร์บอน
+          — ธาตุเดียวกันแต่จัดเรียงอะตอมต่างกัน สมบัติจึงต่างกันคนละขั้ว ทั้งที่เป็นคาร์บอนบริสุทธิ์เหมือนกัน</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 6 — บอส: ห้องตรวจคุณภาพ
+   ========================================================================= */
+function stageBoss(){
+  const SC = [
+    { icon:'🧪', title:'สารลึกลับหมายเลข 1',
+      body:'ของแข็งสีขาว จุดหลอมเหลว 80 °C หลอมเหลวแล้วไม่นำไฟฟ้า ละลายได้ในเฮกเซนซึ่งเป็นตัวทำละลายไม่มีขั้ว',
+      q:'สารนี้น่าจะเป็นสารชนิดใด',
+      o:['สารประกอบไอออนิก','สารโคเวเลนต์ที่เป็นโมเลกุล','สารโคเวเลนต์โครงร่างตาข่าย','โลหะ'],
+      a:1, e:'จุดหลอมเหลว<b>ต่ำ</b> (80 °C) และ<b>ไม่นำไฟฟ้า</b>ตอนหลอมเหลว → ไม่ใช่ไอออนิกและไม่ใช่โลหะ<br>' +
+        'ถ้าเป็นโครงร่างตาข่ายจุดหลอมเหลวต้องสูงกว่า 1,000 °C จึงเป็น <b>สารโคเวเลนต์ที่เป็นโมเลกุล</b>' },
+
+    { icon:'⚡', title:'สารลึกลับหมายเลข 2',
+      body:'ของแข็งสีเทาดำ นำไฟฟ้าได้ จุดหลอมเหลวสูงกว่า 3,000 °C เนื้อลื่นมือ ใช้ทำไส้ดินสอ',
+      q:'สารนี้คืออะไร และนำไฟฟ้าได้เพราะเหตุใด',
+      o:['โลหะแกรไฟต์ นำไฟฟ้าเพราะมีทะเลอิเล็กตรอน',
+         'แกรไฟต์ ซึ่งเป็นสารโคเวเลนต์โครงร่างตาข่าย นำไฟฟ้าได้เพราะคาร์บอนสร้างพันธะเพียง 3 พันธะ เหลืออิเล็กตรอนอิสระ 1 ตัว',
+         'เพชร นำไฟฟ้าเพราะแข็งมาก','สารประกอบไอออนิก นำไฟฟ้าเพราะมีไอออนอิสระ'],
+      a:1, e:'<b>แกรไฟต์</b>เป็นสารโคเวเลนต์โครงร่างตาข่าย ไม่ใช่โลหะ<br>' +
+        'คาร์บอนแต่ละอะตอมสร้างพันธะกับเพื่อนบ้าน 3 อะตอม เหลืออิเล็กตรอนอีก 1 ตัวที่เคลื่อนที่ได้ จึงนำไฟฟ้าได้ ' +
+        'และแผ่นแต่ละชั้นยึดกันหลวม ๆ จึงเลื่อนไถลได้ทำให้ลื่น' },
+
+    { icon:'📐', title:'เทียบความยาวพันธะ',
+      body:'นักเรียนวัดความยาวพันธะระหว่างคาร์บอนสองอะตอมในสารสามชนิด ได้ค่า 120, 134 และ 154 pm',
+      q:'ค่า 120 pm ควรเป็นพันธะชนิดใด และเพราะเหตุใด',
+      o:['พันธะเดี่ยว เพราะมีอิเล็กตรอนน้อยที่สุด','พันธะคู่ เพราะเป็นค่ากลาง',
+         'พันธะสาม เพราะใช้อิเล็กตรอนร่วมกัน 3 คู่ แรงดึงดูดมากที่สุด อะตอมจึงเข้าใกล้กันมากที่สุด',
+         'บอกไม่ได้ ต้องรู้ชนิดของสารก่อน'],
+      a:2, e:'ยิ่งใช้อิเล็กตรอนร่วมกันมากคู่ แรงดึงดูดระหว่างนิวเคลียสกับกลุ่มอิเล็กตรอนยิ่งมาก อะตอมจึงเข้าใกล้กันมากขึ้น<br>' +
+        '<b>C≡C สั้นที่สุด (120) → C=C (134) → C–C ยาวที่สุด (154 pm)</b>' },
+
+    { icon:'🔥', title:'พลังงานกับการสลายพันธะ',
+      body:'พลังงานพันธะ H–H = 436 kJ/mol และ N≡N = 946 kJ/mol',
+      q:'ข้อสรุปใดถูกต้อง',
+      o:['สลายพันธะ H–H ยากกว่า เพราะไฮโดรเจนเบากว่า',
+         'สลายพันธะ N≡N ยากกว่า เพราะต้องใช้พลังงานมากกว่าเป็นสองเท่า จึงเป็นเหตุผลที่ N₂ ทำปฏิกิริยายาก',
+         'ทั้งสองสลายง่ายพอกัน','พลังงานพันธะไม่เกี่ยวกับความยากง่ายในการสลาย'],
+      a:1, e:'<b>พลังงานพันธะ</b>คือพลังงานที่ต้องใช้สลายพันธะ 1 โมล — ยิ่งสูงยิ่งสลายยาก<br>' +
+        'N≡N (946) สูงกว่า H–H (436) กว่าสองเท่า จึงต้องใช้อุณหภูมิสูงและตัวเร่งปฏิกิริยาในการทำให้ N₂ ทำปฏิกิริยา' },
+
+    { icon:'🏷️', title:'ตั้งชื่อสารในห้องแล็บ',
+      body:'ขวดสารเขียนสูตรไว้ว่า N₂O₄ แต่ป้ายชื่อหลุดหายไป',
+      q:'ควรเขียนป้ายชื่อว่าอะไร',
+      o:['ไนโตรเจนเตตระออกไซด์','ไดไนโตรเจนเตตระออกไซด์','ไนโตรเจนออกไซด์','ไดไนโตรเจนควอดออกไซด์'],
+      a:1, e:'ไนโตรเจน <b>2</b> อะตอม → <b>ได</b>ไนโตรเจน (ธาตุแรกมีมากกว่า 1 อะตอมจึงต้องใส่คำอุปสรรค)<br>' +
+        'ออกซิเจน <b>4</b> อะตอม → <b>เตตระ</b>ออกไซด์ · รวมเป็น <b>ไดไนโตรเจนเตตระออกไซด์</b>' },
+
+    { icon:'🔄', title:'ทำไมพันธะทั้งสองยาวเท่ากัน',
+      body:'ไอออน CO₃²⁻ เขียนสูตรโครงสร้างได้ 3 แบบ แต่ละแบบมีพันธะคู่ 1 พันธะและพันธะเดี่ยว 2 พันธะ ทว่าผลการทดลองพบว่าพันธะ C–O ทั้งสามมีความยาวเท่ากัน',
+      q:'อธิบายผลนี้ได้อย่างไร',
+      o:['พันธะเปลี่ยนสลับกันไปมาอย่างรวดเร็วจนวัดค่าเฉลี่ยได้',
+         'เกิดเรโซแนนซ์ โครงสร้างจริงเป็นโครงสร้างเดียวที่เฉลี่ยจากทุกแบบ พันธะทั้งสามจึงเหมือนกันหมด',
+         'เครื่องมือวัดผิดพลาด','เพราะคาร์บอนไม่เป็นไปตามกฎออกเตต'],
+      a:1, e:'<b>เรโซแนนซ์</b> — โมเลกุลหรือไอออนไม่ได้สลับโครงสร้างไปมา แต่มีโครงสร้างเดียวที่เป็น<b>ค่าเฉลี่ย</b>ของทุกแบบที่เขียนได้<br>' +
+        'พันธะ C–O ทั้งสามจึงเหมือนกันหมด และมีความยาวอยู่ระหว่างพันธะเดี่ยวกับพันธะคู่' },
+
+    { icon:'💧', title:'ละลายน้ำแล้วนำไฟฟ้า',
+      body:'แก๊สไฮโดรเจนคลอไรด์ (HCl) เป็นสารโคเวเลนต์ ตัวมันเองไม่นำไฟฟ้า แต่เมื่อละลายน้ำกลับนำไฟฟ้าได้ดี',
+      q:'อธิบายได้อย่างไร',
+      o:['เพราะน้ำเป็นตัวนำไฟฟ้าอยู่แล้ว',
+         'เพราะเมื่อละลายน้ำ HCl แตกตัวให้ H⁺ และ Cl⁻ ซึ่งเป็นไอออนที่เคลื่อนที่ได้ จึงนำไฟฟ้า',
+         'เพราะ HCl เปลี่ยนเป็นสารประกอบไอออนิกถาวร','เพราะพันธะโคเวเลนต์นำไฟฟ้าได้เมื่อเปียก'],
+      a:1, e:'น้ำบริสุทธิ์นำไฟฟ้าได้น้อยมาก · HCl เป็นสารโคเวเลนต์<b>มีขั้วแรง</b> เมื่อละลายน้ำจึง<b>แตกตัวเป็นไอออน</b> H⁺ และ Cl⁻<br>' +
+        'ไอออนที่เคลื่อนที่ได้นี่เองที่ทำให้สารละลายนำไฟฟ้า — ไม่ได้แปลว่า HCl กลายเป็นสารประกอบไอออนิก' },
+
+    { icon:'⚖️', title:'ตรวจสอบขั้นสุดท้าย',
+      body:'หัวหน้าห้องแล็บขอให้สรุปความต่างระหว่างสารโคเวเลนต์สองประเภทให้ครบถ้วน',
+      q:'ข้อใดสรุปได้<b>ถูกต้องทั้งหมด</b>',
+      o:['สารโมเลกุล: จุดหลอมเหลวต่ำ · ระเหยง่าย · ส่วนใหญ่ไม่นำไฟฟ้า || โครงร่างตาข่าย: จุดหลอมเหลวสูงมาก · แข็ง · ส่วนใหญ่ไม่นำไฟฟ้า ยกเว้นแกรไฟต์',
+         'สารโมเลกุล: จุดหลอมเหลวสูง · แข็ง || โครงร่างตาข่าย: จุดหลอมเหลวต่ำ · ระเหยง่าย',
+         'ทั้งสองประเภทนำไฟฟ้าได้ดีเหมือนกัน',
+         'สารโมเลกุลไม่มีพันธะโคเวเลนต์ ส่วนโครงร่างตาข่ายมี'],
+      a:0, e:'<b>สารโคเวเลนต์ที่เป็นโมเลกุล</b> — อยู่เป็นโมเลกุลเล็ก ๆ ยึดกันด้วยแรงระหว่างโมเลกุลที่อ่อน จุดหลอมเหลวต่ำ ระเหยง่าย<br>' +
+        '<b>สารโคเวเลนต์โครงร่างตาข่าย</b> — อะตอมยึดกันด้วยพันธะโคเวเลนต์ทั้งผลึก จุดหลอมเหลวสูงมาก แข็ง ' +
+        'ทั้งสองประเภทส่วนใหญ่ไม่นำไฟฟ้า ยกเว้น<b>แกรไฟต์</b>' }
+  ];
+  let i=0, right=0;
+  app.innerHTML = stageShell('boss', `
+    <div class="note miss">👹 <b>ด่านบอส:</b> ${SC.length} สถานการณ์ ทดสอบว่าเข้าใจ “ทำไม” ไม่ใช่แค่ “คืออะไร” — ตอบถูกยิ่งมาก ยิ่งได้ดาวเยอะ</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="box"></div>
+  `);
+  const pb=document.getElementById('pb'), host=document.getElementById('box');
+  function step(){
+    pb.style.width=(i/SC.length*100)+'%';
+    if(i>=SC.length){
+      const got = right>=SC.length-1?3:right>=SC.length-3?2:right>=2?1:0;
+      stageMiss=SC.length-right;
+      finishStage('boss', got, right*17, `
+        <div class="note key">🟡 <b>ตารางสรุปที่ออกสอบบ่อยที่สุด</b>
+          <div style="overflow-x:auto"><table class="cmp" style="margin-top:8px">
+            <thead><tr><th>หัวข้อ</th><th>สารโคเวเลนต์ที่เป็นโมเลกุล</th><th>สารโคเวเลนต์โครงร่างตาข่าย</th></tr></thead>
+            <tbody>
+              <tr><td>หน่วยย่อยของสาร</td><td>โมเลกุลเล็ก ๆ แยกจากกัน</td><td class="yes">อะตอมต่อกันทั้งผลึก (โมเลกุลยักษ์)</td></tr>
+              <tr><td>สิ่งที่ถูกทำลายตอนหลอมเหลว</td><td>แรงยึดเหนี่ยว<b>ระหว่างโมเลกุล</b></td><td><b>พันธะโคเวเลนต์</b></td></tr>
+              <tr><td>จุดหลอมเหลว/จุดเดือด</td><td>ต่ำ</td><td>สูงมาก (เกิน 1,000 °C)</td></tr>
+              <tr><td>ความแข็ง</td><td>อ่อน เปราะ</td><td>แข็งมาก</td></tr>
+              <tr><td>การนำไฟฟ้า</td><td>ส่วนใหญ่ไม่นำ (บางชนิดแตกตัวเป็นไอออนเมื่อละลายน้ำ)</td><td>ไม่นำ ยกเว้น<b>แกรไฟต์</b></td></tr>
+              <tr><td>ตัวอย่าง</td><td>H₂O · CO₂ · NH₃ · I₂</td><td>เพชร · แกรไฟต์ · ควอตซ์ (SiO₂)</td></tr>
+            </tbody></table></div></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> จุดหลอมเหลวต่ำ<b>ไม่ได้แปลว่าพันธะโคเวเลนต์อ่อน</b>
+          — พันธะภายในโมเลกุลแข็งแรงมาก แต่สิ่งที่ต้องเอาชนะตอนหลอมเหลวคือแรงระหว่างโมเลกุลที่อ่อนกว่ามาก</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ในบทถัดไปจะได้เรียนว่าทำไม H₂O จุดเดือดสูงกว่า H₂S ทั้งที่โมเลกุลเล็กกว่า
+          — คำตอบอยู่ที่<b>แรงยึดเหนี่ยวระหว่างโมเลกุล</b> โดยเฉพาะ<b>พันธะไฮโดรเจน</b></div>
+        <div class="small muted">ตอบถูก ${right}/${SC.length} ข้อ</div>`);
+      return;
+    }
+    const s=SC[i];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">สถานการณ์ ${i+1}/${SC.length}</div>
+      <h3 style="margin:6px 0 4px">${s.icon} ${s.title}</h3>
+      <p style="margin:0 0 6px;font-size:.92rem">${s.body}</p>
+      <div style="font-weight:800;font-size:.95rem;margin-top:10px">${s.q}</div>
+      <div class="opts">${s.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===s.a; if(ok) right++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===s.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+s.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${i===SC.length-1?'สรุปผล →':'สถานการณ์ถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ i++; step(); window.scrollTo({top:0,behavior:'smooth'}); };
+      };
+    });
+  }
+  step();
+}
+
+/* =========================================================================
+   การ์ดคำศัพท์
+   ========================================================================= */
+const CARDS = [
+  ['พื้นฐาน','พันธะเคมี','Chemical bond','แรงยึดเหนี่ยวระหว่างอะตอมหรือไอออน ทำให้อยู่รวมกันเป็นสาร'],
+  ['พื้นฐาน','พันธะโคเวเลนต์','Covalent bond','พันธะที่เกิดจากอะตอม<b>อโลหะกับอโลหะ</b>ใช้เวเลนซ์อิเล็กตรอนร่วมกัน'],
+  ['พื้นฐาน','เวเลนซ์อิเล็กตรอน','Valence electron','อิเล็กตรอนในระดับพลังงานนอกสุด เป็นตัวที่ใช้สร้างพันธะ'],
+  ['พื้นฐาน','กฎออกเตต','Octet rule','แนวโน้มที่อะตอมจะจัดเวเลนซ์อิเล็กตรอนให้ครบ 8 เหมือนแก๊สมีสกุล (H และ He ครบ 2)'],
+  ['พื้นฐาน','สัญลักษณ์แบบจุดของลิวอิส','Lewis dot symbol','การเขียนสัญลักษณ์ธาตุแล้วใส่จุดรอบ ๆ แทนเวเลนซ์อิเล็กตรอน'],
+  ['พื้นฐาน','โครงสร้างลิวอิส','Lewis structure','ภาพแสดงการจัดเรียงอิเล็กตรอนคู่ร่วมพันธะและคู่โดดเดี่ยวในโมเลกุล'],
+  ['พื้นฐาน','อิเล็กตรอนคู่ร่วมพันธะ','Bonding pair','คู่อิเล็กตรอนที่สองอะตอมใช้ร่วมกัน — <b>นับให้ทั้งสองอะตอม</b>'],
+  ['พื้นฐาน','อิเล็กตรอนคู่โดดเดี่ยว','Lone pair','คู่อิเล็กตรอนที่ไม่ได้ใช้ร่วมกับอะตอมอื่น ยังอยู่กับอะตอมเดิม'],
+  ['พื้นฐาน','สูตรโครงสร้าง','Structural formula','การเขียนโมเลกุลโดยใช้เส้นแทนคู่อิเล็กตรอนร่วมพันธะ — <b>1 เส้น = 1 คู่</b>'],
+  ['พื้นฐาน','สูตรโมเลกุล','Molecular formula','สูตรที่บอกชนิดและจำนวนอะตอมจริงในหนึ่งโมเลกุล เช่น C₂H₆'],
+
+  ['ชนิดพันธะ','พันธะเดี่ยว','Single bond','ใช้อิเล็กตรอนร่วมกัน 1 คู่ (2 อิเล็กตรอน) เขียนเป็น <b>–</b> เช่น H–H, Cl–Cl'],
+  ['ชนิดพันธะ','พันธะคู่','Double bond','ใช้อิเล็กตรอนร่วมกัน 2 คู่ (4 อิเล็กตรอน) เขียนเป็น <b>=</b> เช่น O=O, C=O ใน CO₂'],
+  ['ชนิดพันธะ','พันธะสาม','Triple bond','ใช้อิเล็กตรอนร่วมกัน 3 คู่ (6 อิเล็กตรอน) เขียนเป็น <b>≡</b> เช่น N≡N, C≡C'],
+  ['ชนิดพันธะ','พันธะโคออร์ดิเนตโคเวเลนต์','Coordinate covalent bond','พันธะที่อะตอมหนึ่งเป็นผู้ให้อิเล็กตรอนคู่ร่วมพันธะ<b>ฝ่ายเดียว</b> เช่นพันธะที่ 4 ใน NH₄⁺'],
+  ['ชนิดพันธะ','ข้อยกเว้นกฎออกเตต','Octet rule exception','อะตอมที่มีอิเล็กตรอนรอบตัวไม่ครบ 8 เช่น BF₃ (6) หรือเกิน 8 เช่น PCl₅ (10) และ SF₆ (12)'],
+
+  ['ชื่อและสูตร','คำอุปสรรค','Prefix','คำบอกจำนวนอะตอม: 1 มอนอ · 2 ได · 3 ไตร · 4 เตตระ · 5 เพนตะ · 6 เฮกซะ · 7 เฮปตะ · 8 ออกตะ · 9 โนนะ · 10 เดคะ'],
+  ['ชื่อและสูตร','คาร์บอนมอนอกไซด์','Carbon monoxide (CO)','ธาตุแรกมี 1 อะตอมจึงไม่ใส่ “มอนอ” แต่ธาตุหลังต้องใส่เสมอ'],
+  ['ชื่อและสูตร','คาร์บอนไดออกไซด์','Carbon dioxide (CO₂)','โครงสร้าง O=C=O — พันธะคู่สองพันธะ รอบคาร์บอนครบ 8'],
+  ['ชื่อและสูตร','ไดไนโตรเจนมอนอกไซด์','Dinitrogen monoxide (N₂O)','ไนโตรเจน 2 อะตอมจึงต้องใส่ “ได” · รู้จักกันในชื่อแก๊สหัวเราะ'],
+  ['ชื่อและสูตร','ไดไนโตรเจนเพนตะออกไซด์','Dinitrogen pentoxide (N₂O₅)','ได = N 2 อะตอม · เพนตะ = O 5 อะตอม'],
+  ['ชื่อและสูตร','ฟอสฟอรัสเพนตะคลอไรด์','Phosphorus pentachloride (PCl₅)','รอบฟอสฟอรัสมีอิเล็กตรอน 10 — เป็นข้อยกเว้นของกฎออกเตต'],
+  ['ชื่อและสูตร','ซัลเฟอร์เฮกซะฟลูออไรด์','Sulfur hexafluoride (SF₆)','รอบกำมะถันมีอิเล็กตรอน 12 — ข้อยกเว้นกฎออกเตตเช่นกัน'],
+  ['ชื่อและสูตร','คาร์บอนเตตระคลอไรด์','Carbon tetrachloride (CCl₄)','คลอรีน 4 อะตอมล้อมคาร์บอน เป็นรูปทรงสี่หน้า'],
+
+  ['ความยาวและพลังงาน','ความยาวพันธะ','Bond length','ระยะระหว่างนิวเคลียสของอะตอมที่สร้างพันธะกัน · ยิ่งใช้อิเล็กตรอนร่วมกันมากคู่ พันธะยิ่ง<b>สั้น</b>'],
+  ['ความยาวและพลังงาน','พลังงานพันธะ','Bond energy','พลังงานที่ต้องใช้สลายพันธะ 1 โมลในสถานะแก๊ส · พันธะยิ่งสั้น พลังงานยิ่ง<b>สูง</b>'],
+  ['ความยาวและพลังงาน','C–C','Carbon single bond','ความยาว 154 pm · พลังงานพันธะ 348 kJ/mol'],
+  ['ความยาวและพลังงาน','C=C','Carbon double bond','ความยาว 134 pm · พลังงานพันธะ 614 kJ/mol'],
+  ['ความยาวและพลังงาน','C≡C','Carbon triple bond','ความยาว 120 pm · พลังงานพันธะ 839 kJ/mol'],
+  ['ความยาวและพลังงาน','N≡N','Nitrogen triple bond','ความยาว 110 pm · พลังงานพันธะ <b>946 kJ/mol</b> — สูงมากจน N₂ ทำปฏิกิริยายาก'],
+  ['ความยาวและพลังงาน','เรโซแนนซ์','Resonance','กรณีที่เขียนโครงสร้างลิวอิสได้หลายแบบ โครงสร้างจริงเป็น<b>ค่าเฉลี่ย</b>ของทุกแบบ พันธะจึงเท่ากันหมด เช่น O₃, CO₃²⁻, NO₃⁻'],
+  ['ความยาวและพลังงาน','พลังงานของปฏิกิริยา','ΔH','ΔH = พลังงานสลายพันธะสารตั้งต้น − พลังงานสร้างพันธะผลิตภัณฑ์ · ค่าติดลบ = <b>คายพลังงาน</b>'],
+
+  ['สมบัติของสาร','สารโคเวเลนต์ที่เป็นโมเลกุล','Molecular covalent substance','อยู่เป็นโมเลกุลเล็ก ๆ แยกจากกัน จุดหลอมเหลว/จุดเดือด<b>ต่ำ</b> ระเหยง่าย ส่วนใหญ่ไม่นำไฟฟ้า'],
+  ['สมบัติของสาร','สารโคเวเลนต์โครงร่างตาข่าย','Network covalent solid','อะตอมยึดกันด้วยพันธะโคเวเลนต์ต่อเนื่องทั้งผลึก จุดหลอมเหลว<b>สูงมาก</b> แข็ง ไม่ละลาย'],
+  ['สมบัติของสาร','แรงยึดเหนี่ยวระหว่างโมเลกุล','Intermolecular force','แรงระหว่างโมเลกุลที่<b>อ่อนกว่าพันธะโคเวเลนต์มาก</b> — เป็นสิ่งที่ถูกทำลายตอนสารโมเลกุลหลอมเหลวหรือเดือด'],
+  ['สมบัติของสาร','เพชร','Diamond','คาร์บอนสร้างพันธะกับคาร์บอนอีก <b>4 อะตอม</b> เป็นทรงสี่หน้า — แข็งที่สุดในธรรมชาติ ไม่นำไฟฟ้า'],
+  ['สมบัติของสาร','แกรไฟต์','Graphite','คาร์บอนสร้างพันธะกับคาร์บอนอีก <b>3 อะตอม</b> เป็นแผ่นหกเหลี่ยม เหลืออิเล็กตรอนอิสระ 1 ตัว จึง<b>นำไฟฟ้าได้</b>และลื่น'],
+  ['สมบัติของสาร','ซิลิคอนไดออกไซด์','Silicon dioxide (SiO₂)','ควอตซ์หรือทราย — Si สร้างพันธะกับ O 4 อะตอมต่อกันทั้งผลึก จุดหลอมเหลวราว 1,700 °C'],
+  ['สมบัติของสาร','อัญรูป','Allotrope','ธาตุเดียวกันแต่จัดเรียงอะตอมต่างกัน สมบัติจึงต่างกัน เช่น เพชรกับแกรไฟต์ต่างก็เป็นคาร์บอน']
+];
+function renderCards(){
+  const cats=[...new Set(CARDS.map(c=>c[0]))];
+  let cat='ทั้งหมด', deck=[], idx=0, flipped=false;
+  function build(){ deck=(cat==='ทั้งหมด'?CARDS:CARDS.filter(c=>c[0]===cat)); idx=0; flipped=false; }
+  build();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic">🃏</div>
+      <div style="flex:1;min-width:200px"><h2>การ์ดคำศัพท์</h2>
+        <div class="sub">แตะการ์ดเพื่อพลิกดูความหมาย · ${CARDS.length} คำศัพท์ ไทย–อังกฤษ</div></div>
+    </div>
+    <div class="deckbar" id="deckbar">
+      ${['ทั้งหมด',...cats].map(c=>`<button data-c="${c}" class="${c==='ทั้งหมด'?'on':''}">${c}</button>`).join('')}
+    </div>
+    <div class="fcstage"><div class="fc" id="fc"></div></div>
+    <div class="fcnav">
+      <button class="btn sm" id="prev">← ก่อนหน้า</button>
+      <span class="count" id="count"></span>
+      <button class="btn sm" id="next">ถัดไป →</button>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn ghost sm" id="shuf">🔀 สลับการ์ด</button>
+      <button class="btn primary sm" id="back">กลับแผนที่</button>
+    </div>
+    <div class="note" style="margin-top:20px">
+      💡 <b>วิธีใช้ให้ได้ผล:</b> อ่านคำศัพท์แล้ว<b>พูดนิยามออกมาเองก่อน</b> จึงค่อยพลิกดูเฉลย (active recall)
+    </div>`;
+  const fc=document.getElementById('fc'), cnt=document.getElementById('count');
+  function draw(){
+    const c=deck[idx];
+    if(!c){ fc.innerHTML='<div class="side front"><div class="term">ไม่มีการ์ดในหมวดนี้</div></div>'; return; }
+    fc.classList.remove('flip'); flipped=false;
+    fc.innerHTML = `
+      <div class="side front">
+        <div class="tag">${c[0]}</div><div class="term">${c[1]}</div><div class="en">${c[2]}</div>
+        <div class="hint">แตะเพื่อพลิก ↻</div>
+      </div>
+      <div class="side back">
+        <div class="tag">${c[1]} · ${c[2]}</div><div class="def">${c[3]}</div>
+        <div class="hint">แตะเพื่อพลิกกลับ ↻</div>
+      </div>`;
+    cnt.textContent = `${idx+1} / ${deck.length}`;
+  }
+  fc.onclick=()=>{ flipped=!flipped; fc.classList.toggle('flip',flipped); };
+  document.getElementById('prev').onclick=()=>{ idx=(idx-1+deck.length)%deck.length; draw(); };
+  document.getElementById('next').onclick=()=>{ idx=(idx+1)%deck.length; draw(); };
+  document.getElementById('shuf').onclick=()=>{ deck=shuffle(deck); idx=0; draw(); toast('สลับการ์ดแล้ว'); };
+  document.getElementById('back').onclick=renderMap;
+  document.querySelectorAll('#deckbar button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#deckbar button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); cat=b.dataset.c; build(); draw();
+    };
+  });
+  document.addEventListener('keydown', function nav(e){
+    if(!document.getElementById('fc')){ document.removeEventListener('keydown',nav); return; }
+    if(e.key==='ArrowRight') document.getElementById('next')?.click();
+    if(e.key==='ArrowLeft')  document.getElementById('prev')?.click();
+    if(e.key===' '){ e.preventDefault(); fc.click(); }
+  });
+  draw(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้) */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรเปล่าของโรงเรียน (วางไว้โฟลเดอร์เดียวกับ index.html)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  nameX:0.4965,           // จุดกึ่งกลางชื่อ (แนวนอน) — วัดจากกึ่งกลางกล่องสีขาวใน cert-bg.png
+  nameY:0.4954,           // จุดกึ่งกลางชื่อ (แนวตั้ง) — ช่องว่างใต้ “ขอมอบเกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า”
+  nameW:0.44,             // ความกว้างสูงสุดของชื่อ
+  nameSize:0.042,         // ขนาดตัวอักษร เทียบกับความกว้างภาพ
+  nameColor:'#0A0A0A'
+};
+const MAX_STARS = STAGES.length * 3;
+function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
+function certPassed(){
+  const allPlayed = STAGES.every(st => (S.stars[st.id]||0) > 0);
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  const j = (typeof getJoin==='function') ? getJoin() : null;
+  return localStorage.getItem('cov-cert-name') || (j && j.name) || '';
+}
+function certCardHtml(){
+  const need=certNeed(), got=totalStars(), ok=certPassed();
+  const pct=Math.min(100, Math.round(got/need*100));
+  return `<div class="card ${ok?'':'lockcard'}" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      border-color:${ok?'rgba(242,103,22,.5)':'var(--line)'}">
+    <div style="font-size:2rem">${ok?'🏅':'🔒'}</div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800">เกียรติบัตร${ok?' — ผ่านเกณฑ์แล้ว!':''}</div>
+      <div class="small muted">${ok
+        ? `เรียนครบทุกด่านและได้ ${got}/${MAX_STARS} ดาว (เกณฑ์ ${Math.round(CERT.pass*100)}% = ${need} ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย`
+        : `เล่นให้ครบทั้ง ${STAGES.length} ด่าน และเก็บดาวให้ถึง <b>${need}/${MAX_STARS}</b> ดาว (${Math.round(CERT.pass*100)}%) · ตอนนี้ได้ ${got} ดาว`}</div>
+      ${ok?'':`<div class="certprog"><i style="width:${pct}%"></i></div>`}
+    </div>
+    <button class="btn ${ok?'gold':''}" id="btnCert" ${ok?'':'disabled'}>รับเกียรติบัตร</button>
+  </div>`;
+}
+
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  const W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); }
+  else { certFallback(c, W, H); }
+  // ---- ชื่อผู้เรียน (ย่อขนาดอัตโนมัติจนพอดีกรอบ) ----
+  const maxW = W * CERT.nameW;
+  let size = W * CERT.nameSize;
+  const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = CERT.nameColor; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  c.strokeStyle = '#084A24'; c.lineWidth = W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle = '#F26716'; c.lineWidth = W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  const f=(px,w=700)=>`${w} ${px}px "Sukhumvit Set","Noto Sans Thai",sans-serif`;
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.645);
+  c.fillStyle='#D6350B'; c.font=f(W*0.022);
+  c.fillText('บทที่ 2 พันธะเคมี เรื่อง “พันธะโคเวเลนต์”', W/2, H*0.70);
+  c.fillText('สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 4', W/2, H*0.745);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.82);
+  // กรอบใส่ชื่อ
+  const bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  const gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+
+function renderCert(){
+  if(!certPassed()){ toast('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  let img = null, nameNow = certName();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic" style="font-size:2rem">🏅</div>
+      <div style="flex:1;min-width:200px"><h2>เกียรติบัตร</h2>
+        <div class="sub">ผ่านเกณฑ์ ${Math.round(CERT.pass*100)}% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</div></div>
+    </div>
+    <div class="note key">🎓 ได้ <b>${totalStars()}/${MAX_STARS} ดาว</b> จากทั้ง ${STAGES.length} ด่าน
+      (เกณฑ์ผ่าน ${certNeed()} ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>
+    <div class="certform">
+      <input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="${escHtml(nameNow)}">
+      <button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>
+    </div>
+    <div class="certwrap"><canvas id="ccv"></canvas></div>
+    <div class="certbar">
+      <button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>
+      <button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>
+      <button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>
+    </div>
+    <div class="note small" style="margin-top:14px">
+      📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b>
+    </div>`;
+  const cv = document.getElementById('ccv'), inp = document.getElementById('cname');
+  function paint(){
+    const nm = (inp.value||'').trim();
+    if(!nm){ toast('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    localStorage.setItem('cov-cert-name', nm);
+    drawCert(cv, nm, img);
+    return true;
+  }
+  // โหลดภาพเกียรติบัตรของโรงเรียน ถ้าไม่มีก็ใช้กรอบสำรอง
+  const im = new Image();
+  im.onload = ()=>{ img = im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror = ()=>{ img = null; drawCert(cv, nameNow||'', null); };
+  im.src = CERT.src;
+
+  document.getElementById('cmake').onclick = paint;
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick = ()=>{
+    if(!paint()) return;
+    const nm = (inp.value||'').trim();
+    cv.toBlob(b=>{
+      const url = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = url; a.download = `เกียรติบัตร-${nm}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('บันทึกเกียรติบัตรแล้ว 🎉');
+    }, 'image/png');
+  };
+  document.getElementById('copen').onclick = ()=>{
+    if(!paint()) return;
+    cv.toBlob(b=>{ window.open(URL.createObjectURL(b), '_blank'); }, 'image/png');
+  };
+  document.getElementById('cback').onclick = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= ระบบชั้นเรียน =================
+   ใช้ฐานข้อมูล Supabase ชุดเดียวกับเกมอื่นในเว็บไซต์นี้ คะแนนจึงขึ้นแดชบอร์ดครูหน้าเดิม
+   นักเรียนกรอกรหัสห้อง (เช่น M401A) + ชื่อ → จบด่านแล้วคะแนนวิ่งเข้าตาราง scores
+   แถวของเกมนี้กำกับด้วยคอลัมน์ game = 'covalent' และเลขด่าน 1–6 เพื่อไม่ปนกับเกมอื่น
+   ถ้าไม่เข้าร่วมห้องหรือเน็ตหลุด เกมยังเล่นได้ปกติ คะแนนจะพักไว้แล้วส่งเองเมื่อกลับมาออนไลน์ */
+const SB_URL  = 'https://vgurqbcbovgeppvdwizr.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
+const GAME_KEY   = 'covalent';   // ใช้แยกคะแนนของแต่ละเกมในแดชบอร์ด
+const LEVEL_BASE = 0;            // เลขด่านในตารางคะแนน = 1–6 (ฐานข้อมูลรับเลขด่าน 0–20 · แยกเกมด้วยคอลัมน์ game)
+
+function getJoin(){ try{ return JSON.parse(localStorage.getItem('cov-class')||'null'); }catch(e){ return null; } }
+function setJoin(o){ localStorage.setItem('cov-class', JSON.stringify(o)); }
+function clearJoin(){ localStorage.removeItem('cov-class'); }
+function newSid(){ return 'S'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---- คิวคะแนน กันเน็ตหลุด ---- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem('cov-outbox')||'[]'); }catch(e){ return []; } }
+function setOutbox(q){ try{ localStorage.setItem('cov-outbox', JSON.stringify(q)); }catch(e){} }
+
+async function pushRow(row){
+  const r = await fetch(SB_URL+'/rest/v1/scores', {
+    method:'POST',
+    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON,
+              'Content-Type':'application/json', 'Prefer':'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  if(r.status===409) return;   // แถวนี้อยู่ในฐานข้อมูลแล้ว (uid ซ้ำ) ถือว่าส่งสำเร็จ เอาออกจากคิวได้
+  if(!r.ok){
+    let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
+    if(/23505|duplicate key/i.test(d)) return;   // ซ้ำเหมือนกัน แต่ฐานข้อมูลตอบมาคนละรหัส
+    const err = new Error('http '+r.status+(d?' · '+d:'')); err.status = r.status; throw err;
+  }
+}
+/* ส่งคะแนนที่ค้างอยู่ในคิว — ถ้าส่งไม่สำเร็จจะบอกให้รู้ ไม่เงียบหาย */
+let lastSendErr = '';
+function sendErrMsg(e){
+  const s = e && e.status;
+  if(s===401) return 'คีย์ของห้องไม่ถูกต้อง — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===403) return 'ฐานข้อมูลปฏิเสธคะแนนนี้ — ห้องอาจถูกปิด หรือกฎความปลอดภัยไม่รับค่าที่ส่ง';
+  if(s===404) return 'ไม่พบตารางคะแนนในฐานข้อมูล — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===400) return 'รูปแบบข้อมูลไม่ตรงกับตารางคะแนน — แจ้งครูให้ตรวจคอลัมน์ในตาราง';
+  return (e && e.message) ? e.message : 'เครือข่ายมีปัญหา';
+}
+/* ซ่อมแถวเก่าที่ค้างในคิวให้ตรงกับกติกาปัจจุบันก่อนส่ง
+   (แถวที่ถูกเก็บไว้ตอนใช้เลขด่านชุดเก่า เช่น 21–26 จะถูกแปลงเป็น 1–6 ให้อัตโนมัติ) */
+function fixRow(row){
+  const r = Object.assign({}, row);
+  if(typeof r.level === 'number' && r.level > 20) r.level = ((r.level - 1) % 10) + 1;
+  r.stars   = Math.max(0, Math.min(3, Math.round(r.stars||0)));
+  r.percent = Math.max(0, Math.min(100, Math.round(r.percent||0)));
+  r.seconds = Math.max(0, Math.min(86400, Math.round(r.seconds||0)));
+  r.misses  = Math.max(0, Math.min(9999, Math.round(r.misses||0)));
+  r.attempt = Math.max(1, Math.min(9999, Math.round(r.attempt||1)));
+  delete r.tries;                                   // ตัวนับความพยายาม เก็บไว้ในเครื่องเท่านั้น
+  return r;
+}
+let flushing = false;
+async function flushPending(opts){
+  if(flushing) return;              // กันส่งซ้ำซ้อนตอนจบด่านพร้อมกับรอบส่งอัตโนมัติ
+  if(!outbox().length) return;
+  flushing = true;
+  const tried = {};                 // uid -> จำนวนครั้งที่พยายามส่ง
+  let failed = false, sent = 0, dropped = 0, stop = false;
+  /* วนซ้ำจนคิวหมด เพราะระหว่างกำลังส่งอาจมีคะแนนเข้าคิวเพิ่ม
+     (เช่นตอนกดเข้าร่วมห้องแล้วส่งดาวเก่าทุกด่านพร้อมกัน) */
+  while(!stop){
+    const q = outbox(); if(!q.length) break;
+    const settled = new Set();      // uid ที่ส่งสำเร็จหรือทิ้งถาวรแล้วในรอบนี้
+    let progressed = false;
+    for(const row of q){
+      if(stop) break;               // ปัญหาการตั้งค่า ส่งแถวที่เหลือต่อไปก็ไม่ผ่าน
+      try{ await pushRow(fixRow(row)); settled.add(row.uid); sent++; progressed = true; }
+      catch(e){
+        failed = true; lastSendErr = sendErrMsg(e);
+        const permanent = (e.status===400 || e.status===403 || e.status===422);
+        tried[row.uid] = (row.tries||0) + 1;
+        /* แถวที่ฐานข้อมูลไม่รับจริง ๆ จะถูกทิ้งหลังพยายาม 3 ครั้ง
+           เพื่อไม่ให้แถวเดียวค้างจนบล็อกคะแนนที่เหลือทั้งคิว */
+        if(permanent && tried[row.uid] >= 3){ settled.add(row.uid); dropped++; progressed = true; continue; }
+        if(e.status===401 || e.status===404) stop = true;
+      }
+    }
+    /* อ่านคิวใหม่อีกครั้ง แล้วเอาออกเฉพาะแถวที่จัดการเสร็จแล้ว
+       คะแนนที่เพิ่งเข้าคิวระหว่างนี้จึงไม่หายไปพร้อมกับการเคลียร์คิว */
+    const keep = outbox().filter(r=>!settled.has(r.uid));
+    keep.forEach(r=>{ if(tried[r.uid]) r.tries = tried[r.uid]; });
+    setOutbox(keep.slice(-200));
+    if(!progressed) break;          // รอบนี้ส่งไม่ผ่านเลยสักแถว วนซ้ำไปก็ไม่ผ่าน
+  }
+  const left = outbox();
+  flushing = false;
+  renderClassChip();
+  if(failed && !(opts && opts.quiet)){
+    toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr + (dropped?(' · ข้ามที่ส่งไม่ได้ '+dropped+' รายการ'):''));
+  }else if(!left.length && sent>1){
+    toast('✅ ส่งคะแนนที่ค้างครบแล้ว ' + sent + ' รายการ');
+  }
+}
+
+/* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
+function sendScore(stageId, starsGot, misses, seconds){
+  const j = getJoin(); if(!j || !j.room || !j.name) return;
+  const idx = STAGES.findIndex(x=>x.id===stageId);
+  const st  = STAGES[idx] || { title: stageId };
+  const row = {
+    uid: j.sid+'-'+stageId+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    room: j.room, student: String(j.name).trim().slice(0,60), sid: j.sid,
+    game: GAME_KEY,
+    level: LEVEL_BASE + (idx>=0?idx+1:9),
+    level_name: 'พันธะโคเวเลนต์ · ด่าน '+(idx+1)+' '+st.title,
+    stars: starsGot, percent: Math.round(starsGot/3*100),
+    score: starsGot, max_score: 3,
+    seconds: Math.max(0, Math.min(seconds|0, 86400)),
+    misses: Math.max(0, Math.min(misses|0, 9999)),
+    total_stars: totalStars(),
+    attempt: (S.plays && S.plays[stageId]) || 1,
+    client_ts: new Date().toISOString()
+  };
+  const q = outbox(); q.push(row); setOutbox(q.slice(-200));
+  flushPending();
+}
+/* ส่งดาวที่เคยได้ทั้งหมดตอนเพิ่งเข้าร่วมห้อง (นับเป็นครั้งที่ 1) */
+function syncAllStars(){
+  STAGES.forEach(st=>{
+    const got = S.stars[st.id]||0; if(!got) return;
+    sendScore(st.id, got, (S.miss&&S.miss[st.id])||0, (S.secs&&S.secs[st.id])||0);
+  });
+}
+
+/* ---- ชิปสถานะชั้นเรียนบนหน้าแผนที่ ---- */
+function renderClassChip(){
+  const slot=document.getElementById('classSlot'); if(!slot) return;
+  const j=getJoin();
+  if(j && j.room){
+    const stuck = outbox().length;
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>` +
+      (stuck ? `<div class="classchip stuck" id="retrySend" title="แตะเพื่อลองส่งอีกครั้ง">⚠️ คะแนนค้างส่ง ${stuck} รายการ · แตะเพื่อลองใหม่</div>` : '');
+    slot.querySelector('#leaveClass').onclick=()=>{
+      if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
+    };
+    const rs = slot.querySelector('#retrySend');
+    if(rs) rs.onclick=async ()=>{
+      toast('กำลังลองส่งอีกครั้ง…');
+      await flushPending({quiet:true});
+      const left = outbox();
+      if(!left.length){ toast('✅ ส่งคะแนนที่ค้างครบแล้ว'); return; }
+      /* ยังส่งไม่ได้ — แสดงรายละเอียดให้ครูถ่ายหน้าจอส่งต่อได้ */
+      const r0 = left[0] || {};
+      alert('ส่งคะแนนไม่สำเร็จ\n\n' +
+        'ค้างอยู่ ' + left.length + ' รายการ\n' +
+        'สาเหตุล่าสุด: ' + (lastSendErr || 'ไม่ทราบ') + '\n\n' +
+        'รายการแรกในคิว\n' +
+        '· เกม: ' + (r0.game||'-') + '\n' +
+        '· ด่าน: ' + (r0.level||'-') + ' (' + (r0.level_name||'-') + ')\n' +
+        '· ห้อง: ' + (r0.room||'-') + ' · ชื่อ: ' + (r0.student||'-') + '\n' +
+        '· พยายามส่งแล้ว: ' + (r0.tries||1) + ' ครั้ง');
+    };
+  }else{
+    slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
+    slot.querySelector('#joinBtn').onclick=openJoinModal;
+  }
+}
+
+function openJoinModal(){
+  const j = getJoin() || {};
+  const bg=document.createElement('div'); bg.className='modalbg';
+  bg.innerHTML=`<div class="modal">
+    <h3>🏫 เข้าร่วมชั้นเรียน</h3>
+    <div class="msub">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</div>
+    <label>รหัสห้อง</label><input id="jcode" maxlength="12" placeholder="เช่น M401A" autocomplete="off" autocapitalize="characters" value="${escHtml(j.room||'')}">
+    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
+    <div class="mmsg" id="jmsg"></div>
+    <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น<br>
+      <a href="../privacy/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">อ่านนโยบายความเป็นส่วนตัว</a></div>
+  </div>`;
+  document.body.appendChild(bg);
+  const close=()=>bg.remove();
+  bg.addEventListener('click',e=>{ if(e.target===bg) close(); });
+  bg.querySelector('#jcancel').onclick=close;
+  const codeEl=bg.querySelector('#jcode'), nameEl=bg.querySelector('#jname'), msg=bg.querySelector('#jmsg');
+  bg.querySelector('#jok').onclick=()=>{
+    const room=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
+    if(!room){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้องที่ครูให้'; return; }
+    if(!name){ msg.className='mmsg err'; msg.textContent='กรอกชื่อของคุณ'; return; }
+    const prev=getJoin();
+    setJoin({ room, name, sid:(prev&&prev.sid)||newSid() });
+    close(); renderClassChip(); toast('เข้าร่วมห้อง '+room+' แล้ว');
+    syncAllStars();
+  };
+  setTimeout(()=>codeEl.focus(),50);
+}
+
+/* ---------- boot ---------- */
+document.getElementById('btnHome').onclick = renderMap;
+renderMap();
+flushPending();
+window.addEventListener('online', flushPending);   // กลับมาออนไลน์เมื่อไร ส่งคะแนนที่ค้างทันที
+
+/* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
+   ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
