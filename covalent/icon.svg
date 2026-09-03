@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="โรงเชื่อมอิเล็กตรอน">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8EC"/><stop offset="1" stop-color="#EAE4C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- อะตอมสองอะตอมใช้อิเล็กตรอนคู่ร่วมกัน -->
+  <circle cx="168" cy="256" r="92" fill="#FBF3DE" stroke="#5C90A6" stroke-width="16"/>
+  <circle cx="344" cy="256" r="92" fill="#FBF3DE" stroke="#E7390D" stroke-width="16"/>
+  <!-- อิเล็กตรอนคู่ร่วมพันธะตรงกลาง -->
+  <circle cx="230" cy="256" r="19" fill="#2F7D4F"/>
+  <circle cx="282" cy="256" r="19" fill="#2F7D4F"/>
+  <!-- อิเล็กตรอนคู่โดดเดี่ยว -->
+  <g fill="#5C90A6"><circle cx="128" cy="180" r="14"/><circle cx="96" cy="256" r="14"/><circle cx="128" cy="332" r="14"/></g>
+  <g fill="#E7390D"><circle cx="384" cy="180" r="14"/><circle cx="416" cy="256" r="14"/><circle cx="384" cy="332" r="14"/></g>
+</svg>
