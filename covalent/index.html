@@ -421,6 +421,47 @@ h3{font-size:1.05rem}
 .cellbox h4{margin:0 0 6px;font-size:.92rem}
 .cellbox .big{font-size:1.7rem;font-weight:800;color:var(--deep);font-variant-numeric:tabular-nums}
 .cellbox .lbl{font-size:.78rem;color:var(--muted)}
+
+/* ── ห้องประกอบโมเลกุล (ด่าน 2) ────────────────────────────────────────────
+   ผู้เล่นลากชิ้นพันธะจากถาดไปวางบนช่องว่างระหว่างอะตอม
+   เกมคำนวณอิเล็กตรอนรอบอะตอมให้เห็นทันทีว่าครบออกเตตหรือยัง */
+.lab{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:14px 14px 16px;margin-top:14px}
+.labtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.labtop .fml{font-size:1.5rem;font-weight:800;letter-spacing:.5px}
+.labtop .nm{color:var(--muted);font-size:.9rem}
+.labtop .cnt{margin-left:auto;font-size:.82rem;color:var(--muted);font-weight:700}
+.molwrap{background:linear-gradient(160deg,#fff,var(--bg1));border:1px solid var(--line);border-radius:14px;padding:6px;max-width:640px;margin:0 auto}
+.molsvg{display:block;width:100%;height:auto;touch-action:none;-webkit-tap-highlight-color:transparent}
+.slotline{stroke:var(--muted);stroke-width:3;stroke-dasharray:8 8;opacity:.6}
+.slothit{cursor:pointer}
+.slotring{fill:none;stroke:var(--gold);stroke-width:26;stroke-linecap:round;opacity:0;transition:opacity .15s}
+.molsvg.dragging .slotring{opacity:.15}
+.slotring.over{opacity:.34}
+.bondline{stroke:var(--deep);stroke-width:6;stroke-linecap:round;pointer-events:none}
+.atomdot{fill:var(--rose);pointer-events:none}
+.atomc{stroke-width:3;pointer-events:none}
+.atomt{font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.octet{font-size:19px;font-weight:800;text-anchor:middle;pointer-events:none;
+  paint-order:stroke fill;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+.palette{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.bchip{
+  display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);
+  border-radius:12px;padding:9px 13px;font-weight:700;font-size:.9rem;cursor:grab;
+  touch-action:none;user-select:none;-webkit-user-select:none;transition:.14s}
+.bchip:hover{border-color:var(--lime)}
+.bchip.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;
+  box-shadow:0 8px 18px -8px rgba(231,57,13,.6)}
+.bchip .gl{display:inline-flex;flex-direction:column;gap:3px;width:26px}
+.bchip .gl i{display:block;height:3px;border-radius:2px;background:currentColor}
+.bchip.er{color:var(--bad)}
+.bchip.er.sel{background:var(--bad);color:#fff}
+.ghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;font-weight:800;
+  border-radius:12px;padding:9px 14px;box-shadow:0 12px 26px -10px rgba(231,57,13,.7)}
+@media(max-width:640px){
+  .labtop .fml{font-size:1.25rem}
+  .bchip{padding:8px 11px;font-size:.84rem;flex:1 1 44%;justify-content:center}
+}
 </style>
 </head>
 <body>
@@ -486,7 +527,7 @@ function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span c
 
 const STAGES = [
   { id:'share',  ic:'⚛️', title:'ห้องจับคู่อิเล็กตรอน', desc:'การเกิดพันธะโคเวเลนต์ · กฎออกเตต · สัญลักษณ์แบบจุดของลิวอิส', req:0 },
-  { id:'types',  ic:'🔗', title:'สายพานเดี่ยว–คู่–สาม', desc:'พันธะเดี่ยว พันธะคู่ พันธะสาม และสูตรโครงสร้าง', req:1 },
+  { id:'types',  ic:'🔗', title:'ห้องประกอบโมเลกุล',   desc:'ลากพันธะเดี่ยว–คู่–สาม มาต่อเป็นโมเลกุลจริงให้ครบออกเตต', req:1 },
   { id:'naming', ic:'🏷️', title:'ห้องตั้งชื่อสาร',      desc:'การเขียนสูตรโมเลกุลและการเรียกชื่อสารโคเวเลนต์', req:2 },
   { id:'energy', ic:'📏', title:'ห้องวัดพันธะ',         desc:'ความยาวพันธะ พลังงานพันธะ และเรโซแนนซ์', req:3 },
   { id:'props',  ic:'💎', title:'คลังสมบัติสาร',        desc:'สมบัติของสารโคเวเลนต์และสารโคเวเลนต์โครงร่างตาข่าย', req:4 },
@@ -792,8 +833,6 @@ function quizRun(qs, hostId, onDone){
   draw();
 }
 
-
-
 /* =========================================================================
    ด่าน 1 — ห้องจับคู่อิเล็กตรอน: การเกิดพันธะโคเวเลนต์ · กฎออกเตต · โครงสร้างลิวอิส
    ========================================================================= */
@@ -933,17 +972,7 @@ function stageShare(){
 /* =========================================================================
    ด่าน 2 — สายพานเดี่ยว–คู่–สาม: ชนิดของพันธะโคเวเลนต์
    ========================================================================= */
-const BOND_ITEMS = [
-  { n:'H₂ (H–H)', g:'s', e:'ไฮโดรเจนแต่ละอะตอมมีเวเลนซ์อิเล็กตรอน 1 ใช้ร่วมกัน <b>1 คู่</b> ก็ครบ 2 ทั้งคู่' },
-  { n:'Cl₂ (Cl–Cl)', g:'s', e:'คลอรีนมีเวเลนซ์อิเล็กตรอน 7 ใช้ร่วมกัน <b>1 คู่</b> ก็ครบ 8 ทั้งสองอะตอม' },
-  { n:'CH₄ (C–H)', g:'s', e:'คาร์บอนสร้างพันธะเดี่ยวกับไฮโดรเจน 4 พันธะ รอบคาร์บอนจึงครบ 8' },
-  { n:'O₂ (O=O)', g:'d', e:'ออกซิเจนมีเวเลนซ์อิเล็กตรอน 6 ต้องใช้ร่วมกัน <b>2 คู่</b> จึงจะครบ 8 ทั้งสองอะตอม' },
-  { n:'CO₂ (O=C=O)', g:'d', e:'คาร์บอนสร้าง<b>พันธะคู่</b>กับออกซิเจนทั้งสองข้าง รอบคาร์บอนจึงครบ 8' },
-  { n:'C₂H₄ (C=C)', g:'d', e:'อีทีน — คาร์บอนสองอะตอมใช้อิเล็กตรอนร่วมกัน <b>2 คู่</b>' },
-  { n:'N₂ (N≡N)', g:'t', e:'ไนโตรเจนมีเวเลนซ์อิเล็กตรอน 5 ต้องใช้ร่วมกันถึง <b>3 คู่</b> จึงจะครบ 8' },
-  { n:'C₂H₂ (C≡C)', g:'t', e:'อะเซทิลีน — คาร์บอนสองอะตอมใช้อิเล็กตรอนร่วมกัน <b>3 คู่</b>' },
-  { n:'HCN (C≡N)', g:'t', e:'ระหว่างคาร์บอนกับไนโตรเจนเป็น<b>พันธะสาม</b> ส่วน C–H เป็นพันธะเดี่ยว' }
-];
+
 const BOND_Q = [
   { q:'พันธะสามใช้อิเล็กตรอนร่วมกันทั้งหมดกี่<b>อิเล็กตรอน</b>',
     o:['2 อิเล็กตรอน','3 อิเล็กตรอน','4 อิเล็กตรอน','6 อิเล็กตรอน'], a:3,
@@ -963,33 +992,289 @@ const BOND_Q = [
     e:'ไฮโดรเจนต้องการอีกเพียง 1 อิเล็กตรอน จึงเกิด<b>พันธะเดี่ยว</b> H–C<br>' +
       'ส่วนคาร์บอน (ขาด 4) กับไนโตรเจน (ขาด 3) ต้องใช้ร่วมกัน 3 คู่ เป็น <b>พันธะสาม C≡N</b> รอบคาร์บอนจึงครบ 8 พอดี' }
 ];
+/* =========================================================================
+   ห้องประกอบโมเลกุล — ใช้ในด่าน 2
+   ผู้เล่นลาก (หรือแตะเลือกแล้วแตะวาง) ชิ้นพันธะไปใส่ช่องว่างระหว่างอะตอม
+   เกมนับอิเล็กตรอนรอบอะตอมแต่ละตัวให้เห็นสด ๆ ว่าครบออกเตตหรือยัง
+   กติกาที่ใช้คำนวณ  อิเล็กตรอนรอบอะตอม = เวเลนซ์อิเล็กตรอน + ผลรวมลำดับพันธะที่ต่อกับอะตอมนั้น
+                     คู่โดดเดี่ยว        = (เวเลนซ์อิเล็กตรอน − ผลรวมลำดับพันธะ) ÷ 2
+   ========================================================================= */
+const MOL_LAB = [
+  { f:'H₂', nm:'แก๊สไฮโดรเจน', tip:'ไฮโดรเจนต้องการอีกอะตอมละ 1 อิเล็กตรอน และครบที่ <b>2</b> ไม่ใช่ 8',
+    atoms:[{id:'a',el:'H',v:1,x:240,y:150},{id:'b',el:'H',v:1,x:380,y:150}],
+    bonds:[{a:'a',b:'b',o:1}] },
+
+  { f:'H₂O', nm:'น้ำ', tip:'ออกซิเจนมีเวเลนซ์อิเล็กตรอน 6 ขาดอีก 2 จึงรับจากไฮโดรเจน<b>ข้างละ 1</b>',
+    atoms:[{id:'o',el:'O',v:6,x:310,y:110},{id:'h1',el:'H',v:1,x:185,y:210},{id:'h2',el:'H',v:1,x:435,y:210}],
+    bonds:[{a:'o',b:'h1',o:1},{a:'o',b:'h2',o:1}] },
+
+  { f:'CH₄', nm:'มีเทน', tip:'คาร์บอนมีเวเลนซ์อิเล็กตรอน 4 ขาดอีก 4 จึงต้องสร้างพันธะ <b>4 พันธะ</b>',
+    atoms:[{id:'c',el:'C',v:4,x:310,y:150},
+           {id:'h1',el:'H',v:1,x:310,y:44},{id:'h2',el:'H',v:1,x:310,y:256},
+           {id:'h3',el:'H',v:1,x:186,y:150},{id:'h4',el:'H',v:1,x:434,y:150}],
+    bonds:[{a:'c',b:'h1',o:1},{a:'c',b:'h2',o:1},{a:'c',b:'h3',o:1},{a:'c',b:'h4',o:1}] },
+
+  { f:'CO₂', nm:'คาร์บอนไดออกไซด์', tip:'คาร์บอนขาด 4 แต่มีเพื่อนบ้านแค่ 2 อะตอม จึงต้องแบ่ง<b>ข้างละ 2 คู่</b>',
+    atoms:[{id:'c',el:'C',v:4,x:310,y:150},{id:'o1',el:'O',v:6,x:150,y:150},{id:'o2',el:'O',v:6,x:470,y:150}],
+    bonds:[{a:'o1',b:'c',o:2},{a:'c',b:'o2',o:2}] },
+
+  { f:'N₂', nm:'แก๊สไนโตรเจน', tip:'ไนโตรเจนมีเวเลนซ์อิเล็กตรอน 5 ขาดอีก <b>3</b> และมีเพื่อนบ้านแค่อะตอมเดียว',
+    atoms:[{id:'a',el:'N',v:5,x:230,y:150},{id:'b',el:'N',v:5,x:390,y:150}],
+    bonds:[{a:'a',b:'b',o:3}] },
+
+  { f:'HCN', nm:'ไฮโดรเจนไซยาไนด์', tip:'คาร์บอนขาด 4 · ไฮโดรเจนให้ได้แค่ 1 ที่เหลือจึงต้องไปเอาจากไนโตรเจน',
+    atoms:[{id:'h',el:'H',v:1,x:150,y:150},{id:'c',el:'C',v:4,x:310,y:150},{id:'n',el:'N',v:5,x:470,y:150}],
+    bonds:[{a:'h',b:'c',o:1},{a:'c',b:'n',o:3}] }
+];
+
+const EL_COLOR = { H:'#5C90A6', C:'#084A24', O:'#E7390D', N:'#7C4DA8', Cl:'#2F7D4F' };
+const AT_R = 30;
+
+/* วางคู่โดดเดี่ยวไว้ในทิศที่ห่างจากพันธะมากที่สุด จะได้ไม่ทับเส้นพันธะ */
+function lonePairDirs(bondAngles, n){
+  const norm = d => Math.abs(((d + Math.PI) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI) - Math.PI);
+  const far = a => bondAngles.length ? Math.min(...bondAngles.map(b => norm(a-b))) : Math.PI;
+  const picked = [];
+  for(let k=0; k<n; k++){
+    let best = 0, bs = -1;
+    for(let i=0; i<24; i++){
+      const a = i*Math.PI/12;
+      const s = Math.min(far(a), ...picked.map(p => norm(a-p)));
+      if(s > bs){ bs = s; best = a; }
+    }
+    picked.push(best);
+  }
+  return picked;
+}
+
+/* ตัดกรอบภาพให้พอดีกับโมเลกุล จะได้ไม่เหลือที่ว่างบน–ล่างมากเกินไป
+   เว้นที่ด้านบนไว้ให้จุดอิเล็กตรอน และด้านล่างไว้ให้ตัวเลขนับอิเล็กตรอน
+   พร้อมกำหนดขนาดต่ำสุด เพื่อไม่ให้โมเลกุลเล็ก ๆ ถูกซูมจนใหญ่เกินงาม */
+function viewBox(M){
+  const PX = 62, PT = 54, PB = 82, MIN_W = 430, MIN_H = 225;
+  const xs = M.atoms.map(a=>a.x), ys = M.atoms.map(a=>a.y);
+  let x0 = Math.min(...xs)-PX, x1 = Math.max(...xs)+PX;
+  let y0 = Math.min(...ys)-PT, y1 = Math.max(...ys)+PB;
+  const grow = (a, b, min) => {
+    const d = min-(b-a); return d>0 ? [a-d/2, b+d/2] : [a, b];
+  };
+  [x0,x1] = grow(x0,x1,MIN_W); [y0,y1] = grow(y0,y1,MIN_H);
+  return `${x0} ${y0} ${x1-x0} ${y1-y0}`;
+}
+
+/* เล่นห้องประกอบโมเลกุลจนครบทุกโมเลกุล แล้วเรียก onDone พร้อมจำนวนครั้งที่ตรวจแล้วยังไม่ถูก */
+function bondLab(hostId, pbId, onDone){
+  const host = document.getElementById(hostId), pb = document.getElementById(pbId);
+  let mi = 0, wrong = 0;
+  draw();
+
+  function draw(){
+    const M = MOL_LAB[mi];
+    const state = M.bonds.map(()=>0);          // ลำดับพันธะที่ผู้เล่นวางไว้ · 0 = ยังว่าง
+    let armed = 0, flagged = false;            // armed = ชิ้นพันธะที่เลือกค้างไว้ (โหมดแตะ)
+
+    host.innerHTML = `
+      <div class="lab">
+        <div class="labtop">
+          <span class="fml">${M.f}</span><span class="nm">${M.nm}</span>
+          <span class="cnt">โมเลกุลที่ ${mi+1} / ${MOL_LAB.length}</span>
+        </div>
+        <div class="molwrap"><svg class="molsvg" id="mol" viewBox="${viewBox(M)}" aria-label="แผนภาพโมเลกุล ${M.f}"></svg></div>
+        <div class="palette" id="pal">
+          <div class="bchip" data-o="1"><span class="gl"><i></i></span>พันธะเดี่ยว</div>
+          <div class="bchip" data-o="2"><span class="gl"><i></i><i></i></span>พันธะคู่</div>
+          <div class="bchip" data-o="3"><span class="gl"><i></i><i></i><i></i></span>พันธะสาม</div>
+          <div class="bchip er" data-o="0">✕ ลบพันธะ</div>
+        </div>
+      </div>
+      <div class="feedback" id="labfb"></div>`;
+
+    const svg = document.getElementById('mol');
+    const fb  = document.getElementById('labfb');
+    render();
+
+    /* ── นับอิเล็กตรอนรอบอะตอมจากพันธะที่วางอยู่ตอนนี้ ── */
+    function tally(){
+      const t = {};
+      M.atoms.forEach(a => t[a.id] = { sum:0, need: a.el==='H' ? 2 : 8, v:a.v });
+      M.bonds.forEach((b,i)=>{ t[b.a].sum += state[i]; t[b.b].sum += state[i]; });
+      M.atoms.forEach(a => { t[a.id].total = a.v + t[a.id].sum; });
+      return t;
+    }
+
+    function render(){
+      const t = tally();
+      const at = id => M.atoms.find(a=>a.id===id);
+      let g = '';
+
+      // เส้นพันธะ (หรือช่องว่างประ ถ้ายังไม่ได้วาง) + พื้นที่รับการวาง
+      M.bonds.forEach((b,i)=>{
+        const A = at(b.a), B = at(b.b);
+        const dx = B.x-A.x, dy = B.y-A.y, L = Math.hypot(dx,dy);
+        const ux = dx/L, uy = dy/L, px = -uy, py = ux;
+        const x1 = A.x+ux*AT_R, y1 = A.y+uy*AT_R, x2 = B.x-ux*AT_R, y2 = B.y-uy*AT_R;
+        // แถบบอกช่องวางอยู่ชั้นล่างสุด เส้นพันธะจะทับด้านบน ไม่ให้ดูรก
+        g += `<line class="slotring" data-ring="${i}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+        const n = state[i];
+        if(!n){
+          g += `<line class="slotline" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+        }else{
+          const gap = 9, off = (n-1)/2;
+          for(let k=0;k<n;k++){
+            const d = (k-off)*gap;
+            g += `<line class="bondline" x1="${x1+px*d}" y1="${y1+py*d}" x2="${x2+px*d}" y2="${y2+py*d}"/>`;
+          }
+        }
+        g += `<line class="slothit" data-slot="${i}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+                stroke="transparent" stroke-width="46" pointer-events="stroke"/>`;
+      });
+
+      // อะตอม + คู่โดดเดี่ยว + ตัวนับอิเล็กตรอน
+      M.atoms.forEach(a=>{
+        // เลี่ยงทิศของช่องพันธะทุกช่อง (รวมช่องที่ยังว่าง) จุดจะได้ไม่ไปทับเส้น
+        const angs = [];
+        M.bonds.forEach(b=>{
+          const o = b.a===a.id ? at(b.b) : b.b===a.id ? at(b.a) : null;
+          if(o) angs.push(Math.atan2(o.y-a.y, o.x-a.x));
+        });
+        // อิเล็กตรอนที่ยังไม่ถูกใช้สร้างพันธะ วาดเป็นคู่ ถ้าเหลือเศษวาดเป็นจุดเดี่ยว
+        const rem = Math.max(0, a.v - t[a.id].sum);
+        const slots = Math.floor(rem/2) + (rem % 2);
+        lonePairDirs(angs, slots).forEach((ang, k)=>{
+          const single = (rem % 2) && k === slots-1;      // จุดเดี่ยวไว้ท้ายสุด
+          const rx = Math.cos(ang), ry = Math.sin(ang), qx = -ry, qy = rx;
+          const cx = a.x+rx*(AT_R+9), cy = a.y+ry*(AT_R+9);
+          if(single){
+            g += `<circle class="atomdot" cx="${cx}" cy="${cy}" r="3.4"/>`;
+          }else{
+            g += `<circle class="atomdot" cx="${cx+qx*4.5}" cy="${cy+qy*4.5}" r="3.4"/>`;
+            g += `<circle class="atomdot" cx="${cx-qx*4.5}" cy="${cy-qy*4.5}" r="3.4"/>`;
+          }
+        });
+        const col = EL_COLOR[a.el] || 'var(--deep)';
+        g += `<circle class="atomc" cx="${a.x}" cy="${a.y}" r="${AT_R}" fill="#fff" stroke="${col}"/>`;
+        g += `<text class="atomt" x="${a.x}" y="${a.y}" font-size="26" fill="${col}">${a.el}</text>`;
+        const d = t[a.id], ok = d.total===d.need;
+        g += `<text class="octet" x="${a.x}" y="${a.y+AT_R+32}" fill="${ok?'var(--ok)':'var(--muted)'}">${d.total}/${d.need}${ok?' ✓':''}</text>`;
+      });
+
+      svg.innerHTML = g;
+      svg.querySelectorAll('.slothit').forEach(el=>{
+        el.addEventListener('pointerup', ev=>{ if(armed!==null && dragging===null){ ev.stopPropagation(); drop(+el.dataset.slot); } });
+      });
+      const done = state.filter(Boolean).length;
+      if(pb) pb.style.width = ((mi + done/M.bonds.length) / MOL_LAB.length * 100) + '%';
+    }
+
+    /* ── วางพันธะลงช่อง แล้วตรวจผล ── */
+    function drop(i){
+      const o = armed;
+      if(o === state[i]) return;
+      state[i] = o;
+      render();
+      const t = tally();
+      const filled = state.every(x=>x>0);
+      if(!filled){ fb.className='feedback'; return; }
+
+      const bad = M.atoms.filter(a=>t[a.id].total !== t[a.id].need);
+      if(!bad.length){
+        fb.className='feedback show good';
+        fb.innerHTML = `✅ <b>${M.f}</b> ถูกต้อง! ทุกอะตอมครบออกเตตแล้ว — ${M.tip}`;
+        setTimeout(()=>{
+          mi++;
+          if(mi < MOL_LAB.length){ draw(); window.scrollTo({top:0,behavior:'smooth'}); }
+          else onDone(wrong);
+        }, 1400);
+      }else{
+        if(!flagged){ wrong++; flagged = true; }
+        const b = bad[0], d = t[b.id];
+        fb.className='feedback show bad';
+        fb.innerHTML = `❌ ยังไม่ครบ — รอบอะตอม <b>${b.el}</b> ตอนนี้มี <b>${d.total}</b> อิเล็กตรอน `
+          + (d.total < d.need ? `ยังขาดอีก <b>${d.need-d.total}</b> ลองเพิ่มลำดับพันธะที่ต่อกับมัน`
+                              : `<b>เกินไป ${d.total-d.need}</b> ลองลดลำดับพันธะที่ต่อกับมัน`);
+      }
+    }
+
+    /* ── ถาดพันธะ: ลากไปวาง หรือแตะเลือกแล้วแตะช่อง ── */
+    let dragging = null, ghost = null, startX = 0, startY = 0, moved = false;
+    armed = null;
+
+    host.querySelectorAll('.bchip').forEach(chip=>{
+      chip.addEventListener('pointerdown', ev=>{
+        ev.preventDefault();
+        dragging = +chip.dataset.o; startX = ev.clientX; startY = ev.clientY; moved = false;
+        chip.setPointerCapture(ev.pointerId);
+      });
+      chip.addEventListener('pointermove', ev=>{
+        if(dragging===null) return;
+        if(!moved && Math.hypot(ev.clientX-startX, ev.clientY-startY) < 8) return;
+        if(!moved){
+          moved = true;
+          svg.classList.add('dragging');
+          ghost = document.createElement('div');
+          ghost.className = 'ghost';
+          ghost.textContent = ['✕ ลบ','— เดี่ยว','= คู่','≡ สาม'][dragging];
+          document.body.appendChild(ghost);
+        }
+        ghost.style.left = ev.clientX+'px'; ghost.style.top = (ev.clientY-30)+'px';
+        const hit = slotAt(ev.clientX, ev.clientY);
+        svg.querySelectorAll('.slotring').forEach(r=>r.classList.toggle('over', hit!==null && +r.dataset.ring===hit));
+      });
+      chip.addEventListener('pointerup', ev=>{
+        if(dragging===null) return;
+        const o = dragging;
+        if(moved){
+          const hit = slotAt(ev.clientX, ev.clientY);
+          cleanupDrag();
+          dragging = null;
+          if(hit!==null){ armed = o; drop(hit); armed = null; setSel(null); }
+          return;
+        }
+        cleanupDrag(); dragging = null;
+        armed = o;                 // เครื่องมือที่เลือกค้างไว้ วางติดกันหลายพันธะได้เลย
+        setSel(armed);             // จะเปลี่ยนเครื่องมือก็แค่แตะชิ้นอื่น
+      });
+      chip.addEventListener('pointercancel', ()=>{ cleanupDrag(); dragging=null; });
+    });
+
+    function setSel(o){
+      host.querySelectorAll('.bchip').forEach(c=>c.classList.toggle('sel', o!==null && +c.dataset.o===o));
+      svg.classList.toggle('dragging', o!==null);
+    }
+    function cleanupDrag(){
+      moved = false;
+      if(ghost){ ghost.remove(); ghost = null; }
+      svg.classList.remove('dragging');
+      svg.querySelectorAll('.slotring').forEach(r=>r.classList.remove('over'));
+    }
+    function slotAt(cx, cy){
+      const el = document.elementFromPoint(cx, cy);
+      if(el && el.classList && el.classList.contains('slothit')) return +el.dataset.slot;
+      return null;
+    }
+  }
+}
+
 function stageTypes(){
   let sortWrong = 0;
-  drawSort();
+  drawLab();
 
-  function drawSort(){
-    const B = { s:{t:'➖ พันธะเดี่ยว<br><span class="small muted">ใช้ร่วมกัน 1 คู่</span>'},
-                d:{t:'🟰 พันธะคู่<br><span class="small muted">ใช้ร่วมกัน 2 คู่</span>'},
-                t:{t:'☰ พันธะสาม<br><span class="small muted">ใช้ร่วมกัน 3 คู่</span>'} };
+  function drawLab(){
     app.innerHTML = stageShell('types', `
-      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะโมเลกุล แล้วแตะกล่องที่ตรงกับ<b>ชนิดพันธะที่วงเล็บระบุไว้</b>
-        — จัดให้ครบ ${BOND_ITEMS.length} ชิ้น</div>
+      <div class="note">🎯 <b>ช่วงที่ 1 · ห้องประกอบโมเลกุล:</b>
+        <b>ลาก</b>ชิ้นพันธะจากถาดด้านล่างไปวางบน<b>ช่องประ</b>ระหว่างอะตอม
+        (บนมือถือจะ<b>แตะเลือกชิ้นพันธะ แล้วแตะช่อง</b>ก็ได้)
+        — ประกอบให้ครบ ${MOL_LAB.length} โมเลกุล</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      <div class="bank" id="pool">
-        ${shuffle(BOND_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
-      </div>
-      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
-        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
-          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
-      </div>
-      <div class="feedback" id="fb"></div>
+      <div id="labhost"></div>
       <div class="note" style="margin-top:16px">
-        🔵 <b>วิธีคิดเร็ว:</b> ดูว่าอะตอม<b>ขาดอิเล็กตรอนกี่ตัว</b>จึงจะครบ 8 — ขาด 1 ใช้ร่วม 1 คู่ ·
-        ขาด 2 ใช้ร่วม 2 คู่ · ขาด 3 ใช้ร่วม 3 คู่
+        🔵 <b>อ่านตัวเลขใต้อะตอม:</b> เป็นจำนวนอิเล็กตรอน<b>รอบอะตอมนั้น</b> เทียบกับที่ต้องการ
+        — ขึ้น ✓ สีเขียวเมื่อครบ (ไฮโดรเจนครบที่ 2 · อะตอมอื่นครบที่ 8)<br>
+        🔴 <b>จุดสีแดงรอบอะตอม</b> คืออิเล็กตรอนที่ยังไม่ได้ใช้สร้างพันธะ ยิ่งสร้างพันธะ จุดจะยิ่งลดลง
       </div>
     `);
-    bindBuckets(BOND_ITEMS, B, 'pb', 'fb', wrong=>{
-      sortWrong = wrong; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,700);
+    bondLab('labhost', 'pb', wrong=>{
+      sortWrong = wrong; toast('ประกอบครบแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,700);
     });
   }
 
@@ -1013,7 +1298,11 @@ function stageTypes(){
         <div class="note">🔵 <b>ต่อยอด:</b> นอกจากสามแบบนี้ยังมี <b>พันธะโคออร์ดิเนตโคเวเลนต์</b>
           ซึ่งอะตอมหนึ่งเป็นผู้ให้อิเล็กตรอนคู่ร่วมพันธะ<b>ฝ่ายเดียว</b> เช่นพันธะที่ 4 ใน NH₄⁺
           แต่เมื่อเกิดแล้วจะแยกไม่ออกจากพันธะเดี่ยวปกติ</div>
-        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+        <div class="note">🔵 <b>ที่ได้จากห้องประกอบ:</b> จำนวนพันธะไม่ต้องท่องจำ คำนวณได้จาก
+          <b>8 − เวเลนซ์อิเล็กตรอน</b> (ไฮโดรเจนใช้ 2 − 1) แล้วเฉลี่ยให้เพื่อนบ้านที่มี —
+          คาร์บอนขาด 4 ถ้ามีเพื่อนบ้าน 4 อะตอมก็เป็นพันธะเดี่ยวหมด
+          ถ้ามีเพื่อนบ้านแค่ 2 อะตอมก็ต้องเป็นพันธะคู่ทั้งสองข้าง</div>
+        <div class="small muted">ประกอบผิดและตอบผิดรวม ${miss} ครั้ง</div>`);
     });
   }
 }
