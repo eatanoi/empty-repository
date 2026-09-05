@@ -391,7 +391,7 @@ h3{font-size:1.05rem}
 .ioneq sup{font-size:.72em}
 
 /* ── ด่าน 1 · ฉากถ่ายโอนอิเล็กตรอน (ภาพระนาบเดียว จะได้เห็นจุดชัดและแตะง่าย) ── */
-.tsvg{display:block;width:100%;height:auto;-webkit-tap-highlight-color:transparent;
+.tsvg{display:block;width:100%;height:auto;touch-action:none;-webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;user-select:none}
 .tball{pointer-events:none;filter:drop-shadow(0 2px 3px rgba(4,38,30,.28));transition:r .28s}
 .edot{fill:var(--rose);pointer-events:none;transition:.15s}
@@ -404,6 +404,9 @@ h3{font-size:1.05rem}
 .tok8{font-size:12px;font-weight:800;text-anchor:middle;fill:var(--lime);pointer-events:none;
   paint-order:stroke fill;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
 .tflow{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--muted);pointer-events:none}
+/* ผังผลึก 3 มิติท้ายด่าน 1 */
+.lat3bond{stroke:var(--muted);stroke-width:2;opacity:.42;pointer-events:none}
+.latleg text{font-size:12px;font-weight:800;fill:var(--deep);dominant-baseline:central;pointer-events:none}
 /* คำบรรยายใต้แถวไอออนตอนรวมตัวกันเป็นผลึก */
 .joincap{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--deep);pointer-events:none;
   paint-order:stroke fill;stroke:rgba(255,255,255,.85);stroke-width:4px;stroke-linejoin:round}
@@ -828,29 +831,29 @@ const EL_ION = {
    m = อะตอมโลหะ (v = เวเลนซ์อิเล็กตรอนที่ต้องยกให้หมด · n = จำนวนอะตอม)
    x = อะตอมอโลหะ (v = เวเลนซ์เดิม · ต้องรับจนครบ 8) */
 const TR_SET = [
-  { f:'NaCl', g:'a', nm:'โซเดียมคลอไรด์', m:{el:'Na', v:1, n:1}, x:{el:'Cl', v:7, n:1},
+  { f:'NaCl', g:'a', lat:'rock', nm:'โซเดียมคลอไรด์', m:{el:'Na', v:1, n:1}, x:{el:'Cl', v:7, n:1},
     tip:'โซเดียมมีเวเลนซ์ 1 คลอรีนขาดอีก 1 พอดี จึงจับกันในอัตราส่วน 1 : 1' },
-  { f:'KBr',  g:'a', nm:'โพแทสเซียมโบรไมด์', m:{el:'K', v:1, n:1}, x:{el:'Br', v:7, n:1},
+  { f:'KBr',  g:'a', lat:'rock', nm:'โพแทสเซียมโบรไมด์', m:{el:'K', v:1, n:1}, x:{el:'Br', v:7, n:1},
     tip:'ธาตุคนละคาบกับ NaCl แต่อยู่หมู่เดียวกัน เวเลนซ์จึงเท่ากัน อัตราส่วนก็เป็น 1 : 1 เหมือนกัน' },
-  { f:'MgO',  g:'a', nm:'แมกนีเซียมออกไซด์', m:{el:'Mg', v:2, n:1}, x:{el:'O', v:6, n:1},
+  { f:'MgO',  g:'a', lat:'rock', nm:'แมกนีเซียมออกไซด์', m:{el:'Mg', v:2, n:1}, x:{el:'O', v:6, n:1},
     tip:'ทั้งคู่ให้และรับ 2 อิเล็กตรอนเท่ากัน อัตราส่วนจึงเป็น 1 : 1 แม้ประจุจะเป็น 2+ กับ 2−' },
-  { f:'CaO',  g:'a', nm:'แคลเซียมออกไซด์', m:{el:'Ca', v:2, n:1}, x:{el:'O', v:6, n:1},
+  { f:'CaO',  g:'a', lat:'rock', nm:'แคลเซียมออกไซด์', m:{el:'Ca', v:2, n:1}, x:{el:'O', v:6, n:1},
     tip:'ปูนดิบ · แคลเซียมอยู่หมู่เดียวกับแมกนีเซียม จึงยกให้ 2 อิเล็กตรอนเท่ากัน' },
-  { f:'BaS',  g:'a', nm:'แบเรียมซัลไฟด์', m:{el:'Ba', v:2, n:1}, x:{el:'S', v:6, n:1},
+  { f:'BaS',  g:'a', lat:'rock', nm:'แบเรียมซัลไฟด์', m:{el:'Ba', v:2, n:1}, x:{el:'S', v:6, n:1},
     tip:'ไอออนใหญ่ทั้งคู่ · สังเกตว่าขนาดไอออนไม่ได้เปลี่ยนอัตราส่วน เวเลนซ์ต่างหากที่กำหนด' },
-  { f:'CaF₂', g:'b', nm:'แคลเซียมฟลูออไรด์', m:{el:'Ca', v:2, n:1}, x:{el:'F', v:7, n:2},
+  { f:'CaF₂', g:'b', lat:'fluorite', nm:'แคลเซียมฟลูออไรด์', m:{el:'Ca', v:2, n:1}, x:{el:'F', v:7, n:2},
     tip:'แคลเซียมยกให้ 2 แต่ฟลูออรีนรับได้ตัวละ 1 จึงต้องใช้ฟลูออรีน 2 อะตอม' },
-  { f:'MgCl₂', g:'b', nm:'แมกนีเซียมคลอไรด์', m:{el:'Mg', v:2, n:1}, x:{el:'Cl', v:7, n:2},
+  { f:'MgCl₂', g:'b', lat:'fluorite', approx:true, nm:'แมกนีเซียมคลอไรด์', m:{el:'Mg', v:2, n:1}, x:{el:'Cl', v:7, n:2},
     tip:'แบบเดียวกับ CaF₂ — โลหะหมู่ 2 คู่กับอโลหะหมู่ 17 จะได้อัตราส่วน 1 : 2 เสมอ' },
-  { f:'Li₂O', g:'b', nm:'ลิเทียมออกไซด์', m:{el:'Li', v:1, n:2}, x:{el:'O', v:6, n:1},
+  { f:'Li₂O', g:'b', lat:'anti', nm:'ลิเทียมออกไซด์', m:{el:'Li', v:1, n:2}, x:{el:'O', v:6, n:1},
     tip:'ออกซิเจนขาด 2 แต่ลิเทียมยกให้ได้ตัวละ 1 จึงต้องใช้ลิเทียม 2 อะตอม' },
-  { f:'K₂S',  g:'b', nm:'โพแทสเซียมซัลไฟด์', m:{el:'K', v:1, n:2}, x:{el:'S', v:6, n:1},
+  { f:'K₂S',  g:'b', lat:'anti', nm:'โพแทสเซียมซัลไฟด์', m:{el:'K', v:1, n:2}, x:{el:'S', v:6, n:1},
     tip:'แบบเดียวกับ Li₂O — กำมะถันขาด 2 โพแทสเซียมให้ได้ตัวละ 1' },
-  { f:'Na₂O', g:'b', nm:'โซเดียมออกไซด์', m:{el:'Na', v:1, n:2}, x:{el:'O', v:6, n:1},
+  { f:'Na₂O', g:'b', lat:'anti', nm:'โซเดียมออกไซด์', m:{el:'Na', v:1, n:2}, x:{el:'O', v:6, n:1},
     tip:'โลหะหมู่ 1 คู่กับอโลหะหมู่ 16 จะได้อัตราส่วน 2 : 1 เสมอ' },
   { f:'AlF₃', g:'c', nm:'อะลูมิเนียมฟลูออไรด์', m:{el:'Al', v:3, n:1}, x:{el:'F', v:7, n:3},
     tip:'อะลูมิเนียมยกให้ถึง 3 อิเล็กตรอน จึงต้องมีฟลูออรีนมารับถึง 3 อะตอม' },
-  { f:'AlN',  g:'a', nm:'อะลูมิเนียมไนไทรด์', m:{el:'Al', v:3, n:1}, x:{el:'N', v:5, n:1},
+  { f:'AlN',  g:'a', lat:'rock', approx:true, nm:'อะลูมิเนียมไนไทรด์', m:{el:'Al', v:3, n:1}, x:{el:'N', v:5, n:1},
     tip:'ไนโตรเจนขาดถึง 3 อิเล็กตรอน จึงรับจากอะลูมิเนียมได้หมดในอะตอมเดียว · ประจุเป็น 3+ กับ 3−' },
   { f:'Li₃N', g:'c', nm:'ลิเทียมไนไทรด์', m:{el:'Li', v:1, n:3}, x:{el:'N', v:5, n:1},
     tip:'ไนโตรเจนขาด 3 แต่ลิเทียมให้ได้ตัวละ 1 จึงต้องใช้ลิเทียมถึง 3 อะตอม' },
@@ -868,6 +871,38 @@ const chg = q => q===0 ? '' : (Math.abs(q)>1 ? Math.abs(q) : '') + (q>0 ? '+' : 
 /* แบบเต็มสำหรับบอกยอดรวมประจุ · ต้องเห็นเลข 1 ด้วย ไม่งั้นอ่านเป็น "รวม +" แล้วงง */
 const chgN = q => q===0 ? '0' : Math.abs(q) + (q>0 ? '+' : '−');
 
+/* ผังผลึก 3 มิติของสารที่เพิ่งประกอบเสร็จ · ทุกแบบอยู่ในกล่อง +-1 หน่วย จะได้ใช้สเกลเดียวกัน
+   rock     โครงสร้างแบบเกลือหิน · ไอออนสลับกันทุกทิศในตะแกรง 3x3x3 (NaCl KBr MgO CaO BaS)
+   fluorite แบบฟลูออไรต์ · ไอออนบวกอยู่ที่มุมกับกลางหน้าลูกบาศก์ ไอออนลบอยู่ในช่องข้างใน 8 ช่อง (CaF2)
+   anti     แบบแอนติฟลูออไรต์ · สลับที่กันกับฟลูออไรต์ (Li2O K2S Na2O)
+   สารที่โครงสร้างจริงซับซ้อนเกินเนื้อหา ม.4 จะไม่ใส่ lat ไว้ แล้วข้ามขั้นนี้ไปเลย */
+const LAT3D_R = { m:0.15, x:0.21 };            // รัศมีไอออนในผังผลึก เทียบกับระยะห่างระหว่างไอออน
+                                               // เล็กพอให้เห็นเส้นโครงผลึกเหมือนภาพในหนังสือ
+function buildLat3D(kind){
+  const sites = [], bonds = [];
+  if(kind === 'rock'){
+    for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) for(let k=-1;k<=1;k++)
+      sites.push({ p:[i, j, k], kind: (((i+j+k)%2)+2)%2 === 0 ? 'm' : 'x' });
+  }else{
+    // ลูกบาศก์ด้านยาว 2 · มุม 8 จุด กลางหน้า 6 จุด และช่องข้างใน 8 ช่อง
+    const outer = [], inner = [];
+    for(const a of [-1,1]) for(const b of [-1,1]) for(const c of [-1,1]) outer.push([a,b,c]);
+    [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(v=>outer.push(v));
+    for(const a of [-0.5,0.5]) for(const b of [-0.5,0.5]) for(const c of [-0.5,0.5]) inner.push([a,b,c]);
+    const oKind = kind === 'fluorite' ? 'm' : 'x';   // แอนติฟลูออไรต์สลับที่กัน
+    outer.forEach(p=>sites.push({ p, kind:oKind }));
+    inner.forEach(p=>sites.push({ p, kind: oKind === 'm' ? 'x' : 'm' }));
+  }
+  // เส้นโครงผลึกระหว่างไอออนตรงข้ามที่อยู่ใกล้กันที่สุด
+  const near = kind === 'rock' ? 1.02 : 0.92;
+  for(let i=0;i<sites.length;i++) for(let j=i+1;j<sites.length;j++){
+    if(sites[i].kind === sites[j].kind) continue;
+    const d = Math.hypot(...[0,1,2].map(t=>sites[i].p[t]-sites[j].p[t]));
+    if(d <= near) bonds.push([i, j]);
+  }
+  return { sites, bonds };
+}
+
 /* เล่นห้องถ่ายโอนอิเล็กตรอนจนครบทุกสาร แล้วเรียก onDone พร้อมจำนวนครั้งที่ทำผิด */
 function transferLab(hostId, pbId, SET, onDone){
   const host = document.getElementById(hostId), pb = document.getElementById(pbId);
@@ -883,8 +918,11 @@ function transferLab(hostId, pbId, SET, onDone){
     const gave = Array(T.m.n).fill(0), got = Array(T.x.n).fill(0);
     let armed = null;                              // {i, k} = อิเล็กตรอนตัวที่ k ของโลหะตัวที่ i
     let done = false;
-    let joinT = 0;                                 // 0 = ไอออนยังแยกกัน · 1 = รวมเป็นผลึกแล้ว
+    let joinT = 0;                                 // 0 = ไอออนยังแยกกัน · 1 = รวมเป็นแถวแล้ว
     let JOIN = null;                               // ผังตำแหน่งตอนรวมตัว สร้างเมื่อถ่ายโอนครบ
+    let LAT = null, latT = 0;                      // ผังผลึก 3 มิติ · latT คือความคืบหน้าตอนขยายเป็นผลึก
+    const LAT_H = 360;                             // ความสูงกรอบตอนโชว์ผลึก (สลับ viewBox ตอนนั้น)
+    const latView = { rx:-0.42, ry:0.62, scale:66, cx:VB_W/2, cy:186, dist:22 };
 
     host.innerHTML = `<div class="lab">
       <div class="labtop">
@@ -976,6 +1014,44 @@ function transferLab(hostId, pbId, SET, onDone){
         ${hit!=null && !joinT ? `<circle class="xhit" data-x="${hit}" cx="${cx}" cy="${cy}" r="${r+10}"/>` : ''}</g>`;
     }
 
+    /* ฉากผลึก 3 มิติ · เรียงตามความลึกก่อนวาด ชิ้นใกล้กล้องจึงบังชิ้นไกลถูกต้อง */
+    function drawLat(){
+      const Q = LAT.sites.map(st=>project3(st.p, latView));
+      const it = [];
+      LAT.bonds.forEach(([i, j])=>{
+        it.push({ z:Math.min(Q[i].z, Q[j].z) - 0.01,
+          g:`<line class="lat3bond" x1="${Q[i].x.toFixed(1)}" y1="${Q[i].y.toFixed(1)}"
+               x2="${Q[j].x.toFixed(1)}" y2="${Q[j].y.toFixed(1)}"/>` });
+      });
+      LAT.sites.forEach((st, i)=>{
+        const el = st.kind === 'm' ? T.m.el : T.x.el;
+        const r = LAT3D_R[st.kind] * latView.scale * Q[i].k;
+        it.push({ z:Q[i].z, g:`<circle class="ionb" cx="${Q[i].x.toFixed(1)}" cy="${Q[i].y.toFixed(1)}"
+          r="${r.toFixed(1)}" fill="url(#g-${el})" stroke="${EL_ION[el].d}"
+          stroke-width="${(1.4*Q[i].k).toFixed(1)}"/>` });
+      });
+      it.sort((a, b)=> a.z - b.z);
+      const name = { rock:'แบบเกลือหิน (rock salt)', fluorite:'แบบฟลูออไรต์ (fluorite)',
+                     anti:'แบบแอนติฟลูออไรต์ (antifluorite)' }[T.lat];
+      // ข้อความปิดท้ายต่างกันตามชนิดผัง · แบบ 3x3x3 ไม่ใช่หน่วยเซลล์ จึงไม่ต้องเตือนเรื่องนับลูก
+      const note = T.approx
+        ? 'แบบจำลองอย่างง่าย — โครงสร้างจริงของสารนี้ซับซ้อนกว่านี้'
+        : T.lat === 'rock'
+          ? 'นี่เป็นเพียงมุมเล็ก ๆ ของผลึก ซึ่งต่อออกไปทุกทิศไม่รู้จบ'
+          : 'ไอออนที่มุมและที่หน้าลูกบาศก์ใช้ร่วมกับหน่วยเซลล์ข้างเคียง นับลูกในภาพตรง ๆ ไม่ได้';
+      const R = EL_ION, sc = 0.86 + 0.14*latT;
+      const ion = (el, q, cy)=> `<circle cx="26" cy="${cy}" r="8" fill="url(#g-${el})"
+            stroke="${R[el].d}" stroke-width="1.4"/>
+          <text x="40" y="${cy}">${el}<tspan dy="-5" font-size="9">${chg(q)}</tspan></text>`;
+      return `<g opacity="${latT.toFixed(2)}" transform="translate(${(latView.cx*(1-sc)).toFixed(1)},${
+          (latView.cy*(1-sc)).toFixed(1)}) scale(${sc.toFixed(3)})">${it.map(o=>o.g).join('')}</g>
+        <text class="joincap" x="${VB_W/2}" y="22">โครงสร้างผลึกของ ${T.f} · ${name}</text>
+        <g class="latleg" opacity="${latT.toFixed(2)}">
+          ${ion(T.m.el, T.m.v, 48)}${ion(T.x.el, -(8-T.x.v), 72)}</g>
+        <text class="joincap sub" x="${VB_W/2}" y="${LAT_H-28}">🔄 ลากที่ภาพเพื่อหมุนดูรอบด้าน</text>
+        <text class="joincap sub" x="${VB_W/2}" y="${LAT_H-10}">${note}</text>`;
+    }
+
     function draw(){
       const need = 8 - T.x.v;                       // อโลหะแต่ละอะตอมต้องรับกี่อิเล็กตรอน
       // ไล่สีต้องมีครบทุกธาตุใน EL_ION ถ้าไล่ตามรายชื่อที่พิมพ์เองจะลืมตอนเพิ่มธาตุใหม่
@@ -1014,6 +1090,8 @@ function transferLab(hostId, pbId, SET, onDone){
         g += dots(p.x, p.y, r, have, 'edot xdot', null);
         g += atom(T.x.el, p.x, p.y, r, full ? -need : 0, full, j);
       }
+
+      if(LAT){ svg.innerHTML = g.slice(0, g.indexOf('</defs>')+8) + drawLat(); return; }
 
       if(joinT >= 1){
         const y = VB_H/2 + Math.max(EL_ION[T.m.el].ri, EL_ION[T.x.el].ri) + 34;
@@ -1074,16 +1152,36 @@ function transferLab(hostId, pbId, SET, onDone){
       JOIN = buildJoin();
       // ค่อย ๆ เลื่อนไอออนเข้าหากันแล้วจึงขึ้นสรุป ผู้เล่นจะได้เห็นว่า "รวมกันเป็นสารประกอบ" จริง ๆ
       const T0 = performance.now(), DUR = 900;
-      let shown = false;
-      const finish = ()=>{ if(shown) return; shown = true; joinT = 1; draw(); summary(); };
+      let joined = false;
+      const afterJoin = ()=>{ if(joined) return; joined = true; joinT = 1; draw(); grow(); };
       (function step(now){
         const t = Math.min(1, (now - T0)/DUR);
         joinT = 1 - Math.pow(1-t, 3);              // ชะลอตอนปลาย ให้ดูเหมือนถูกดูดเข้าหากัน
         draw();
-        if(t < 1) requestAnimationFrame(step); else finish();
+        if(t < 1) requestAnimationFrame(step); else afterJoin();
       })(T0);
-      // กันกรณีสลับไปแอปอื่นกลางคัน เบราว์เซอร์จะหยุดส่งเฟรมจนสรุปไม่ขึ้น
-      setTimeout(finish, DUR + 500);
+      // กันกรณีสลับไปแอปอื่นกลางคัน เบราว์เซอร์จะหยุดส่งเฟรมจนขั้นถัดไปไม่มา
+      setTimeout(afterJoin, DUR + 500);
+    }
+
+    /* ขั้นสุดท้าย · ขยายจากแถวเดียวเป็นผลึก 3 มิติของสารนั้น แล้วจึงขึ้นสรุป
+       สารที่โครงสร้างจริงซับซ้อนเกินเนื้อหา ม.4 (ไม่ได้ระบุ lat ไว้) จะข้ามขั้นนี้ */
+    function grow(){
+      if(!T.lat){ summary(); return; }
+      let shown = false;
+      const done2 = ()=>{ if(shown) return; shown = true; latT = 1; draw(); summary(); };
+      setTimeout(()=>{
+        LAT = buildLat3D(T.lat);
+        svg.setAttribute('viewBox', `0 0 ${VB_W} ${LAT_H}`);
+        const G0 = performance.now(), GD = 650;
+        (function step(now){
+          const t = Math.min(1, (now - G0)/GD);
+          latT = 1 - Math.pow(1-t, 3);
+          draw();
+          if(t < 1) requestAnimationFrame(step); else done2();
+        })(G0);
+        setTimeout(done2, GD + 500);
+      }, 650);                                     // หยุดให้ดูแถวที่รวมตัวเสร็จก่อนสักครู่
     }
 
     function summary(){
@@ -1100,7 +1198,8 @@ function transferLab(hostId, pbId, SET, onDone){
             <span class="small muted">(ประจุรวมเป็นศูนย์)</span></div>
         </div>
         <div class="small muted" style="margin-top:8px">🧊 ไอออนที่เกิดขึ้น<b>ไม่ได้จับกันเป็นโมเลกุลเดี่ยว ๆ</b>
-          แต่ถูกแรงดึงดูดทางไฟฟ้าดึงให้เรียงสลับบวก-ลบต่อกันไปทุกทิศจนเป็น<b>ผลึก</b></div>
+          แต่ถูกแรงดึงดูดทางไฟฟ้าดึงให้เรียงสลับบวก-ลบต่อกันไปทุกทิศจนเป็น<b>ผลึก</b>${T.lat ? ''
+          : ' · โครงสร้างผลึกจริงของสารนี้<b>ซับซ้อนเกินเนื้อหา ม.4</b> จึงยังไม่แสดงเป็นภาพ 3 มิติ'}</div>
         <div style="margin-top:12px"><button class="btn primary sm" id="nx">
           ${idx===SET.length-1?'ไปช่วงคำถาม →':'สารถัดไป →'}</button></div>`;
       if(pb) pb.style.width = ((idx+1)/SET.length*100)+'%';
@@ -1110,6 +1209,7 @@ function transferLab(hostId, pbId, SET, onDone){
         else onDone(wrong);
       };
     }
+    spinner(svg, ()=>latView, ()=>{ if(LAT) draw(); }, null);
     draw();
   }
   start();
@@ -1214,6 +1314,35 @@ function stageForm(){
    ถ้าวางประจุเหมือนกันติดกันจะผลักกัน — เป็นกติกาเดียวที่ใช้ตัดสินทุกช่อง
    ========================================================================= */
 
+/* ลากเพื่อหมุน · จับ pointer หลังขยับเกิน 5px เท่านั้น การแตะสั้น ๆ จะได้ยังกดช่องได้
+   คืนฟังก์ชันสำหรับอ่านมุมกล้องปัจจุบัน */
+function spinner(svg, get, redraw, onTap){
+  let sx=0, sy=0, px=0, py=0, spin=false, moved=false, pid=null;
+  function end(){
+    if(pid!==null && svg.hasPointerCapture && svg.hasPointerCapture(pid)) svg.releasePointerCapture(pid);
+    spin=false; pid=null;
+  }
+  svg.addEventListener('pointerdown', ev=>{
+    spin=true; moved=false; pid=ev.pointerId;
+    sx=px=ev.clientX; sy=py=ev.clientY;
+  });
+  svg.addEventListener('pointermove', ev=>{
+    if(!spin) return;
+    if(ev.pointerType==='mouse' && !ev.buttons){ end(); return; }
+    if(!moved && Math.hypot(ev.clientX-sx, ev.clientY-sy) > 5){ moved=true; svg.setPointerCapture(pid); }
+    if(!moved) return;
+    const v = get();
+    v.ry += (ev.clientX-px)*0.011;
+    v.rx = Math.max(-1.35, Math.min(1.35, v.rx + (ev.clientY-py)*0.009));
+    px=ev.clientX; py=ev.clientY; redraw();
+  });
+  svg.addEventListener('pointerup', ev=>{
+    const wasMoved = moved; end();
+    if(!wasMoved && onTap) onTap(ev);
+  });
+  svg.addEventListener('pointercancel', end);
+}
+
 /* หมุนรอบแกน Y แล้วแกน X จากนั้นฉายภาพแบบมีเปอร์สเปกทีฟ
    คืนพิกัดบนจอ พร้อมค่า z ไว้เรียงลำดับการวาด และ k ไว้ย่อ-ขยายตามระยะ */
 function project3(p, view){
@@ -1284,34 +1413,6 @@ function crystalLab(hostId, pbId, onDone){
   const VB_W = 470, VB_H = 360, NEAR = 44;   // NEAR = รัศมีที่ยังถือว่ากดโดนช่องว่าง
   let idx = 0, wrong = 0;
 
-  /* ลากเพื่อหมุน · จับ pointer หลังขยับเกิน 5px เท่านั้น การแตะสั้น ๆ จะได้ยังกดช่องได้
-     คืนฟังก์ชันสำหรับอ่านมุมกล้องปัจจุบัน */
-  function spinner(svg, get, redraw, onTap){
-    let sx=0, sy=0, px=0, py=0, spin=false, moved=false, pid=null;
-    function end(){
-      if(pid!==null && svg.hasPointerCapture && svg.hasPointerCapture(pid)) svg.releasePointerCapture(pid);
-      spin=false; pid=null;
-    }
-    svg.addEventListener('pointerdown', ev=>{
-      spin=true; moved=false; pid=ev.pointerId;
-      sx=px=ev.clientX; sy=py=ev.clientY;
-    });
-    svg.addEventListener('pointermove', ev=>{
-      if(!spin) return;
-      if(ev.pointerType==='mouse' && !ev.buttons){ end(); return; }
-      if(!moved && Math.hypot(ev.clientX-sx, ev.clientY-sy) > 5){ moved=true; svg.setPointerCapture(pid); }
-      if(!moved) return;
-      const v = get();
-      v.ry += (ev.clientX-px)*0.011;
-      v.rx = Math.max(-1.35, Math.min(1.35, v.rx + (ev.clientY-py)*0.009));
-      px=ev.clientX; py=ev.clientY; redraw();
-    });
-    svg.addEventListener('pointerup', ev=>{
-      const wasMoved = moved; end();
-      if(!wasMoved && onTap) onTap(ev);
-    });
-    svg.addEventListener('pointercancel', end);
-  }
   function toVB(svg, ev){
     const r = svg.getBoundingClientRect();
     return { x:(ev.clientX-r.left)/r.width*VB_W, y:(ev.clientY-r.top)/r.height*VB_H };
