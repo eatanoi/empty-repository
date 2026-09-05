@@ -1,9 +1,9 @@
-/* service worker ของเกม "ภารกิจพันธุกรรม" (หน้าแรกของเว็บไซต์)
+/* service worker ของเกม "นครผลึกเกลือ" (พันธะไอออนิก)
    - แคชไฟล์ของเกมไว้ให้เล่นซ้ำได้แม้ออฟไลน์
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'genetics-v3';
+const CACHE = 'ionic-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',
+  './og-cover.png',
   './cert-bg.png'
 ];
 
@@ -29,7 +30,7 @@ self.addEventListener('activate', e=>{
   e.waitUntil((async ()=>{
     const keys = await caches.keys();
     // ลบเฉพาะแคชรุ่นเก่าของเกมนี้ ไม่ไปยุ่งกับแคชของเกมอื่นในเว็บไซต์เดียวกัน
-    await Promise.all(keys.filter(k=>k.startsWith('genetics-') && k!==CACHE).map(k=>caches.delete(k)));
+    await Promise.all(keys.filter(k=>k.startsWith('ionic-') && k!==CACHE).map(k=>caches.delete(k)));
     await self.clients.claim();
   })());
 });
@@ -39,9 +40,6 @@ self.addEventListener('fetch', e=>{
   if(req.method !== 'GET') return;                       // POST ของระบบชั้นเรียน → ผ่านไปเลย
   const url = new URL(req.url);
   if(url.origin !== location.origin) return;             // ไฟล์ข้ามโดเมน → ไม่แคช
-  // ไฟล์ในโฟลเดอร์เกมอื่น ปล่อยให้ service worker ของเกมนั้นดูแลเอง
-  const BASE = new URL('./', self.location).pathname;
-  if(['cell/','transport/','respiration/','division/','reproduction/','covalent/','ionic/','privacy/'].some(d=>url.pathname.startsWith(BASE+d))) return;
 
   // หน้าเว็บ (index.html): เอาจากเน็ตก่อนเสมอ เพื่อให้ได้เวอร์ชันล่าสุดทันทีที่ครูอัปเดตเกม
   if(req.mode === 'navigate' || req.destination === 'document'){
