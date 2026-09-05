@@ -404,6 +404,10 @@ h3{font-size:1.05rem}
 .tok8{font-size:12px;font-weight:800;text-anchor:middle;fill:var(--lime);pointer-events:none;
   paint-order:stroke fill;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
 .tflow{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--muted);pointer-events:none}
+/* คำบรรยายใต้แถวไอออนตอนรวมตัวกันเป็นผลึก */
+.joincap{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--deep);pointer-events:none;
+  paint-order:stroke fill;stroke:rgba(255,255,255,.85);stroke-width:4px;stroke-linejoin:round}
+.joincap.sub{font-size:11.5px;font-weight:700;fill:var(--muted)}
 
 /* ── ด่าน 2 · ผลึก 3 มิติ ── */
 .molsvg{display:block;width:100%;height:auto;touch-action:none;cursor:grab;
@@ -879,6 +883,8 @@ function transferLab(hostId, pbId, SET, onDone){
     const gave = Array(T.m.n).fill(0), got = Array(T.x.n).fill(0);
     let armed = null;                              // {i, k} = อิเล็กตรอนตัวที่ k ของโลหะตัวที่ i
     let done = false;
+    let joinT = 0;                                 // 0 = ไอออนยังแยกกัน · 1 = รวมเป็นผลึกแล้ว
+    let JOIN = null;                               // ผังตำแหน่งตอนรวมตัว สร้างเมื่อถ่ายโอนครบ
 
     host.innerHTML = `<div class="lab">
       <div class="labtop">
@@ -907,26 +913,67 @@ function transferLab(hostId, pbId, SET, onDone){
     const posM = i => ({ x:112, y:VB_H/2 + (i - (T.m.n-1)/2)*ROW });
     const posX = j => ({ x:VB_W-112, y:VB_H/2 + (j - (T.x.n-1)/2)*ROW });
 
+    /* ผังตอนไอออนรวมตัวกัน · เรียงเป็นแถวเดียวสลับ บวก-ลบ-บวก-ลบ
+       ช่องไหนสารนี้ไม่มีไอออนจริงเหลือแล้ว จะวางไอออน "จาง ๆ" ไว้แทน
+       เพราะในผลึกจริงช่องนั้นเป็นของหน่วยถัดไปที่ต่อออกไป ไม่ได้ว่างเปล่า
+       ทำแบบนี้จึงไม่มีประจุเหมือนกันมาอยู่ติดกัน และไม่ทำให้เข้าใจผิดว่าเป็นโมเลกุลเดี่ยว ๆ */
+    function buildJoin(){
+      const RM = EL_ION[T.m.el].ri, RX = EL_ION[T.x.el].ri;
+      const pairs = Math.max(T.m.n, T.x.n);        // จำนวนคู่ในแถว
+      const slots = [];
+      let mi = 0, xi = 0;
+      for(let k=0;k<pairs;k++){
+        slots.push({ kind:'m', r:RM, real: mi < T.m.n ? mi++ : null });
+        slots.push({ kind:'x', r:RX, real: xi < T.x.n ? xi++ : null });
+      }
+      // ปิดหัว-ท้ายด้วยไอออนจางอีกข้างละตัว ทุกสารจึงเห็นว่าผลึก "ต่อออกไป" ไม่ได้จบแค่แถวนี้
+      // (แถวเริ่มด้วย m และจบด้วย x เสมอ เติมแบบนี้จึงยังสลับบวก-ลบถูกต้อง)
+      slots.unshift({ kind:'x', r:RX, real:null });
+      slots.push({ kind:'m', r:RM, real:null });
+      // วางเรียงให้ชิดกันพอดี แล้วเลื่อนทั้งแถวให้อยู่กลางกรอบ
+      let x = 0;
+      slots.forEach((sl, k)=>{ if(k) x += slots[k-1].r + sl.r; sl.x = x; });
+      const mid = (slots[0].x - slots[0].r + slots[slots.length-1].x + slots[slots.length-1].r)/2;
+      slots.forEach(sl=>{ sl.x += VB_W/2 - mid; sl.y = VB_H/2; });
+      return slots;
+    }
+    const lerp = (a, b, t)=> a + (b-a)*t;
+    /* ตำแหน่งจริงของไอออนตอนนี้ · ระหว่างแอนิเมชันจะค่อย ๆ เลื่อนจากที่เดิมไปยังผังตอนรวมตัว */
+    function liveM(i){
+      const a = posM(i); if(!JOIN) return a;
+      const b = JOIN.find(sl=>sl.kind==='m' && sl.real===i);
+      return { x:lerp(a.x, b.x, joinT), y:lerp(a.y, b.y, joinT) };
+    }
+    function liveX(j){
+      const a = posX(j); if(!JOIN) return a;
+      const b = JOIN.find(sl=>sl.kind==='x' && sl.real===j);
+      return { x:lerp(a.x, b.x, joinT), y:lerp(a.y, b.y, joinT) };
+    }
+
     /* วาดจุดอิเล็กตรอนรอบอะตอม กระจายเป็นวงกลมเริ่มจากด้านบน */
     function dots(cx, cy, r, count, cls, keyFor){
-      let g = '';
+      if(joinT >= 1) return '';                    // รวมเป็นผลึกแล้ว วาดเป็นลูกไอออนล้วน ๆ
+      let g = joinT ? `<g opacity="${(1-joinT).toFixed(2)}">` : '';
       for(let k=0;k<count;k++){
         const a = -Math.PI/2 + k*2*Math.PI/Math.max(count,1);
         const x = cx + Math.cos(a)*(r+13), y = cy + Math.sin(a)*(r+13);
         g += `<circle class="${cls}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5"/>`;
-        if(keyFor) g += `<circle class="ehit" data-e="${keyFor(k)}"
+        if(keyFor && !joinT) g += `<circle class="ehit" data-e="${keyFor(k)}"
              cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="18"/>`;
       }
-      return g;
+      return g + (joinT ? '</g>' : '');
     }
-    function atom(el, cx, cy, r, charge, ok, hit){
+    function atom(el, cx, cy, r, charge, ok, hit, ghost){
       const i = EL_ION[el];
-      return `<circle class="tball" cx="${cx}" cy="${cy}" r="${r}" fill="url(#g-${el})"
+      const o = ghost ? ` opacity="${(0.30*joinT).toFixed(2)}"` : '';
+      return `<g${o}><circle class="tball" cx="${cx}" cy="${cy}" r="${r}" fill="url(#g-${el})"
                 stroke="${i.d}" stroke-width="2"/>
         <text class="atomt" x="${cx}" y="${cy}" font-size="${(r*0.9).toFixed(0)}" fill="#fff">${el}</text>
-        ${charge ? `<text class="tchg" x="${cx+r*0.92}" y="${cy-r*0.82}">${chg(charge)}</text>` : ''}
-        ${ok ? `<text class="tok8" x="${cx}" y="${cy+r+19}">✓ ครบ</text>` : ''}
-        ${hit!=null ? `<circle class="xhit" data-x="${hit}" cx="${cx}" cy="${cy}" r="${r+10}"/>` : ''}`;
+        ${charge ? `<text class="tchg" x="${(joinT>=1 ? cx : cx+r*0.92).toFixed(1)}"
+             y="${(joinT>=1 ? cy-r-12 : cy-r*0.82).toFixed(1)}">${chg(charge)}</text>` : ''}
+        ${ok && joinT<1 ? `<text class="tok8" opacity="${(1-joinT).toFixed(2)}"
+             x="${cx}" y="${cy+r+19}">✓ ครบ</text>` : ''}
+        ${hit!=null && !joinT ? `<circle class="xhit" data-x="${hit}" cx="${cx}" cy="${cy}" r="${r+10}"/>` : ''}</g>`;
     }
 
     function draw(){
@@ -939,22 +986,39 @@ function transferLab(hostId, pbId, SET, onDone){
           <stop offset="42%" stop-color="${i.c}"/><stop offset="100%" stop-color="${i.d}"/></radialGradient>`;
       }).join('')}</defs>`;
 
-      // ลูกศรบอกทิศการถ่ายโอน วาดไว้ใต้ทุกอย่าง
-      g += `<text class="tflow" x="${VB_W/2}" y="26">ถ่ายโอนอิเล็กตรอน →</text>`;
+      g += `<text class="tflow" x="${VB_W/2}" y="26">${joinT
+        ? 'แรงดึงดูดทางไฟฟ้าดึงไอออนเข้าหากัน'
+        : 'ถ่ายโอนอิเล็กตรอน →'}</text>`;
+
+      // ตอนรวมตัว วาดไอออนจาง ๆ ของหน่วยถัดไปไว้ใต้ลูกกลมจริงทั้งหมด
+      // (ไม่ต้องมีเส้นเชื่อม เพราะลูกกลมชิดกันอยู่แล้ว เส้นจะถูกบังจนเหลือแต่เศษโผล่ออกมา)
+      if(JOIN && joinT > 0){
+        JOIN.filter(sl=>sl.real===null).forEach(sl=>{
+          const el = sl.kind==='m' ? T.m.el : T.x.el;
+          const q  = sl.kind==='m' ? T.m.v : -(8 - T.x.v);
+          g += atom(el, sl.x, sl.y, sl.r, q, false, null, true);
+        });
+      }
 
       for(let i=0;i<T.m.n;i++){
-        const p = posM(i), E = EL_ION[T.m.el];
+        const p = liveM(i), E = EL_ION[T.m.el];
         const left = T.m.v - gave[i], isIon = left===0;
         const r = isIon ? E.ri : E.r;
         g += dots(p.x, p.y, r, left, 'edot', k=>i+':'+k);
         g += atom(T.m.el, p.x, p.y, r, isIon ? T.m.v : 0, isIon, null);
       }
       for(let j=0;j<T.x.n;j++){
-        const p = posX(j), E = EL_ION[T.x.el];
+        const p = liveX(j), E = EL_ION[T.x.el];
         const have = T.x.v + got[j], full = have===8;
         const r = full ? E.ri : E.r;
         g += dots(p.x, p.y, r, have, 'edot xdot', null);
         g += atom(T.x.el, p.x, p.y, r, full ? -need : 0, full, j);
+      }
+
+      if(joinT >= 1){
+        const y = VB_H/2 + Math.max(EL_ION[T.m.el].ri, EL_ION[T.x.el].ri) + 34;
+        g += `<text class="joincap" x="${VB_W/2}" y="${y}">${T.f} · ไอออนเรียงสลับกันต่อไปเรื่อย ๆ เป็นผลึก</text>`
+           + `<text class="joincap sub" x="${VB_W/2}" y="${y+20}">ลูกจาง ๆ คือไอออนของหน่วยถัดไปที่ต่อออกไป ไม่ได้จบแค่นี้</text>`;
       }
       svg.innerHTML = g;
 
@@ -1007,6 +1071,22 @@ function transferLab(hostId, pbId, SET, onDone){
       const xDone = got.every((v,j)=>T.x.v+v===8);
       if(!(mDone && xDone)) return;
       done = true;
+      JOIN = buildJoin();
+      // ค่อย ๆ เลื่อนไอออนเข้าหากันแล้วจึงขึ้นสรุป ผู้เล่นจะได้เห็นว่า "รวมกันเป็นสารประกอบ" จริง ๆ
+      const T0 = performance.now(), DUR = 900;
+      let shown = false;
+      const finish = ()=>{ if(shown) return; shown = true; joinT = 1; draw(); summary(); };
+      (function step(now){
+        const t = Math.min(1, (now - T0)/DUR);
+        joinT = 1 - Math.pow(1-t, 3);              // ชะลอตอนปลาย ให้ดูเหมือนถูกดูดเข้าหากัน
+        draw();
+        if(t < 1) requestAnimationFrame(step); else finish();
+      })(T0);
+      // กันกรณีสลับไปแอปอื่นกลางคัน เบราว์เซอร์จะหยุดส่งเฟรมจนสรุปไม่ขึ้น
+      setTimeout(finish, DUR + 500);
+    }
+
+    function summary(){
       const qm = T.m.v, qx = 8 - T.x.v;
       const mIon = T.m.el+'<sup>'+chg(qm)+'</sup>', xIon = T.x.el+'<sup>'+chg(-qx)+'</sup>';
       fb.className='feedback show good';
@@ -1019,6 +1099,8 @@ function transferLab(hostId, pbId, SET, onDone){
           <div class="tot">${T.m.n>1?T.m.n:''}${mIon} + ${T.x.n>1?T.x.n:''}${xIon} → <b>${T.f}</b>
             <span class="small muted">(ประจุรวมเป็นศูนย์)</span></div>
         </div>
+        <div class="small muted" style="margin-top:8px">🧊 ไอออนที่เกิดขึ้น<b>ไม่ได้จับกันเป็นโมเลกุลเดี่ยว ๆ</b>
+          แต่ถูกแรงดึงดูดทางไฟฟ้าดึงให้เรียงสลับบวก-ลบต่อกันไปทุกทิศจนเป็น<b>ผลึก</b></div>
         <div style="margin-top:12px"><button class="btn primary sm" id="nx">
           ${idx===SET.length-1?'ไปช่วงคำถาม →':'สารถัดไป →'}</button></div>`;
       if(pb) pb.style.width = ((idx+1)/SET.length*100)+'%';
