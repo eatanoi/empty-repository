@@ -525,6 +525,18 @@ function shuffle(a){
   for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
   return r;
 }
+/* สุ่มหยิบตัวอย่างมาเล่นครั้งละชุด · หยิบแยกตามกลุ่มความยาก ไม่ใช่สุ่มล้วน
+   ถ้าสุ่มล้วนจากคลังเดียว บางรอบจะได้ของง่ายหมดหรือยากหมด ความยากของด่านจะไม่คงที่
+   plan = { ชื่อกลุ่ม: จำนวนที่หยิบ } · คืนค่าเรียงตามลำดับเดิมในคลัง ความยากจึงยังไล่จากง่ายไปยาก */
+function pickByGroup(pool, plan){
+  const out = [];
+  Object.entries(plan).forEach(([g, n]) => out.push(...shuffle(pool.filter(x => x.g === g)).slice(0, n)));
+  return out.sort((a, b) => pool.indexOf(a) - pool.indexOf(b));
+}
+/* สุ่มหยิบจากคลังที่ไม่ได้แบ่งกลุ่ม · ใช้กับการ์ดจับคู่ที่ความยากใกล้เคียงกันอยู่แล้ว */
+function pickSome(pool, n){
+  return shuffle(pool).slice(0, n).sort((a, b) => pool.indexOf(a) - pool.indexOf(b));
+}
 function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span class="off">★</span>'; return s; }
 
 const STAGES = [
@@ -812,35 +824,35 @@ const EL_ION = {
    m = อะตอมโลหะ (v = เวเลนซ์อิเล็กตรอนที่ต้องยกให้หมด · n = จำนวนอะตอม)
    x = อะตอมอโลหะ (v = เวเลนซ์เดิม · ต้องรับจนครบ 8) */
 const TR_SET = [
-  { f:'NaCl', nm:'โซเดียมคลอไรด์', m:{el:'Na', v:1, n:1}, x:{el:'Cl', v:7, n:1},
+  { f:'NaCl', g:'a', nm:'โซเดียมคลอไรด์', m:{el:'Na', v:1, n:1}, x:{el:'Cl', v:7, n:1},
     tip:'โซเดียมมีเวเลนซ์ 1 คลอรีนขาดอีก 1 พอดี จึงจับกันในอัตราส่วน 1 : 1' },
-  { f:'KBr',  nm:'โพแทสเซียมโบรไมด์', m:{el:'K', v:1, n:1}, x:{el:'Br', v:7, n:1},
+  { f:'KBr',  g:'a', nm:'โพแทสเซียมโบรไมด์', m:{el:'K', v:1, n:1}, x:{el:'Br', v:7, n:1},
     tip:'ธาตุคนละคาบกับ NaCl แต่อยู่หมู่เดียวกัน เวเลนซ์จึงเท่ากัน อัตราส่วนก็เป็น 1 : 1 เหมือนกัน' },
-  { f:'MgO',  nm:'แมกนีเซียมออกไซด์', m:{el:'Mg', v:2, n:1}, x:{el:'O', v:6, n:1},
+  { f:'MgO',  g:'a', nm:'แมกนีเซียมออกไซด์', m:{el:'Mg', v:2, n:1}, x:{el:'O', v:6, n:1},
     tip:'ทั้งคู่ให้และรับ 2 อิเล็กตรอนเท่ากัน อัตราส่วนจึงเป็น 1 : 1 แม้ประจุจะเป็น 2+ กับ 2−' },
-  { f:'CaO',  nm:'แคลเซียมออกไซด์', m:{el:'Ca', v:2, n:1}, x:{el:'O', v:6, n:1},
+  { f:'CaO',  g:'a', nm:'แคลเซียมออกไซด์', m:{el:'Ca', v:2, n:1}, x:{el:'O', v:6, n:1},
     tip:'ปูนดิบ · แคลเซียมอยู่หมู่เดียวกับแมกนีเซียม จึงยกให้ 2 อิเล็กตรอนเท่ากัน' },
-  { f:'BaS',  nm:'แบเรียมซัลไฟด์', m:{el:'Ba', v:2, n:1}, x:{el:'S', v:6, n:1},
+  { f:'BaS',  g:'a', nm:'แบเรียมซัลไฟด์', m:{el:'Ba', v:2, n:1}, x:{el:'S', v:6, n:1},
     tip:'ไอออนใหญ่ทั้งคู่ · สังเกตว่าขนาดไอออนไม่ได้เปลี่ยนอัตราส่วน เวเลนซ์ต่างหากที่กำหนด' },
-  { f:'CaF₂', nm:'แคลเซียมฟลูออไรด์', m:{el:'Ca', v:2, n:1}, x:{el:'F', v:7, n:2},
+  { f:'CaF₂', g:'b', nm:'แคลเซียมฟลูออไรด์', m:{el:'Ca', v:2, n:1}, x:{el:'F', v:7, n:2},
     tip:'แคลเซียมยกให้ 2 แต่ฟลูออรีนรับได้ตัวละ 1 จึงต้องใช้ฟลูออรีน 2 อะตอม' },
-  { f:'MgCl₂', nm:'แมกนีเซียมคลอไรด์', m:{el:'Mg', v:2, n:1}, x:{el:'Cl', v:7, n:2},
+  { f:'MgCl₂', g:'b', nm:'แมกนีเซียมคลอไรด์', m:{el:'Mg', v:2, n:1}, x:{el:'Cl', v:7, n:2},
     tip:'แบบเดียวกับ CaF₂ — โลหะหมู่ 2 คู่กับอโลหะหมู่ 17 จะได้อัตราส่วน 1 : 2 เสมอ' },
-  { f:'Li₂O', nm:'ลิเทียมออกไซด์', m:{el:'Li', v:1, n:2}, x:{el:'O', v:6, n:1},
+  { f:'Li₂O', g:'b', nm:'ลิเทียมออกไซด์', m:{el:'Li', v:1, n:2}, x:{el:'O', v:6, n:1},
     tip:'ออกซิเจนขาด 2 แต่ลิเทียมยกให้ได้ตัวละ 1 จึงต้องใช้ลิเทียม 2 อะตอม' },
-  { f:'K₂S',  nm:'โพแทสเซียมซัลไฟด์', m:{el:'K', v:1, n:2}, x:{el:'S', v:6, n:1},
+  { f:'K₂S',  g:'b', nm:'โพแทสเซียมซัลไฟด์', m:{el:'K', v:1, n:2}, x:{el:'S', v:6, n:1},
     tip:'แบบเดียวกับ Li₂O — กำมะถันขาด 2 โพแทสเซียมให้ได้ตัวละ 1' },
-  { f:'Na₂O', nm:'โซเดียมออกไซด์', m:{el:'Na', v:1, n:2}, x:{el:'O', v:6, n:1},
+  { f:'Na₂O', g:'b', nm:'โซเดียมออกไซด์', m:{el:'Na', v:1, n:2}, x:{el:'O', v:6, n:1},
     tip:'โลหะหมู่ 1 คู่กับอโลหะหมู่ 16 จะได้อัตราส่วน 2 : 1 เสมอ' },
-  { f:'AlF₃', nm:'อะลูมิเนียมฟลูออไรด์', m:{el:'Al', v:3, n:1}, x:{el:'F', v:7, n:3},
+  { f:'AlF₃', g:'c', nm:'อะลูมิเนียมฟลูออไรด์', m:{el:'Al', v:3, n:1}, x:{el:'F', v:7, n:3},
     tip:'อะลูมิเนียมยกให้ถึง 3 อิเล็กตรอน จึงต้องมีฟลูออรีนมารับถึง 3 อะตอม' },
-  { f:'AlN',  nm:'อะลูมิเนียมไนไทรด์', m:{el:'Al', v:3, n:1}, x:{el:'N', v:5, n:1},
+  { f:'AlN',  g:'a', nm:'อะลูมิเนียมไนไทรด์', m:{el:'Al', v:3, n:1}, x:{el:'N', v:5, n:1},
     tip:'ไนโตรเจนขาดถึง 3 อิเล็กตรอน จึงรับจากอะลูมิเนียมได้หมดในอะตอมเดียว · ประจุเป็น 3+ กับ 3−' },
-  { f:'Li₃N', nm:'ลิเทียมไนไทรด์', m:{el:'Li', v:1, n:3}, x:{el:'N', v:5, n:1},
+  { f:'Li₃N', g:'c', nm:'ลิเทียมไนไทรด์', m:{el:'Li', v:1, n:3}, x:{el:'N', v:5, n:1},
     tip:'ไนโตรเจนขาด 3 แต่ลิเทียมให้ได้ตัวละ 1 จึงต้องใช้ลิเทียมถึง 3 อะตอม' },
-  { f:'Al₂O₃', nm:'อะลูมิเนียมออกไซด์', m:{el:'Al', v:3, n:2}, x:{el:'O', v:6, n:3},
+  { f:'Al₂O₃', g:'c', nm:'อะลูมิเนียมออกไซด์', m:{el:'Al', v:3, n:2}, x:{el:'O', v:6, n:3},
     tip:'อะลูมิเนียม 2 อะตอมให้ 6 อิเล็กตรอน ออกซิเจน 3 อะตอมรับ 6 พอดี — ตัวคูณร่วมน้อยของ 3 กับ 2 คือ 6' },
-  { f:'Mg₃N₂', nm:'แมกนีเซียมไนไทรด์', m:{el:'Mg', v:2, n:3}, x:{el:'N', v:5, n:2},
+  { f:'Mg₃N₂', g:'c', nm:'แมกนีเซียมไนไทรด์', m:{el:'Mg', v:2, n:3}, x:{el:'N', v:5, n:2},
     tip:'แมกนีเซียม 3 อะตอมให้ 6 อิเล็กตรอน ไนโตรเจน 2 อะตอมรับ 6 พอดี · สังเกตว่าเลขสลับข้างกับประจุ' }
 ];
 
@@ -853,13 +865,13 @@ const chg = q => q===0 ? '' : (Math.abs(q)>1 ? Math.abs(q) : '') + (q>0 ? '+' : 
 const chgN = q => q===0 ? '0' : Math.abs(q) + (q>0 ? '+' : '−');
 
 /* เล่นห้องถ่ายโอนอิเล็กตรอนจนครบทุกสาร แล้วเรียก onDone พร้อมจำนวนครั้งที่ทำผิด */
-function transferLab(hostId, pbId, onDone){
+function transferLab(hostId, pbId, SET, onDone){
   const host = document.getElementById(hostId), pb = document.getElementById(pbId);
   const VB_W = 470;
   let idx = 0, wrong = 0;
 
   function start(){
-    const T = TR_SET[idx];
+    const T = SET[idx];
     const rows = Math.max(T.m.n, T.x.n);
     const ROW = 128;                               // ระยะห่างระหว่างอะตอมในคอลัมน์เดียวกัน
     const VB_H = Math.max(210, rows*ROW + 70);     // เผื่อขอบบนไว้ให้คำว่า "ถ่ายโอนอิเล็กตรอน →" ด้วย
@@ -956,7 +968,7 @@ function transferLab(hostId, pbId, onDone){
       }
       const totalNeed = need * T.x.n, totalGave = gave.reduce((a,b)=>a+b,0);
       document.getElementById('cnt').textContent =
-        `ถ่ายโอนแล้ว ${totalGave}/${totalNeed} อิเล็กตรอน · สารที่ ${idx+1}/${TR_SET.length}`;
+        `ถ่ายโอนแล้ว ${totalGave}/${totalNeed} อิเล็กตรอน · สารที่ ${idx+1}/${SET.length}`;
 
       svg.querySelectorAll('.ehit').forEach(h=>{
         h.onclick = ()=>{
@@ -1008,11 +1020,11 @@ function transferLab(hostId, pbId, onDone){
             <span class="small muted">(ประจุรวมเป็นศูนย์)</span></div>
         </div>
         <div style="margin-top:12px"><button class="btn primary sm" id="nx">
-          ${idx===TR_SET.length-1?'ไปช่วงคำถาม →':'สารถัดไป →'}</button></div>`;
-      if(pb) pb.style.width = ((idx+1)/TR_SET.length*100)+'%';
+          ${idx===SET.length-1?'ไปช่วงคำถาม →':'สารถัดไป →'}</button></div>`;
+      if(pb) pb.style.width = ((idx+1)/SET.length*100)+'%';
       fb.querySelector('#nx').onclick = ()=>{
         idx++;
-        if(idx < TR_SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
+        if(idx < SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
         else onDone(wrong);
       };
     }
@@ -1070,17 +1082,21 @@ const FORM_Q = [
 
 function stageForm(){
   let labWrong = 0;
+  // สุ่มจากคลัง 15 สาร มาเล่นรอบละ 9 สาร · หยิบกลุ่มละ 3 ทุกกลุ่ม
+  // จะได้เจอทั้งอัตราส่วน 1:1 · 1:2 กับ 2:1 · และตัวยากอย่าง Al₂O₃ กับ Mg₃N₂ ครบทุกรอบ
+  const SET = pickByGroup(TR_SET, { a:3, b:3, c:3 });
   drawLab();
 
   function drawLab(){
     app.innerHTML = stageShell('form', `
       <div class="note">🎯 <b>ช่วงที่ 1:</b> ยกเวเลนซ์อิเล็กตรอนของโลหะไปให้อโลหะจนครบออกเตตทั้งสองฝ่าย
-        — ประกอบให้ครบ ${TR_SET.length} สาร
+        — ประกอบให้ครบ ${SET.length} สาร
         <span class="small muted">(แตะจุดสีแดง แล้วแตะอะตอมที่จะรับ · กดคืนอิเล็กตรอนเพื่อเริ่มใหม่ได้)</span></div>
+      <div class="note small">🎲 สุ่มมา <b>${SET.length} สาร</b> จากคลัง <b>${TR_SET.length} สาร</b> — เล่นซ้ำจะได้ชุดใหม่</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       <div id="lab"></div>
     `);
-    transferLab('lab', 'pb', wrong=>{
+    transferLab('lab', 'pb', SET, wrong=>{
       labWrong = wrong; toast('ครบทุกสารแล้ว! ไปช่วงคำถามกันต่อ'); setTimeout(drawQuiz, 900);
     });
   }
@@ -1093,8 +1109,7 @@ function stageForm(){
     `);
     quizRun(FORM_Q, 'qhost', qWrong=>{
       const miss = labWrong + qWrong;
-      // 15 สาร มีโอกาสแตะพลาดมากกว่าเดิม จึงผ่อนเกณฑ์ตามจำนวนงานที่เพิ่มขึ้น
-      const got = miss<=3?3:miss<=7?2:1;
+      const got = miss<=2?3:miss<=5?2:1;
       stageMiss = miss;
       finishStage('form', got, 70-Math.min(miss*6,40), `
         <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
@@ -1560,35 +1575,35 @@ function stageLattice(){
 
 /* poly = ไอออนกลุ่ม ต้องใส่วงเล็บเมื่อมีมากกว่า 1 หน่วย */
 const BAL_SET = [
-  { c:{f:'Na', q:1},  a:{f:'Cl', q:-1}, nm:'โซเดียมคลอไรด์',
+  { c:{f:'Na', q:1},  a:{f:'Cl', q:-1}, g:'a', nm:'โซเดียมคลอไรด์',
     tip:'ประจุ 1+ กับ 1− หักล้างกันพอดี อัตราส่วนจึงเป็น 1 : 1' },
-  { c:{f:'Ca', q:2},  a:{f:'F', q:-1},  nm:'แคลเซียมฟลูออไรด์',
+  { c:{f:'Ca', q:2},  a:{f:'F', q:-1},  g:'a', nm:'แคลเซียมฟลูออไรด์',
     tip:'ต้องใช้ F⁻ สองไอออนมาหักล้าง Ca²⁺ หนึ่งไอออน' },
-  { c:{f:'Al', q:3},  a:{f:'O', q:-2},  nm:'อะลูมิเนียมออกไซด์',
+  { c:{f:'Al', q:3},  a:{f:'O', q:-2},  g:'a', nm:'อะลูมิเนียมออกไซด์',
     tip:'2 × (3+) = 6+ และ 3 × (2−) = 6− · ตัวคูณร่วมน้อยของ 3 กับ 2 คือ 6' },
-  { c:{f:'Na', q:1},  a:{f:'SO₄', q:-2, poly:true}, nm:'โซเดียมซัลเฟต',
+  { c:{f:'Na', q:1},  a:{f:'SO₄', q:-2, poly:true}, g:'b', nm:'โซเดียมซัลเฟต',
     tip:'ซัลเฟตมีประจุ 2− ทั้งกลุ่ม จึงต้องใช้ Na⁺ สองไอออน' },
-  { c:{f:'Ca', q:2},  a:{f:'NO₃', q:-1, poly:true}, nm:'แคลเซียมไนเทรต',
+  { c:{f:'Ca', q:2},  a:{f:'NO₃', q:-1, poly:true}, g:'b', nm:'แคลเซียมไนเทรต',
     tip:'ไนเทรต 2 กลุ่มต้องใส่<b>วงเล็บ</b> — Ca(NO₃)₂ ไม่ใช่ CaNO₃₂' },
-  { c:{f:'Fe', q:3},  a:{f:'Cl', q:-1}, nm:'ไอร์ออน(III) คลอไรด์',
+  { c:{f:'Fe', q:3},  a:{f:'Cl', q:-1}, g:'c', nm:'ไอร์ออน(III) คลอไรด์',
     tip:'เหล็กเกิดไอออนได้ทั้ง 2+ และ 3+ · เลขโรมัน (III) บอกว่ารอบนี้ใช้ Fe³⁺' },
-  { c:{f:'Cu', q:2},  a:{f:'OH', q:-1, poly:true}, nm:'คอปเปอร์(II) ไฮดรอกไซด์',
+  { c:{f:'Cu', q:2},  a:{f:'OH', q:-1, poly:true}, g:'c', nm:'คอปเปอร์(II) ไฮดรอกไซด์',
     tip:'ตะกอนสีฟ้า · ไฮดรอกไซด์ 2 กลุ่มต้องใส่วงเล็บ และทองแดงต้องกำกับเลขโรมันด้วย' },
-  { c:{f:'NH₄', q:1, poly:true}, a:{f:'SO₄', q:-2, poly:true}, nm:'แอมโมเนียมซัลเฟต',
+  { c:{f:'NH₄', q:1, poly:true}, a:{f:'SO₄', q:-2, poly:true}, g:'b', nm:'แอมโมเนียมซัลเฟต',
     tip:'ไอออนกลุ่มทั้งคู่ · แอมโมเนียม 2 กลุ่มจึงต้องใส่วงเล็บด้วย' },
-  { c:{f:'K', q:1},   a:{f:'Cr₂O₇', q:-2, poly:true}, nm:'โพแทสเซียมไดโครเมต',
+  { c:{f:'K', q:1},   a:{f:'Cr₂O₇', q:-2, poly:true}, g:'b', nm:'โพแทสเซียมไดโครเมต',
     tip:'ไดโครเมตมีอะตอมถึง 9 อะตอม แต่ประจุรวมทั้งกลุ่มเป็นเพียง 2−' },
-  { c:{f:'Al', q:3},  a:{f:'SO₄', q:-2, poly:true}, nm:'อะลูมิเนียมซัลเฟต',
+  { c:{f:'Al', q:3},  a:{f:'SO₄', q:-2, poly:true}, g:'b', nm:'อะลูมิเนียมซัลเฟต',
     tip:'2 × (3+) = 6+ และ 3 × (2−) = 6− เหมือน Al₂O₃ แต่คราวนี้ต้องใส่วงเล็บ' },
-  { c:{f:'Mg', q:2},  a:{f:'PO₄', q:-3, poly:true}, nm:'แมกนีเซียมฟอสเฟต',
+  { c:{f:'Mg', q:2},  a:{f:'PO₄', q:-3, poly:true}, g:'b', nm:'แมกนีเซียมฟอสเฟต',
     tip:'3 × (2+) = 6+ และ 2 × (3−) = 6− · สังเกตว่าเลขสลับข้างกับประจุ' },
-  { c:{f:'Ca', q:2},  a:{f:'HPO₄', q:-2, poly:true}, nm:'แคลเซียมไฮโดรเจนฟอสเฟต',
+  { c:{f:'Ca', q:2},  a:{f:'HPO₄', q:-2, poly:true}, g:'d', nm:'แคลเซียมไฮโดรเจนฟอสเฟต',
     tip:'ระวังกับดัก — ไขว้ประจุจะได้ Ca₂(HPO₄)₂ ซึ่ง<b>ยังลดทอนได้</b> คำตอบจริงคือ CaHPO₄' },
-  { c:{f:'NH₄', q:1, poly:true}, a:{f:'PO₄', q:-3, poly:true}, nm:'แอมโมเนียมฟอสเฟต',
+  { c:{f:'NH₄', q:1, poly:true}, a:{f:'PO₄', q:-3, poly:true}, g:'b', nm:'แอมโมเนียมฟอสเฟต',
     tip:'ฟอสเฟตประจุ 3− ต้องใช้แอมโมเนียมถึง 3 กลุ่ม จึงต้องใส่วงเล็บฝั่งไอออนบวก' },
-  { c:{f:'Cr', q:3},  a:{f:'SO₄', q:-2, poly:true}, nm:'โครเมียม(III) ซัลเฟต',
+  { c:{f:'Cr', q:3},  a:{f:'SO₄', q:-2, poly:true}, g:'c', nm:'โครเมียม(III) ซัลเฟต',
     tip:'โครเมียมก็มีหลายประจุเช่นกัน · รูปแบบเลขเหมือน Al₂(SO₄)₃ ทุกประการ' },
-  { c:{f:'Fe', q:2},  a:{f:'PO₄', q:-3, poly:true}, nm:'ไอร์ออน(II) ฟอสเฟต',
+  { c:{f:'Fe', q:2},  a:{f:'PO₄', q:-3, poly:true}, g:'c', nm:'ไอร์ออน(II) ฟอสเฟต',
     tip:'คราวนี้เหล็กเป็น Fe²⁺ · 3 × (2+) = 6+ และ 2 × (3−) = 6− จึงได้ Fe₃(PO₄)₂' }
 ];
 
@@ -1601,18 +1616,18 @@ function fpart(ion, n){
 }
 
 /* เล่นห้องดุลประจุจนครบทุกคู่ไอออน แล้วเรียก onDone พร้อมจำนวนครั้งที่ตรวจแล้วยังไม่ถูก */
-function balanceLab(hostId, pbId, onDone){
+function balanceLab(hostId, pbId, SET, onDone){
   const host = document.getElementById(hostId), pb = document.getElementById(pbId);
   let idx = 0, wrong = 0;
 
   function start(){
-    const B = BAL_SET[idx];
+    const B = SET[idx];
     let nc = 1, na = 1, done = false;
 
     host.innerHTML = `<div class="lab">
       <div class="labtop">
         <div><span class="fml" id="live">?</span> <span class="nm">${B.nm}</span></div>
-        <div class="cnt">คู่ไอออนที่ ${idx+1}/${BAL_SET.length}</div>
+        <div class="cnt">คู่ไอออนที่ ${idx+1}/${SET.length}</div>
       </div>
       <div class="balgrid">
         <div class="balcard pos">
@@ -1684,7 +1699,7 @@ function balanceLab(hostId, pbId, onDone){
       }
       done = true;
       const f = fpart(B.c, nc) + fpart(B.a, na);
-      if(pb) pb.style.width = ((idx+1)/BAL_SET.length*100)+'%';
+      if(pb) pb.style.width = ((idx+1)/SET.length*100)+'%';
       fb.className='feedback show good';
       fb.innerHTML = `🎉 <b>ถูกต้อง — ${f}</b> (${B.nm}) ${B.tip}
         <div class="ioneq">
@@ -1693,10 +1708,10 @@ function balanceLab(hostId, pbId, onDone){
           <div class="tot">ประจุรวม = <b>0</b> → เขียนสูตรว่า <b>${f}</b></div>
         </div>
         <div style="margin-top:12px"><button class="btn primary sm" id="nx">
-          ${idx===BAL_SET.length-1?'ไปช่วงที่ 2 →':'คู่ถัดไป →'}</button></div>`;
+          ${idx===SET.length-1?'ไปช่วงที่ 2 →':'คู่ถัดไป →'}</button></div>`;
       fb.querySelector('#nx').onclick = ()=>{
         idx++;
-        if(idx < BAL_SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
+        if(idx < SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
         else onDone(wrong);
       };
     };
@@ -1781,13 +1796,17 @@ const NAME_Q = [
 
 function stageFormula(){
   let labWrong = 0, matchWrong = 0;
+  // สุ่มจากคลัง 15 คู่ มาเล่นรอบละ 9 คู่ · กับดักลดทอน (กลุ่ม d) ติดมาทุกรอบเพราะเป็นจุดที่พลาดกันมากที่สุด
+  const SET = pickByGroup(BAL_SET, { a:2, b:4, c:2, d:1 });
+  const MSET = pickSome(NAME_M, 5), HSET = pickSome(NAME_H, 5);
   drawLab();
 
   function drawLab(){
     app.innerHTML = stageShell('formula', `
       <div class="note">🎯 <b>ช่วงที่ 1:</b> ปรับจำนวนไอออนให้<b>ประจุรวมเป็นศูนย์</b> แล้วกดตรวจ
-        — ทำให้ครบ ${BAL_SET.length} คู่
+        — ทำให้ครบ ${SET.length} คู่
         <span class="small muted">(สูตรด้านบนจะเปลี่ยนตามที่ปรับให้เห็นทันที)</span></div>
+      <div class="note small">🎲 สุ่มมา <b>${SET.length} คู่</b> จากคลัง <b>${BAL_SET.length} คู่</b> — เล่นซ้ำจะได้ชุดใหม่</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       <div id="lab"></div>
       <div class="note key" style="margin-top:16px">
@@ -1796,18 +1815,20 @@ function stageFormula(){
         2. <b>อัตราส่วนอย่างต่ำ</b> — Mg₂O₂ ประจุเป็นศูนย์ก็จริง แต่ต้องลดเหลือ MgO
       </div>
     `);
-    balanceLab('lab', 'pb', wrong=>{
-      labWrong = wrong; toast('ดุลประจุครบแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(()=>drawRound(NAME_M,2,()=>drawRound(NAME_H,3,drawQuiz)), 900);
+    balanceLab('lab', 'pb', SET, wrong=>{
+      labWrong = wrong; toast('ดุลประจุครบแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(()=>drawRound(MSET,2,()=>drawRound(HSET,3,drawQuiz)), 900);
     });
   }
 
-  /* จับคู่สองรอบ รอบแรกปานกลาง รอบสองยาก จะได้ไม่ต้องเจอ 15 การ์ดพร้อมกัน */
+  /* จับคู่สองรอบ รอบแรกปานกลาง รอบสองยาก · แต่ละรอบสุ่มการ์ดมา 5 ใบจากคลังของชุดนั้น */
   function drawRound(set, no, next){
     const hard = no===3;
+    const pool = hard ? NAME_H : NAME_M;
     app.innerHTML = stageShell('formula', `
       <div class="note">🎯 <b>ช่วงที่ ${no}${hard?' · ชุดยาก':''}:</b>
         แตะชื่อสารในสำรับ แล้วแตะการ์ดสูตรที่ตรงกัน — ให้ครบ ${set.length} คู่
         <span class="small muted">(อ่านสูตรแล้วแยกไอออนเอง การ์ดจะเฉลยให้หลังตอบถูก)</span></div>
+      <div class="note small">🎲 สุ่มมา <b>${set.length} สาร</b> จากคลัง <b>${pool.length} สาร</b> — เล่นซ้ำจะได้ชุดใหม่</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       ${matchBoard(set, 'all')}
       <div class="feedback" id="fb"></div>
@@ -1833,7 +1854,7 @@ function stageFormula(){
     `);
     quizRun(NAME_Q, 'qhost', qWrong=>{
       const miss = labWrong + matchWrong + qWrong;
-      const got = miss<=5?3:miss<=10?2:1;
+      const got = miss<=3?3:miss<=7?2:1;
       stageMiss = miss;
       finishStage('formula', got, 85-Math.min(miss*4,50), `
         <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
