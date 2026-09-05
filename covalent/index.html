@@ -434,8 +434,17 @@ h3{font-size:1.05rem}
 .labtop .cnt{margin-left:auto;font-size:.82rem;color:var(--muted);font-weight:700}
 .molwrap{position:relative;background:radial-gradient(120% 100% at 30% 12%,#fff 0%,var(--bg1) 62%,var(--bg2) 100%);
   border:1px solid var(--line);border-radius:14px;padding:6px;max-width:520px;margin:0 auto;overflow:hidden}
-.spinhint{position:absolute;left:10px;bottom:8px;font-size:.74rem;color:var(--muted);
-  background:rgba(255,255,255,.72);border-radius:20px;padding:3px 10px;pointer-events:none}
+.spinhint{position:absolute;right:10px;bottom:8px;font-size:.74rem;color:var(--muted);
+  background:rgba(255,255,255,.72);border-radius:20px;padding:3px 10px;pointer-events:none;z-index:2}
+/* ฉาก 3 มิติของด่าน 1 · ใช้กรอบ .mimg เดิม จุดยึดกับเส้นประจึงทำงานเหมือนภาพนิ่ง */
+.mimg.lw3d{background:radial-gradient(120% 100% at 30% 10%,#fff 0%,var(--bg1) 65%,var(--bg2) 100%)}
+.mimg.lw3d .molsvg{position:absolute;inset:0;width:100%;height:100%}
+.lwcap{font-size:15px;font-weight:800;text-anchor:middle;fill:var(--muted);pointer-events:none;
+  paint-order:stroke fill;stroke:rgba(255,255,255,.85);stroke-width:4px;stroke-linejoin:round}
+.lwsep{stroke:var(--line);stroke-width:2;stroke-dasharray:6 7;pointer-events:none}
+.lwarrow{font-size:22px;font-weight:800;text-anchor:middle;dominant-baseline:central;
+  fill:#FFF7F0;pointer-events:none}
+.lwarrowbg{fill:var(--gold);pointer-events:none}
 .molsvg{display:block;width:100%;height:auto;touch-action:none;cursor:grab;
   -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .molsvg:active{cursor:grabbing}
@@ -644,38 +653,14 @@ function finishStage(id, got, xp, summaryHtml){
 const MB = { w:1000, h:723, x0:0.145, y0:0.20, iw:0.73, ih:0.3978 };
 const mbX = u => (MB.x0 + u*MB.iw) * MB.w;
 const mbY = v => (MB.y0 + v*MB.ih) * MB.w;
-/* คำนวณความสูงของกรอบใหม่ตามสัดส่วนภาพ (เช่น '1920/1080') เพื่อให้เส้นประชี้ตรงจุดเสมอ
-   ไม่ว่าจะเปลี่ยนไปใช้ภาพที่สัดส่วนต่างจากเดิม */
+/* คำนวณความสูงของกรอบใหม่ตามสัดส่วนภาพ (เช่น '680/390') เพื่อให้เส้นประชี้ตรงจุดเสมอ
+   ไม่ว่าจะเปลี่ยนไปใช้ภาพหรือฉากที่สัดส่วนต่างจากเดิม */
 function mbFit(ratio){
   const a = String(ratio).split('/').map(Number);
   if(a.length===2 && a[0]>0 && a[1]>0) MB.ih = MB.iw * (a[1]/a[0]);
   MB.h = Math.round((MB.y0 + MB.ih + 0.125) * MB.w);   // ขอบบน + ภาพ + ขอบล่าง (ตรงกับ padding ของ .mboard)
 }
-function calloutBoard(svg, ratio, parts){
-  mbFit(ratio);
-  const ra = String(ratio).split('/').map(Number);
-  const ar = (ra.length===2 && ra[1]) ? ra[0]/ra[1] : 99;
-  const tall = ar < 0.8 ? ' taller' : ar < 1.2 ? ' tall' : '';
-  const pcx = n => (n/MB.w*100).toFixed(2)+'%';
-  const pcy = n => (n/MB.h*100).toFixed(2)+'%';
-  const lines = parts.map(p=>`<line x1="${p.lx}" y1="${p.ly}" x2="${mbX(p.u)}" y2="${mbY(p.v)}"
-      stroke="#04261E" stroke-width="1.6" stroke-dasharray="7 5" opacity=".65" vector-effect="non-scaling-stroke"/>`).join('');
-  return `<div class="bank" id="bank">
-    ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
-  </div>
-  <div class="mwrap${tall}"><div class="mboard">
-    <div class="mimg" style="aspect-ratio:${ratio}">
-      ${svg}
-      ${parts.map((p,i)=>`<div class="anchor" id="pin-${p.key}"
-          style="left:${(p.u*100).toFixed(2)}%;top:${(p.v*100).toFixed(2)}%">${i+1}</div>`).join('')}
-    </div>
-    <svg class="leads" viewBox="0 0 ${MB.w} ${MB.h}" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>
-    <div class="cwrap">
-      ${parts.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
-          style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
-    </div>
-  </div></div>`;
-}
+
 /* ผูกเหตุการณ์ให้กระดานติดป้าย แล้วเรียก onDone(จำนวนที่ผิด) เมื่อวางครบ */
 function bindCallout(parts, onDone){
   let placed=0, mistakes=0, armed=null;
@@ -856,72 +841,214 @@ function quizRun(qs, hostId, onDone){
 /* =========================================================================
    ด่าน 1 — ห้องจับคู่อิเล็กตรอน: การเกิดพันธะโคเวเลนต์ · กฎออกเตต · โครงสร้างลิวอิส
    ========================================================================= */
-const LEWIS_SVG = `
-<svg viewBox="0 0 1000 545" style="width:100%;display:block;border-radius:14px;background:#FBF8EC" aria-hidden="true">
-  <rect width="1000" height="545" fill="#FBF8EC"/>
-  <g font-family="'Sukhumvit Set','Noto Sans Thai',sans-serif" text-anchor="middle">
+/* =========================================================================
+   ด่าน 1 · ฉาก 3 มิติ "ก่อนเกิดพันธะ → หลังเกิดพันธะ"
+   สถานีซ้าย  อะตอมแยกกัน — ออกซิเจนมีเวเลนซ์อิเล็กตรอน 6 ไฮโดรเจนมีอะตอมละ 1
+   สถานีขวา   โมเลกุลน้ำ — ใช้อิเล็กตรอนร่วมกันจนครบออกเตต วาดทั้งจุดและเส้นพร้อมกัน
+   ผู้เล่นหมุนดูได้ จึงเห็นว่าคู่โดดเดี่ยวไม่ได้อยู่ในระนาบเดียวกับพันธะ
+   ========================================================================= */
+/* สองสถานีหมุนรอบจุดกึ่งกลางของตัวเอง แล้วค่อยเลื่อนไปเข้าที่
+   ถ้าหมุนรอบจุดกำเนิดเดียวกัน สถานีจะเหวี่ยงข้ามมาทับกัน
+   พิกัดอะตอมด้านล่างจึงเป็นพิกัดภายในสถานี ไม่ใช่พิกัดของทั้งฉาก
+   จอกว้างวางสองสถานีคู่กันซ้าย-ขวา · จอแคบวางซ้อนบน-ล่าง จะได้ไม่เล็กจนดูไม่ออก */
+const LW_WIDE   = { vb:{ w:680, h:340 }, scale:84, row:true,
+                    st:{ L:{ ox:-168, oy:8 }, R:{ ox:168, oy:8 } } };
+const LW_NARROW = { vb:{ w:380, h:560 }, scale:80, row:false,
+                    st:{ L:{ ox:0, oy:-134 }, R:{ ox:0, oy:134 } } };
+let LW = LW_WIDE;                               // เลือกจริงตอนสร้างกระดาน
+const LW_GEO = {
+  /* สถานีซ้าย · อะตอมแยกกัน วางห่างกันให้เห็นว่ายังไม่ได้จับกัน */
+  fo:  [ 0.00,  0.60, 0],                       // ออกซิเจนอิสระ
+  fh1: [-1.15, -0.55, 0],                       // ไฮโดรเจนอิสระ 1
+  fh2: [ 1.00, -0.65, 0],                       // ไฮโดรเจนอิสระ 2
+  /* สถานีขวา · โมเลกุลน้ำ มุมพันธะ 104.5 องศา */
+  mo:  [ 0.00,  0.30, 0],
+  mh1: [-0.91, -0.40, 0],
+  mh2: [ 0.91, -0.40, 0]
+};
 
-    <!-- ── ก่อนเกิดพันธะ: อะตอมแยกกัน ── -->
-    <text x="95" y="252" font-size="46" font-weight="800" fill="#5C90A6">H</text>
-    <circle cx="128" cy="238" r="8" fill="#5C90A6"/>
-    <text x="95" y="382" font-size="46" font-weight="800" fill="#5C90A6">H</text>
-    <circle cx="128" cy="368" r="8" fill="#5C90A6"/>
-    <text x="215" y="288" font-size="52" font-weight="800" fill="#E7390D">O</text>
-    <g fill="#E7390D">
-      <circle cx="200" cy="213" r="8"/><circle cx="230" cy="213" r="8"/>
-      <circle cx="266" cy="256" r="8"/><circle cx="266" cy="286" r="8"/>
-      <circle cx="215" cy="330" r="8"/><circle cx="164" cy="271" r="8"/>
-    </g>
-    <text x="180" y="440" font-size="22" font-weight="700" fill="#6B8A76">ก่อนเกิดพันธะ</text>
+/* ทิศของอิเล็กตรอนรอบอะตอม กำหนดไว้ตายตัวเพื่อให้จุดยึดของป้ายอยู่ที่เดิมเสมอ
+   (ถ้าคำนวณใหม่ทุกเฟรม จุดจะขยับ ป้ายจะชี้ไม่นิ่ง) */
+const LW_DOT = {
+  freeO: [[0,1,0], [0,-1,0], [0.87,0.35,0], [-0.87,0.35,0], [0,0.25,1], [0,0.25,-1]],
+  loneO: [[0,0.55,0.84], [0,0.55,-0.84]]        // คู่โดดเดี่ยวชี้ออกนอกระนาบของพันธะ
+};
 
-    <path d="M312 271 L356 271" stroke="#8AA394" stroke-width="5" marker-end="url(#cvArr)"/>
-
-    <!-- ── โครงสร้างลิวอิสของน้ำ ── -->
-    <text x="395" y="358" font-size="46" font-weight="800" fill="#5C90A6">H</text>
-    <text x="605" y="358" font-size="46" font-weight="800" fill="#5C90A6">H</text>
-    <text x="500" y="288" font-size="52" font-weight="800" fill="#E7390D">O</text>
-    <g fill="#E7390D">
-      <circle cx="485" cy="212" r="8"/><circle cx="515" cy="212" r="8"/>
-      <circle cx="556" cy="256" r="8"/><circle cx="556" cy="286" r="8"/>
-    </g>
-    <g fill="#2F7D4F">
-      <circle cx="452" cy="300" r="8"/><circle cx="466" cy="316" r="8"/>
-      <circle cx="534" cy="316" r="8"/><circle cx="548" cy="300" r="8"/>
-    </g>
-    <text x="500" y="440" font-size="22" font-weight="700" fill="#6B8A76">ใช้อิเล็กตรอนร่วมกัน</text>
-
-    <path d="M648 271 L692 271" stroke="#8AA394" stroke-width="5" marker-end="url(#cvArr)"/>
-
-    <!-- ── สูตรโครงสร้างแบบเส้น ── -->
-    <text x="722" y="288" font-size="46" font-weight="800" fill="#5C90A6">H</text>
-    <text x="832" y="288" font-size="52" font-weight="800" fill="#E7390D">O</text>
-    <text x="942" y="288" font-size="46" font-weight="800" fill="#5C90A6">H</text>
-    <path d="M748 271 L806 271" stroke="#2F7D4F" stroke-width="7" stroke-linecap="round"/>
-    <path d="M858 271 L916 271" stroke="#2F7D4F" stroke-width="7" stroke-linecap="round"/>
-    <g fill="#E7390D">
-      <circle cx="818" cy="216" r="8"/><circle cx="846" cy="216" r="8"/>
-      <circle cx="818" cy="326" r="8"/><circle cx="846" cy="326" r="8"/>
-    </g>
-    <text x="832" y="440" font-size="22" font-weight="700" fill="#6B8A76">สูตรโครงสร้าง</text>
-  </g>
-  <defs>
-    <marker id="cvArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0 0 L10 5 L0 10 z" fill="#8AA394"/>
-    </marker>
-  </defs>
-</svg>`;
+/* จุดยึดของป้ายทั้ง 5 · at() คืนพิกัดในสถานี พร้อมบอกว่าอยู่สถานีไหน */
 const LEWIS_PARTS = [
-  { key:'symbol', u:0.215, v:0.495, lx:140, ly:660, label:'สัญลักษณ์ธาตุ',
+  { key:'symbol', lx:105, ly:352, label:'สัญลักษณ์ธาตุ',
+    at:()=> ({ p:addv(LW_GEO.fo, [-0.66,-0.62,0.42], 0.42), st:'L' }),
     info:'ตัวอักษรย่อของธาตุ ใช้แทน<b>นิวเคลียสกับอิเล็กตรอนชั้นในทั้งหมด</b> เหลือไว้แต่เวเลนซ์อิเล็กตรอนที่เขียนเป็นจุดรอบ ๆ' },
-  { key:'valence', u:0.215, v:0.391, lx:150, ly:55, label:'เวเลนซ์อิเล็กตรอน',
+  { key:'valence', lx:110, ly:48, label:'เวเลนซ์อิเล็กตรอน',
+    at:()=> ({ p:addv(LW_GEO.fo, LW_DOT.freeO[0], 0.62), st:'L' }),
     info:'อิเล็กตรอนในระดับพลังงานนอกสุด เขียนเป็น<b>จุดรอบสัญลักษณ์ธาตุ</b> — ออกซิเจนมี 6 จุด ไฮโดรเจนมี 1 จุด · เป็นอิเล็กตรอนที่ใช้สร้างพันธะ' },
-  { key:'lone', u:0.500, v:0.389, lx:480, ly:45, label:'อิเล็กตรอนคู่โดดเดี่ยว',
-    info:'Lone pair — คู่อิเล็กตรอนที่<b>ไม่ได้ใช้ร่วมกับอะตอมอื่น</b> ยังอยู่กับอะตอมเดิม · ในน้ำ ออกซิเจนมีคู่โดดเดี่ยว 2 คู่' },
-  { key:'shared', u:0.458, v:0.565, lx:450, ly:690, label:'อิเล็กตรอนคู่ร่วมพันธะ',
+  { key:'lone', lx:690, ly:44, label:'อิเล็กตรอนคู่โดดเดี่ยว',
+    at:()=> ({ p:addv(LW_GEO.mo, LW_DOT.loneO[0], 0.62), st:'R' }),
+    info:'Lone pair — คู่อิเล็กตรอนที่<b>ไม่ได้ใช้ร่วมกับอะตอมอื่น</b> ยังอยู่กับอะตอมเดิม · ในน้ำ ออกซิเจนมีคู่โดดเดี่ยว 2 คู่ · ลองหมุนดูจะเห็นว่าคู่โดดเดี่ยวชี้ออกนอกระนาบของพันธะ' },
+  { key:'shared', lx:700, ly:620, label:'อิเล็กตรอนคู่ร่วมพันธะ',
+    at:()=> ({ p:mid(LW_GEO.mo, LW_GEO.mh2), st:'R' }),
     info:'Bonding pair — คู่อิเล็กตรอนที่<b>อะตอมสองอะตอมใช้ร่วมกัน</b> · นับให้ทั้งสองอะตอม ออกซิเจนจึงครบ 8 และไฮโดรเจนครบ 2' },
-  { key:'bond', u:0.775, v:0.495, lx:900, ly:300, label:'พันธะเดี่ยว',
+  { key:'bond', lx:455, ly:44, label:'พันธะเดี่ยว',
+    at:()=> ({ p:mid(LW_GEO.mo, LW_GEO.mh1), st:'R' }),
     info:'เส้นหนึ่งเส้นในสูตรโครงสร้าง แทน<b>อิเล็กตรอนคู่ร่วมพันธะ 1 คู่ (2 อิเล็กตรอน)</b> — เขียนแบบเส้นเพื่อให้อ่านง่ายกว่าการวาดจุด' }
 ];
+
+const addv = (p, d, k)=> [p[0]+d[0]*k, p[1]+d[1]*k, p[2]+d[2]*k];
+const mid  = (a, b)=> [(a[0]+b[0])/2, (a[1]+b[1])/2, (a[2]+b[2])/2];
+
+/* กระดานติดป้ายแบบ 3 มิติ · ใช้โครง .mwrap/.mboard/.mimg เดิม
+   จุดยึดกับเส้นประจึงขยับตามภาพได้ และยังตกไปเป็นรายการหมายเลขบนมือถือเหมือนเดิม */
+function lewis3dBoard(parts){
+  LW = matchMedia('(max-width: 560px)').matches ? LW_NARROW : LW_WIDE;
+  mbFit(LW.vb.w + '/' + LW.vb.h);
+  const pcx = n => (n/MB.w*100).toFixed(2)+'%';
+  const pcy = n => (n/MB.h*100).toFixed(2)+'%';
+  return `<div class="bank" id="bank">
+    ${shuffle(parts).map(p=>`<div class="tok" data-key="${p.key}">${p.label}</div>`).join('')}
+  </div>
+  <div class="mwrap"><div class="mboard">
+    <div class="mimg lw3d" style="aspect-ratio:${LW.vb.w}/${LW.vb.h}">
+      <svg class="molsvg" id="lw" viewBox="0 0 ${LW.vb.w} ${LW.vb.h}" aria-label="แบบจำลอง 3 มิติ ก่อนและหลังเกิดพันธะในโมเลกุลน้ำ"></svg>
+      ${parts.map((p,i)=>`<div class="anchor" id="pin-${p.key}" style="left:50%;top:50%">${i+1}</div>`).join('')}
+      <div class="spinhint">🔄 ลากที่ภาพเพื่อหมุนดูรอบด้าน</div>
+    </div>
+    <svg class="leads" id="lwleads" viewBox="0 0 ${MB.w} ${MB.h}" preserveAspectRatio="none" aria-hidden="true">
+      ${parts.map(p=>`<line data-key="${p.key}" x1="${p.lx}" y1="${p.ly}" x2="0" y2="0"
+        stroke="#04261E" stroke-width="1.6" stroke-dasharray="7 5" opacity=".65" vector-effect="non-scaling-stroke"/>`).join('')}
+    </svg>
+    <div class="cwrap">
+      ${parts.map((p,i)=>`<div class="slot callout" data-key="${p.key}"
+          style="left:${pcx(p.lx)};top:${pcy(p.ly)}"><i>${i+1}</i><span class="ans">? ? ?</span></div>`).join('')}
+    </div>
+  </div></div>`;
+}
+
+/* วาดฉาก 3 มิติ แล้วอัปเดตตำแหน่งจุดยึดกับปลายเส้นประให้ตรงกับภาพที่หมุนอยู่ */
+function lewis3dRun(parts){
+  const svg = document.getElementById('lw');
+  const leads = document.getElementById('lwleads');
+  let rx = -0.30, ry = 0.66;
+  // กล้องอยู่ไกล เปอร์สเปกทีฟจึงอ่อน สองสถานีจะได้ขนาดใกล้เคียงกัน
+  const view = { rx, ry, scale: LW.scale, cx: LW.vb.w/2, cy: LW.vb.h/2, dist: 16 };
+  const G = LW_GEO, C = EL_INFO;
+
+  /* ฉายภาพจุดหนึ่งในสถานี st แล้วเลื่อนไปยังตำแหน่งของสถานีนั้นบนจอ */
+  function pr(p, st){
+    const q = project3(p, view);
+    const o = LW.st[st];
+    return { x:q.x + o.ox, y:q.y + o.oy, z:q.z, k:q.k };
+  }
+  function dotAt(p, st, r){                      // จุดอิเล็กตรอนหนึ่งจุด
+    const Q = pr(p, st);
+    return { z:Q.z, g:`<circle class="atomdot" cx="${Q.x.toFixed(1)}" cy="${Q.y.toFixed(1)}" r="${(r*view.scale*Q.k).toFixed(1)}"/>` };
+  }
+  function ball(p, st, el){
+    const Q = pr(p, st), i = C[el], r = i.r*view.scale*Q.k;
+    return { z:Q.z, g:`<circle class="atomc" cx="${Q.x.toFixed(1)}" cy="${Q.y.toFixed(1)}" r="${r.toFixed(1)}"`
+      + ` fill="url(#sph-${el})" stroke="${i.d}" stroke-width="${(2*Q.k).toFixed(1)}"/>`
+      + `<text class="atomt" x="${Q.x.toFixed(1)}" y="${Q.y.toFixed(1)}" font-size="${(r*0.95).toFixed(1)}" fill="#fff">${el}</text>` };
+  }
+  function stick(a, b, st){
+    const A = pr(a, st), B = pr(b, st);
+    const ra = C.O.r*view.scale*A.k, rb = C.H.r*view.scale*B.k;
+    const dx = B.x-A.x, dy = B.y-A.y, L = Math.hypot(dx,dy)||1, ux = dx/L, uy = dy/L;
+    return { z:(A.z+B.z)/2, g:`<line class="bondline" stroke-width="${(9*(A.k+B.k)/2).toFixed(1)}"`
+      + ` x1="${(A.x+ux*ra).toFixed(1)}" y1="${(A.y+uy*ra).toFixed(1)}"`
+      + ` x2="${(B.x-ux*rb).toFixed(1)}" y2="${(B.y-uy*rb).toFixed(1)}"/>` };
+  }
+  function cap(x, y, t){ return `<text class="lwcap" x="${x}" y="${y}">${t}</text>`; }
+
+  function draw(){
+    view.rx = rx; view.ry = ry;
+    const it = [], D = 0.052;                    // D = รัศมีจุดอิเล็กตรอน เทียบกับสเกลของฉาก
+    // ── สถานีซ้าย · อะตอมแยกกัน ──
+    LW_DOT.freeO.forEach(d => it.push(dotAt(addv(G.fo, d, 0.62), 'L', D)));
+    it.push(ball(G.fo, 'L', 'O'));
+    [G.fh1, G.fh2].forEach((h, k) => {
+      it.push(dotAt(addv(h, k ? [0.9,0.44,0] : [-0.9,0.44,0], 0.42), 'L', D));
+      it.push(ball(h, 'L', 'H'));
+    });
+    // ── สถานีขวา · โมเลกุลน้ำ ──
+    LW_DOT.loneO.forEach(d => {                  // คู่โดดเดี่ยว วาดเป็นสองจุดชิดกัน
+      const b = addv(G.mo, d, 0.62), sp = [d[1], -d[0], 0];
+      it.push(dotAt(addv(b, sp, 0.13), 'R', D)); it.push(dotAt(addv(b, sp, -0.13), 'R', D));
+    });
+    [G.mh1, G.mh2].forEach(h => {                // คู่ร่วมพันธะ วาดคร่อมเส้นพันธะ
+      it.push(stick(G.mo, h, 'R'));
+      const m = mid(G.mo, h), sp = [0, 0, 1];
+      it.push(dotAt(addv(m, sp, 0.17), 'R', D*0.94)); it.push(dotAt(addv(m, sp, -0.17), 'R', D*0.94));
+    });
+    it.push(ball(G.mo, 'R', 'O'));
+    [G.mh1, G.mh2].forEach(h => it.push(ball(h, 'R', 'H')));
+
+    it.sort((a,b)=> a.z - b.z);
+    const W = LW.vb.w, H = LW.vb.h, mx = W/2, my = H/2;
+    // เส้นคั่นเว้นช่องตรงกลางไว้ให้ลูกศร · แนวตั้งเมื่อวางคู่กัน แนวนอนเมื่อวางซ้อน
+    const sep = LW.row
+      ? `<line class="lwsep" x1="${mx}" y1="44" x2="${mx}" y2="${my-22}"/>`
+        + `<line class="lwsep" x1="${mx}" y1="${my+22}" x2="${mx}" y2="${H-12}"/>`
+      : `<line class="lwsep" x1="14" y1="${my}" x2="${mx-22}" y2="${my}"/>`
+        + `<line class="lwsep" x1="${mx+22}" y1="${my}" x2="${W-14}" y2="${my}"/>`;
+    const caps = LW.row
+      ? cap(W*0.25, 26, 'อะตอมแยกกัน · ยังไม่ครบออกเตต')
+        + cap(W*0.75, 26, 'โมเลกุล H₂O · ใช้อิเล็กตรอนร่วมกัน')
+      : cap(mx, 26, 'อะตอมแยกกัน · ยังไม่ครบออกเตต')
+        + cap(mx, my + 30, 'โมเลกุล H₂O · ใช้อิเล็กตรอนร่วมกัน');
+    svg.innerHTML = lwDefs() + sep
+      + it.map(o=>o.g).join('')
+      + caps
+      + `<circle class="lwarrowbg" cx="${mx}" cy="${my}" r="18"/>`
+      + `<text class="lwarrow" x="${mx}" y="${my}">${LW.row ? '→' : '↓'}</text>`;
+    place();
+  }
+
+  /* ย้ายจุดยึดกับปลายเส้นประไปตามตำแหน่งใหม่บนภาพ */
+  function place(){
+    parts.forEach(p=>{
+      const a = p.at(), Q = pr(a.p, a.st);
+      const u = Q.x/LW.vb.w, v = Q.y/LW.vb.h;
+      const pin = document.getElementById('pin-'+p.key);
+      if(pin){ pin.style.left = (u*100).toFixed(2)+'%'; pin.style.top = (v*100).toFixed(2)+'%'; }
+      const ln = leads.querySelector(`line[data-key="${p.key}"]`);
+      if(ln){ ln.setAttribute('x2', mbX(u).toFixed(1)); ln.setAttribute('y2', mbY(v).toFixed(1)); }
+    });
+  }
+
+  function lwDefs(){
+    return '<defs>' + ['H','O'].map(el=>{
+      const i = EL_INFO[el];
+      return `<radialGradient id="sph-${el}" cx="34%" cy="30%" r="72%">
+        <stop offset="0%" stop-color="#fff" stop-opacity=".82"/>
+        <stop offset="42%" stop-color="${i.c}"/><stop offset="100%" stop-color="${i.d}"/></radialGradient>`;
+    }).join('') + '</defs>';
+  }
+
+  /* ลากเพื่อหมุน · ใช้วิธีเดียวกับห้องประกอบโมเลกุล */
+  let spinId = null, spun = false, lx = 0, ly = 0;
+  function endSpin(){
+    if(spinId!==null){ try{ svg.releasePointerCapture(spinId); }catch(e){} }
+    spinId = null; setTimeout(()=>{ spun = false; }, 0);
+  }
+  svg.addEventListener('pointerdown', ev=>{ spinId = ev.pointerId; spun = false; lx = ev.clientX; ly = ev.clientY; });
+  svg.addEventListener('pointermove', ev=>{
+    if(spinId===null || ev.pointerId!==spinId) return;
+    if(ev.pointerType==='mouse' && !ev.buttons){ endSpin(); return; }
+    const dx = ev.clientX-lx, dy = ev.clientY-ly;
+    if(!spun){
+      if(Math.hypot(dx,dy) < 5) return;
+      spun = true; try{ svg.setPointerCapture(spinId); }catch(e){}
+    }
+    ry += dx*0.010;
+    rx = Math.max(-1.2, Math.min(1.2, rx + dy*0.010));
+    lx = ev.clientX; ly = ev.clientY;
+    draw();
+  });
+  svg.addEventListener('pointerup', endSpin);
+  svg.addEventListener('pointercancel', endSpin);
+  window.addEventListener('resize', place);
+
+  draw();          // วาดหลังประกาศทุกอย่างครบแล้ว
+}
 const LEWIS_Q = [
   { q:'เพราะเหตุใดอะตอมของธาตุ<b>อโลหะ</b>จึงสร้างพันธะโคเวเลนต์ด้วยการใช้อิเล็กตรอนร่วมกัน แทนที่จะให้หรือรับอิเล็กตรอน',
     o:['เพราะอโลหะมีพลังงานไอออไนเซชันต่ำ จึงเสียอิเล็กตรอนง่ายทั้งคู่',
@@ -953,13 +1080,17 @@ function stageShare(){
         — วางให้ครบ ${LEWIS_PARTS.length} จุด
         <span class="small muted">(บนมือถือป้ายจะเรียงเป็นรายการหมายเลขใต้ภาพ)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      ${calloutBoard(LEWIS_SVG, '1000/545', LEWIS_PARTS)}
+      ${lewis3dBoard(LEWIS_PARTS)}
       <div class="feedback" id="fb"></div>
       <div class="note key" style="margin-top:16px">
-        💡 <b>อ่านภาพจากซ้ายไปขวา:</b> อะตอมแยกกันมีเวเลนซ์อิเล็กตรอนของตัวเอง →
-        นำมาใช้ร่วมกันจนครบออกเตต → เขียนย่อเป็นเส้น โดย <b>1 เส้น = 1 คู่ร่วมพันธะ</b>
+        💡 <b>อ่านภาพตามลูกศร:</b> อะตอมแยกกันมีเวเลนซ์อิเล็กตรอนของตัวเอง →
+        นำมาใช้ร่วมกันจนครบออกเตต · เส้นพันธะกับจุดคู่ร่วมพันธะคือ<b>สิ่งเดียวกัน</b>
+        เขียนเป็นเส้นเพื่อให้อ่านง่ายกว่า<br>
+        🔄 <b>ลากที่ภาพเพื่อหมุน</b> จะเห็นว่าคู่โดดเดี่ยวของออกซิเจน<b>ชี้ออกนอกระนาบ</b>ของพันธะ
+        ซึ่งภาพแบนบอกไม่ได้
       </div>
     `);
+    lewis3dRun(LEWIS_PARTS);
     bindCallout(LEWIS_PARTS, mistakes=>{
       boardWrong = mistakes; toast('เยี่ยม! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawQuiz,900);
     });
