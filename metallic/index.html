@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เมืองทะเลอิเล็กตรอน | เกมพันธะโลหะ ม.4</title>
+<meta name="description" content="เกมประกอบการเรียนรู้เคมี ม.4 เรื่องพันธะโลหะ — ทะเลอิเล็กตรอน โครงสร้างผลึกโลหะ ความแข็งแรงของพันธะ สมบัติของโลหะ และโลหะผสม">
+<meta name="theme-color" content="#084A24">
+
+<!-- ไอคอน -->
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- เพิ่มลงหน้าจอโฮมได้ (PWA) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="เมืองทะเลอิเล็กตรอน">
+
+<!-- พรีวิวตอนแชร์ลิงก์ใน LINE / Facebook / Messenger -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gamesbiology.biologypremium.com/metallic/">
+<meta property="og:title" content="เมืองทะเลอิเล็กตรอน — เกมพันธะโลหะ">
+<meta property="og:description" content="เกมประกอบการเรียนรู้เคมี ม.4 · พันธะโลหะ · ทะเลอิเล็กตรอน · ผลึกโลหะ 3 มิติ · โลหะผสม">
+<meta property="og:image" content="https://gamesbiology.biologypremium.com/metallic/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="เมืองทะเลอิเล็กตรอน — เกมพันธะโลหะ">
+<meta name="twitter:description" content="เกมประกอบการเรียนรู้เคมี ม.4 · เล่นบนมือถือได้เลย">
+<meta name="twitter:image" content="https://gamesbiology.biologypremium.com/metallic/og-cover.png">
+<style>
+:root{
+  /* ── พาเลตเดียวกับเกมสังเคราะห์แสง: F2EDD5 · E7390D · F26716 · 084A24 · 04261E ── */
+  --cream:#F2EDD5; --cream-hi:#FBF8EC; --cream-lo:#E9E1BE;
+  --ink:#04261E; --deep:#084A24;
+  --bg0:#FBF8EC; --bg1:#F2EDD5; --bg2:#EAE4C6;
+  --panel:rgba(255,255,255,.58);
+  --panel2:rgba(255,255,255,.85);
+  --line:rgba(8,74,36,.18);
+  --green:#4E9370; --lime:#2F7D4F; --teal:#7CB894;
+  --gold:#F26716; --rose:#E7390D;
+  --violet:#5C90A6; --sky:#5C90A6;
+  --green-soft:#AFD2BC; --green-pale:#DCEBE1;
+  --orange-soft:#F7C39C; --orange-pale:#FBE4D2;
+  --red-soft:#F4B7A6; --blue-soft:#BCD6E0;
+  --text:#04261E; --muted:#6B8A76;
+  --ok:#2F7D4F; --bad:#D6350B;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh; color:var(--text);
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.55), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.42), transparent 60%),
+    radial-gradient(800px 600px at 50% 112%, rgba(188,214,224,.38), transparent 62%),
+    linear-gradient(rgba(251,248,236,.72),rgba(242,237,213,.80)),
+    linear-gradient(170deg,var(--bg0),var(--bg1) 45%,var(--bg2));
+  background-attachment:fixed;
+  line-height:1.65; letter-spacing:.01em;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 16px 90px}
+
+.hud{
+  position:sticky;top:0;z-index:60;margin:-16px -16px 18px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:linear-gradient(180deg,rgba(251,248,236,.96),rgba(242,237,213,.80));
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.02rem;letter-spacing:.02em;color:var(--deep)}
+.brand .leaf{font-size:1.35rem;filter:drop-shadow(0 1px 3px rgba(8,74,36,.3))}
+.hud .spacer{flex:1}
+@media(max-width:520px){
+  .hud{gap:7px;padding:9px 12px;flex-wrap:nowrap}
+  .brand{font-size:.86rem;min-width:0}
+  .brand span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand .leaf{font-size:1.1rem}
+  .chip{padding:4px 8px;font-size:.72rem}
+  .hud .btn.sm{padding:5px 9px;font-size:.75rem}
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:.82rem;font-weight:700;white-space:nowrap;
+}
+.chip b{color:var(--gold)}
+.chip.xp b{color:var(--lime)}
+
+button{font-family:inherit}
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  padding:11px 20px;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:.16s transform,.16s background,.16s border-color;
+}
+.btn:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(135deg,#4E9370,#2F7D4F);color:#FBF8EC;border-color:transparent;box-shadow:0 8px 20px -10px rgba(8,74,36,.65)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;box-shadow:0 8px 20px -10px rgba(231,57,13,.5)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn.sm{padding:7px 14px;font-size:.85rem}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+h1,h2,h3{line-height:1.35;margin:0 0 .5em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.center{text-align:center}
+.hidden{display:none !important}
+
+.pub{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:6px}
+.pub img{height:38px;width:auto;filter:drop-shadow(0 1px 2px rgba(8,74,36,.18))}
+.pub span{font-weight:800;font-size:1.05rem;color:var(--deep);letter-spacing:.02em}
+.pub span b{color:var(--gold)}
+/* ---- ระบบชั้นเรียน ---- */
+.classchip{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:8px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.85rem;font-weight:700;color:var(--deep);cursor:pointer;transition:.15s}
+.classchip:hover{background:var(--panel2);border-color:rgba(8,74,36,.35)}
+.classchip.joined{background:rgba(175,210,188,.55);border-color:var(--green);cursor:default}
+.classchip.stuck{display:block;margin-top:6px;background:rgba(242,103,22,.14);border-color:var(--gold);color:var(--deep);cursor:pointer;font-size:.78rem}
+.classchip .x{color:var(--rose);font-weight:800;margin-left:2px;cursor:pointer;padding:0 4px}
+.modalbg{position:fixed;inset:0;background:rgba(4,38,30,.5);backdrop-filter:blur(3px);z-index:300;display:grid;place-items:center;padding:16px}
+.modal{background:var(--cream-hi);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:380px;width:100%;box-shadow:0 22px 60px -20px rgba(0,0,0,.5)}
+.modal h3{margin:0 0 4px;color:var(--deep);font-size:1.15rem}
+.modal .msub{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.modal label{display:block;font-size:.82rem;font-weight:700;color:var(--deep);margin:10px 0 4px}
+.modal input{width:100%;font-family:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal input#jcode{text-transform:uppercase;letter-spacing:3px;font-weight:800}
+.modal .mrow{display:flex;gap:8px;margin-top:16px}
+.modal .mrow .btn{flex:1}
+.modal .mmsg{font-size:.85rem;margin-top:10px;min-height:1em;color:var(--muted)}
+.modal .mmsg.err{color:var(--bad)}
+/* ---- เกียรติบัตร ---- */
+.certwrap{max-width:820px;margin:10px auto 0}
+.certwrap canvas{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);
+  box-shadow:0 18px 40px -22px rgba(8,74,36,.55);background:#fff}
+.certform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:14px 0}
+.certform input{flex:1;min-width:220px;max-width:420px;font-family:inherit;font-size:1rem;font-weight:700;
+  padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.certform input:focus{outline:none;border-color:var(--green)}
+.certbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lockcard{opacity:.75}
+.certprog{height:9px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin-top:8px}
+.certprog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .5s}
+.hero{text-align:center;padding:14px 12px 8px}
+.hero h1{font-size:clamp(1.7rem,5.2vw,2.6rem);margin-bottom:.25em;
+  background:linear-gradient(100deg,var(--deep),#2F7D4F 42%,var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#4A6A58;margin:0;font-size:.98rem}
+.eq{display:inline-block;margin-top:14px;padding:9px 18px;border-radius:999px;
+  background:rgba(175,210,188,.45);border:1px solid rgba(8,74,36,.25);color:var(--deep);
+  font-size:.9rem;font-weight:700;letter-spacing:.03em}
+.eq sub{font-size:.72em}
+
+.maplist{display:grid;gap:12px;margin-top:22px}
+@media(min-width:720px){.maplist{grid-template-columns:1fr 1fr}}
+.node{
+  display:flex;gap:14px;align-items:center;
+  padding:16px;border-radius:var(--r);cursor:pointer;position:relative;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);
+  transition:.18s transform,.18s border-color,.18s background;
+}
+.node:hover{transform:translateY(-3px);border-color:rgba(8,74,36,.38);background:var(--panel2)}
+.node.locked{opacity:.5;cursor:not-allowed;filter:grayscale(.55)}
+.node.locked:hover{transform:none;border-color:var(--line);background:var(--panel)}
+.node .ic{
+  width:56px;height:56px;flex:0 0 56px;border-radius:15px;display:grid;place-items:center;font-size:1.7rem;
+  background:rgba(255,255,255,.75);border:1px solid var(--line);
+}
+.stage-ic-img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.stagehead .ic .stage-ic-img{width:46px;height:46px;padding:0}
+.node .body{flex:1;text-align:left}
+.node .body .t{font-weight:800;font-size:1.02rem}
+.node .body .d{font-size:.84rem;color:var(--muted);line-height:1.5}
+.node .stars{font-size:.9rem;letter-spacing:2px;color:var(--gold);margin-top:3px}
+.node .stars .off{color:rgba(8,74,36,.16)}
+.node.done{border-color:rgba(8,74,36,.4)}
+.node.done .ic{background:rgba(175,210,188,.65)}
+.node .no{position:absolute;top:8px;right:12px;font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.1em}
+
+.stagehead{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.stagehead .ic{font-size:2rem}
+.stagehead h2{margin:0}
+.stagehead .sub{color:var(--muted);font-size:.88rem}
+.bar{height:7px;border-radius:99px;background:rgba(8,74,36,.10);overflow:hidden;margin:10px 0 18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--lime));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+.note{
+  border-radius:12px;padding:12px 14px;font-size:.88rem;margin:12px 0;
+  border-left:4px solid var(--sky);background:rgba(92,144,166,.13);
+}
+.note.warn{border-left-color:var(--gold);background:rgba(242,103,22,.11)}
+.note.key{border-left-color:var(--lime);background:rgba(47,125,79,.11)}
+.note.miss{border-left-color:var(--rose);background:rgba(231,57,13,.09)}
+.note b{color:var(--deep)}
+
+.feedback{border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.9rem;display:none}
+.feedback.show{display:block;animation:pop .3s}
+.feedback.good{background:rgba(47,125,79,.14);border:1px solid rgba(47,125,79,.4)}
+.feedback.bad{background:rgba(231,57,13,.11);border:1px solid rgba(231,57,13,.35)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* อนิเมชันสั่นตอนตอบผิด ใช้ร่วมกันทั้งการ์ดจับคู่ ชิ้นเรียงลำดับ และกล่องจัดกลุ่ม */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tok{
+  padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:700;cursor:pointer;
+  background:var(--panel2);border:1px solid var(--line);transition:.15s;
+}
+.tok:hover{border-color:var(--lime)}
+.tok.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;transform:translateY(-2px);
+  box-shadow:0 5px 14px -6px rgba(231,57,13,.6)}
+.tok.used{display:none}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:56px;
+  padding:14px;border-radius:14px;background:rgba(255,255,255,.66);border:1px solid var(--line)}
+.chain .ph{color:var(--muted);font-size:.85rem}
+.link{padding:8px 13px;border-radius:11px;font-size:.82rem;font-weight:700;color:var(--deep);
+  background:rgba(175,210,188,.8);border:1px solid rgba(8,74,36,.32);animation:pop .25s}
+.arrow{color:var(--muted);font-size:.9rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pool .tok{font-size:.82rem}
+.pool .tok.bad{animation:shake .35s;background:rgba(231,57,13,.16);border-color:var(--bad)}
+
+/* wheel / phases */
+.calvin{display:grid;gap:16px}
+@media(min-width:800px){.calvin{grid-template-columns:1fr 1.1fr}}
+.wheel{position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;width:100%}
+.wheel svg{width:100%;height:100%}
+.phase{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.66);margin-bottom:12px;transition:.2s}
+.phase.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.16)}
+.phase.solved{border-color:rgba(8,74,36,.42);background:rgba(175,210,188,.4)}
+.phase h4{margin:0 0 4px;font-size:.98rem}
+.phase .hintline{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.step{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:7px 0;flex-wrap:wrap}
+.step .nm{font-size:.88rem;font-weight:700}
+.stepper{display:flex;align-items:center;gap:4px;background:rgba(8,74,36,.07);border-radius:10px;padding:3px}
+.stepper button{width:30px;height:30px;border-radius:8px;border:none;background:rgba(255,255,255,.9);
+  color:var(--deep);font-size:1.05rem;font-weight:800;cursor:pointer;line-height:1}
+.stepper button:active{background:var(--green);color:#FBF8EC}
+.stepper .n{min-width:34px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ledger (sim) */
+.sim{display:grid;gap:16px}
+@media(min-width:820px){.sim{grid-template-columns:1fr 1.05fr}}
+.specbox{background:rgba(255,255,255,.66);border:1px solid var(--line);border-radius:14px;padding:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.toggle{display:flex;gap:8px;margin:6px 0 14px}
+.toggle button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-weight:700;font-size:.82rem;cursor:pointer}
+.toggle button.on{background:rgba(175,210,188,.8);border-color:var(--green);color:var(--deep)}
+.tlabel{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:2px}
+.ledtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ledtable th,.ledtable td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+.ledtable th:first-child,.ledtable td:first-child{text-align:left}
+.ledtable th{color:var(--deep);font-size:.82rem}
+.ledtable tfoot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none;font-size:1rem;color:var(--deep)}
+.ledtable .zero{color:var(--muted);opacity:.6}
+.totbox{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-top:12px}
+.totbox .k{font-size:.78rem;color:var(--muted)}
+.totbox .v{font-size:2.4rem;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums;line-height:1.1}
+.mito-vis{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
+.mito-vis svg{width:100%;height:auto;display:block}
+
+/* scenarios */
+.scene{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;
+  box-shadow:0 2px 12px rgba(8,74,36,.06)}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{
+  text-align:left;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:.9rem;
+  background:var(--panel);border:1px solid var(--line);transition:.15s;
+}
+.opt:hover{background:var(--panel2);border-color:rgba(8,74,36,.38)}
+.opt.correct{background:rgba(47,125,79,.18);border-color:var(--ok)}
+.opt.incorrect{background:rgba(231,57,13,.13);border-color:var(--bad)}
+.opt.disabled{pointer-events:none;opacity:.75}
+
+/* flashcards */
+.deckbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.deckbar button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);font-size:.83rem;font-weight:700;cursor:pointer}
+.deckbar button.on{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent}
+.fcstage{perspective:1400px;margin:0 auto;max-width:560px}
+.fc{position:relative;width:100%;min-height:290px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.fc.flip{transform:rotateY(180deg)}
+.fc .side{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;padding:26px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);box-shadow:0 6px 22px -10px rgba(8,74,36,.35);
+}
+.fc .front{background:linear-gradient(150deg,rgba(175,210,188,.72),rgba(220,235,225,.55)),#fff;align-items:center;text-align:center}
+.fc .back{background:linear-gradient(150deg,rgba(247,195,156,.6),rgba(251,228,210,.45)),#fff;transform:rotateY(180deg)}
+.fc .tag{font-size:.7rem;letter-spacing:.14em;color:#5F7D6B;text-transform:uppercase;margin-bottom:10px}
+.fc .term{font-size:1.5rem;font-weight:800;margin-bottom:6px;line-height:1.3;color:var(--deep)}
+.fc .en{font-size:.9rem;color:var(--muted);font-style:italic}
+.fc .def{font-size:.98rem;line-height:1.7}
+.fc .hint{margin-top:auto;padding-top:14px;font-size:.75rem;color:var(--muted);text-align:center}
+.fcnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+.fcnav .count{font-weight:800;font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+
+.result{text-align:center;padding:26px 16px}
+.result .big{font-size:3rem;letter-spacing:6px;color:var(--gold)}
+.result .big .off{color:rgba(8,74,36,.16)}
+.result h2{margin-top:10px}
+
+.footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.78rem;text-align:center;line-height:1.8}
+.footer .fb{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:9px}
+.footer .fb img{height:26px;width:auto;opacity:.92}
+.footer .fb span{font-weight:800;color:var(--deep);font-size:.92rem}
+.footer .fb span b{color:var(--gold)}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);
+  background:linear-gradient(135deg,#2F7D4F,#4E9370);color:#FBF8EC;
+  padding:11px 22px;border-radius:999px;font-weight:800;font-size:.9rem;z-index:200;
+  box-shadow:0 12px 30px -10px rgba(8,74,36,.6);
+  /* ซ่อนสนิทตอนไม่มีข้อความ ไม่ให้โผล่เป็นแถบเขียวที่ขอบล่างจอ */
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .25s linear, visibility 0s linear .35s;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;
+  transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .2s linear, visibility 0s}
+
+.buckets{display:grid;gap:10px;margin-top:14px}
+@media(min-width:700px){.buckets{grid-template-columns:repeat(3,1fr)}}
+.bucket{background:rgba(255,255,255,.66);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:96px;transition:.15s}
+.bucket.armed{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.bucket h4{margin:0 0 8px;font-size:.92rem;display:flex;align-items:center;gap:6px}
+.bucket .items{display:flex;flex-wrap:wrap;gap:6px}
+.bucket .items span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;
+  background:rgba(175,210,188,.75);border:1px solid rgba(8,74,36,.28);animation:pop .25s}
+.match{display:grid;gap:10px}
+@media(min-width:760px){.match{grid-template-columns:1fr 1fr}}
+.mcard{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:13px;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);cursor:pointer;transition:.15s}
+.mcard:hover{border-color:rgba(8,74,36,.4)}
+.mcard.armed{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.18)}
+.mcard.done{background:rgba(175,210,188,.5);border-color:var(--green);cursor:default}
+.mcard .em{font-size:1.5rem;line-height:1.2}
+.mcard .tx{flex:1;font-size:.87rem;line-height:1.55}
+.mcard .tx b{color:var(--deep)}
+.mcard .tx b.h{display:block;font-size:.95rem;margin-bottom:2px}
+.mcard.wrong{animation:shake .35s;border-color:var(--bad)}
+.mcard.quiet .tx{min-height:34px;display:flex;align-items:center}
+.mcard.quiet .tx b.h{font-weight:600;font-size:.86rem;opacity:.75}
+.cmp{width:100%;border-collapse:collapse;font-size:.87rem}
+.cmp th,.cmp td{padding:8px;border-bottom:1px solid var(--line);text-align:center}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp .yes{color:var(--ok);font-weight:800}
+
+/* ── ห้องทดลองสามแบบของเกมนี้ ────────────────────────────────────────────
+   ด่าน 1 ทะเลอิเล็กตรอน · ด่าน 2 ผลึกโลหะ 3 มิติ · ด่าน 4 ตอกแผ่นโลหะ · ด่าน 5 โลหะผสม
+   ทั้งสามใช้กรอบ .lab ร่วมกัน ต่างกันแค่สิ่งที่อยู่ข้างใน */
+.lab{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:14px 14px 16px;margin-top:14px}
+.labtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.labtop .fml{font-size:1.5rem;font-weight:800;letter-spacing:.5px}
+.labtop .nm{color:var(--muted);font-size:.9rem}
+.labtop .cnt{margin-left:auto;font-size:.82rem;color:var(--muted);font-weight:700}
+.molwrap{position:relative;background:radial-gradient(120% 100% at 30% 12%,#fff 0%,var(--bg1) 62%,var(--bg2) 100%);
+  border:1px solid var(--line);border-radius:14px;padding:6px;max-width:520px;margin:0 auto;overflow:hidden}
+.spinhint{position:absolute;right:10px;bottom:8px;font-size:.74rem;color:var(--muted);
+  background:rgba(255,255,255,.72);border-radius:20px;padding:3px 10px;pointer-events:none;z-index:2}
+.palette{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.atomt,.iont{font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none;
+  paint-order:stroke fill;stroke:rgba(4,38,30,.35);stroke-width:2.5px;stroke-linejoin:round;fill:#fff}
+
+/* สรุปสมการตอนทำสำเร็จ · ใช้ทั้งด่าน 1 ด่าน 2 และด่าน 5 */
+.ioneq{margin-top:10px;display:grid;gap:5px;font-size:.9rem;line-height:1.5}
+.ioneq .tot{border-top:1px dashed var(--line);padding-top:6px;margin-top:2px;font-size:.95rem}
+.ioneq sup{font-size:.72em}
+
+/* ── ด่าน 1 · ฉากทะเลอิเล็กตรอน (ภาพระนาบเดียว จะได้เห็นจุดชัดและแตะง่าย) ── */
+.tsvg{display:block;width:100%;height:auto;touch-action:none;-webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none}
+.tball{pointer-events:none;filter:drop-shadow(0 2px 3px rgba(4,38,30,.28));transition:r .28s}
+.edot{fill:var(--rose);pointer-events:none;transition:.15s}
+.edot.sel{fill:var(--gold);stroke:#fff;stroke-width:2.5;filter:drop-shadow(0 0 5px rgba(242,103,22,.9))}
+.efree{fill:var(--gold);opacity:.9;pointer-events:none;filter:drop-shadow(0 0 4px rgba(242,103,22,.55))}
+.efree.sm{opacity:.72;filter:none}
+.seabg{fill:rgba(242,103,22,.09);stroke:rgba(242,103,22,.32);stroke-width:2;stroke-dasharray:8 6;pointer-events:none}
+.ehit{fill:transparent;cursor:pointer}
+.tchg{font-size:15px;font-weight:800;text-anchor:middle;dominant-baseline:central;fill:var(--deep);
+  pointer-events:none;paint-order:stroke fill;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.tflow{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--muted);pointer-events:none}
+
+/* ── ด่าน 2 · ผลึก 3 มิติ ── */
+.molsvg{display:block;width:100%;height:auto;touch-action:none;cursor:grab;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.molsvg:active{cursor:grabbing}
+.ionb{pointer-events:none;filter:drop-shadow(0 2px 3px rgba(4,38,30,.26))}
+.latbond{stroke:var(--muted);stroke-width:2.2;opacity:.34;pointer-events:none}
+.latbond.cn{stroke:var(--gold);stroke-width:1.8;opacity:.42;stroke-dasharray:5 4}
+.hole{fill:rgba(255,255,255,.72);stroke:var(--gold);stroke-width:2.5;stroke-dasharray:6 5;cursor:pointer}
+.holeq{font-weight:800;text-anchor:middle;dominant-baseline:central;fill:var(--gold);pointer-events:none}
+.bchip{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);
+  border-radius:12px;padding:9px 13px;font-weight:700;font-size:.9rem;cursor:pointer;
+  user-select:none;-webkit-user-select:none;transition:.14s}
+.bchip:hover{border-color:var(--lime)}
+.bchip.sel{background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;border-color:transparent;
+  box-shadow:0 8px 18px -8px rgba(231,57,13,.6)}
+.ionchip{display:inline-grid;place-items:center;min-width:34px;height:26px;padding:0 7px;border-radius:8px;
+  font-weight:800;font-size:.82rem;color:#FFF7F0}
+.ionchip sup{font-size:.72em}
+.ionchip.pos{background:linear-gradient(135deg,#F2994A,#B84418)}
+.bchip.sel .ionchip{box-shadow:0 0 0 2px rgba(255,255,255,.75)}
+
+/* ── ด่าน 4 · ทดลองตอกแผ่นโลหะ ── */
+.britsplit{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 6;opacity:.65}
+.britq{font-size:15px;font-weight:800;text-anchor:middle;dominant-baseline:central;fill:#fff;pointer-events:none}
+.britcap{font-size:12.5px;font-weight:700;text-anchor:middle;fill:var(--muted);pointer-events:none}
+.attract line{stroke:var(--lime);stroke-width:3.2;stroke-linecap:round}
+.attract path{fill:var(--lime)}
+
+/* ── ด่าน 5 · ห้องโลหะผสม ── */
+.alt{font-size:14px;font-weight:800;text-anchor:middle;dominant-baseline:central;pointer-events:none;
+  paint-order:stroke fill;stroke:rgba(4,38,30,.35);stroke-width:2.5px;stroke-linejoin:round;fill:#fff}
+.alt.sm{font-size:11px;stroke-width:2px}
+.aslot{fill:rgba(255,255,255,.6);stroke:var(--line);stroke-width:2;stroke-dasharray:5 4;cursor:pointer;transition:.14s}
+.aslot.on{fill:rgba(242,103,22,.14);stroke:var(--gold);stroke-width:2.5}
+.block line{stroke:var(--bad);stroke-width:3.4;stroke-linecap:round;opacity:.9}
+.ionchip.guest{background:linear-gradient(135deg,#4E9370,#26603C)}
+
+@media(max-width:640px){
+  .labtop .fml{font-size:1.25rem}
+  .bchip{padding:8px 11px;font-size:.84rem;flex:1 1 44%;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hud">
+    <div class="brand"><span class="leaf">⚡</span><span>เมืองทะเลอิเล็กตรอน</span></div>
+    <div class="spacer"></div>
+    <div class="chip xp">⚡ XP <b id="hudXp">0</b></div>
+    <div class="chip">⭐ <b id="hudStars">0</b>/18</div>
+    <button class="btn sm ghost" id="btnHome">🗺️ แผนที่</button>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    <div class="fb"><img src="logo.png" alt="โลโก้ Chemistry" onerror="this.remove()"><span>Chemistry<b>.</b></span></div>
+    เกมประกอบตำราเคมี ม.4 · หน่วยที่ 3 พันธะเคมี เรื่อง <b>พันธะโลหะ</b><br>
+    อิงหลักสูตร สสวท. (ฉบับปรับปรุง พ.ศ. 2560) · ความก้าวหน้าถูกบันทึกไว้ในเครื่องของผู้เล่นเอง
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* =========================================================================
+   เมืองทะเลอิเล็กตรอน — เกมประกอบการเรียนรู้ เรื่องพันธะโลหะ (เคมี ม.4)
+   ไฟล์เดียว ทำงานออฟไลน์ · ใช้โครงเดียวกับเกมชีววิทยาชุดเดิมในเว็บไซต์นี้
+   ========================================================================= */
+
+const app   = document.getElementById('app');
+const toastEl = document.getElementById('toast');
+const SAVE_KEY = 'metallic-quest-v1';
+
+const defaultState = { xp:0, stars:{}, plays:{}, secs:{}, miss:{} };
+let S = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return structuredClone(defaultState);
+    return Object.assign(structuredClone(defaultState), JSON.parse(raw));
+  }catch(e){ return structuredClone(defaultState); }
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function totalStars(){ return Object.values(S.stars).reduce((a,b)=>a+b,0); }
+function syncHud(){
+  document.getElementById('hudXp').textContent = S.xp;
+  document.getElementById('hudStars').textContent = totalStars();
+}
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+function shuffle(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+  return r;
+}
+/* สุ่มหยิบตัวอย่างมาเล่นครั้งละชุด · หยิบแยกตามกลุ่มความยาก ไม่ใช่สุ่มล้วน
+   ถ้าสุ่มล้วนจากคลังเดียว บางรอบจะได้ของง่ายหมดหรือยากหมด ความยากของด่านจะไม่คงที่
+   plan = { ชื่อกลุ่ม: จำนวนที่หยิบ } · คืนค่าเรียงตามลำดับเดิมในคลัง ความยากจึงยังไล่จากง่ายไปยาก */
+function pickByGroup(pool, plan){
+  const out = [];
+  Object.entries(plan).forEach(([g, n]) => out.push(...shuffle(pool.filter(x => x.g === g)).slice(0, n)));
+  return out.sort((a, b) => pool.indexOf(a) - pool.indexOf(b));
+}
+/* สุ่มหยิบจากคลังที่ไม่ได้แบ่งกลุ่ม · ใช้กับการ์ดจับคู่ที่ความยากใกล้เคียงกันอยู่แล้ว */
+function pickSome(pool, n){
+  return shuffle(pool).slice(0, n).sort((a, b) => pool.indexOf(a) - pool.indexOf(b));
+}
+function stars(n,max=3){ let s=''; for(let i=0;i<max;i++) s+= i<n?'★':'<span class="off">★</span>'; return s; }
+
+const STAGES = [
+  { id:'sea',      ic:'⚡', title:'ห้องทะเลอิเล็กตรอน', desc:'ปล่อยเวเลนซ์อิเล็กตรอนออกจากอะตอมโลหะ · เกิดไอออนบวกในทะเลอิเล็กตรอน', req:0 },
+  { id:'pack',     ic:'🧊', title:'ห้องจัดเรียงอะตอม',  desc:'ผลึกโลหะ 3 มิติ · BCC · FCC · HCP · เลขโคออร์ดิเนชันกับการจัดเรียงชิด', req:1 },
+  { id:'strength', ic:'💪', title:'ห้องวัดความแข็งแรง',  desc:'เวเลนซ์อิเล็กตรอนกับขนาดไอออน กำหนดจุดหลอมเหลวของโลหะอย่างไร', req:2 },
+  { id:'props',    ic:'✨', title:'คลังสมบัติโลหะ',      desc:'ตีแผ่ได้ · นำไฟฟ้าทุกสถานะ · เป็นมันวาว · อธิบายด้วยทะเลอิเล็กตรอน', req:3 },
+  { id:'alloy',    ic:'🔩', title:'ห้องโลหะผสม',        desc:'แทนที่กับแทรกช่องว่าง · ทองเหลือง เหล็กกล้า สแตนเลส', req:4 },
+  { id:'boss',     ic:'👹', title:'บอส: ห้องตรวจคุณภาพ', desc:'วินิจฉัยสารที่ไม่รู้จัก และสรุปเทียบพันธะทั้งสามชนิด', req:5 }
+];
+
+function renderMap(){
+  syncHud();
+  const cleared = STAGES.filter(s=>S.stars[s.id]>0).length;
+  app.innerHTML = `
+    <div class="hero">
+      <div class="pub"><img src="logo.png" alt="โลโก้ Chemistry" onerror="this.remove()"><span>Chemistry<b>.</b></span></div>
+      <h1>เมืองทะเลอิเล็กตรอน</h1>
+      <p>ทำไมโลหะถึง<strong>นำไฟฟ้าได้ตั้งแต่ตอนเป็นของแข็ง</strong><br>
+         ตีแผ่เป็นแผ่นบางได้โดยไม่แตก และเป็นมันวาว — ทั้งที่ผลึกเกลือทำไม่ได้สักอย่าง</p>
+      <div class="eq">พันธะโลหะ = แรงดึงดูดระหว่าง<b>ไอออนบวก</b>ที่เรียงชิดกัน กับ<b>ทะเลอิเล็กตรอน</b>ที่เคลื่อนที่ได้อิสระรอบตัว</div>
+      <div id="classSlot"></div>
+    </div>
+    <div class="maplist">
+      ${STAGES.map((s,i)=>{
+        const got=S.stars[s.id]||0, locked=cleared<s.req;
+        return `<div class="node ${locked?'locked':''} ${got?'done':''}" data-id="${s.id}">
+          <span class="no">ด่าน ${i+1}</span>
+          <div class="ic">${locked?'🔒':s.ic}</div>
+          <div class="body">
+            <div class="t">${s.title}</div>
+            <div class="d">${locked?`ผ่านด่านก่อนหน้าให้ครบ ${s.req} ด่านเพื่อปลดล็อก`:s.desc}</div>
+            ${locked?'':`<div class="stars">${stars(got)}</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:2rem">🃏</div>
+      <div style="flex:1;min-width:190px">
+        <div style="font-weight:800">การ์ดคำศัพท์</div>
+        <div class="small muted">${CARDS.length} การ์ด ทบทวนศัพท์ไทย–อังกฤษ พร้อมนิยาม เปิดเล่นได้ตลอดเวลา</div>
+      </div>
+      <button class="btn gold" id="btnCards">เปิดสำรับ</button>
+    </div>
+    ${certCardHtml()}
+    <div class="center" style="margin-top:18px">
+      <button class="btn ghost sm" id="btnReset">เริ่มใหม่ทั้งหมด</button>
+    </div>
+  `;
+  app.querySelectorAll('.node').forEach(n=>{
+    n.addEventListener('click',()=>{
+      if(n.classList.contains('locked')){ toast('🔒 ยังไม่ปลดล็อกด่านนี้'); return; }
+      openStage(n.dataset.id);
+    });
+  });
+  document.getElementById('btnCards').onclick = renderCards;
+  const certBtn = document.getElementById('btnCert');
+  if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
+  document.getElementById('btnReset').onclick = ()=>{
+    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+      S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
+    }
+  };
+  renderClassChip();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function stageShell(id, extraHtml=''){
+  const st = STAGES.find(s=>s.id===id);
+  return `<div class="stagehead">
+      <div class="ic">${st.ic}</div>
+      <div style="flex:1;min-width:200px"><h2>${st.title}</h2><div class="sub">${st.desc}</div></div>
+    </div>${extraHtml}`;
+}
+let stageT0 = 0;        // เวลาเริ่มด่าน ใช้คำนวณเวลาที่ใช้ต่อด่าน
+let stageMiss = 0;      // จำนวนครั้งที่ตอบผิดในด่านที่กำลังเล่น (ตั้งค่าก่อนเรียก finishStage)
+function openStage(id){
+  window.scrollTo({top:0});
+  stageT0 = Date.now(); stageMiss = 0;
+  ({sea:stageSea, pack:stagePack, strength:stageStrength,
+    props:stageProps, alloy:stageAlloy, boss:stageBoss})[id]();
+}
+function finishStage(id, got, xp, summaryHtml){
+  const prev=S.stars[id]||0; if(got>prev) S.stars[id]=got;
+  S.plays = S.plays || {}; S.plays[id] = (S.plays[id]||0) + 1;
+  S.xp+=xp; save(); syncHud();
+  const secs = stageT0 ? Math.round((Date.now()-stageT0)/1000) : 0;
+  const misses = Math.max(0, stageMiss|0); stageMiss = 0;
+  S.secs = S.secs || {}; S.miss = S.miss || {};
+  S.secs[id] = secs; S.miss[id] = misses;   // เก็บไว้เผื่อเข้าร่วมห้องทีหลัง จะได้ส่งเวลาจริงตามไปด้วย
+  save();
+  sendScore(id, got, misses, secs);   // ส่งคะแนนให้ครู (ถ้าเข้าร่วมห้อง)
+  app.innerHTML = `
+    <div class="card result">
+      <div class="big">${stars(got)}</div>
+      <h2>${got===3?'สมบูรณ์แบบ!':got===2?'เก่งมาก!':got===1?'ผ่านแล้ว':'ยังไม่ผ่าน'}</h2>
+      <p class="muted">ได้รับ <b style="color:var(--lime)">+${xp} XP</b></p>
+      <div style="text-align:left;max-width:640px;margin:18px auto 0">${summaryHtml}</div>
+      <div style="margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" id="again">เล่นด่านนี้อีกครั้ง</button>
+        <button class="btn primary" id="back">กลับแผนที่ →</button>
+      </div>
+    </div>`;
+  document.getElementById('again').onclick = ()=>openStage(id);
+  document.getElementById('back').onclick  = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- เครื่องมือที่ใช้ร่วมกันหลายด่าน ---------- */
+/* จัดกลุ่มลงกล่อง — items = [{n, g, e}] · groups = {key:'ชื่อกล่อง'} */
+function bindBuckets(items, groups, pbId, fbId, onDone){
+  let armed=null, placed=0, wrong=0;
+  const fb=document.getElementById(fbId), pb=document.getElementById(pbId);
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.n){ armed=null; return; }
+      armed=t.dataset.n; t.classList.add('sel');
+      app.querySelectorAll('.bucket').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.bucket').forEach(b=>{
+    b.onclick=()=>{
+      if(!armed) return;
+      const it=items.find(x=>x.n===armed);
+      if(it.g===b.dataset.g){
+        document.getElementById('items-'+it.g).insertAdjacentHTML('beforeend', `<span>${it.n}</span>`);
+        app.querySelector(`#pool .tok[data-n="${armed}"]`).classList.add('used');
+        placed++; if(pb) pb.style.width=(placed/items.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${it.n}</b> — ${it.e}`;
+        armed=null; app.querySelectorAll('.bucket').forEach(x=>x.classList.remove('armed'));
+        if(placed===items.length) setTimeout(()=>onDone(wrong),1000);
+      }else{
+        wrong++; b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ <b>${it.n}</b> ยังไม่ใช่กล่องนี้ — ลองอ่านหัวข้อกล่องอีกครั้ง`;
+      }
+    };
+  });
+}
+/* เรียงลำดับขั้นตอน — steps = [{n, e}] เรียงถูกตามลำดับใน array */
+function orderBoard(steps, hint){
+  const pool = shuffle(steps.map((z,i)=>({...z,i})));
+  return `<div class="chain" id="chain"><span class="ph">${hint}</span></div>
+    <div class="pool" id="pool">${pool.map(p=>`<div class="tok" data-i="${p.i}">${p.n}</div>`).join('')}</div>`;
+}
+function bindOrder(steps, onDone){
+  let idx=0, wrong=0;
+  const chain=document.getElementById('chain'), fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      const i=+t.dataset.i;
+      if(i===idx){
+        if(idx===0) chain.innerHTML=''; else chain.insertAdjacentHTML('beforeend','<span class="arrow">→</span>');
+        chain.insertAdjacentHTML('beforeend', `<span class="link">${steps[i].n}</span>`);
+        t.classList.add('used');
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${steps[i].n}</b><br>${steps[i].e}`;
+        idx++; if(pb) pb.style.width=(idx/steps.length*100)+'%';
+        if(idx===steps.length) setTimeout(()=>onDone(wrong),1300);
+      }else{
+        wrong++; t.classList.add('bad'); setTimeout(()=>t.classList.remove('bad'),400);
+        fb.className='feedback show bad';
+        fb.innerHTML=`❌ ยังไม่ถึงคิวของ <b>${steps[i].n}</b> — ลองไล่ดูว่าขั้นก่อนหน้านี้ต้องเกิดอะไรขึ้นก่อน`;
+      }
+    };
+  });
+}
+/* จับคู่การ์ด — pairs = [{k, n, em, h, d}] */
+/* กระดานจับคู่ · โหมดของ hide
+     'all'  ซ่อนทั้งคำใบ้และคำอธิบาย — ใช้เมื่อคำใบ้คือเฉลย เช่นจำนวนอะตอมในด่านตั้งชื่อ
+     'desc' โชว์คำใบ้ไว้ ซ่อนแต่คำอธิบาย — ใช้เมื่อคำใบ้คือโจทย์ เช่นโครงสร้างผลึกในด่านสมบัติสาร
+     ไม่ใส่ โชว์ทั้งหมดตั้งแต่แรก */
+function matchBoard(pairs, hide){
+  const cards = shuffle(pairs);
+  return `<div class="bank" id="pool">${shuffle(pairs).map(j=>`<div class="tok" data-k="${j.k}">${j.n}</div>`).join('')}</div>
+    <div class="match" id="match" style="margin-top:14px">
+      ${cards.map(j=>{
+        const body = hide==='all'  ? '<b class="h muted">เลือกชื่อที่ตรงกับการ์ดนี้</b>'
+                   : hide==='desc' ? `<b class="h">${j.h}</b>`
+                   : `<b class="h">${j.h}</b>${j.d}`;
+        return `<div class="mcard${hide?' quiet':''}" data-k="${j.k}">
+          <div class="em">${j.em}</div><div class="tx">${body}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+function bindMatch(pairs, onDone){
+  let armed=null, done=0, wrong=0;
+  const fb=document.getElementById('fb'), pb=document.getElementById('pb');
+  app.querySelectorAll('#pool .tok').forEach(t=>{
+    t.onclick=()=>{
+      app.querySelectorAll('#pool .tok').forEach(x=>x.classList.remove('sel'));
+      app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+      if(armed===t.dataset.k){ armed=null; return; }
+      armed=t.dataset.k; t.classList.add('sel');
+      app.querySelectorAll('.mcard:not(.done)').forEach(x=>x.classList.add('armed'));
+    };
+  });
+  app.querySelectorAll('.mcard').forEach(c=>{
+    c.onclick=()=>{
+      if(!armed || c.classList.contains('done')) return;
+      const j=pairs.find(x=>x.k===armed);
+      if(c.dataset.k===armed){
+        c.classList.add('done'); c.classList.remove('armed');
+        const tx = c.querySelector('.tx');
+        if(c.classList.contains('quiet')){       // เปิดคำอธิบายที่ซ่อนไว้ออกมาตอนตอบถูก
+          c.classList.remove('quiet');
+          tx.innerHTML = `<b class="h">${j.h}</b>${j.d}` + (j.b ? `<div class="small muted" style="margin-top:4px">🔗 ${j.b}</div>` : '');
+        }
+        tx.insertAdjacentHTML('afterbegin', `<b class="h" style="color:var(--lime)">✅ ${j.n}</b>`);
+        app.querySelector(`#pool .tok[data-k="${armed}"]`).classList.add('used');
+        done++; if(pb) pb.style.width=(done/pairs.length*100)+'%';
+        fb.className='feedback show good'; fb.innerHTML=`✅ <b>${j.n}</b> — ${j.d}`;
+        armed=null; app.querySelectorAll('.mcard').forEach(x=>x.classList.remove('armed'));
+        if(done===pairs.length) setTimeout(()=>onDone(wrong),1100);
+      }else{
+        wrong++; c.classList.add('wrong'); setTimeout(()=>c.classList.remove('wrong'),400);
+        fb.className='feedback show bad'; fb.innerHTML=`❌ <b>${j.n}</b> ยังไม่ใช่การ์ดนี้ ลองอ่านคำอธิบายอีกครั้ง`;
+      }
+    };
+  });
+}
+/* สลับตำแหน่งตัวเลือกแล้วคืนชุดใหม่พร้อมเลขข้อที่ถูกตามตำแหน่งใหม่
+   ทำทุกครั้งที่เล่น ผู้เล่นจึงจำไม่ได้ว่าเฉลยอยู่ข้อไหน และเดาจากตำแหน่งไม่ได้
+   (คำอธิบายจึงต้องไม่อ้างอิงลำดับตัวเลือกเด็ดขาด) */
+function shuffleOpts(q){
+  const idx = shuffle(q.o.map((_,i)=>i));
+  return { ...q, o: idx.map(i=>q.o[i]), a: idx.indexOf(q.a) };
+}
+/* ชุดคำถามปรนัยท้ายด่าน — qs = [{q, o[], a, e}] */
+function quizRun(qs, hostId, onDone){
+  let qi=0, wrong=0;
+  const host=document.getElementById(hostId);
+  const set = qs.map(shuffleOpts);
+  function draw(){
+    const q=set[qi];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">คำถาม ${qi+1}/${set.length}</div>
+      <h3 style="margin:6px 0 4px">${q.q}</h3>
+      <div class="opts">${q.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===q.a; if(!ok) wrong++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===q.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+q.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${qi===set.length-1?'สรุปผล →':'ข้อถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ qi++; if(qi<set.length){ draw(); window.scrollTo({top:0,behavior:'smooth'}); } else onDone(wrong); };
+      };
+    });
+  }
+  draw();
+}
+
+/* =========================================================================
+   ตัวช่วยที่ใช้ร่วมกันหลายด่านของเกมนี้
+   ========================================================================= */
+/* หมุนภาพ 3 มิติด้วยการลาก · จับ pointer หลังขยับเกิน 5px เท่านั้น
+   การแตะสั้น ๆ จะได้ยังนับเป็นการกดวัตถุในภาพ ไม่กลายเป็นการหมุน */
+function spinner(svg, get, redraw, onTap){
+  let sx=0, sy=0, px=0, py=0, spin=false, moved=false, pid=null;
+  function end(){
+    if(pid!==null && svg.hasPointerCapture && svg.hasPointerCapture(pid)) svg.releasePointerCapture(pid);
+    spin=false; pid=null;
+  }
+  svg.addEventListener('pointerdown', ev=>{
+    spin=true; moved=false; pid=ev.pointerId;
+    sx=px=ev.clientX; sy=py=ev.clientY;
+  });
+  svg.addEventListener('pointermove', ev=>{
+    if(!spin) return;
+    if(ev.pointerType==='mouse' && !ev.buttons){ end(); return; }
+    if(!moved && Math.hypot(ev.clientX-sx, ev.clientY-sy) > 5){ moved=true; svg.setPointerCapture(pid); }
+    if(!moved) return;
+    const v = get();
+    v.ry += (ev.clientX-px)*0.011;
+    v.rx = Math.max(-1.35, Math.min(1.35, v.rx + (ev.clientY-py)*0.009));
+    px=ev.clientX; py=ev.clientY; redraw();
+  });
+  svg.addEventListener('pointerup', ev=>{
+    const wasMoved = moved; end();
+    if(!wasMoved && onTap) onTap(ev);
+  });
+  svg.addEventListener('pointercancel', end);
+}
+
+/* หมุนรอบแกน Y แล้วแกน X จากนั้นฉายภาพแบบมีเปอร์สเปกทีฟ
+   คืนพิกัดบนจอ พร้อมค่า z ไว้เรียงลำดับการวาด และ k ไว้ย่อ-ขยายตามระยะ */
+function project3(p, view){
+  const [x,y,z] = p, { rx, ry, scale, cx, cy, dist } = view;
+  const cy_ = Math.cos(ry), sy_ = Math.sin(ry);
+  const x1 =  x*cy_ + z*sy_;
+  const z1 = -x*sy_ + z*cy_;
+  const cx_ = Math.cos(rx), sx_ = Math.sin(rx);
+  const y2 = y*cx_ - z1*sx_;
+  const z2 = y*sx_ + z1*cx_;
+  const k = dist/(dist - z2);
+  return { x: cx + x1*scale*k, y: cy - y2*scale*k, z: z2, k };
+}
+const chg = q => q===0 ? '' : (Math.abs(q)>1 ? Math.abs(q) : '') + (q>0 ? '+' : '−');
+
+/* สีและขนาดของโลหะที่ใช้ในเกม · r = รัศมีอะตอมกลาง · ri = รัศมีไอออนบวกหลังเสียอิเล็กตรอน */
+const MET = {
+  Na:{ c:'#F2994A', d:'#C2661B', r:34, ri:20, v:1, nm:'โซเดียม' },
+  Mg:{ c:'#E7724D', d:'#B84418', r:30, ri:17, v:2, nm:'แมกนีเซียม' },
+  Al:{ c:'#D9646B', d:'#A83440', r:28, ri:15, v:3, nm:'อะลูมิเนียม' },
+  K :{ c:'#F2994A', d:'#C2661B', r:38, ri:24, v:1, nm:'โพแทสเซียม' },
+  Ca:{ c:'#E7724D', d:'#B84418', r:35, ri:21, v:2, nm:'แคลเซียม' },
+  Cu:{ c:'#C0703A', d:'#8A4718', r:29, ri:18, v:2, nm:'ทองแดง' },
+  Zn:{ c:'#8FA3B8', d:'#5B6E84', r:28, ri:17, v:2, nm:'สังกะสี' },
+  Fe:{ c:'#9A8C7A', d:'#63584A', r:29, ri:18, v:2, nm:'เหล็ก' },
+  C :{ c:'#4A4A4A', d:'#222222', r:13, ri:13, v:4, nm:'คาร์บอน' },
+  Cr:{ c:'#7C9BB5', d:'#4B6B85', r:29, ri:18, v:3, nm:'โครเมียม' },
+  Ni:{ c:'#7FA88C', d:'#4C755A', r:28, ri:17, v:2, nm:'นิกเกิล' }
+};
+
+/* =========================================================================
+   ด่าน 1 — ห้องทะเลอิเล็กตรอน
+   พันธะโลหะไม่ได้ให้-รับกันเหมือนไอออนิก และไม่ได้ใช้ร่วมกันเป็นคู่เหมือนโคเวเลนต์
+   แต่เวเลนซ์อิเล็กตรอนหลุดออกมาเป็น "ของส่วนกลาง" ที่วิ่งไปทั่วทั้งก้อน
+   ด่านนี้จึงให้ผู้เล่นแตะปล่อยอิเล็กตรอนออกจากอะตอมเอง แล้วเห็นมันวิ่งจริง ๆ
+   ========================================================================= */
+const SEA_SET = [
+  { el:'Na', n:6, tip:'โซเดียมมีเวเลนซ์อิเล็กตรอนเพียง 1 ตัว และพลังงานไอออไนเซชันต่ำ อิเล็กตรอนจึงหลุดออกมาง่าย' },
+  { el:'Mg', n:6, tip:'แมกนีเซียมปล่อยได้อะตอมละ 2 ตัว ทะเลอิเล็กตรอนจึงหนาแน่นกว่าโซเดียมเท่าตัว' },
+  { el:'Al', n:6, tip:'อะลูมิเนียมปล่อยได้ถึงอะตอมละ 3 ตัว เป็นเหตุผลที่พันธะโลหะของมันแข็งแรงที่สุดในสามตัวนี้' }
+];
+
+/* เล่นห้องทะเลอิเล็กตรอนจนครบทุกโลหะ แล้วเรียก onDone พร้อมจำนวนครั้งที่ทำผิด */
+function seaLab(hostId, pbId, onDone){
+  const host = document.getElementById(hostId), pb = document.getElementById(pbId);
+  const VB_W = 470, VB_H = 300;
+  let idx = 0, wrong = 0;
+
+  function start(){
+    const S = SEA_SET[idx], E = MET[S.el];
+    const freed = Array(S.n).fill(0);              // อะตอมตัวที่ i ปล่อยอิเล็กตรอนไปแล้วกี่ตัว
+    let done = false, flow = 0, raf = null;        // flow = เฟสของการเคลื่อนที่ของอิเล็กตรอนอิสระ
+    const need = E.v * S.n;
+
+    /* วางอะตอมเป็นตะแกรง 3 × 2 แบบผลึกโลหะที่อัดกันแน่น แถวล่างเยื้องครึ่งช่อง */
+    const COLS = 3, GAPX = 108, GAPY = 96;
+    const pos = i => ({
+      x: VB_W/2 + ((i%COLS) - (COLS-1)/2)*GAPX + (i>=COLS ? GAPX/2 : 0) - (i>=COLS ? GAPX/4 : 0),
+      y: VB_H/2 + (Math.floor(i/COLS) - 0.5)*GAPY
+    });
+
+    host.innerHTML = `<div class="lab">
+      <div class="labtop">
+        <div><span class="fml">${S.el}</span> <span class="nm">${E.nm} · เวเลนซ์อิเล็กตรอน ${E.v} ต่ออะตอม</span></div>
+        <div class="cnt" id="cnt"></div>
+      </div>
+      <div class="molwrap" style="max-width:520px">
+        <svg class="tsvg" id="sea" viewBox="0 0 ${VB_W} ${VB_H}"
+             aria-label="แผนภาพทะเลอิเล็กตรอนของโลหะ ${S.el}"></svg>
+      </div>
+      <div class="palette">
+        <button class="btn ghost sm" id="undo">↺ เริ่มใหม่</button>
+        <span class="small muted" style="align-self:center">
+          แตะ<b>จุดอิเล็กตรอนสีแดง</b>รอบอะตอม เพื่อปล่อยให้เป็นอิเล็กตรอนอิสระ</span>
+      </div>
+      <div class="feedback" id="sfb"></div>
+    </div>`;
+    const svg = document.getElementById('sea'), fb = document.getElementById('sfb');
+    document.getElementById('undo').onclick = ()=>{
+      if(done) return;
+      freed.fill(0); fb.className='feedback'; draw();
+    };
+
+    /* อิเล็กตรอนอิสระวิ่งวนอยู่ในก้อนโลหะ ตำแหน่งคำนวณจากเฟส flow
+       ใช้เส้นทางลิสซาจูส์ จะได้ดูเหมือนวิ่งไปทั่วไม่เป็นวงกลมซ้ำที่เดิม */
+    function freePos(k, total){
+      const t = flow + k*2*Math.PI/Math.max(total,1);
+      return { x: VB_W/2 + Math.sin(t*1.0 + k)*160, y: VB_H/2 + Math.sin(t*1.6 + k*2.1)*82 };
+    }
+
+    function draw(){
+      const gone = freed.reduce((a,b)=>a+b,0);
+      let g = `<defs><radialGradient id="m-${S.el}" cx="34%" cy="30%" r="72%">
+          <stop offset="0%" stop-color="#fff" stop-opacity=".82"/>
+          <stop offset="42%" stop-color="${E.c}"/><stop offset="100%" stop-color="${E.d}"/></radialGradient>
+        </defs>`;
+      // พื้นหลังทะเลอิเล็กตรอน เข้มขึ้นตามจำนวนอิเล็กตรอนที่ปล่อยออกมา
+      if(gone) g += `<rect class="seabg" x="6" y="6" width="${VB_W-12}" height="${VB_H-12}" rx="16"
+          opacity="${(gone/need*0.5).toFixed(2)}"/>`;
+      g += `<text class="tflow" x="${VB_W/2}" y="24">${gone===need
+        ? 'ทะเลอิเล็กตรอน · อิเล็กตรอนวิ่งไปทั่วทั้งก้อน ไม่เป็นของอะตอมใดอะตอมหนึ่ง'
+        : 'แตะจุดสีแดงเพื่อปล่อยเวเลนซ์อิเล็กตรอนออกมา'}</text>`;
+
+      // อิเล็กตรอนอิสระที่ปล่อยออกมาแล้ว วาดไว้ใต้ลูกกลม
+      for(let k=0;k<gone;k++){
+        const q = freePos(k, need);
+        g += `<circle class="efree" cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="6"/>`;
+      }
+      // อะตอมกับเวเลนซ์อิเล็กตรอนที่ยังไม่ได้ปล่อย
+      for(let i=0;i<S.n;i++){
+        const p = pos(i), left = E.v - freed[i], isIon = left===0;
+        const r = isIon ? E.ri : E.r;
+        for(let k=0;k<left;k++){
+          const a = -Math.PI/2 + k*2*Math.PI/Math.max(left,1);
+          const x = p.x + Math.cos(a)*(r+13), y = p.y + Math.sin(a)*(r+13);
+          g += `<circle class="edot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5"/>`;
+          if(!done) g += `<circle class="ehit" data-e="${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="18"/>`;
+        }
+        g += `<circle class="tball" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}"
+                fill="url(#m-${S.el})" stroke="${E.d}" stroke-width="2"/>
+          <text class="atomt" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}"
+                font-size="${(r*0.9).toFixed(0)}" fill="#fff">${S.el}</text>
+          ${isIon ? `<text class="tchg" x="${(p.x+r*0.95).toFixed(1)}" y="${(p.y-r*0.85).toFixed(1)}"
+                >${chg(E.v)}</text>` : ''}`;
+      }
+      svg.innerHTML = g;
+      document.getElementById('cnt').textContent =
+        `ปล่อยแล้ว ${gone}/${need} อิเล็กตรอน · โลหะที่ ${idx+1}/${SEA_SET.length}`;
+
+      svg.querySelectorAll('.ehit').forEach(h=>{
+        h.onclick = ()=>{
+          if(done) return;
+          freed[+h.dataset.e]++;
+          fb.className='feedback show good';
+          fb.innerHTML = `✅ อิเล็กตรอนหลุดออกจากอะตอมแล้ว — จากนี้มัน<b>ไม่ได้เป็นของอะตอมเดิม</b>อีกต่อไป
+            แต่วิ่งไปทั่วทั้งก้อนโลหะ`;
+          draw(); check();
+        };
+      });
+    }
+
+    /* ปล่อยครบแล้วให้อิเล็กตรอนอิสระวิ่งวนไปเรื่อย ๆ จะได้เห็นว่ามันเคลื่อนที่ได้จริง */
+    function animate(){
+      flow += 0.016; draw();
+      raf = requestAnimationFrame(animate);
+    }
+
+    function check(){
+      if(freed.reduce((a,b)=>a+b,0) !== need) return;
+      done = true;
+      animate();
+      if(pb) pb.style.width = ((idx+1)/SEA_SET.length*100)+'%';
+      fb.className='feedback show good';
+      fb.innerHTML = `🎉 <b>เกิดพันธะโลหะแล้ว!</b> ${S.tip}
+        <div class="ioneq">
+          <div>${S.el} → ${S.el}<sup>${chg(E.v)}</sup> + ${E.v===1?'e⁻':E.v+'e⁻'}
+            <span class="small muted">(ทำแบบนี้ทุกอะตอมพร้อมกันทั้งก้อน)</span></div>
+          <div>อะตอมทั้ง ${S.n} ตัวปล่อยรวมกัน <b>${need} อิเล็กตรอน</b> กลายเป็นของส่วนกลาง</div>
+          <div class="tot">พันธะโลหะ = แรงดึงดูดระหว่าง <b>${S.el}<sup>${chg(E.v)}</sup> ที่เรียงชิดกัน</b>
+            กับ <b>ทะเลอิเล็กตรอน</b> ที่ล้อมรอบ</div>
+        </div>
+        <div class="small muted" style="margin-top:8px">💡 สังเกตว่าอิเล็กตรอน<b>ไม่ได้ถูกยกให้อะตอมใดอะตอมหนึ่ง</b>
+          เหมือนพันธะไอออนิก และ<b>ไม่ได้จับเป็นคู่</b>เหมือนพันธะโคเวเลนต์ — นี่คือจุดที่ต่างกัน</div>
+        <div style="margin-top:12px"><button class="btn primary sm" id="nx">
+          ${idx===SEA_SET.length-1?'ไปช่วงคำถาม →':'โลหะถัดไป →'}</button></div>`;
+      fb.querySelector('#nx').onclick = ()=>{
+        if(raf) cancelAnimationFrame(raf);
+        idx++;
+        if(idx < SEA_SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
+        else onDone(wrong);
+      };
+    }
+    draw();
+  }
+  start();
+}
+
+const SEA_Q = [
+  { q:'พันธะโลหะเกิดจากแรงชนิดใดยึดอนุภาคไว้ด้วยกัน',
+    o:['แรงดึงดูดระหว่างไอออนบวกที่เรียงชิดกันกับทะเลอิเล็กตรอนรอบตัว',
+       'แรงดึงดูดระหว่างไอออนบวกกับไอออนลบที่อยู่สลับกันในผลึก',
+       'แรงดึงดูดระหว่างนิวเคลียสกับอิเล็กตรอนคู่ที่สองอะตอมใช้ร่วมกัน',
+       'แรงดึงดูดอ่อน ๆ ระหว่างโมเลกุลที่มีขั้วตรงข้ามหันเข้าหากัน'],
+    a:0, e:'ในโลหะมีอนุภาคเพียง<b>สองอย่าง</b> คือไอออนบวกที่อยู่กับที่ กับอิเล็กตรอนที่วิ่งไปทั่ว<br>' +
+      'ตัวลวงอีกสามข้อคือนิยามของ<b>พันธะไอออนิก</b> <b>พันธะโคเวเลนต์</b> และ<b>แรงระหว่างโมเลกุล</b> ตามลำดับ' },
+  { q:'ข้อใดคือความต่างที่ชัดที่สุดระหว่าง<b>พันธะโลหะ</b>กับ<b>พันธะไอออนิก</b>',
+    o:['โลหะ: อิเล็กตรอนเป็นของส่วนกลาง <b>|</b> ไอออนิก: อิเล็กตรอนถูกยกให้อโลหะ',
+       'โลหะ: อิเล็กตรอนถูกยกให้อโลหะ <b>|</b> ไอออนิก: อิเล็กตรอนเป็นของส่วนกลาง',
+       'โลหะ: มีไอออนลบอยู่ด้วย <b>|</b> ไอออนิก: มีเฉพาะไอออนบวกกับอิเล็กตรอน',
+       'โลหะ: ไม่ต้องทำตามกฎออกเตต <b>|</b> ไอออนิก: ต้องทำตามกฎออกเตตเสมอ'],
+    a:0, e:'ทั้งสองแบบโลหะเสียอิเล็กตรอนเหมือนกัน แต่<b>ปลายทางของอิเล็กตรอนต่างกัน</b><br>' +
+      '<b>ไอออนิก</b> ยกให้อโลหะไปเลยจนเกิดไอออนลบ · <b>โลหะ</b> ไม่มีใครรับ อิเล็กตรอนจึงเป็นของส่วนกลางทั้งก้อน<br>' +
+      'ในโลหะบริสุทธิ์จึง<b>ไม่มีไอออนลบ</b>เลย' },
+  { q:'เพราะเหตุใดอิเล็กตรอนในโลหะจึงหลุดออกมาเป็นอิสระได้ง่าย',
+    o:['เพราะโลหะมีเวเลนซ์อิเล็กตรอนน้อยและพลังงานไอออไนเซชันต่ำ',
+       'เพราะโลหะมีเวเลนซ์อิเล็กตรอนมากจนล้นออกมาเองตามธรรมชาติ',
+       'เพราะโลหะมีอิเล็กโทรเนกาติวิตีสูงจึงผลักอิเล็กตรอนออกไป',
+       'เพราะนิวเคลียสของโลหะมีประจุบวกน้อยจนดึงอิเล็กตรอนไม่อยู่'],
+    a:0, e:'โลหะมีเวเลนซ์อิเล็กตรอน<b>น้อย</b> (1–3 ตัว) และ<b>พลังงานไอออไนเซชันต่ำ</b> จึงดึงออกได้ง่าย<br>' +
+      'อิเล็กโทรเนกาติวิตีของโลหะก็<b>ต่ำ</b> ไม่ใช่สูง — โลหะจึงเป็นฝ่ายเสียอิเล็กตรอนเสมอ' },
+  { q:'คำว่า <b>“ทะเลอิเล็กตรอน”</b> สื่อถึงอะไร',
+    o:['อิเล็กตรอนที่วิ่งได้อิสระทั่วก้อน ไม่เป็นของอะตอมใดอะตอมหนึ่ง',
+       'อิเล็กตรอนที่จับกันเป็นคู่แล้ววิ่งไปมาระหว่างอะตอมสองอะตอมข้างเคียง',
+       'อิเล็กตรอนที่ถูกดึงไปกองรวมกันอยู่ที่ผิวนอกสุดของก้อนโลหะ',
+       'อิเล็กตรอนที่ยังอยู่ในวงโคจรเดิม แต่สั่นเร็วกว่าปกติมาก'],
+    a:0, e:'อิเล็กตรอนที่หลุดออกมาจะ<b>ไม่สังกัดอะตอมใด</b> แต่เคลื่อนที่ได้ทั่วทั้งผลึก<br>' +
+      'ศัพท์ทางเคมีเรียกว่า <b>delocalized electrons</b> — เป็นที่มาของทั้งการนำไฟฟ้าและความเป็นมันวาว' },
+  { q:'ก้อนแมกนีเซียมที่มี 100 อะตอม จะปล่อยอิเล็กตรอนเข้าทะเลอิเล็กตรอนกี่ตัว',
+    o:['200 ตัว เพราะแมกนีเซียมมีเวเลนซ์อิเล็กตรอนอะตอมละ 2 ตัว',
+       '100 ตัว เพราะแต่ละอะตอมปล่อยได้เพียงตัวเดียวเท่านั้นไม่ว่าธาตุใด',
+       '800 ตัว เพราะทุกอะตอมต้องปล่อยให้ครบตามกฎออกเตต',
+       'บอกไม่ได้ เพราะจำนวนขึ้นกับอุณหภูมิของก้อนโลหะ'],
+    a:0, e:'Mg มีเวเลนซ์อิเล็กตรอน <b>2</b> ตัว · 100 × 2 = <b>200 ตัว</b> และเหลือ Mg²⁺ 100 ไอออน<br>' +
+      'จำนวนเวเลนซ์อิเล็กตรอนที่ปล่อยได้เป็นค่าคงที่ของธาตุ ไม่ขึ้นกับอุณหภูมิ' },
+  { q:'ข้อใด<b>ไม่ถูกต้อง</b>เกี่ยวกับก้อนโลหะบริสุทธิ์',
+    o:['ภายในมีทั้งไอออนบวกและไอออนลบเรียงสลับกัน',
+       'ไอออนบวกอยู่กับที่ ส่วนอิเล็กตรอนเคลื่อนที่ได้',
+       'อิเล็กตรอนอิสระเป็นของทั้งก้อน ไม่ใช่ของอะตอมใด',
+       'ประจุรวมของทั้งก้อนเป็นกลาง เพราะอิเล็กตรอนยังอยู่ครบ'],
+    a:0, e:'โลหะบริสุทธิ์<b>ไม่มีไอออนลบ</b> — มีแค่ไอออนบวกกับอิเล็กตรอนอิสระ<br>' +
+      'ที่เรียงสลับบวก-ลบคือ<b>ผลึกไอออนิก</b> คนละเรื่องกัน · อีกสามข้อถูกต้องทั้งหมด' }
+];
+
+function stageSea(){
+  let labWrong = 0;
+  drawLab();
+
+  function drawLab(){
+    app.innerHTML = stageShell('sea', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> แตะจุดอิเล็กตรอนสีแดงเพื่อปล่อยเวเลนซ์อิเล็กตรอนออกจากอะตอม
+        — ทำให้ครบทั้ง ${SEA_SET.length} โลหะ
+        <span class="small muted">(ปล่อยครบแล้วจะเห็นอิเล็กตรอนวิ่งไปทั่วก้อนจริง ๆ)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="lab"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>สิ่งที่ต่างจากสองพันธะที่เรียนมาแล้ว</b><br>
+        <b>ไอออนิก</b> โลหะยกอิเล็กตรอนให้อโลหะไปเลย → เกิดไอออนลบ<br>
+        <b>โคเวเลนต์</b> อโลหะสองตัวใช้อิเล็กตรอนร่วมกันเป็นคู่ ๆ<br>
+        <b>โลหะ</b> ไม่มีใครรับ อิเล็กตรอนจึงกลายเป็น<b>ของส่วนกลาง</b>ที่วิ่งไปทั่วทั้งก้อน
+      </div>
+    `);
+    seaLab('lab', 'pb', wrong=>{
+      labWrong = wrong; toast('ครบทุกโลหะแล้ว! ไปช่วงคำถามกันต่อ'); setTimeout(drawQuiz, 900);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('sea', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> ตอบคำถามเรื่องการเกิดพันธะโลหะให้ครบ ${SEA_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(SEA_Q, 'qhost', qWrong=>{
+      const miss = labWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('sea', got, 70-Math.min(miss*6,40), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • โลหะมีเวเลนซ์อิเล็กตรอน<b>น้อย</b>และ<b>พลังงานไอออไนเซชันต่ำ</b> อิเล็กตรอนจึงหลุดออกง่าย<br>
+          • อิเล็กตรอนที่หลุดออกมา<b>ไม่เป็นของอะตอมใด</b> แต่วิ่งไปทั่วทั้งก้อน = <b>ทะเลอิเล็กตรอน</b><br>
+          • เหลือ<b>ไอออนบวก</b>เรียงชิดกันอยู่กับที่ · <b>ไม่มีไอออนลบ</b>ในโลหะบริสุทธิ์<br>
+          • พันธะโลหะ = แรงดึงดูดระหว่าง<b>ไอออนบวก</b>กับ<b>ทะเลอิเล็กตรอน</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> โลหะ<b>ไม่ได้</b>ยกอิเล็กตรอนให้ใคร
+          — ต่างจากพันธะไอออนิกที่มีอโลหะมารับจนเกิดไอออนลบ ในโลหะไม่มีตัวรับ อิเล็กตรอนจึงลอยเป็นของส่วนกลาง</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> อิเล็กตรอนที่วิ่งได้อิสระนี่เองคือคำตอบของ<b>ทุกสมบัติ</b>ของโลหะ
+          ทั้งการนำไฟฟ้า การนำความร้อน ความเป็นมันวาว และการตีแผ่ได้ — จะได้เจอในด่านต่อ ๆ ไป</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 2 — ห้องจัดเรียงอะตอม
+   ไอออนบวกในโลหะไม่ต้องสลับประจุเหมือนผลึกไอออนิก จึงเรียงชิดกันได้แน่นที่สุด
+   ด่านนี้ให้เติมอะตอมลงช่องว่างในผลึกจริงสามแบบ แล้วเทียบเลขโคออร์ดิเนชันกัน
+   ========================================================================= */
+/* เส้นกรอบของหน่วยเซลล์ · เชื่อมเฉพาะคู่ที่ห่างกันเท่ากับด้านสั้นที่สุดในกลุ่มที่ระบุ
+   ทำให้ลูกบาศก์ (BCC · FCC) และหกเหลี่ยม (HCP) อ่านออกว่าเป็นรูปทรงอะไร ไม่ใช่กองลูกกลม */
+function frameEdges(sites, idxs){
+  const d3 = (a,b)=>Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]);
+  let min = Infinity;
+  for(let a=0;a<idxs.length;a++) for(let b=a+1;b<idxs.length;b++)
+    min = Math.min(min, d3(sites[idxs[a]], sites[idxs[b]]));
+  const out = [];
+  for(let a=0;a<idxs.length;a++) for(let b=a+1;b<idxs.length;b++)
+    if(Math.abs(d3(sites[idxs[a]], sites[idxs[b]]) - min) < 0.01) out.push([idxs[a], idxs[b]]);
+  return out;
+}
+
+const PACK_R = 0.17;                             // รัศมีอะตอมในผังผลึก เทียบกับระยะห่างระหว่างจุด
+                                                 // ใช้แบบลูกกลม-แท่ง ลูกเล็กพอที่จะเห็นโครงกรอบและเส้นเลขโคออร์ดิเนชันข้างใน
+
+/* ทุกผังอยู่ในกล่อง ±1 หน่วย จะได้ใช้สเกลใกล้เคียงกัน
+   bcc  ลูกบาศก์กลางตัว · มุม 8 + กลาง 1 · เลขโคออร์ดิเนชัน 8
+   fcc  ลูกบาศก์กลางหน้า · มุม 8 + กลางหน้า 6 · เลขโคออร์ดิเนชัน 12
+   hcp  หกเหลี่ยมอัดแน่น · ชั้นกลาง 6 รอบ 1 + ชั้นบนล่างชั้นละ 3 · เลขโคออร์ดิเนชัน 12 */
+const PACK_SET = [
+  { id:'bcc', nm:'ลูกบาศก์กลางตัว', en:'body-centred cubic (BCC)', el:'Na',
+    cn:8, eff:'68%', ex:'Na · K · Fe (อุณหภูมิห้อง) · Cr',
+    rx:-0.44, ry:0.21, scale:148, holes:[1,4,6], frame:[1,2,3,4,5,6,7,8], hub:0,
+    sites:[[0,0,0]].concat([-1,1].flatMap(a=>[-1,1].flatMap(b=>[-1,1].map(c=>[a*0.62,b*0.62,c*0.62])))),
+    note:'อะตอมกลางสัมผัสอะตอมที่มุมทั้ง <b>8 ตัว</b> · จัดเรียงแน่น <b>68%</b> ของปริมาตร' },
+
+  { id:'fcc', nm:'ลูกบาศก์กลางหน้า', en:'face-centred cubic (FCC)', el:'Cu',
+    cn:12, eff:'74%', ex:'Cu · Al · Ag · Au · Pb',
+    rx:-0.30, ry:0.21, scale:125, holes:[2,5,8], frame:[0,1,2,3,4,5,6,7],
+    sites:[-1,1].flatMap(a=>[-1,1].flatMap(b=>[-1,1].map(c=>[a*0.8,b*0.8,c*0.8])))
+      .concat([[0.8,0,0],[-0.8,0,0],[0,0.8,0],[0,-0.8,0],[0,0,0.8],[0,0,-0.8]]),
+    note:'อะตอมที่กลางหน้าแต่ละหน้าสัมผัสเพื่อนบ้านถึง <b>12 ตัว</b> · จัดเรียงแน่นที่สุดที่ <b>74%</b>' },
+
+  { id:'hcp', nm:'หกเหลี่ยมอัดแน่น', en:'hexagonal close-packed (HCP)', el:'Zn',
+    cn:12, eff:'74%', ex:'Zn · Mg · Ti · Co',
+    rx:-0.35, ry:0.10, scale:158, holes:[3,8,11], frame:[1,2,3,4,5,6], hub:0,
+    sites:[[0,0,0]]
+      .concat([0,1,2,3,4,5].map(i=>[Math.cos(i*Math.PI/3)*0.86, 0, Math.sin(i*Math.PI/3)*0.86]))
+      .concat([0,1,2].map(i=>[Math.cos(i*2*Math.PI/3+0.52)*0.50, 0.72, Math.sin(i*2*Math.PI/3+0.52)*0.50]))
+      .concat([0,1,2].map(i=>[Math.cos(i*2*Math.PI/3+0.52)*0.50, -0.72, Math.sin(i*2*Math.PI/3+0.52)*0.50])),
+    note:'อะตอมกลางถูกล้อมด้วยเพื่อนบ้าน <b>12 ตัว</b> — 6 ตัวในระนาบเดียวกัน กับชั้นบน-ล่างชั้นละ 3 ตัว · แน่น <b>74%</b>' }
+];
+
+/* เล่นห้องจัดเรียงอะตอมจนครบทุกโครงสร้าง แล้วเรียก onDone พร้อมจำนวนครั้งที่วางผิด */
+function packLab(hostId, pbId, onDone){
+  const host = document.getElementById(hostId), pb = document.getElementById(pbId);
+  const VB_W = 470, VB_H = 350, NEAR = 46;
+  let idx = 0, wrong = 0;
+
+  function start(){
+    const P = PACK_SET[idx], E = MET[P.el];
+    const filled = {};
+    let armed = false, done = false;
+    const view = { rx:P.rx, ry:P.ry, scale:P.scale, cx:VB_W/2, cy:VB_H/2 - 4, dist:16 };
+
+    host.innerHTML = `<div class="lab">
+      <div class="labtop">
+        <div><span class="fml">${P.nm}</span> <span class="nm">${P.en}</span></div>
+        <div class="cnt" id="cnt"></div>
+      </div>
+      <div class="molwrap" style="max-width:520px">
+        <svg class="molsvg" id="pk" viewBox="0 0 ${VB_W} ${VB_H}"
+             aria-label="ผลึกโลหะแบบ ${P.en}"></svg>
+        <div class="spinhint">🔄 ลากที่ภาพเพื่อหมุนดูรอบด้าน</div>
+      </div>
+      <div class="palette" id="pal">
+        <button class="bchip" data-t="a"><span class="ionchip pos">${P.el}<sup>${chg(E.v)}</sup></span>
+          ไอออนบวกของ ${E.nm}</button>
+        <span class="small muted" style="align-self:center">เลือกไอออนแล้วแตะช่องว่าง <b>?</b> ในผลึก</span>
+      </div>
+      <div class="feedback" id="pfb"></div>
+    </div>`;
+    const svg = document.getElementById('pk'), fb = document.getElementById('pfb');
+    const holes = P.holes.filter(i=>i < P.sites.length);
+
+    document.querySelector('#pal .bchip').onclick = function(){
+      if(done) return;
+      armed = !armed;
+      this.classList.toggle('sel', armed);
+    };
+
+    function draw(){
+      const Q = P.sites.map(p=>project3(p, view));
+      const it = [];
+      P.sites.forEach((p, i)=>{
+        const hole = holes.includes(i) && !filled[i];
+        const r = PACK_R*view.scale*Q[i].k;
+        if(hole){
+          it.push({ z:Q[i].z, hit:{ i, x:Q[i].x, y:Q[i].y },
+            g:`<circle class="hole" cx="${Q[i].x.toFixed(1)}" cy="${Q[i].y.toFixed(1)}" r="${r.toFixed(1)}"/>
+               <text class="holeq" x="${Q[i].x.toFixed(1)}" y="${Q[i].y.toFixed(1)}"
+                 font-size="${(r*0.9).toFixed(0)}">?</text>` });
+        }else{
+          it.push({ z:Q[i].z, g:`<circle class="ionb" cx="${Q[i].x.toFixed(1)}" cy="${Q[i].y.toFixed(1)}"
+            r="${r.toFixed(1)}" fill="url(#mp)" stroke="${E.d}" stroke-width="${(1.5*Q[i].k).toFixed(1)}"/>
+            <text class="iont" x="${Q[i].x.toFixed(1)}" y="${Q[i].y.toFixed(1)}"
+              font-size="${(r*0.66).toFixed(1)}">${P.el}</text>` });
+        }
+      });
+      it.sort((a,b)=> a.z - b.z);
+      // เส้นกรอบวาดก่อนลูกกลมทั้งหมด จะได้เป็นโครงจาง ๆ อยู่ด้านหลัง
+      const ln = p => `x1="${Q[p[0]].x.toFixed(1)}" y1="${Q[p[0]].y.toFixed(1)}"
+                       x2="${Q[p[1]].x.toFixed(1)}" y2="${Q[p[1]].y.toFixed(1)}"`;
+      let wire = frameEdges(P.sites, P.frame).map(e=>`<line class="latbond" ${ln(e)}/>`).join('');
+      if(P.hub != null)                      // เส้นประจากอะตอมกลางไปหาเพื่อนบ้านทุกตัว = เลขโคออร์ดิเนชัน
+        wire += P.sites.map((_, i)=> i===P.hub ? '' :
+          `<line class="latbond cn" ${ln([P.hub, i])}/>`).join('');
+      svg.innerHTML = `<defs><radialGradient id="mp" cx="34%" cy="30%" r="72%">
+          <stop offset="0%" stop-color="#fff" stop-opacity=".82"/>
+          <stop offset="42%" stop-color="${E.c}"/><stop offset="100%" stop-color="${E.d}"/></radialGradient></defs>`
+        + wire + it.map(o=>o.g).join('');
+      svg._hits = it.filter(o=>o.hit).map(o=>o.hit);
+      const left = holes.filter(i=>!filled[i]).length;
+      document.getElementById('cnt').textContent =
+        `เหลือช่องว่าง ${left} ช่อง · โครงสร้างที่ ${idx+1}/${PACK_SET.length}`;
+    }
+
+    function holeAt(cx, cy){
+      let best = null, bd = NEAR;
+      (svg._hits||[]).forEach(h=>{
+        const d = Math.hypot(h.x-cx, h.y-cy);
+        if(d < bd){ bd = d; best = h; }
+      });
+      return best;
+    }
+    spinner(svg, ()=>view, draw, ev=>{
+      if(done) return;
+      const r = svg.getBoundingClientRect();
+      const pt = { x:(ev.clientX-r.left)/r.width*VB_W, y:(ev.clientY-r.top)/r.height*VB_H };
+      const h = holeAt(pt.x, pt.y);
+      if(!h) return;
+      if(!armed){
+        fb.className='feedback show bad';
+        fb.innerHTML='❌ ยังไม่ได้เลือกไอออน — แตะปุ่ม<b>ไอออนบวก</b>ด้านล่างก่อน';
+        return;
+      }
+      filled[h.i] = true;
+      fb.className='feedback show good';
+      fb.innerHTML = `✅ ถูกต้อง — ในผลึกโลหะทุกช่องเป็น<b>ไอออนบวกชนิดเดียวกันหมด</b>
+        ไม่ต้องสลับประจุเหมือนผลึกไอออนิก จึงเรียงชิดกันได้แน่นกว่า`;
+      draw();
+      if(holes.every(i=>filled[i])) finish();
+    });
+
+    function finish(){
+      done = true;
+      if(pb) pb.style.width = ((idx+1)/PACK_SET.length*100)+'%';
+      fb.className='feedback show good';
+      fb.innerHTML = `🎉 <b>ผลึก${P.nm}สมบูรณ์!</b> ${P.note}
+        <div class="ioneq">
+          <div>เลขโคออร์ดิเนชัน: <b>${P.cn}</b> · ประสิทธิภาพการจัดเรียง: <b>${P.eff}</b></div>
+          <div class="tot">โลหะที่มีโครงสร้างแบบนี้: <b>${P.ex}</b></div>
+        </div>
+        <div style="margin-top:12px"><button class="btn primary sm" id="nx">
+          ${idx===PACK_SET.length-1?'ไปช่วงที่ 2 →':'โครงสร้างถัดไป →'}</button></div>`;
+      fb.querySelector('#nx').onclick = ()=>{
+        idx++;
+        if(idx < PACK_SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
+        else onDone(wrong);
+      };
+    }
+    draw();
+  }
+  start();
+}
+
+const PACK_PAIRS = [
+  { k:'bcc', n:'8', em:'BCC', h:'ลูกบาศก์กลางตัว · อะตอมที่มุม 8 ตัวกับกลางลูกบาศก์อีก 1 ตัว',
+    d:'อะตอมกลางสัมผัสอะตอมที่มุมทั้ง 8 ตัว · จัดเรียงแน่น <b>68%</b> · พบใน Na · K · Cr' },
+  { k:'fcc', n:'12 (ลูกบาศก์)', em:'FCC', h:'ลูกบาศก์กลางหน้า · อะตอมที่มุม 8 ตัวกับกลางหน้าอีก 6 ตัว',
+    d:'จัดเรียงแน่นที่สุดที่ <b>74%</b> · ระนาบเลื่อนได้ง่าย โลหะกลุ่มนี้จึง<b>ตีแผ่ได้ดีเป็นพิเศษ</b> เช่น Cu · Al · Au' },
+  { k:'hcp', n:'12 (หกเหลี่ยม)', em:'HCP', h:'หกเหลี่ยมอัดแน่น · 6 ตัวในระนาบ กับชั้นบน-ล่างชั้นละ 3 ตัว',
+    d:'แน่น <b>74%</b> เท่า FCC แต่เรียงชั้นคนละแบบ · พบใน Zn · Mg · Ti' },
+  { k:'eff', n:'ประสิทธิภาพการจัดเรียง', em:'📦', h:'สัดส่วนปริมาตรที่อะตอมกินจริง เทียบกับปริมาตรทั้งหมด',
+    d:'ยิ่งสูงยิ่งอัดกันแน่น · FCC กับ HCP ได้ <b>74%</b> ซึ่งเป็นค่าสูงสุดที่ทรงกลมขนาดเท่ากันทำได้' },
+  { k:'why', n:'เหตุที่โลหะเรียงแน่นกว่าผลึกไอออนิก', em:'🧲', h:'ข้อได้เปรียบของอนุภาคที่มีประจุชนิดเดียว',
+    d:'ผลึกไอออนิกต้องสลับบวก-ลบ จึงถูกบังคับรูปแบบการเรียง · โลหะมีแต่<b>ไอออนบวกเหมือนกันหมด</b> จัดชิดกันได้อิสระ' },
+  { k:'sea', n:'สิ่งที่อยู่ในช่องว่างระหว่างไอออน', em:'🌊', h:'ช่องว่างระหว่างไอออนบวกในผลึกโลหะมีอะไรอยู่',
+    d:'<b>ทะเลอิเล็กตรอน</b> — อิเล็กตรอนอิสระที่วิ่งไปทั่ว เป็นตัวยึดไอออนบวกทั้งหมดไว้ด้วยกัน' }
+];
+
+const PACK_Q = [
+  { q:'เพราะเหตุใดผลึกโลหะจึงจัดเรียงอนุภาคได้<b>แน่นกว่า</b>ผลึกไอออนิก',
+    o:['เพราะอนุภาคในโลหะเป็นไอออนบวกเหมือนกันหมด ไม่ต้องสลับประจุ',
+       'เพราะไอออนบวกในโลหะมีขนาดเล็กกว่าไอออนในผลึกไอออนิกมาก',
+       'เพราะทะเลอิเล็กตรอนออกแรงกดให้ไอออนบวกเบียดกันแน่นขึ้น',
+       'เพราะโลหะมีจุดหลอมเหลวสูงกว่ามาก อนุภาคจึงต้องอยู่ชิดกันมากกว่า'],
+    a:0, e:'ผลึกไอออนิกต้องเรียงสลับบวก-ลบ รูปแบบการเรียงจึงถูกบังคับ<br>' +
+      'โลหะมีแต่<b>ไอออนบวกชนิดเดียว</b> จะวางชิดกันแบบไหนก็ได้ จึงเลือกแบบที่แน่นที่สุดได้' },
+  { q:'โครงสร้างแบบ FCC กับ HCP มีอะไรเหมือนกัน',
+    o:['เลขโคออร์ดิเนชัน 12 และประสิทธิภาพการจัดเรียง 74% เท่ากัน',
+       'เลขโคออร์ดิเนชัน 8 และประสิทธิภาพการจัดเรียง 68% เท่ากัน',
+       'มีอะตอมอยู่กลางลูกบาศก์เหมือนกันทั้งสองแบบ',
+       'เป็นโครงสร้างของโลหะหมู่ 1 ทั้งหมดเหมือนกัน'],
+    a:0, e:'ทั้งคู่เป็นการ<b>อัดแน่นที่สุด</b>ที่ทรงกลมขนาดเท่ากันทำได้ — CN <b>12</b> และแน่น <b>74%</b><br>' +
+      'ต่างกันแค่<b>ลำดับการวางชั้น</b> · ที่มีอะตอมกลางลูกบาศก์คือ BCC ซึ่ง CN = 8 และแน่น 68%' },
+  { q:'ในผลึกโลหะ ช่องว่างระหว่างไอออนบวกมีอะไรอยู่',
+    o:['ทะเลอิเล็กตรอนที่เคลื่อนที่ได้อิสระทั่วทั้งก้อน',
+       'ไอออนลบของธาตุอโลหะที่เข้ามาแทรกอยู่ระหว่างกลาง',
+       'ช่องว่างจริง ๆ ไม่มีอนุภาคใดอยู่ในนั้นเลยแม้แต่น้อย',
+       'โมเลกุลของแก๊สที่ถูกกักไว้ตั้งแต่ตอนหลอมเหลว'],
+    a:0, e:'<b>ทะเลอิเล็กตรอน</b>คือสิ่งที่อยู่รอบไอออนบวกทุกตัว และเป็นตัวยึดผลึกไว้ด้วยกัน<br>' +
+      'ถ้าไม่มีอิเล็กตรอนพวกนี้ ไอออนบวกล้วน ๆ จะผลักกันจนก้อนโลหะแตกกระจาย' },
+  { q:'เหล็กที่อุณหภูมิห้องมีโครงสร้างแบบ BCC ซึ่งมีเลขโคออร์ดิเนชันเท่าใด',
+    o:['8 ตัว คือมุมลูกบาศก์ทั้งแปดที่ล้อมอะตอมกลางอยู่',
+       '6 ตัว คือทิศบน ล่าง หน้า หลัง ซ้าย และขวา',
+       '12 ตัว คือ 6 ตัวในระนาบกับชั้นบน-ล่างชั้นละ 3 ตัว',
+       '4 ตัว เรียงเป็นทรงสี่หน้ารอบอะตอมกลาง'],
+    a:0, e:'BCC ย่อมาจาก <b>body-centred cubic</b> — อะตอมกลางลูกบาศก์สัมผัสอะตอมที่มุมทั้ง <b>8 ตัว</b><br>' +
+      '6 คือเลขโคออร์ดิเนชันของ NaCl · 12 คือของ FCC กับ HCP · 4 คือของ ZnS' },
+  { q:'ข้อใดอธิบายความสัมพันธ์ระหว่าง<b>การจัดเรียงชิด</b>กับ<b>การตีแผ่</b>ได้ถูกต้อง',
+    o:['โครงสร้างที่อัดแน่นมีระนาบอะตอมที่เลื่อนผ่านกันได้ง่าย จึงตีแผ่ได้ดี',
+       'โครงสร้างที่อัดแน่นทำให้อะตอมขยับไม่ได้เลย โลหะจึงแข็งและเปราะ',
+       'การตีแผ่ไม่เกี่ยวกับการจัดเรียง แต่ขึ้นกับจุดหลอมเหลวเพียงอย่างเดียว',
+       'โครงสร้างแบบ BCC ตีแผ่ได้ดีที่สุดเพราะมีช่องว่างมากที่สุด'],
+    a:0, e:'ในโครงสร้างอัดแน่นอย่าง <b>FCC</b> มีระนาบอะตอมที่เลื่อนไถลผ่านกันได้ง่าย<br>' +
+      'ทองแดง อะลูมิเนียม และทองคำจึงตีแผ่เป็นแผ่นบางมากได้ · และที่สำคัญคือ<b>ทะเลอิเล็กตรอนยังยึดไว้</b>หลังเลื่อน' },
+  { q:'ประสิทธิภาพการจัดเรียง <b>74%</b> หมายความว่าอย่างไร',
+    o:['อะตอมกินปริมาตรจริง 74% ที่เหลือเป็นช่องว่างระหว่างอะตอม',
+       'อะตอม 74% ของทั้งก้อนเรียงตัวเป็นระเบียบ ที่เหลือเรียงมั่ว',
+       'มีอิเล็กตรอนอิสระอยู่ 74% ของอิเล็กตรอนทั้งหมดในก้อน',
+       'โลหะนำไฟฟ้าได้ 74% เมื่อเทียบกับตัวนำที่ดีที่สุด'],
+    a:0, e:'เป็นสัดส่วน<b>ปริมาตร</b>ที่ทรงกลมกินจริง เทียบกับปริมาตรทั้งหมด<br>' +
+      '74% เป็นค่าสูงสุดที่ทรงกลมขนาดเท่ากันจัดเรียงได้ · BCC ได้ 68% ซึ่งหลวมกว่าเล็กน้อย' }
+];
+
+function stagePack(){
+  let labWrong = 0, matchWrong = 0;
+  drawLab();
+
+  function drawLab(){
+    app.innerHTML = stageShell('pack', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เติมไอออนบวกลงช่องว่าง <b>?</b> ในผลึกให้ครบทั้ง ${PACK_SET.length} โครงสร้าง
+        <span class="small muted">(เลือกไอออนจากปุ่มด้านล่างก่อน แล้วแตะช่องว่าง · ลากที่ภาพเพื่อหมุนดูรอบด้าน)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="lab"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>ต่างจากด่านผลึกไอออนิกตรงไหน</b> — ที่นั่นต้องคิดว่าช่องนี้ควรเป็นบวกหรือลบ
+        แต่ในผลึกโลหะ<b>ทุกช่องเป็นไอออนบวกชนิดเดียวกันหมด</b> สิ่งที่ต้องดูจึงเป็น
+        <b>รูปแบบการเรียง</b>กับ<b>จำนวนเพื่อนบ้าน</b>แทน
+      </div>
+    `);
+    packLab('lab', 'pb', wrong=>{
+      labWrong = wrong; toast('สร้างผลึกครบแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawMatch, 900);
+    });
+  }
+
+  function drawMatch(){
+    app.innerHTML = stageShell('pack', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> จับคู่โครงสร้างและคำศัพท์กับความหมาย — ให้ครบ ${PACK_PAIRS.length} คู่</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(PACK_PAIRS, 'desc')}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindMatch(PACK_PAIRS, wrong=>{
+      matchWrong = wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz, 900);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('pack', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องการจัดเรียงอะตอมให้ครบ ${PACK_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(PACK_Q, 'qhost', qWrong=>{
+      const miss = labWrong + matchWrong + qWrong;
+      const got = miss<=2?3:miss<=5?2:1;
+      stageMiss = miss;
+      finishStage('pack', got, 80-Math.min(miss*6,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • ผลึกโลหะมีแต่<b>ไอออนบวกชนิดเดียว</b> จึงจัดเรียงชิดกันได้แน่นกว่าผลึกไอออนิก<br>
+          • <b>BCC</b> เลขโคออร์ดิเนชัน 8 · แน่น 68% (Na · K · Cr)<br>
+          • <b>FCC</b> และ <b>HCP</b> เลขโคออร์ดิเนชัน 12 · แน่น 74% ซึ่งเป็นค่าสูงสุด<br>
+          • ช่องว่างระหว่างไอออนบวกคือที่อยู่ของ<b>ทะเลอิเล็กตรอน</b></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> ในผลึกโลหะ<b>ไม่มีไอออนลบ</b>อยู่ในช่องว่าง
+          — สิ่งที่อยู่ตรงนั้นคืออิเล็กตรอนอิสระ ซึ่งเป็นคนละอย่างกับไอออนลบ</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> โครงสร้างที่อัดแน่นอย่าง FCC มีระนาบอะตอมที่เลื่อนผ่านกันง่าย
+          ทองแดงกับทองคำจึงตีแผ่ได้ดีเป็นพิเศษ — จะพิสูจน์ให้เห็นในด่านสมบัติของโลหะ</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 3 — ห้องวัดความแข็งแรง
+   ความแข็งแรงของพันธะโลหะขึ้นกับสองอย่าง คือจำนวนเวเลนซ์อิเล็กตรอนที่ปล่อยเข้าทะเล
+   กับขนาดของไอออนบวก · ด่านนี้จึงให้เรียงจุดหลอมเหลวเองแล้วค่อยสรุปเป็นกฎ
+   ========================================================================= */
+const MP_STEPS = [
+  { n:'K · 63 °C',   e:'เวเลนซ์อิเล็กตรอน <b>1</b> และไอออนบวก<b>ใหญ่ที่สุด</b>ในชุดนี้ · พันธะจึงอ่อนที่สุด อ่อนจนใช้มีดตัดได้' },
+  { n:'Na · 98 °C',  e:'เวเลนซ์อิเล็กตรอน <b>1</b> เท่ากับ K แต่ไอออน<b>เล็กกว่า</b> ทะเลอิเล็กตรอนจึงอยู่ใกล้ประจุบวกมากกว่า' },
+  { n:'Ca · 842 °C', e:'ขึ้นมาเป็นเวเลนซ์อิเล็กตรอน <b>2</b> · ทะเลอิเล็กตรอนหนาแน่นขึ้นเท่าตัว จุดหลอมเหลวจึงพุ่งขึ้นหลายเท่า' },
+  { n:'Mg · 650 °C', e:'เวเลนซ์อิเล็กตรอน <b>2</b> เท่า Ca แต่ไอออนเล็กกว่า จึงควรสูงกว่า — ทว่าโครงสร้างผลึกต่างกัน (HCP) ค่าจริงจึงต่ำกว่า Ca เล็กน้อย' },
+  { n:'Al · 660 °C',  e:'เวเลนซ์อิเล็กตรอน <b>3</b> มากที่สุดในกลุ่มนี้ และไอออนเล็ก · แม้จุดหลอมเหลวใกล้ Mg แต่<b>ความแข็งแรงเชิงกล</b>สูงกว่ามาก' },
+  { n:'Fe · 1538 °C', e:'โลหะแทรนซิชันใช้อิเล็กตรอนจากชั้น d ร่วมด้วย ทะเลอิเล็กตรอนจึงหนาแน่นกว่าโลหะหมู่ 1–2 มาก' }
+];
+
+/* จับคู่ปัจจัยกับผลที่เกิดขึ้น · คำใบ้คือโจทย์ จึงเปิดคำใบ้ไว้แต่ซ่อนคำอธิบาย */
+const MP_PAIRS = [
+  { k:'ve', n:'เวเลนซ์อิเล็กตรอนมากขึ้น', em:'⚡', h:'Na (1 ตัว) → Mg (2 ตัว) → Al (3 ตัว)',
+    d:'ยิ่งแต่ละอะตอมปล่อยอิเล็กตรอนมาก ทะเลอิเล็กตรอนยิ่ง<b>หนาแน่น</b> และไอออนบวกยิ่งมีประจุมาก แรงดึงดูดจึงแรงขึ้น' },
+  { k:'size', n:'ไอออนบวกเล็กลง', em:'📏', h:'K⁺ ใหญ่กว่า Na⁺ ทั้งที่ประจุเท่ากัน',
+    d:'ไอออนเล็กทำให้ทะเลอิเล็กตรอน<b>เข้าใกล้ประจุบวก</b>ได้มากกว่า แรงดึงดูดจึงแรงกว่า (Na 98 °C > K 63 °C)' },
+  { k:'d', n:'โลหะแทรนซิชัน', em:'🔩', h:'เหล็ก ทองแดง โครเมียม ทังสเตน',
+    d:'ใช้อิเล็กตรอนจากชั้น <b>d</b> เข้าร่วมด้วย ทะเลอิเล็กตรอนหนาแน่นกว่าโลหะหมู่ 1–2 มาก จุดหลอมเหลวจึงสูงกว่าหลายเท่า' },
+  { k:'mp', n:'จุดหลอมเหลวสูง', em:'🔥', h:'ผลที่วัดได้เมื่อพันธะโลหะแข็งแรง',
+    d:'ต้องใช้พลังงานมากขึ้นเพื่อเอาชนะแรงดึงดูดระหว่างไอออนบวกกับทะเลอิเล็กตรอน · W หลอมที่ 3,422 °C' },
+  { k:'hard', n:'ความแข็งกับความหนาแน่น', em:'💪', h:'ผลอีกสองอย่างที่มากับพันธะที่แข็งแรง',
+    d:'พันธะแข็งแรงทำให้ผลึก<b>แข็ง</b>และอนุภาคอัดกัน<b>แน่น</b> · ต่างจากโลหะหมู่ 1 ที่อ่อนจนใช้มีดตัดได้' },
+  { k:'grp1', n:'โลหะหมู่ 1 อ่อนผิดปกติ', em:'🔪', h:'Li · Na · K · Rb ตัดด้วยมีดได้',
+    d:'ปล่อยอิเล็กตรอนได้เพียง <b>1 ตัว</b> และไอออนมีขนาดใหญ่ พันธะจึงอ่อนที่สุดในบรรดาโลหะทั้งหมด' }
+];
+
+const MP_Q = [
+  { q:'เพราะเหตุใดอะลูมิเนียมจึงมีพันธะโลหะแข็งแรงกว่าโซเดียมมาก',
+    o:['เพราะอะลูมิเนียมปล่อยอิเล็กตรอน 3 ตัว ส่วนโซเดียม 1 ตัว',
+       'เพราะอะลูมิเนียมมีมวลอะตอมมากกว่าโซเดียมอยู่หลายเท่าตัว',
+       'เพราะอะลูมิเนียมมีจำนวนโปรตอนในนิวเคลียสมากกว่าโซเดียมหลายตัว',
+       'เพราะอะลูมิเนียมอยู่คนละคาบกับโซเดียมในตารางธาตุ'],
+    a:0, e:'Al ปล่อย <b>3 อิเล็กตรอน</b> ต่ออะตอม เกิด Al³⁺ ในทะเลอิเล็กตรอนที่หนาแน่นกว่าสามเท่า<br>' +
+      'ส่วน Na ปล่อยแค่ 1 เกิด Na⁺ · ทั้งประจุที่มากกว่าและอิเล็กตรอนที่มากกว่าทำให้แรงดึงดูดแรงกว่ามาก' },
+  { q:'โซเดียมหลอมเหลวที่ 98 °C ส่วนโพแทสเซียมที่ 63 °C ทั้งที่ปล่อยอิเล็กตรอนเท่ากัน เพราะเหตุใด',
+    o:['เพราะ K⁺ ใหญ่กว่า Na⁺ ประจุบวกจึงอยู่ห่างทะเลอิเล็กตรอน',
+       'เพราะ K⁺ มีประจุน้อยกว่า Na⁺ อยู่ครึ่งหนึ่งพอดี',
+       'เพราะโพแทสเซียมมีโครงสร้างผลึกที่หลวมกว่าโซเดียมมาก',
+       'เพราะโพแทสเซียมมีอิเล็กตรอนอิสระน้อยกว่าโซเดียมต่ออะตอม'],
+    a:0, e:'ทั้งคู่เป็นโลหะหมู่ 1 ปล่อยอิเล็กตรอน <b>1 ตัว</b> และเกิดไอออน <b>1+</b> เหมือนกัน<br>' +
+      'ตัวแปรเดียวที่ต่างคือ<b>ขนาดไอออน</b> — K⁺ ใหญ่กว่า ระยะจากประจุบวกถึงทะเลอิเล็กตรอนจึงไกลกว่า แรงดึงดูดอ่อนลง' },
+  { q:'เหตุใดโลหะแทรนซิชันอย่างเหล็กและทังสเตนจึงมีจุดหลอมเหลวสูงมาก',
+    o:['เพราะใช้อิเล็กตรอนชั้น d ร่วมด้วย ทะเลอิเล็กตรอนจึงหนาแน่น',
+       'เพราะไอออนบวกของโลหะแทรนซิชันมีขนาดใหญ่ที่สุดในตารางธาตุ',
+       'เพราะโลหะแทรนซิชันมีโครงสร้างผลึกแบบ BCC ซึ่งแน่นที่สุด',
+       'เพราะโลหะแทรนซิชันไม่ปล่อยอิเล็กตรอนเข้าทะเลอิเล็กตรอนเลย'],
+    a:0, e:'นอกจากเวเลนซ์อิเล็กตรอนชั้น s แล้ว โลหะแทรนซิชันยังใช้อิเล็กตรอนชั้น <b>d</b> เข้าร่วมได้<br>' +
+      'ทะเลอิเล็กตรอนจึงหนาแน่นกว่าโลหะหมู่ 1–2 มาก · ทังสเตนหลอมที่ <b>3,422 °C</b> จึงใช้ทำไส้หลอดไฟได้' },
+  { q:'โลหะหมู่ 1 อย่างโซเดียมและโพแทสเซียม<b>อ่อนจนใช้มีดตัดได้</b> อธิบายได้อย่างไร',
+    o:['ปล่อยอิเล็กตรอนได้ 1 ตัวและไอออนใหญ่ พันธะจึงอ่อนที่สุด',
+       'มีโครงสร้างผลึกแบบ FCC ซึ่งระนาบอะตอมเลื่อนได้ง่ายที่สุด',
+       'ไม่มีทะเลอิเล็กตรอนยึดไอออนบวกไว้เหมือนโลหะชนิดอื่น',
+       'ไอออนบวกของมันมีประจุน้อยกว่าโลหะชนิดอื่นถึงสามเท่า'],
+    a:0, e:'ปัจจัยทั้งสองอย่างเข้าทาง<b>ทำให้พันธะอ่อน</b>พร้อมกัน — ประจุน้อยที่สุด (1+) และไอออนใหญ่<br>' +
+      'โลหะหมู่ 1 ยังมีทะเลอิเล็กตรอนตามปกติ เพียงแต่หนาแน่นน้อยที่สุด' },
+  { q:'ถ้าเทียบ Mg กับ Ca ซึ่งอยู่หมู่เดียวกัน ควรคาดว่าโลหะใดมีพันธะแข็งแรงกว่า และเพราะเหตุใด',
+    o:['Mg เพราะไอออนเล็กกว่า ทะเลอิเล็กตรอนจึงเข้าใกล้ประจุบวกได้มากกว่า',
+       'Ca เพราะไอออนใหญ่กว่า จึงมีพื้นที่สัมผัสกับทะเลอิเล็กตรอนมากกว่า',
+       'Mg เพราะปล่อยอิเล็กตรอนได้มากกว่า Ca อยู่หนึ่งตัวต่ออะตอม',
+       'เท่ากัน เพราะอยู่หมู่เดียวกันจึงปล่อยอิเล็กตรอนเท่ากันพอดี'],
+    a:0, e:'ทั้งคู่เป็นหมู่ 2 ปล่อย <b>2 อิเล็กตรอน</b> เท่ากัน ตัวแปรที่เหลือคือ<b>ขนาด</b> — Mg²⁺ เล็กกว่า Ca²⁺<br>' +
+      'ตามหลักจึงคาดว่า Mg แข็งแรงกว่า · แต่ค่าจุดหลอมเหลวจริงกลับใกล้กันมาก (650 กับ 842 °C) เพราะ<b>โครงสร้างผลึกต่างกัน</b> ' +
+      'เป็นตัวอย่างว่ากฎนี้ใช้ทำนายแนวโน้มได้ แต่ไม่ได้ตายตัวเสมอไป' },
+  { q:'ข้อใดสรุป<b>ปัจจัยที่กำหนดความแข็งแรงของพันธะโลหะ</b>ได้ครบถ้วนที่สุด',
+    o:['จำนวนเวเลนซ์อิเล็กตรอนที่ปล่อยออกมา และขนาดของไอออนบวก',
+       'มวลอะตอมของธาตุ และจำนวนนิวตรอนที่อยู่ในนิวเคลียส',
+       'จุดเดือดของธาตุ และความหนาแน่นของก้อนโลหะ',
+       'จำนวนชั้นพลังงานของอะตอม และสีของโลหะเมื่อขัดผิวจนเป็นมันวาว'],
+    a:0, e:'สองปัจจัยหลักคือ <b>จำนวนอิเล็กตรอนที่ปล่อยเข้าทะเล</b> (ยิ่งมากยิ่งแรง) และ<b>ขนาดไอออนบวก</b> (ยิ่งเล็กยิ่งแรง)<br>' +
+      'จุดหลอมเหลว ความแข็ง และความหนาแน่นเป็น<b>ผล</b>ที่ตามมา ไม่ใช่สาเหตุ' }
+];
+
+function stageStrength(){
+  let orderWrong = 0, matchWrong = 0;
+  drawOrder();
+
+  function drawOrder(){
+    app.innerHTML = stageShell('strength', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> เรียงโลหะทั้ง ${MP_STEPS.length} ชนิดจาก<b>จุดหลอมเหลวต่ำไปสูง</b>
+        <span class="small muted">(ดูจำนวนเวเลนซ์อิเล็กตรอนก่อน แล้วจึงดูขนาดไอออน)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${orderBoard(MP_STEPS, 'เริ่มจากโลหะที่พันธะอ่อนที่สุด →')}
+      <div class="feedback" id="fb"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>กติกาเทียบความแข็งแรงของพันธะโลหะ</b><br>
+        1. ดู<b>จำนวนเวเลนซ์อิเล็กตรอน</b>ก่อน — ปล่อยได้มากกว่า ทะเลอิเล็กตรอนหนาแน่นกว่า พันธะแรงกว่า<br>
+        2. ถ้าปล่อยเท่ากัน จึงดู<b>ขนาดไอออนบวก</b> — เล็กกว่าแปลว่าทะเลอิเล็กตรอนเข้าใกล้ประจุบวกได้มากกว่า
+      </div>
+    `);
+    bindOrder(MP_STEPS, wrong=>{
+      orderWrong = wrong; toast('เรียงถูกแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawMatch, 1000);
+    });
+  }
+
+  function drawMatch(){
+    app.innerHTML = stageShell('strength', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> จับคู่ปัจจัยกับผลที่เกิดขึ้น — ให้ครบ ${MP_PAIRS.length} คู่</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(MP_PAIRS, 'desc')}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindMatch(MP_PAIRS, wrong=>{
+      matchWrong = wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz, 900);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('strength', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องความแข็งแรงของพันธะโลหะให้ครบ ${MP_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(MP_Q, 'qhost', qWrong=>{
+      const miss = orderWrong + matchWrong + qWrong;
+      const got = miss<=2?3:miss<=5?2:1;
+      stageMiss = miss;
+      finishStage('strength', got, 80-Math.min(miss*6,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • พันธะโลหะแข็งแรงขึ้นเมื่อ <b>ปล่อยเวเลนซ์อิเล็กตรอนมากขึ้น</b> หรือ <b>ไอออนบวกเล็กลง</b><br>
+          • ดู<b>จำนวนอิเล็กตรอนก่อน</b> ถ้าเท่ากันจึงดูขนาดไอออน (Na 98 °C > K 63 °C)<br>
+          • <b>โลหะแทรนซิชัน</b>ใช้อิเล็กตรอนชั้น d ร่วมด้วย จุดหลอมเหลวจึงสูงมาก (W 3,422 °C)<br>
+          • <b>โลหะหมู่ 1</b> อ่อนที่สุดเพราะปล่อยได้ตัวเดียวและไอออนใหญ่ — ตัดด้วยมีดได้</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> กฎนี้ใช้ทำนาย<b>แนวโน้ม</b> ไม่ได้ตายตัว 100%
+          — Mg กับ Ca มีจุดหลอมเหลวสวนทางกับที่คาดเพราะ<b>โครงสร้างผลึกต่างกัน</b></div>
+        <div class="note">🔵 <b>ต่อยอด:</b> จุดหลอมเหลว ความแข็ง และความหนาแน่น ล้วนเป็น<b>ผล</b>
+          ของความแข็งแรงของพันธะ ไม่ใช่สาเหตุ — จะได้เห็นสมบัติอื่น ๆ อีกในด่านถัดไป</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 4 — คลังสมบัติโลหะ
+   ช่วงแรกเป็นการทดลองตอกโลหะ ซึ่งเป็น "คู่แฝด" ของการทดลองตอกผลึกเกลือในเกมพันธะไอออนิก
+   ตอกเหมือนกัน เลื่อนระนาบเหมือนกัน แต่ผลลัพธ์ตรงข้ามกัน เพราะทะเลอิเล็กตรอนยังยึดไว้
+   ========================================================================= */
+function malleableLab(hostId, onDone){
+  const host = document.getElementById(hostId);
+  const COLS = 6, ROWS = 4, GAP = 52, R = 17;
+  const SPLIT = 34;                              // ช่องว่างระหว่างสองระนาบ เผื่อที่วาดลูกศรบอกแรง
+  const VB_W = COLS*GAP + 60, VB_H = ROWS*GAP + 70 + SPLIT;
+  const rowY = r => 40 + r*GAP + (r >= ROWS/2 ? SPLIT : 0);
+  let shift = 0, answered = false;
+
+  host.innerHTML = `<div class="lab">
+    <div class="labtop">
+      <div><span class="fml">แผ่นทองแดง</span> <span class="nm">ทดลองออกแรงตอกให้ระนาบเลื่อน</span></div>
+      <div class="cnt" id="mcnt">ยังไม่ได้ตอก</div>
+    </div>
+    <div class="molwrap" style="max-width:520px">
+      <svg class="tsvg" id="mal" viewBox="0 0 ${VB_W} ${VB_H}"
+           aria-label="แผนภาพโลหะก่อนและหลังเลื่อนระนาบ"></svg>
+    </div>
+    <div class="palette">
+      <button class="btn gold sm" id="hit">🔨 ตอกให้ระนาบบนเลื่อนไป 1 ช่อง</button>
+      <button class="btn ghost sm" id="rst">↺ เริ่มใหม่</button>
+    </div>
+    <div class="feedback" id="mfb"></div>
+    <div id="mq"></div>
+  </div>`;
+  const svg = document.getElementById('mal'), fb = document.getElementById('mfb');
+
+  function draw(){
+    const half = ROWS/2, E = MET.Cu;
+    let g = `<defs><radialGradient id="cu" cx="34%" cy="30%" r="72%">
+        <stop offset="0%" stop-color="#fff" stop-opacity=".82"/>
+        <stop offset="42%" stop-color="${E.c}"/><stop offset="100%" stop-color="${E.d}"/></radialGradient></defs>`;
+    const splitY = (rowY(half-1) + rowY(half))/2;
+    g += `<line class="britsplit" x1="8" y1="${splitY}" x2="${VB_W-8}" y2="${splitY}"/>`;
+
+    // ทะเลอิเล็กตรอนวาดคลุมทั้งก้อน · ยังอยู่ครบแม้ระนาบจะเลื่อนไปแล้ว
+    for(let k=0;k<26;k++){
+      const x = 30 + (k*97)%(VB_W-60), y = 30 + (k*61)%(VB_H-60);
+      g += `<circle class="efree sm" cx="${x}" cy="${y}" r="4.5"/>`;
+    }
+    for(let r=0;r<ROWS;r++){
+      const dx = r < half ? shift*GAP : 0;
+      for(let c=0;c<COLS;c++){
+        const x = 40 + c*GAP + dx, y = rowY(r);
+        if(x < 12 || x > VB_W-12) continue;
+        g += `<circle class="ionb" cx="${x}" cy="${y}" r="${R}" fill="url(#cu)"
+                stroke="${E.d}" stroke-width="1.6"/>
+              <text class="britq" x="${x}" y="${y}">+</text>`;
+      }
+    }
+    /* แรงระหว่างสองระนาบ · ในโลหะทุกอนุภาคเป็นบวกเหมือนกันหมด
+       ถ้าไม่มีทะเลอิเล็กตรอนมันจะผลักกันทันที แต่อิเล็กตรอนอิสระยังยึดไว้ได้ทุกตำแหน่ง
+       ลูกศรจึงเป็นสีเขียว "ดึงดูด" ทั้งก่อนและหลังเลื่อน ต่างจากผลึกไอออนิก */
+    const rTop = half-1, rBot = half;
+    for(let c=0;c<COLS;c++){
+      const src = c - shift;
+      if(src < 0 || src >= COLS) continue;
+      const x = 40 + c*GAP;
+      if(x < 12 || x > VB_W-12) continue;
+      const y1 = rowY(rTop) + R + 5, y2 = rowY(rBot) - R - 5, ym = (y1+y2)/2;
+      const head = (y, dir)=> `<path d="M${x-5.5},${(y-dir*7).toFixed(1)} L${x+5.5},${(y-dir*7).toFixed(1)} L${x},${y.toFixed(1)} Z"/>`;
+      g += `<g class="attract"><line x1="${x}" y1="${y1.toFixed(1)}" x2="${x}" y2="${(ym-7).toFixed(1)}"/>
+             ${head(ym-2, 1)}
+             <line x1="${x}" y1="${y2.toFixed(1)}" x2="${x}" y2="${(ym+7).toFixed(1)}"/>
+             ${head(ym+2, -1)}</g>`;
+    }
+    // คำบรรยายแบ่งสองบรรทัด เพราะกรอบภาพกว้างไม่พอสำหรับข้อความยาว
+    g += `<text class="britcap" x="${VB_W/2}" y="${VB_H-28}">${shift
+      ? 'ระนาบเลื่อนแล้ว · ทะเลอิเล็กตรอนยังยึดไว้เหมือนเดิม'
+      : 'โลหะปกติ · ไอออนบวกจมอยู่ในทะเลอิเล็กตรอนเดียวกัน'}</text>
+      <text class="britcap" x="${VB_W/2}" y="${VB_H-11}">${shift
+      ? '→ แผ่นแบนลงโดยไม่แตก'
+      : 'กดปุ่มค้อนเพื่อออกแรงตอก'}</text>`;
+    svg.innerHTML = g;
+    document.getElementById('mcnt').textContent = shift ? 'ตอกแล้ว · แผ่นแบนลง ไม่แตก' : 'ยังไม่ได้ตอก';
+  }
+
+  document.getElementById('rst').onclick = ()=>{ shift = 0; fb.className='feedback'; draw(); };
+  document.getElementById('hit').onclick = ()=>{
+    if(shift) return;
+    shift = 1; draw();
+    fb.className='feedback show good';
+    fb.innerHTML = `🔨 <b>แผ่นทองแดงแบนลงโดยไม่แตก!</b> ระนาบบนเลื่อนไปหนึ่งช่องแล้ว
+      แต่<b>ทะเลอิเล็กตรอนเคลื่อนที่ตามไปด้วย</b> ไอออนบวกจึงยังถูกยึดไว้ทุกตำแหน่งเหมือนเดิม
+      ไม่มีจังหวะไหนที่ประจุเหมือนกันมาเจอกันแล้วผลักจนแตก`;
+    if(!answered) askQ();
+  };
+
+  function askQ(){
+    const box = document.getElementById('mq');
+    const Q = {
+      q:'เทียบกับการตอก<b>ผลึกเกลือ</b>ที่แตกเป็นเสี่ยง — ทำไมโลหะจึงแบนลงแทนที่จะแตก',
+      o:['เพราะทะเลอิเล็กตรอนเคลื่อนที่ตามไปยึดไอออนบวกไว้ได้ทุกตำแหน่ง',
+         'เพราะไอออนบวกในโลหะมีขนาดเล็กกว่าไอออนในผลึกเกลือมาก',
+         'เพราะพันธะโลหะอ่อนกว่าพันธะไอออนิก จึงยืดหยุ่นได้มากกว่า',
+         'เพราะโลหะมีช่องว่างระหว่างไอออนมากกว่า จึงยุบตัวลงได้'],
+      a:0,
+      e:'ในผลึกเกลือ ประจุอยู่<b>ตำแหน่งตายตัว</b> เลื่อนเมื่อไรประจุเหมือนกันจะมาเจอกันแล้วผลักจนแตก<br>' +
+        'ในโลหะ ไอออนบวกทุกตัวเหมือนกันหมดและจมอยู่ใน<b>ทะเลอิเล็กตรอนเดียวกัน</b> ' +
+        'เลื่อนไปตำแหน่งไหนก็ยังมีอิเล็กตรอนยึดไว้ จึง<b>ตีแผ่</b>เป็นแผ่นและ<b>ดึงเป็นเส้น</b>ได้<br>' +
+        'สังเกตว่าพันธะโลหะ<b>ไม่ได้อ่อน</b> — ทองแดงหลอมเหลวที่ 1,085 °C ซึ่งสูงกว่าเกลือแกงเสียอีก'
+    };
+    box.innerHTML = `<div class="scene" style="margin-top:14px">
+      <div style="font-weight:800;font-size:.95rem">${Q.q}</div>
+      <div class="opts">${Q.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="mqfb"></div>
+    </div>`;
+    box.querySelectorAll('.opt').forEach(op=>{
+      op.onclick = ()=>{
+        if(answered) return;
+        answered = true;
+        const j = +op.dataset.i, ok = j===Q.a;
+        box.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===Q.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f = box.querySelector('#mqfb');
+        f.className = 'feedback show ' + (ok?'good':'bad');
+        f.innerHTML = (ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ') + Q.e +
+          `<div style="margin-top:12px"><button class="btn primary sm" id="mnx">ไปช่วงที่ 2 →</button></div>`;
+        f.querySelector('#mnx').onclick = ()=> onDone(ok?0:1);
+      };
+    });
+  }
+  draw();
+}
+
+/* จัดกลุ่มสมบัติ · m = โลหะ · i = สารประกอบไอออนิก */
+const PROP_ITEMS = [
+  { n:'นำไฟฟ้าได้ดีตั้งแต่ตอนเป็นของแข็ง', g:'m',
+    e:'อิเล็กตรอนอิสระเคลื่อนที่ได้ตลอดเวลา ไม่ต้องหลอมเหลวก่อน' },
+  { n:'ตีแผ่เป็นแผ่นและดึงเป็นเส้นได้', g:'m',
+    e:'ระนาบเลื่อนแล้วทะเลอิเล็กตรอนยังยึดไว้ ไม่มีจังหวะที่ประจุเหมือนกันมาผลักกัน' },
+  { n:'ผิวเป็นมันวาวเมื่อขัด', g:'m',
+    e:'อิเล็กตรอนอิสระรับพลังงานแสงแล้วคายกลับออกมาทันที เราจึงเห็นเป็นเงาวาว' },
+  { n:'นำความร้อนได้ดีมาก', g:'m',
+    e:'อิเล็กตรอนอิสระพาพลังงานจลน์วิ่งไปทั่วก้อนได้เร็วกว่าการสั่นของอนุภาคมาก' },
+  { n:'อนุภาคที่ยึดกันคือไอออนบวกกับอิเล็กตรอนอิสระ', g:'m',
+    e:'ไม่มีไอออนลบเลยในโลหะบริสุทธิ์' },
+  { n:'หลอมเหลวแล้วยังนำไฟฟ้าได้เหมือนเดิม', g:'m',
+    e:'อิเล็กตรอนอิสระยังอยู่ครบ การนำไฟฟ้าจึงไม่เปลี่ยน ต่างจากไอออนิกที่เพิ่งนำได้ตอนหลอม' },
+  { n:'นำความร้อนและไฟฟ้าได้ดีขึ้นเมื่อขัดผิวให้สะอาด', g:'m',
+    e:'ผิวออกไซด์ที่เคลือบอยู่กั้นการสัมผัส ขัดออกแล้วทะเลอิเล็กตรอนจึงต่อถึงกันได้ดี' },
+
+  { n:'ของแข็งไม่นำไฟฟ้า แต่หลอมเหลวแล้วนำ', g:'i',
+    e:'ตอนเป็นของแข็งไอออนติดที่ ขยับไม่ได้ · หลอมเหลวแล้วไอออนจึงเคลื่อนที่ได้' },
+  { n:'แข็งแต่เปราะ ตอกแล้วแตกตามระนาบ', g:'i',
+    e:'ระนาบเลื่อนแล้วประจุเหมือนกันมาอยู่ตรงกันจนผลักกัน ผลึกจึงแยกออก' },
+  { n:'อนุภาคที่ยึดกันคือไอออนบวกกับไอออนลบ', g:'i',
+    e:'เรียงสลับกันทุกทิศ ประจุจึงอยู่ตำแหน่งตายตัว' },
+  { n:'ละลายน้ำแล้วสารละลายนำไฟฟ้าได้', g:'i',
+    e:'น้ำแยกไอออนออกจากผลึก ไอออนอิสระในสารละลายเป็นตัวนำประจุ' },
+  { n:'สูตรที่เขียนบอกอัตราส่วนอย่างต่ำของไอออน', g:'i',
+    e:'เป็นสูตรเอมพิริคัล ไม่ใช่จำนวนอนุภาคจริงในหนึ่งหน่วย' },
+  { n:'ผิวไม่เป็นมันวาว มักโปร่งแสงหรือขุ่นขาว', g:'i',
+    e:'ไม่มีอิเล็กตรอนอิสระคอยคายแสงกลับ แสงจึงทะลุผ่านหรือกระเจิงไปแทน' },
+  { n:'เกิดจากโลหะรวมกับอโลหะ', g:'i',
+    e:'โลหะเสียอิเล็กตรอนให้อโลหะจนเกิดไอออนสองชนิด' }
+];
+
+const PROP_Q = [
+  { q:'เพราะเหตุใดโลหะจึงนำไฟฟ้าได้<b>ตั้งแต่ตอนเป็นของแข็ง</b> ต่างจากสารประกอบไอออนิก',
+    o:['เพราะอิเล็กตรอนอิสระเคลื่อนที่ได้อยู่แล้ว ไม่ต้องรอหลอมเหลว',
+       'เพราะไอออนบวกในโลหะเคลื่อนที่ไปมาได้ตลอดเวลาแม้เป็นของแข็ง',
+       'เพราะโลหะมีจุดหลอมเหลวต่ำกว่าสารประกอบไอออนิกอยู่มาก',
+       'เพราะโลหะมีทั้งไอออนบวกและไอออนลบที่เคลื่อนที่ได้พร้อมกัน'],
+    a:0, e:'ตัวนำประจุในโลหะคือ<b>อิเล็กตรอนอิสระ</b> ซึ่งวิ่งได้อยู่แล้วตั้งแต่เป็นของแข็ง<br>' +
+      '<b>ไอออนบวกอยู่กับที่</b> ไม่ได้เคลื่อนที่ · ส่วนไอออนิกต้องหลอมหรือละลายก่อนไอออนจึงจะเป็นอิสระ' },
+  { q:'ความเป็น<b>มันวาว</b>ของโลหะเกิดจากอะไร',
+    o:['อิเล็กตรอนอิสระรับแสงแล้วคายกลับออกมาแทบทุกความยาวคลื่น',
+       'ผิวโลหะเรียบในระดับอะตอมจนสะท้อนแสงได้เหมือนกระจกเงา',
+       'ไอออนบวกที่ผิวสั่นอยู่แล้วปล่อยแสงออกมาเองได้ตลอดเวลา',
+       'ชั้นออกไซด์บาง ๆ ที่ผิวทำหน้าที่สะท้อนแสงกลับออกไปทั้งหมด'],
+    a:0, e:'อิเล็กตรอนอิสระรับพลังงานจากแสงได้<b>เกือบทุกความยาวคลื่น</b> แล้วคายกลับออกมาทันที<br>' +
+      'ผิวจึงสะท้อนแสงได้ทั้งสเปกตรัมและดูเป็นมันวาว · ชั้นออกไซด์กลับ<b>ทำให้หมองลง</b> จึงต้องขัดออก' },
+  { q:'ลวดทองแดงถูกดึงให้ยาวขึ้นเรื่อย ๆ โดยไม่ขาด เพราะเหตุใด',
+    o:['ระนาบอะตอมเลื่อนผ่านกันได้ และทะเลอิเล็กตรอนยังยึดไว้ตลอด',
+       'พันธะโลหะยืดออกได้เหมือนสปริง จึงไม่ต้องเลื่อนระนาบอะตอมเลย',
+       'ทองแดงมีจุดหลอมเหลวต่ำจึงอ่อนตัวได้ขณะถูกดึง',
+       'อะตอมทองแดงแบ่งตัวเพิ่มขึ้นเรื่อย ๆ ขณะที่ลวดยาวขึ้น'],
+    a:0, e:'การ<b>ดึงเป็นเส้น</b> (ductile) ใช้หลักการเดียวกับการตีแผ่ — ระนาบเลื่อนแล้วยังถูกยึดไว้<br>' +
+      'พันธะโลหะไม่ได้ยืดเหมือนสปริง และทองแดงหลอมที่ 1,085 °C ซึ่งไม่ถือว่าต่ำเลย' },
+  { q:'ข้อใดคือ<b>ความต่าง</b>ของการนำไฟฟ้าระหว่างโลหะกับสารประกอบไอออนิก',
+    o:['โลหะ: อิเล็กตรอนเป็นตัวนำ <b>|</b> ไอออนิก: ไอออนเป็นตัวนำ',
+       'โลหะ: ไอออนเป็นตัวนำ <b>|</b> ไอออนิก: อิเล็กตรอนเป็นตัวนำ',
+       'โลหะ: นำได้เฉพาะตอนหลอม <b>|</b> ไอออนิก: นำได้ทุกสถานะ',
+       'โลหะ: นำไฟฟ้าไม่ได้เลย <b>|</b> ไอออนิก: นำได้ดีทุกสถานะ'],
+    a:0, e:'ตัวนำประจุต่างชนิดกัน — โลหะใช้<b>อิเล็กตรอนอิสระ</b> ส่วนไอออนิกใช้<b>ไอออนที่เคลื่อนที่ได้</b><br>' +
+      'ผลคือโลหะนำได้<b>ทุกสถานะ</b> แต่ไอออนิกนำได้เฉพาะตอน<b>หลอมเหลวหรือละลายน้ำ</b>' },
+  { q:'นำสารชนิดหนึ่งมาทดสอบพบว่า<b>ของแข็งนำไฟฟ้าได้</b>และ<b>ตอกแล้วแบนลง</b> สรุปได้ว่าอย่างไร',
+    o:['เป็นโลหะ เพราะมีอิเล็กตรอนอิสระและระนาบเลื่อนได้โดยไม่แตก',
+       'เป็นสารประกอบไอออนิก เพราะมีไอออนอิสระอยู่ในโครงผลึก',
+       'เป็นสารโคเวเลนต์โครงร่างตาข่าย เพราะทั้งแข็งและนำไฟฟ้าได้ด้วย',
+       'บอกไม่ได้ เพราะสารทุกชนิดตอบสนองแบบนี้ได้เหมือนกัน'],
+    a:0, e:'<b>ของแข็งนำไฟฟ้า</b> ตัดสารประกอบไอออนิกออกทันที (ของแข็งไม่นำ)<br>' +
+      '<b>ตอกแล้วแบนไม่แตก</b> ตัดทั้งไอออนิกและโครงร่างตาข่ายออก · เหลือคำตอบเดียวคือ<b>โลหะ</b>' },
+  { q:'ข้อใดเกี่ยวกับโลหะ<b>ไม่ถูกต้อง</b>',
+    o:['หลอมเหลวแล้วจะนำไฟฟ้าไม่ได้ เพราะโครงผลึกสลายไปแล้ว',
+       'นำความร้อนได้ดีเพราะอิเล็กตรอนอิสระพาพลังงานไปได้เร็ว',
+       'ตีแผ่และดึงเป็นเส้นได้เพราะระนาบเลื่อนแล้วยังถูกยึดไว้',
+       'ผิวเป็นมันวาวเพราะอิเล็กตรอนอิสระคายแสงกลับออกมา'],
+    a:0, e:'โลหะ<b>หลอมเหลวแล้วก็ยังนำไฟฟ้าได้</b> เพราะอิเล็กตรอนอิสระยังอยู่ครบ<br>' +
+      'ที่ต้องหลอมก่อนจึงจะนำได้คือ<b>สารประกอบไอออนิก</b> · อีกสามข้อถูกต้องทั้งหมด' }
+];
+
+function stageProps(){
+  let malWrong = 0, sortWrong = 0;
+  drawMal();
+
+  function drawMal(){
+    app.innerHTML = stageShell('props', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> ทดลองตอกโลหะให้ระนาบเลื่อน แล้วเทียบกับตอนตอกผลึกเกลือในเกมพันธะไอออนิก</div>
+      <div id="lab"></div>
+    `);
+    malleableLab('lab', wrong=>{
+      malWrong = wrong; toast('เห็นภาพแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawSort, 800);
+    });
+  }
+
+  function drawSort(){
+    const B = { m:{t:'⚡ โลหะ<br><span class="small muted">ไอออนบวก + ทะเลอิเล็กตรอน</span>'},
+                i:{t:'🧊 สารประกอบไอออนิก<br><span class="small muted">ไอออนบวก + ไอออนลบ</span>'} };
+    app.innerHTML = stageShell('props', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> แตะข้อความ แล้วแตะกล่องที่ถูกต้อง — จัดให้ครบ ${PROP_ITEMS.length} ชิ้น</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div class="bank" id="pool">
+        ${shuffle(PROP_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
+      </div>
+      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
+          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="note" style="margin-top:16px">
+        🔵 <b>คำถามที่ใช้ตัดสินได้เสมอ:</b> <b>ของแข็ง</b>นำไฟฟ้าไหม?
+        ถ้านำตั้งแต่เป็นของแข็ง → <b>โลหะ</b> · ถ้าต้องหลอมหรือละลายก่อน → <b>ไอออนิก</b>
+      </div>
+    `);
+    bindBuckets(PROP_ITEMS, B, 'pb', 'fb', wrong=>{
+      sortWrong = wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz, 800);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('props', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องสมบัติของโลหะให้ครบ ${PROP_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(PROP_Q, 'qhost', qWrong=>{
+      const miss = malWrong + sortWrong + qWrong;
+      const got = miss<=1?3:miss<=4?2:1;
+      stageMiss = miss;
+      finishStage('props', got, 80-Math.min(miss*7,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ — ทุกข้อมาจากอิเล็กตรอนอิสระ</b><br>
+          • <b>นำไฟฟ้าได้ทุกสถานะ</b> เพราะตัวนำคืออิเล็กตรอน ไม่ใช่ไอออนที่ต้องรอหลอมเหลว<br>
+          • <b>ตีแผ่และดึงเป็นเส้นได้</b> เพราะเลื่อนระนาบแล้วทะเลอิเล็กตรอนยังยึดไว้<br>
+          • <b>นำความร้อนได้ดี</b> เพราะอิเล็กตรอนพาพลังงานวิ่งไปทั่วก้อนได้เร็ว<br>
+          • <b>เป็นมันวาว</b> เพราะอิเล็กตรอนอิสระคายแสงกลับออกมาแทบทุกความยาวคลื่น</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> โลหะ<b>ตีแผ่ได้ไม่ได้แปลว่าพันธะอ่อน</b>
+          — ทองแดงหลอมที่ 1,085 °C สูงกว่าเกลือแกงที่ 801 °C เสียอีก แต่เกลือกลับเปราะ</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> ถ้าอยากได้โลหะที่<b>แข็งขึ้น</b>โดยยังนำไฟฟ้าได้
+          ต้องทำให้ระนาบเลื่อนยากขึ้น — วิธีที่ใช้จริงคือ<b>ผสมโลหะอื่นเข้าไป</b> ซึ่งเป็นเรื่องของด่านถัดไป</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 5 — ห้องโลหะผสม
+   ต่อจากด่านที่แล้วโดยตรง · โลหะบริสุทธิ์ตีแผ่ง่ายเพราะระนาบเลื่อนสะดวก
+   ถ้าเอาอะตอมขนาดต่างกันไปแทรก ระนาบจะเลื่อนยากขึ้น โลหะจึงแข็งขึ้น
+   ผู้เล่นจะได้ใส่อะตอมลงในผลึกเองแล้วเห็นว่าระนาบเลื่อนไม่ผ่าน
+   ========================================================================= */
+const ALLOY_SET = [
+  { id:'brass', nm:'ทองเหลือง', en:'brass', host:'Cu', guest:'Zn', kind:'sub',
+    use:'ลูกบิดประตู · เครื่องดนตรี · ข้อต่อประปา',
+    why:'สังกะสีมีขนาด<b>ใกล้เคียง</b>ทองแดง จึงเข้าไป<b>แทนที่</b>ในตำแหน่งเดิมของผลึกได้เลย' },
+  { id:'steel', nm:'เหล็กกล้า', en:'carbon steel', host:'Fe', guest:'C', kind:'int',
+    use:'โครงสร้างอาคาร · เครื่องมือ · รางรถไฟ',
+    why:'คาร์บอน<b>เล็กกว่ามาก</b> จึงเข้าไป<b>แทรกในช่องว่าง</b>ระหว่างอะตอมเหล็ก ไม่ได้แทนที่' },
+  { id:'stain', nm:'สแตนเลส', en:'stainless steel', host:'Fe', guest:'Cr', kind:'sub',
+    use:'ช้อนส้อม · อ่างล้างจาน · เครื่องมือแพทย์',
+    why:'โครเมียมขนาดใกล้เคียงเหล็กจึงแทนที่ได้ · และยังสร้างฟิล์มออกไซด์บาง ๆ กันสนิมให้ด้วย' }
+];
+
+/* เล่นห้องโลหะผสมจนครบทุกชนิด แล้วเรียก onDone พร้อมจำนวนครั้งที่วางผิด */
+function alloyLab(hostId, pbId, onDone){
+  const host = document.getElementById(hostId), pb = document.getElementById(pbId);
+  const COLS = 6, ROWS = 4, GAP = 54, R = 19;
+  const VB_W = COLS*GAP + 60, VB_H = ROWS*GAP + 66;
+  let idx = 0, wrong = 0;
+
+  function start(){
+    const A = ALLOY_SET[idx], H = MET[A.host], G = MET[A.guest];
+    const NEED = 4;                              // จำนวนอะตอมที่ต้องใส่
+    const put = {};                              // ตำแหน่งที่ผู้เล่นใส่แล้ว
+    let armed = false, done = false, shift = 0;
+    // ตำแหน่งที่ยอมให้ใส่ · แทนที่ = ตรงตำแหน่งอะตอมเดิม · แทรก = ตรงช่องว่างระหว่างอะตอม
+    const slots = A.kind === 'sub'
+      ? [[1,1],[3,1],[2,2],[4,2]].map(([c,r])=>({ c, r, x:40+c*GAP, y:34+r*GAP }))
+      : [[1,1],[3,1],[2,2],[4,2]].map(([c,r])=>({ c, r, x:40+c*GAP+GAP/2, y:34+r*GAP+GAP/2 }));
+
+    host.innerHTML = `<div class="lab">
+      <div class="labtop">
+        <div><span class="fml">${A.nm}</span> <span class="nm">${A.en} · ${H.nm} + ${G.nm}</span></div>
+        <div class="cnt" id="acnt"></div>
+      </div>
+      <div class="molwrap" style="max-width:520px">
+        <svg class="tsvg" id="al" viewBox="0 0 ${VB_W} ${VB_H}"
+             aria-label="ผลึกโลหะผสม ${A.nm}"></svg>
+      </div>
+      <div class="palette" id="apal">
+        <button class="bchip" data-t="g"><span class="ionchip guest">${A.guest}</span> อะตอม${G.nm}</button>
+        <span class="small muted" style="align-self:center">เลือกอะตอมแล้วแตะช่องที่กะพริบในผลึก</span>
+      </div>
+      <div class="feedback" id="afb"></div>
+    </div>`;
+    const svg = document.getElementById('al'), fb = document.getElementById('afb');
+    document.querySelector('#apal .bchip').onclick = function(){
+      if(done) return;
+      armed = !armed; this.classList.toggle('sel', armed); draw();
+    };
+
+    function draw(){
+      let g = `<defs>
+        <radialGradient id="ah" cx="34%" cy="30%" r="72%"><stop offset="0%" stop-color="#fff" stop-opacity=".82"/>
+          <stop offset="42%" stop-color="${H.c}"/><stop offset="100%" stop-color="${H.d}"/></radialGradient>
+        <radialGradient id="ag" cx="34%" cy="30%" r="72%"><stop offset="0%" stop-color="#fff" stop-opacity=".82"/>
+          <stop offset="42%" stop-color="${G.c}"/><stop offset="100%" stop-color="${G.d}"/></radialGradient></defs>`;
+      for(let k=0;k<22;k++){
+        const x = 26 + (k*89)%(VB_W-52), y = 26 + (k*57)%(VB_H-52);
+        g += `<circle class="efree sm" cx="${x}" cy="${y}" r="4"/>`;
+      }
+      // อะตอมของโลหะหลัก · แถวบนครึ่งเลื่อนได้เมื่อกดทดสอบ
+      for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+        const sub = A.kind === 'sub' && put[c+','+r];
+        const dx = (r < ROWS/2) ? shift*GAP : 0;
+        const x = 40 + c*GAP + dx, y = 34 + r*GAP;
+        if(x < 14 || x > VB_W-14) continue;
+        g += `<circle class="ionb" cx="${x.toFixed(1)}" cy="${y}" r="${R}"
+                fill="url(#${sub?'ag':'ah'})" stroke="${sub?G.d:H.d}" stroke-width="1.8"/>
+              <text class="alt" x="${x.toFixed(1)}" y="${y}">${sub?A.guest:A.host}</text>`;
+      }
+      // อะตอมที่แทรกในช่องว่าง (เฉพาะโลหะผสมแบบแทรก)
+      if(A.kind === 'int') slots.forEach(s=>{
+        if(!put[s.c+','+s.r]) return;
+        g += `<circle class="ionb" cx="${s.x}" cy="${s.y}" r="${R*0.42}" fill="url(#ag)"
+                stroke="${G.d}" stroke-width="1.4"/>
+              <text class="alt sm" x="${s.x}" y="${s.y}">${A.guest}</text>`;
+      });
+      // ช่องที่ยังว่าง
+      if(!done) slots.forEach(s=>{
+        if(put[s.c+','+s.r]) return;
+        g += `<circle class="aslot${armed?' on':''}" data-s="${s.c},${s.r}"
+                cx="${s.x}" cy="${s.y}" r="${A.kind==='sub'?R+3:R*0.55}"/>`;
+      });
+      // จุดที่อะตอมต่างขนาดชนกันจนระนาบเลื่อนต่อไม่ได้ · วาดเป็นกากบาทแดง
+      if(shift){
+        const blocks = [];
+        if(A.kind === 'sub'){
+          const guests = slots.filter(s2=>put[s2.c+','+s2.r]);
+          guests.filter(s2=>s2.r < ROWS/2).forEach(mv=>{
+            const mx = mv.x + shift*GAP;
+            guests.filter(s2=>s2.r >= ROWS/2).forEach(st=>{
+              if(Math.abs(st.y - mv.y) <= GAP*1.1 && Math.abs(st.x - mx) <= GAP*0.9)
+                blocks.push({ x:(mx+st.x)/2, y:(mv.y+st.y)/2 });
+            });
+          });
+        }else{
+          // อะตอมแทรกอยู่กับที่ ระนาบที่เลื่อนจึงชนมันตรง ๆ ทุกตัว
+          slots.filter(s2=>put[s2.c+','+s2.r]).forEach(s2=>blocks.push({ x:s2.x+shift*GAP/2, y:s2.y }));
+        }
+        blocks.forEach(bk=>{
+          g += `<g class="block"><line x1="${(bk.x-9).toFixed(1)}" y1="${(bk.y-9).toFixed(1)}"
+                  x2="${(bk.x+9).toFixed(1)}" y2="${(bk.y+9).toFixed(1)}"/>
+                <line x1="${(bk.x+9).toFixed(1)}" y1="${(bk.y-9).toFixed(1)}"
+                  x2="${(bk.x-9).toFixed(1)}" y2="${(bk.y+9).toFixed(1)}"/></g>`;
+        });
+      }
+      g += `<text class="britcap" x="${VB_W/2}" y="${VB_H-12}">${done
+        ? (shift ? 'ระนาบเลื่อนไม่สะดวก — อะตอมต่างขนาดขวางไว้ โลหะจึงแข็งขึ้น'
+                 : 'กดปุ่มทดสอบว่าระนาบยังเลื่อนง่ายเหมือนเดิมไหม')
+        : (A.kind==='sub' ? 'แทนที่อะตอมเดิมในตำแหน่งของผลึก' : 'แทรกลงในช่องว่างระหว่างอะตอม')}</text>`;
+      svg.innerHTML = g;
+      document.getElementById('acnt').textContent =
+        `ใส่แล้ว ${Object.keys(put).length}/${NEED} อะตอม · โลหะผสมที่ ${idx+1}/${ALLOY_SET.length}`;
+
+      svg.querySelectorAll('.aslot').forEach(el=>{
+        el.onclick = ()=>{
+          if(done) return;
+          if(!armed){
+            fb.className='feedback show bad';
+            fb.innerHTML=`❌ ยังไม่ได้เลือกอะตอม — แตะปุ่ม<b>อะตอม${G.nm}</b>ด้านล่างก่อน`;
+            return;
+          }
+          put[el.dataset.s] = true;
+          fb.className='feedback show good';
+          fb.innerHTML = `✅ ใส่อะตอม${G.nm}ลงผลึกแล้ว — ${A.why}`;
+          draw();
+          if(Object.keys(put).length >= NEED) finish();
+        };
+      });
+    }
+
+    function finish(){
+      done = true;
+      if(pb) pb.style.width = ((idx+1)/ALLOY_SET.length*100)+'%';
+      fb.className='feedback show good';
+      fb.innerHTML = `🎉 <b>ได้${A.nm}แล้ว!</b> ${A.why}
+        <div class="ioneq">
+          <div>ชนิด: <b>${A.kind==='sub' ? 'โลหะผสมแบบแทนที่ (substitutional)' : 'โลหะผสมแบบแทรก (interstitial)'}</b></div>
+          <div>ใช้ทำ: ${A.use}</div>
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn gold sm" id="test">🔨 ทดสอบตอกดู</button>
+          <button class="btn primary sm" id="nx">
+            ${idx===ALLOY_SET.length-1?'ไปช่วงที่ 2 →':'โลหะผสมถัดไป →'}</button></div>`;
+      fb.querySelector('#test').onclick = ()=>{
+        shift = shift ? 0 : 0.34; draw();
+        if(shift) toast('อะตอมต่างขนาดขวางไม่ให้ระนาบเลื่อน โลหะผสมจึงแข็งกว่าโลหะบริสุทธิ์');
+      };
+      fb.querySelector('#nx').onclick = ()=>{
+        idx++;
+        if(idx < ALLOY_SET.length){ start(); window.scrollTo({top:0,behavior:'smooth'}); }
+        else onDone(wrong);
+      };
+      draw();
+    }
+    draw();
+  }
+  start();
+}
+
+const ALLOY_PAIRS = [
+  { k:'sub', n:'โลหะผสมแบบแทนที่', em:'🔄', h:'อะตอมที่เติมมีขนาดใกล้เคียงกับโลหะหลัก',
+    d:'เข้าไป<b>แทนที่</b>อะตอมเดิมในตำแหน่งของผลึก · ทองเหลือง (Cu + Zn) และสแตนเลส (Fe + Cr) เป็นแบบนี้' },
+  { k:'int', n:'โลหะผสมแบบแทรก', em:'📥', h:'อะตอมที่เติมเล็กกว่าโลหะหลักมาก',
+    d:'เข้าไป<b>แทรกในช่องว่าง</b>ระหว่างอะตอม ไม่ได้แทนที่ · เหล็กกล้า (Fe + C) เป็นตัวอย่างที่ชัดที่สุด' },
+  { k:'brass', n:'ทองเหลือง', em:'🎺', h:'ทองแดงผสมสังกะสี',
+    d:'แข็งและทนกร่อนกว่าทองแดงบริสุทธิ์ · ใช้ทำลูกบิดประตู เครื่องดนตรี และข้อต่อประปา' },
+  { k:'steel', n:'เหล็กกล้า', em:'🏗️', h:'เหล็กผสมคาร์บอนเพียงไม่กี่เปอร์เซ็นต์',
+    d:'คาร์บอนแทรกในช่องว่างจนระนาบเลื่อนยากขึ้นมาก เหล็กจึง<b>แข็งขึ้นหลายเท่า</b>' },
+  { k:'stain', n:'สแตนเลส', em:'🍴', h:'เหล็กกล้าที่ผสมโครเมียมอย่างน้อย 10.5%',
+    d:'โครเมียมสร้างฟิล์มออกไซด์บาง ๆ ที่ผิว ปิดกั้นไม่ให้เหล็กข้างในสัมผัสอากาศ จึง<b>ไม่เป็นสนิม</b>' },
+  { k:'why', n:'เหตุที่โลหะผสมแข็งกว่าโลหะบริสุทธิ์', em:'💪', h:'อะตอมต่างขนาดไปทำอะไรกับผลึก',
+    d:'อะตอมต่างขนาดทำให้ระนาบไม่เรียบ <b>เลื่อนผ่านกันได้ยากขึ้น</b> · แต่ทะเลอิเล็กตรอนยังอยู่ จึงยังนำไฟฟ้าได้' }
+];
+
+const ALLOY_Q = [
+  { q:'เพราะเหตุใดโลหะผสมจึงมักแข็งกว่าโลหะบริสุทธิ์',
+    o:['อะตอมต่างขนาดทำให้ระนาบในผลึกเลื่อนผ่านกันได้ยากขึ้น',
+       'อะตอมที่เติมเข้าไปสร้างพันธะโคเวเลนต์กับโลหะหลัก',
+       'โลหะผสมไม่มีทะเลอิเล็กตรอนแล้ว อนุภาคจึงยึดกันแน่นกว่าเดิม',
+       'อะตอมที่เติมเข้าไปทำให้จำนวนอิเล็กตรอนอิสระลดลงมาก'],
+    a:0, e:'โลหะบริสุทธิ์อ่อนเพราะระนาบอะตอมที่เรียบเสมอกัน<b>เลื่อนผ่านกันได้ง่าย</b><br>' +
+      'อะตอมต่างขนาดที่แทรกอยู่ทำให้ระนาบไม่เรียบ จึงเลื่อนยากขึ้นและโลหะแข็งขึ้น<br>' +
+      'ทั้งนี้<b>ทะเลอิเล็กตรอนยังอยู่ครบ</b> โลหะผสมจึงยังนำไฟฟ้าได้ตามปกติ' },
+  { q:'เหล็กกล้าเป็นโลหะผสมแบบ<b>แทรก</b> เพราะเหตุใด',
+    o:['เพราะอะตอมคาร์บอนเล็กกว่าเหล็กมาก จึงลงไปอยู่ในช่องว่างได้',
+       'เพราะอะตอมคาร์บอนใหญ่กว่าเหล็ก จึงดันอะตอมเหล็กออกไป',
+       'เพราะคาร์บอนกับเหล็กมีขนาดอะตอมเท่ากันพอดี จึงสลับที่กันได้',
+       'เพราะคาร์บอนเป็นอโลหะ จึงต้องอยู่นอกโครงผลึกของเหล็ก'],
+    a:0, e:'<b>ขนาด</b>เป็นตัวตัดสินว่าจะเป็นแบบแทนที่หรือแบบแทรก<br>' +
+      'คาร์บอนเล็กกว่าเหล็กมาก จึงลงไปอยู่ใน<b>ช่องว่างระหว่างอะตอม</b> ไม่ได้ไปแทนที่ตำแหน่งใด' },
+  { q:'ทองเหลืองเกิดจากทองแดงผสมสังกะสี ซึ่งมีขนาดอะตอมใกล้เคียงกัน จัดเป็นโลหะผสมแบบใด',
+    o:['แบบแทนที่ เพราะสังกะสีเข้าไปอยู่ในตำแหน่งเดิมของอะตอมทองแดง',
+       'แบบแทรก เพราะสังกะสีลงไปอยู่ในช่องว่างระหว่างอะตอมของทองแดง',
+       'แบบโคเวเลนต์ เพราะทองแดงกับสังกะสีใช้อิเล็กตรอนร่วมกัน',
+       'แบบไอออนิก เพราะสังกะสีถ่ายโอนอิเล็กตรอนให้ทองแดง'],
+    a:0, e:'อะตอมขนาด<b>ใกล้เคียงกัน</b>จะเข้าไปแทนที่ในตำแหน่งของผลึกได้เลย = <b>แบบแทนที่</b><br>' +
+      'โลหะผสมกันยังคงเป็น<b>พันธะโลหะ</b> ไม่ได้กลายเป็นพันธะโคเวเลนต์หรือไอออนิก' },
+  { q:'สแตนเลสไม่เป็นสนิมเพราะเหตุใด',
+    o:['โครเมียมสร้างฟิล์มออกไซด์บาง ๆ กั้นไม่ให้เหล็กสัมผัสอากาศ',
+       'โครเมียมทำให้เหล็กไม่ทำปฏิกิริยากับสิ่งใดได้อีกเลย',
+       'โครเมียมเคลือบอยู่ด้านนอกเป็นชั้นหนาคล้ายกับการชุบสีเอาไว้',
+       'โครเมียมทำให้ทะเลอิเล็กตรอนหนาแน่นขึ้นจนน้ำแทรกไม่ได้'],
+    a:0, e:'โครเมียมทำปฏิกิริยากับออกซิเจนเกิด<b>ฟิล์มออกไซด์บางมาก</b>ที่ผิว ซึ่งแน่นและยึดติดดี<br>' +
+      'ฟิล์มนี้ปิดกั้นไม่ให้เหล็กข้างในสัมผัสอากาศและน้ำ · เป็นการ<b>ผสมเข้าเนื้อ</b> ไม่ใช่การเคลือบทับ' },
+  { q:'หลังผสมโลหะเข้าด้วยกันแล้ว โลหะผสม<b>ยังนำไฟฟ้าได้หรือไม่</b> เพราะเหตุใด',
+    o:['ยังนำได้ เพราะทะเลอิเล็กตรอนยังอยู่ครบเหมือนเดิม',
+       'ไม่นำแล้ว เพราะอะตอมที่เติมเข้าไปดูดอิเล็กตรอนอิสระไปหมด',
+       'ไม่นำแล้ว เพราะระนาบที่ไม่เรียบตัดทางเดินของอิเล็กตรอน',
+       'ยังนำได้ และนำได้ดีกว่าโลหะบริสุทธิ์เสมอไป'],
+    a:0, e:'การผสมโลหะ<b>ไม่ได้ทำลายทะเลอิเล็กตรอน</b> โลหะผสมจึงยังนำไฟฟ้าได้<br>' +
+      'แต่โดยทั่วไปนำได้<b>ด้อยกว่า</b>โลหะบริสุทธิ์เล็กน้อย เพราะอะตอมต่างชนิดรบกวนการไหลของอิเล็กตรอน<br>' +
+      'สายไฟจึงใช้ทองแดงบริสุทธิ์ ส่วนงานที่ต้องการความแข็งแรงจึงใช้โลหะผสม' },
+  { q:'ถ้าต้องการโลหะที่<b>แข็งแรงพอทำโครงอาคาร</b>แต่ยังขึ้นรูปได้ ควรเลือกอะไรและเพราะเหตุใด',
+    o:['เหล็กกล้า เพราะคาร์บอนที่แทรกอยู่ทำให้ระนาบเลื่อนยากขึ้นมาก',
+       'ทองแดงบริสุทธิ์ เพราะนำไฟฟ้าได้ดีที่สุดในบรรดาโลหะทั่วไป',
+       'โซเดียมบริสุทธิ์ เพราะเป็นโลหะที่ขึ้นรูปได้ง่ายที่สุด',
+       'อะลูมิเนียมบริสุทธิ์ เพราะเบาที่สุดจึงรับน้ำหนักได้มากที่สุด'],
+    a:0, e:'<b>เหล็กกล้า</b> = เหล็ก + คาร์บอนไม่กี่เปอร์เซ็นต์ แต่แข็งขึ้นหลายเท่าเพราะระนาบเลื่อนยากขึ้น<br>' +
+      'โซเดียมอ่อนจนใช้มีดตัดได้ · ทองแดงกับอะลูมิเนียมบริสุทธิ์อ่อนเกินกว่าจะรับน้ำหนักโครงสร้าง' }
+];
+
+function stageAlloy(){
+  let labWrong = 0, matchWrong = 0;
+  drawLab();
+
+  function drawLab(){
+    app.innerHTML = stageShell('alloy', `
+      <div class="note">🎯 <b>ช่วงที่ 1:</b> ใส่อะตอมของโลหะที่ผสมลงในผลึก แล้วกดทดสอบตอกดู
+        — ทำให้ครบทั้ง ${ALLOY_SET.length} ชนิด
+        <span class="small muted">(สังเกตว่าอะตอมขนาดใกล้เคียงกับต่างกันมาก ลงคนละตำแหน่ง)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="lab"></div>
+      <div class="note key" style="margin-top:16px">
+        💡 <b>ขนาดอะตอมเป็นตัวตัดสินชนิดของโลหะผสม</b><br>
+        อะตอมที่เติม<b>ขนาดใกล้เคียง</b>โลหะหลัก → เข้าไป<b>แทนที่</b>ในตำแหน่งของผลึก (substitutional)<br>
+        อะตอมที่เติม<b>เล็กกว่ามาก</b> → เข้าไป<b>แทรกในช่องว่าง</b>ระหว่างอะตอม (interstitial)
+      </div>
+    `);
+    alloyLab('lab', 'pb', wrong=>{
+      labWrong = wrong; toast('ผสมครบแล้ว! ไปช่วงที่ 2 กันต่อ'); setTimeout(drawMatch, 900);
+    });
+  }
+
+  function drawMatch(){
+    app.innerHTML = stageShell('alloy', `
+      <div class="note">🎯 <b>ช่วงที่ 2:</b> จับคู่โลหะผสมและคำศัพท์กับความหมาย — ให้ครบ ${ALLOY_PAIRS.length} คู่</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      ${matchBoard(ALLOY_PAIRS, 'desc')}
+      <div class="feedback" id="fb"></div>
+    `);
+    bindMatch(ALLOY_PAIRS, wrong=>{
+      matchWrong = wrong; toast('เยี่ยม! ไปช่วงสุดท้ายกันต่อ'); setTimeout(drawQuiz, 900);
+    });
+  }
+
+  function drawQuiz(){
+    app.innerHTML = stageShell('alloy', `
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องโลหะผสมให้ครบ ${ALLOY_Q.length} ข้อ</div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="qhost"></div>
+    `);
+    quizRun(ALLOY_Q, 'qhost', qWrong=>{
+      const miss = labWrong + matchWrong + qWrong;
+      const got = miss<=2?3:miss<=5?2:1;
+      stageMiss = miss;
+      finishStage('alloy', got, 80-Math.min(miss*6,45), `
+        <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
+          • <b>โลหะผสม</b> คือโลหะที่เติมธาตุอื่นเข้าไปเพื่อปรับสมบัติให้ดีขึ้น<br>
+          • อะตอม<b>ขนาดใกล้เคียง</b> → แบบ<b>แทนที่</b> (ทองเหลือง · สแตนเลส)<br>
+          • อะตอม<b>เล็กกว่ามาก</b> → แบบ<b>แทรก</b> (เหล็กกล้า)<br>
+          • แข็งขึ้นเพราะอะตอมต่างขนาดทำให้<b>ระนาบเลื่อนยากขึ้น</b> — และยัง<b>นำไฟฟ้าได้</b>อยู่</div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> โลหะผสม<b>ยังเป็นพันธะโลหะ</b>
+          ไม่ได้กลายเป็นสารประกอบ ไม่มีสูตรเคมีตายตัว และสัดส่วนปรับได้ตามการใช้งาน</div>
+        <div class="note">🔵 <b>ต่อยอด:</b> สแตนเลสกันสนิมด้วย<b>ฟิล์มออกไซด์ของโครเมียม</b>ที่บางมาก
+          — เป็นการผสมเข้าเนื้อ ต่างจากการชุบสังกะสีหรือทาสีที่เป็นการเคลือบทับผิว</div>
+        <div class="small muted">ตอบผิดทั้งหมด ${miss} ครั้ง</div>`);
+    });
+  }
+}
+
+/* =========================================================================
+   ด่าน 6 — บอส: ห้องตรวจคุณภาพ
+   ========================================================================= */
+function stageBoss(){
+  const SC = [
+    { icon:'🧪', title:'สารลึกลับหมายเลข 1',
+      body:'ของแข็งสีเงิน ตอนเป็นของแข็งนำไฟฟ้าได้ดี ตีเป็นแผ่นบางได้โดยไม่แตก ไม่ละลายน้ำ',
+      q:'สารนี้น่าจะยึดเหนี่ยวกันด้วยพันธะชนิดใด',
+      o:['พันธะโลหะ','พันธะไอออนิก','พันธะโคเวเลนต์แบบโมเลกุล','พันธะโคเวเลนต์โครงร่างตาข่าย'],
+      a:0, e:'หลักฐานเด็ดคือ<b>นำไฟฟ้าตั้งแต่เป็นของแข็ง</b> พร้อมกับ<b>ตีแผ่ได้</b> — มีเพียงโลหะเท่านั้นที่ทำได้ทั้งสองอย่าง<br>' +
+        'ผลึกไอออนิกตอนแข็งไม่นำและตอกแล้วแตก · โคเวเลนต์โครงร่างตาข่ายอย่างเพชรก็แข็งแต่ไม่นำและไม่ตีแผ่' },
+
+    { icon:'⚡', title:'ทดสอบการนำไฟฟ้าสามสถานะ',
+      body:'นำแท่งทองแดงมาทดสอบสามแบบ: (1) ของแข็ง (2) หลอมเหลว (3) จุ่มลงน้ำแล้ววัดสารละลาย',
+      q:'ผลการทดสอบควรเป็นอย่างไร',
+      o:['นำ · นำ · ไม่นำ','ไม่นำ · นำ · นำ','นำ · นำ · นำ','ไม่นำ · ไม่นำ · นำ'],
+      a:0, e:'โลหะนำไฟฟ้าทั้งของแข็งและของเหลว เพราะ<b>ทะเลอิเล็กตรอนเคลื่อนที่ได้ตลอด</b> ไม่ต้องรอให้ผลึกสลาย<br>' +
+        'แต่ทองแดงไม่ละลายน้ำ น้ำจึงยังเป็นน้ำเปล่าที่<b>ไม่นำไฟฟ้า</b> — นี่คือจุดต่างสำคัญจากสารประกอบไอออนิก' },
+
+    { icon:'🔨', title:'ตอกด้วยค้อน',
+      body:'ตอกแผ่นอะลูมิเนียมกับผลึกแมกนีเซียมออกไซด์ด้วยแรงเท่ากัน อะลูมิเนียมแบนลง ส่วน MgO แตกเป็นเสี่ยง',
+      q:'อธิบายความต่างนี้ได้อย่างไร',
+      o:['ทะเลอิเล็กตรอนไหลตามไปยึดไอออนบวกไว้ได้ทุกตำแหน่งที่เลื่อนไป',
+         'พันธะโลหะไม่มีทิศทางแน่นอนเพราะอ่อนแรงกว่าพันธะไอออนิกมาก',
+         'อะลูมิเนียมมีจุดหลอมเหลวต่ำกว่า จึงอ่อนตัวลงในขณะที่ถูกตอก',
+         'ผลึก MgO มีช่องว่างระหว่างไอออนมากกว่า จึงยุบตัวลงแล้วแตก'],
+      a:0, e:'เลื่อนระนาบอะตอมโลหะไปหนึ่งช่อง <b>ทะเลอิเล็กตรอนไหลตามไปด้วย</b> จึงยังยึดไอออนบวกไว้ได้เหมือนเดิม<br>' +
+        'เลื่อนระนาบผลึกไอออนิก ประจุ<b>เหมือนกัน</b>จะมาอยู่ตรงกันแล้ว<b>ผลัก</b>จนแตก<br>' +
+        'พันธะโลหะไม่ได้อ่อน — ทังสเตนหลอมที่ 3,422 °C สูงกว่า MgO เสียอีก' },
+
+    { icon:'📊', title:'ไล่จุดหลอมเหลว',
+      body:'Na หลอมที่ 98 °C · Mg ที่ 650 °C · Al ที่ 660 °C ทั้งสามอยู่ในคาบเดียวกัน',
+      q:'อะไรอธิบายแนวโน้มนี้ได้ดีที่สุด',
+      o:['ปล่อยเวเลนซ์อิเล็กตรอนมากขึ้น 1→2→3 และไอออนเล็กลง',
+         'มวลอะตอมที่เพิ่มขึ้นทำให้อะตอมสั่นสะเทือนได้ยากขึ้น',
+         'ขนาดอะตอมที่ใหญ่ขึ้นทำให้อะตอมซ้อนกันได้แน่นขึ้น',
+         'ค่าอิเล็กโทรเนกาติวิตีที่ลดลงเมื่อไล่ไปตามคาบ'],
+      a:0, e:'ข้ามคาบไปทางขวา อะตอมปล่อยเวเลนซ์อิเล็กตรอนได้<b>มากขึ้น</b> (Na 1 · Mg 2 · Al 3) ทะเลอิเล็กตรอนจึง<b>หนาแน่นขึ้น</b><br>' +
+        'พร้อมกันนั้นไอออนบวกก็<b>เล็กลง</b> ประจุจึงเข้าใกล้ทะเลอิเล็กตรอนได้มากขึ้น แรงดึงดูดเพิ่มทั้งสองทาง<br>' +
+        'มวลอะตอมไม่ใช่ตัวกำหนด — ตะกั่วหนักกว่าอะลูมิเนียมมาก แต่หลอมที่เพียง 327 °C' },
+
+    { icon:'🌡️', title:'สองโลหะหมู่เดียวกัน',
+      body:'ลิเทียมหลอมที่ 181 °C ส่วนซีเซียมหลอมที่เพียง 29 °C — ร้อนพอจะละลายในฝ่ามือ',
+      q:'ทั้งคู่ปล่อยอิเล็กตรอน 1 ตัวเท่ากัน แล้วอะไรทำให้ต่างกัน',
+      o:['ไอออน Cs⁺ ใหญ่กว่ามาก ประจุจึงอยู่ห่างทะเลอิเล็กตรอน',
+         'ซีเซียมมีอิเล็กตรอนรวมมากกว่า ทะเลอิเล็กตรอนจึงหนาแน่นกว่า',
+         'ซีเซียมมีมวลมากกว่า อะตอมจึงสั่นสะเทือนได้แรงกว่า',
+         'ลิเทียมจัดเรียงแบบ FCC ส่วนซีเซียมจัดเรียงแบบ BCC'],
+      a:0, e:'ลงหมู่ไปด้านล่าง<b>ไอออนบวกใหญ่ขึ้น</b> ประจุบวกที่แกนกลางอยู่<b>ห่าง</b>จากทะเลอิเล็กตรอนมากขึ้น แรงดึงดูดจึงอ่อนลง<br>' +
+        'จำนวนอิเล็กตรอนที่<b>ปล่อยเข้าทะเล</b>เท่ากันคือ 1 ตัว — อิเล็กตรอนชั้นในไม่ได้เข้าร่วมทะเลอิเล็กตรอน<br>' +
+        'ทั้งลิเทียมและซีเซียมต่างจัดเรียงแบบ BCC เหมือนกัน จึงไม่ใช่คำตอบ' },
+
+    { icon:'🧊', title:'อ่านโครงผลึก',
+      body:'โลหะ X จัดเรียงแบบที่อะตอมกลางถูกล้อมด้วยเพื่อนบ้าน 12 ตัว และใช้พื้นที่ 74 % ของปริมาตร',
+      q:'โลหะ X จัดเรียงแบบใด',
+      o:['FCC หรือ HCP อย่างใดอย่างหนึ่ง','BCC อย่างเดียวเท่านั้น',
+         'ลูกบาศก์อย่างง่ายอย่างเดียวเท่านั้น','ไม่มีการจัดเรียงแบบใดให้ค่านี้ได้'],
+      a:0, e:'เลขโคออร์ดิเนชัน <b>12</b> คู่กับพื้นที่ <b>74 %</b> คือลายเซ็นของการเรียง<b>ชิดที่สุด</b> ซึ่งมีสองแบบคือ FCC และ HCP<br>' +
+        'BCC ได้ 8 ตัวและ 68 % · ลูกบาศก์อย่างง่ายได้ 6 ตัวและเพียง 52 %<br>' +
+        'FCC กับ HCP ต่างกันแค่ลำดับการวางชั้น (ABC ซ้ำ กับ AB ซ้ำ) ตัวเลขทั้งสองจึงเท่ากัน' },
+
+    { icon:'🔩', title:'ทำไมทองเหลืองจึงแข็งกว่าทองแดง',
+      body:'ทองแดงบริสุทธิ์งอง่าย แต่พอเติมสังกะสีลงไปเป็นทองเหลือง กลับแข็งขึ้นชัดเจน',
+      q:'เพราะเหตุใด',
+      o:['อะตอมสังกะสีต่างขนาดทำให้ระนาบอะตอมเลื่อนผ่านกันยากขึ้น',
+         'สังกะสีสร้างพันธะโคเวเลนต์กับทองแดงจึงยึดกันแน่นขึ้น',
+         'สังกะสีดูดอิเล็กตรอนออกจากทะเลอิเล็กตรอนจนเหลือน้อยลง',
+         'สังกะสีทำให้ผลึกเปลี่ยนจาก FCC ไปเป็นลูกบาศก์อย่างง่าย'],
+      a:0, e:'โลหะอ่อนตัวได้เพราะ<b>ระนาบอะตอมเลื่อนผ่านกัน</b>ได้ง่ายในผลึกที่เรียงเป็นระเบียบสม่ำเสมอ<br>' +
+        'อะตอมแปลกปลอมที่<b>ขนาดต่างออกไป</b>ทำให้ระนาบไม่เรียบ เกิดการขัดขวางการเลื่อน โลหะผสมจึง<b>แข็งกว่า</b>โลหะเดิม<br>' +
+        'อิเล็กตรอนยังเป็นทะเลอิเล็กตรอนเหมือนเดิม ทองเหลืองจึงยังนำไฟฟ้าและยังเป็นมันวาว' },
+
+    { icon:'⚙️', title:'แยกชนิดโลหะผสม',
+      body:'เหล็กกล้าคือเหล็กผสมคาร์บอนไม่เกิน 2 % · ทองเหลืองคือทองแดงผสมสังกะสีราว 30 %',
+      q:'ทั้งสองเป็นโลหะผสมชนิดใดตามลำดับ',
+      o:['แบบแทรกช่องว่าง · แบบแทนที่','แบบแทนที่ · แบบแทรกช่องว่าง',
+         'แบบแทรกช่องว่างทั้งคู่','แบบแทนที่ทั้งคู่'],
+      a:0, e:'คาร์บอนมีอะตอม<b>เล็กมาก</b>เมื่อเทียบกับเหล็ก จึงมุดเข้าไปอยู่ใน<b>ช่องว่าง</b>ระหว่างอะตอมเหล็ก = แบบแทรกช่องว่าง<br>' +
+        'สังกะสีมีขนาด<b>ใกล้เคียง</b>ทองแดง จึงเข้าไป<b>แทนที่</b>อะตอมทองแดงในตำแหน่งเดิมได้เลย = แบบแทนที่<br>' +
+        'กติกาคร่าว ๆ คือถ้าขนาดต่างกันเกินราว 15 % จะแทนที่กันไม่ได้ ต้องไปแทรกช่องว่างแทน' },
+
+    { icon:'🛡️', title:'สแตนเลสไม่เป็นสนิม',
+      body:'เหล็กธรรมดาขึ้นสนิมสีน้ำตาลที่หลุดร่วง แต่สแตนเลสที่ผสมโครเมียมอย่างน้อย 11 % ไม่เป็นสนิม',
+      q:'โครเมียมช่วยอย่างไร',
+      o:['เกิดชั้นออกไซด์ของโครเมียมที่แน่นและเกาะแน่น ปิดผิวเหล็กไว้',
+         'โครเมียมทำให้เหล็กไม่ทำปฏิกิริยากับออกซิเจนได้อีกเลย',
+         'โครเมียมเพิ่มความหนาแน่นของทะเลอิเล็กตรอนจนน้ำซึมเข้าไม่ได้',
+         'โครเมียมเปลี่ยนพันธะโลหะของเหล็กให้เป็นพันธะโคเวเลนต์'],
+      a:0, e:'โครเมียมทำปฏิกิริยากับออกซิเจน<b>ก่อน</b>เหล็ก เกิดชั้น Cr₂O₃ ที่<b>บางมาก แน่น และเกาะติดแน่น</b> จึงปิดผิวไว้ทั้งหมด<br>' +
+        'ต่างจากสนิมเหล็กที่<b>พรุนและหลุดร่วง</b> เผยเนื้อใหม่ให้ผุต่อไปเรื่อย ๆ<br>' +
+        'ชั้นนี้ยังสร้างตัวเองใหม่ได้ทันทีเมื่อถูกขูด จึงเรียกว่าชั้นฟิล์มปกป้อง' },
+
+    { icon:'✨', title:'ทำไมโลหะจึงเป็นมันวาว',
+      body:'ขัดผิวโลหะให้เรียบแล้วจะสะท้อนแสงเป็นเงา ส่วนผลึกเกลือแกงที่ขัดเรียบเท่ากันกลับไม่เป็นเงาแบบนั้น',
+      q:'อะไรทำให้โลหะสะท้อนแสงได้',
+      o:['อิเล็กตรอนอิสระที่ผิวรับพลังงานแสงแล้วคายกลับออกมาทันที',
+         'ผิวโลหะเรียบกว่าผลึกเกลือในระดับอะตอมเสมอไม่ว่ากรณีใด',
+         'ไอออนบวกของโลหะมีขนาดใหญ่จึงสะท้อนแสงได้ดี',
+         'โลหะดูดกลืนแสงทุกความยาวคลื่นแล้วเปลี่ยนเป็นความร้อน'],
+      a:0, e:'<b>อิเล็กตรอนอิสระ</b>ที่ผิวรับพลังงานจากแสงได้ทุกความยาวคลื่น แล้ว<b>คายกลับ</b>ออกมาเป็นแสงทันที เราจึงเห็นเป็นเงาวาว<br>' +
+        'ถ้าโลหะดูดกลืนแล้วเก็บไว้เป็นความร้อน เราจะเห็นเป็นสีดำทึบ ไม่ใช่เงา<br>' +
+        'ผลึกไอออนิกไม่มีอิเล็กตรอนอิสระ แสงจึงทะลุผ่านไปได้ — เกลือแกงจึงดู<b>ใส</b>มากกว่าเป็นเงา' },
+
+    { icon:'🔥', title:'จานร้อนกับด้ามจับ',
+      body:'ช้อนโลหะที่จุ่มในน้ำร้อนจะร้อนถึงปลายด้ามอย่างรวดเร็ว แต่ช้อนพลาสติกยังเย็นอยู่',
+      q:'พันธะโลหะทำให้นำความร้อนได้ดีเพราะเหตุใด',
+      o:['อิเล็กตรอนอิสระพาพลังงานจลน์ไปทั่วชิ้นงานได้เร็ว',
+         'ไอออนบวกของโลหะหลุดออกจากที่แล้ววิ่งพาความร้อนไป',
+         'โลหะมีความหนาแน่นสูงจึงเก็บและส่งความร้อนได้มากกว่า',
+         'พันธะโลหะแข็งแรงจนความร้อนผ่านได้โดยไม่สูญเสีย'],
+      a:0, e:'นอกจากพาประจุแล้ว <b>อิเล็กตรอนอิสระ</b>ยังพา<b>พลังงานจลน์</b>ไปด้วย จึงส่งความร้อนได้เร็วกว่าการสั่นของอะตอมล้วน ๆ มาก<br>' +
+        'ไอออนบวกยังคง<b>อยู่กับที่</b>ในโครงผลึก ได้แต่สั่นอยู่ตรงตำแหน่งเดิม — ถ้าไอออนวิ่งไปมาได้ โลหะคงไม่คงรูป<br>' +
+        'นี่คือเหตุผลที่โลหะซึ่ง<b>นำไฟฟ้าดี</b>มักจะ<b>นำความร้อนดี</b>ตามไปด้วย' },
+
+    { icon:'🔬', title:'ตัดสินชนิดพันธะจากธาตุตั้งต้น',
+      body:'สาร A เกิดจากธาตุหมู่ 1 กับหมู่ 17 · สาร B เกิดจากธาตุหมู่ 2 กับหมู่ 13 · สาร C เกิดจากธาตุหมู่ 15 กับหมู่ 16',
+      q:'A B และ C มีพันธะชนิดใดตามลำดับ',
+      o:['ไอออนิก · โลหะ · โคเวเลนต์','โลหะ · ไอออนิก · โคเวเลนต์',
+         'ไอออนิก · โคเวเลนต์ · โลหะ','ไอออนิกทั้งสามชนิด'],
+      a:0, e:'A: หมู่ 1 เป็น<b>โลหะ</b> + หมู่ 17 เป็น<b>อโลหะ</b> → ถ่ายโอนอิเล็กตรอน = <b>ไอออนิก</b><br>' +
+        'B: หมู่ 2 กับหมู่ 13 เป็น<b>โลหะทั้งคู่</b> → ปล่อยอิเล็กตรอนเข้าทะเลร่วมกัน = <b>โลหะ</b> (โลหะผสม)<br>' +
+        'C: หมู่ 15 กับหมู่ 16 เป็น<b>อโลหะทั้งคู่</b> → ใช้อิเล็กตรอนร่วมกัน = <b>โคเวเลนต์</b>' }
+  ];
+  const SET = SC.map(shuffleOpts);
+  let i=0, right=0;
+  app.innerHTML = stageShell('boss', `
+    <div class="note">🎯 วินิจฉัยให้ครบ ${SC.length} สถานการณ์ — ใช้หลักฐานที่ให้มาตัดสิน อย่าเดาจากชื่อสาร</div>
+    <div class="bar"><i id="pb" style="width:0%"></i></div>
+    <div id="box"></div>
+  `);
+  const pb=document.getElementById('pb'), host=document.getElementById('box');
+  function step(){
+    pb.style.width=(i/SC.length*100)+'%';
+    if(i>=SC.length){
+      const got = right>=SC.length-1?3:right>=SC.length-3?2:right>=2?1:0;
+      stageMiss=SC.length-right;
+      finishStage('boss', got, right*17, `
+        <div class="note key">🟡 <b>ตารางสรุปพันธะทั้งสามชนิด — ออกสอบบ่อยที่สุด</b>
+          <div style="overflow-x:auto"><table class="cmp" style="margin-top:8px">
+            <thead><tr><th>หัวข้อ</th><th>พันธะโลหะ</th><th>พันธะไอออนิก</th><th>พันธะโคเวเลนต์ (โมเลกุล)</th></tr></thead>
+            <tbody>
+              <tr><td>เกิดจากธาตุชนิดใด</td><td class="yes">โลหะ + โลหะ</td><td>โลหะ + อโลหะ</td><td>อโลหะ + อโลหะ</td></tr>
+              <tr><td>อิเล็กตรอนถูกจัดการอย่างไร</td><td class="yes"><b>ปล่อยเข้าทะเลร่วมกัน</b>ทั้งก้อน</td><td><b>ถ่ายโอน</b> ให้-รับกันไปเลย</td><td><b>ใช้ร่วมกัน</b>เป็นคู่ ๆ</td></tr>
+              <tr><td>หน่วยย่อยของสาร</td><td>ไอออนบวกในทะเลอิเล็กตรอน</td><td>ไอออนเรียงต่อกันทั้งผลึก</td><td>โมเลกุลแยกจากกัน</td></tr>
+              <tr><td>พันธะมีทิศทางหรือไม่</td><td class="yes"><b>ไม่มีทิศทาง</b> — เลื่อนแล้วยังยึดกันได้</td><td>ไม่มีทิศทาง แต่ตำแหน่งประจุตายตัว</td><td><b>มีทิศทาง</b>ชัดเจน</td></tr>
+              <tr><td>จุดหลอมเหลว</td><td>ต่ำถึงสูงมาก (Cs 29 °C · W 3,422 °C)</td><td class="yes">สูงมาก (NaCl 801 °C)</td><td>ต่ำ</td></tr>
+              <tr><td>ตอกด้วยค้อน</td><td class="yes"><b>ตีแผ่ได้</b> · ดึงเป็นเส้นได้</td><td>แข็งแต่<b>เปราะ</b> แตกตามระนาบ</td><td>อ่อน · ผลึกยุ่ยง่าย</td></tr>
+              <tr><td>นำไฟฟ้าตอนเป็นของแข็ง</td><td class="yes"><b>นำ</b> (อิเล็กตรอนอิสระ)</td><td>ไม่นำ (ไอออนติดที่)</td><td>ไม่นำ</td></tr>
+              <tr><td>นำไฟฟ้าตอนหลอมเหลว</td><td class="yes"><b>นำ</b></td><td><b>นำ</b> (ไอออนเป็นอิสระ)</td><td>ไม่นำ</td></tr>
+              <tr><td>ตัวนำที่เคลื่อนที่คืออะไร</td><td class="yes"><b>อิเล็กตรอน</b></td><td><b>ไอออน</b></td><td>ไม่มี</td></tr>
+              <tr><td>การละลายน้ำ</td><td>ไม่ละลาย (บางชนิดทำปฏิกิริยา)</td><td>ละลายได้ดี · สารละลายนำไฟฟ้า</td><td>มักละลายในตัวทำละลายไม่มีขั้ว</td></tr>
+              <tr><td>ผิวเป็นมันวาว</td><td class="yes"><b>ใช่</b></td><td>ไม่ · มักใสหรือขุ่น</td><td>ไม่</td></tr>
+              <tr><td>ตัวอย่าง</td><td>Cu · Al · Fe · ทองเหลือง · เหล็กกล้า</td><td>NaCl · MgO · CaCO₃</td><td>H₂O · CO₂ · NH₃</td></tr>
+            </tbody></table></div></div>
+        <div class="note miss">🔴 <b>ระวังเข้าใจผิด:</b> “ตีแผ่ได้” ไม่ได้แปลว่าพันธะอ่อน
+          — ทังสเตนตีเป็นเส้นลวดได้และหลอมที่ 3,422 °C ซึ่งสูงกว่าผลึกไอออนิกส่วนใหญ่</div>
+        <div class="note miss">🔴 <b>ระวังอีกจุด:</b> ทั้งโลหะและไอออนิกต่างนำไฟฟ้าตอนหลอมเหลว
+          — ข้อสอบจึงมักถามที่<b>ตอนเป็นของแข็ง</b> เพราะจุดนั้นเท่านั้นที่แยกสองชนิดออกจากกันได้</div>
+        <div class="note">🔵 <b>เชื่อมโยง:</b> ทั้งสามชนิดล้วนเป็นเรื่องเดียวกัน คือ<b>เวเลนซ์อิเล็กตรอนจะไปอยู่ที่ใด</b>
+          — ให้ไปเลย (ไอออนิก) · แบ่งกันเป็นคู่ (โคเวเลนต์) · หรือปล่อยให้ใช้ร่วมกันทั้งก้อน (โลหะ)</div>
+        <div class="small muted">ตอบถูก ${right}/${SC.length} ข้อ</div>`);
+      return;
+    }
+    const s=SET[i];
+    host.innerHTML = `<div class="scene">
+      <div class="small muted">สถานการณ์ ${i+1}/${SC.length}</div>
+      <h3 style="margin:6px 0 4px">${s.icon} ${s.title}</h3>
+      <p style="margin:0 0 6px;font-size:.92rem">${s.body}</p>
+      <div style="font-weight:800;font-size:.95rem;margin-top:10px">${s.q}</div>
+      <div class="opts">${s.o.map((o,j)=>`<div class="opt" data-i="${j}">${o}</div>`).join('')}</div>
+      <div class="feedback" id="qfb"></div>
+    </div>`;
+    host.querySelectorAll('.opt').forEach(op=>{
+      op.onclick=()=>{
+        const j=+op.dataset.i, ok=j===s.a; if(ok) right++;
+        host.querySelectorAll('.opt').forEach((x,k)=>{
+          x.classList.add('disabled');
+          if(k===s.a) x.classList.add('correct'); else if(k===j) x.classList.add('incorrect');
+        });
+        const f=host.querySelector('#qfb'); f.className='feedback show '+(ok?'good':'bad');
+        f.innerHTML=(ok?'✅ ถูกต้อง! ':'❌ ยังไม่ใช่ ')+s.e+
+          `<div style="margin-top:12px"><button class="btn primary sm" id="nx">${i===SC.length-1?'สรุปผล →':'สถานการณ์ถัดไป →'}</button></div>`;
+        f.querySelector('#nx').onclick=()=>{ i++; step(); window.scrollTo({top:0,behavior:'smooth'}); };
+      };
+    });
+  }
+  step();
+}
+
+/* =========================================================================
+   การ์ดคำศัพท์
+   ========================================================================= */
+const CARDS = [
+  ['พื้นฐาน','พันธะเคมี','Chemical bond','แรงยึดเหนี่ยวระหว่างอะตอมหรือไอออน ทำให้อยู่รวมกันเป็นสาร'],
+  ['พื้นฐาน','พันธะโลหะ','Metallic bond','<b>แรงดึงดูดทางไฟฟ้า</b>ระหว่างไอออนบวกที่เรียงชิดกัน กับ<b>ทะเลอิเล็กตรอน</b>ที่เคลื่อนที่ได้อิสระรอบตัว'],
+  ['พื้นฐาน','ทะเลอิเล็กตรอน','Electron sea','กลุ่มเวเลนซ์อิเล็กตรอนที่ทุกอะตอมปล่อยออกมาแล้ว<b>ใช้ร่วมกันทั้งก้อน</b> ไม่ได้เป็นของอะตอมใดอะตอมหนึ่ง'],
+  ['พื้นฐาน','อิเล็กตรอนอิสระ','Delocalised electron','อิเล็กตรอนที่ไม่ถูกตรึงกับอะตอมใด เคลื่อนที่ไปทั่วชิ้นโลหะได้ · เป็นต้นเหตุของสมบัติเด่นแทบทุกข้อของโลหะ'],
+  ['พื้นฐาน','ไอออนบวกของโลหะ','Metal cation','แกนอะตอมที่เหลืออยู่หลังปล่อยเวเลนซ์อิเล็กตรอน · <b>อยู่กับที่</b>ในโครงผลึก ได้แต่สั่นรอบตำแหน่งเดิม'],
+  ['พื้นฐาน','เวเลนซ์อิเล็กตรอน','Valence electron','อิเล็กตรอนในระดับพลังงานนอกสุด · เป็นตัวที่ถูกปล่อยเข้าทะเลอิเล็กตรอน · ปล่อยได้มาก พันธะยิ่งแข็งแรง'],
+  ['พื้นฐาน','พลังงานไอออไนเซชัน','Ionization energy','พลังงานที่ใช้ดึงอิเล็กตรอนออกจากอะตอม · โลหะมีค่า<b>ต่ำ</b> จึงปล่อยอิเล็กตรอนเข้าทะเลได้ง่าย'],
+  ['พื้นฐาน','พันธะไม่มีทิศทาง','Non-directional bond','แรงดึงดูดกระจายรอบไอออนบวกทุกทิศเท่ากัน · เลื่อนอะตอมไปแล้วยัง<b>ยึดกันได้เหมือนเดิม</b> ต่างจากพันธะโคเวเลนต์ที่มีทิศทางแน่นอน'],
+  ['พื้นฐาน','ธาตุเรพรีเซนเททีฟกับแทรนซิชัน','Main group vs transition','โลหะแทรนซิชันใช้ทั้ง 4s และ 3d เข้าร่วมทะเลอิเล็กตรอนได้ พันธะจึงแข็งแรงกว่า · Fe หลอมที่ 1,538 °C ส่วน K เพียง 63 °C'],
+
+  ['โครงผลึกโลหะ','ผลึกโลหะ','Metallic crystal','ของแข็งที่ไอออนบวกเรียงตัวอย่างเป็นระเบียบซ้ำ ๆ โดยมีทะเลอิเล็กตรอนแทรกอยู่ทั่ว'],
+  ['โครงผลึกโลหะ','หน่วยเซลล์','Unit cell','ส่วนที่เล็กที่สุดของผลึกที่นำมาต่อซ้ำทุกทิศทางแล้วได้ผลึกทั้งก้อน'],
+  ['โครงผลึกโลหะ','เลขโคออร์ดิเนชัน','Coordination number','จำนวนอะตอมเพื่อนบ้านที่<b>สัมผัสโดยตรง</b>กับอะตอมหนึ่งตัว · BCC = 8 · FCC = 12 · HCP = 12'],
+  ['โครงผลึกโลหะ','ลูกบาศก์กลางตัว','Body-centred cubic (BCC)','อะตอมอยู่ที่มุมทั้ง 8 กับกลางลูกบาศก์ 1 ตัว · เลขโคออร์ดิเนชัน <b>8</b> · ใช้พื้นที่ <b>68 %</b> · เช่น Na K Fe(อุณหภูมิห้อง) W'],
+  ['โครงผลึกโลหะ','ลูกบาศก์กลางหน้า','Face-centred cubic (FCC)','อะตอมอยู่ที่มุมกับกลางหน้าทั้ง 6 · เลขโคออร์ดิเนชัน <b>12</b> · ใช้พื้นที่ <b>74 %</b> · เช่น Cu Al Ag Au Ni'],
+  ['โครงผลึกโลหะ','เฮกซะโกนัลชิด','Hexagonal close-packed (HCP)','เรียงชิดแบบหกเหลี่ยม · เลขโคออร์ดิเนชัน <b>12</b> · ใช้พื้นที่ <b>74 %</b> เท่า FCC · เช่น Mg Zn Ti'],
+  ['โครงผลึกโลหะ','การเรียงชิดที่สุด','Close packing','การจัดเรียงที่เหลือช่องว่างน้อยที่สุดเท่าที่ทรงกลมเท่ากันจะทำได้ คือ <b>74 %</b> — มีสองแบบคือ FCC และ HCP'],
+  ['โครงผลึกโลหะ','ลำดับการวางชั้น','Stacking sequence','จุดต่างเดียวของ FCC กับ HCP · FCC วางแบบ <b>ABC ABC</b> · HCP วางแบบ <b>AB AB</b> · ตัวเลขอื่นเท่ากันหมด'],
+  ['โครงผลึกโลหะ','ประสิทธิภาพการบรรจุ','Packing efficiency','สัดส่วนปริมาตรที่อะตอมกินจริง · ลูกบาศก์อย่างง่าย 52 % · BCC 68 % · FCC และ HCP 74 %'],
+  ['โครงผลึกโลหะ','ช่องว่างระหว่างอะตอม','Interstitial site','ช่องว่างที่เหลือระหว่างอะตอมโลหะ · เป็นที่อยู่ของอะตอมเล็ก ๆ อย่างคาร์บอนในเหล็กกล้า'],
+  ['โครงผลึกโลหะ','พอลิมอร์ฟิซึม','Polymorphism','โลหะเดียวกันเปลี่ยนแบบการจัดเรียงได้เมื่ออุณหภูมิเปลี่ยน · เหล็กเป็น BCC ที่อุณหภูมิห้อง แต่กลายเป็น FCC เมื่อร้อนจัด'],
+
+  ['ความแข็งแรง','ความแข็งแรงของพันธะโลหะ','Metallic bond strength','ขึ้นกับสองอย่าง — จำนวน<b>เวเลนซ์อิเล็กตรอน</b>ที่ปล่อยเข้าทะเล และ<b>ขนาดไอออนบวก</b>'],
+  ['ความแข็งแรง','ผลของจำนวนเวเลนซ์อิเล็กตรอน','Effect of valence count','ปล่อยได้มาก ทะเลอิเล็กตรอน<b>หนาแน่นขึ้น</b> พันธะแข็งแรงขึ้น · Na(1) 98 °C → Mg(2) 650 °C → Al(3) 660 °C'],
+  ['ความแข็งแรง','ผลของขนาดไอออน','Effect of ionic radius','ไอออน<b>เล็ก</b> ประจุอยู่ใกล้ทะเลอิเล็กตรอนกว่า แรงดึงดูดแรงกว่า · Li 181 °C แต่ Cs เพียง 29 °C'],
+  ['ความแข็งแรง','แนวโน้มตามหมู่','Group trend','ลงหมู่ไปด้านล่าง ไอออนใหญ่ขึ้น จุดหลอมเหลว<b>ลดลง</b> · หมู่ 1 เรียงจาก Li ลงไปหา Cs'],
+  ['ความแข็งแรง','แนวโน้มตามคาบ','Period trend','ข้ามคาบไปทางขวา ปล่อยอิเล็กตรอนได้มากขึ้นและไอออนเล็กลง จุดหลอมเหลว<b>เพิ่มขึ้น</b>'],
+  ['ความแข็งแรง','จุดหลอมเหลว','Melting point','อุณหภูมิที่โครงผลึกเริ่มสลาย · ทังสเตนสูงสุดที่ <b>3,422 °C</b> · ปรอทต่ำสุดที่ <b>−39 °C</b> จึงเป็นของเหลวที่อุณหภูมิห้อง'],
+  ['ความแข็งแรง','ความหนาแน่น','Density','สูงเมื่ออะตอมหนักและเรียงชิด · ออสเมียมหนาแน่นที่สุด 22.6 g/cm³ · ลิเทียมเบากว่าน้ำจึงลอยน้ำได้'],
+
+  ['สมบัติโลหะ','ตีแผ่ได้','Malleability','ตอกเป็นแผ่นบางได้โดยไม่แตก · เพราะเลื่อนระนาบอะตอมแล้ว<b>ทะเลอิเล็กตรอนไหลตามไปยึดต่อ</b>ได้ทันที'],
+  ['สมบัติโลหะ','ดึงเป็นเส้นได้','Ductility','ดึงยืดเป็นเส้นลวดได้ · ใช้หลักการเดียวกับการตีแผ่ · ทองคำ 1 กรัมดึงเป็นเส้นยาวได้เกิน 2 กิโลเมตร'],
+  ['สมบัติโลหะ','การนำไฟฟ้า','Electrical conductivity','นำได้ดี<b>ทั้งของแข็งและของเหลว</b> เพราะอิเล็กตรอนอิสระเคลื่อนที่พาประจุ · เงินนำดีที่สุด รองมาคือทองแดง'],
+  ['สมบัติโลหะ','ตัวนำที่เคลื่อนที่','Charge carrier','ในโลหะคือ<b>อิเล็กตรอน</b> · ในสารประกอบไอออนิกที่หลอมเหลวคือ<b>ไอออน</b> — ข้อสอบชอบถามจุดต่างนี้'],
+  ['สมบัติโลหะ','ผลของอุณหภูมิต่อการนำไฟฟ้า','Temperature effect','ร้อนขึ้น ไอออนบวกสั่นแรงขึ้น ขวางทางอิเล็กตรอน โลหะจึงนำไฟฟ้า<b>แย่ลง</b> — ตรงข้ามกับสารกึ่งตัวนำ'],
+  ['สมบัติโลหะ','การนำความร้อน','Thermal conductivity','อิเล็กตรอนอิสระพา<b>พลังงานจลน์</b>ไปด้วย โลหะที่นำไฟฟ้าดีจึงมักนำความร้อนดีตามไปด้วย'],
+  ['สมบัติโลหะ','ความเป็นมันวาว','Metallic lustre','อิเล็กตรอนอิสระที่ผิวรับพลังงานแสงแล้ว<b>คายกลับออกมาทันที</b> เราจึงเห็นเป็นเงาสะท้อน'],
+  ['สมบัติโลหะ','ความเหนียว','Toughness','ทนแรงกระแทกโดยไม่แตก · เป็นผลจากพันธะไม่มีทิศทาง — ตรงข้ามกับ<b>ความเปราะ</b>ของผลึกไอออนิก'],
+  ['สมบัติโลหะ','การเลื่อนของระนาบ','Slip','ระนาบอะตอมเลื่อนผ่านกันเมื่อถูกแรงกระทำ · เป็นกลไกที่ทำให้โลหะเปลี่ยนรูปได้โดยไม่แตกหัก'],
+  ['สมบัติโลหะ','ไอโซโทรปิกของแรงยึด','Uniform attraction','แรงดึงดูดจากทะเลอิเล็กตรอนเท่ากันทุกทิศ ไอออนบวกจึงย้ายไปตำแหน่งใหม่ได้โดยไม่มีตำแหน่งใดผลักกัน'],
+
+  ['โลหะผสม','โลหะผสม','Alloy','ของผสมเนื้อเดียวของโลหะกับธาตุอื่นอย่างน้อยหนึ่งชนิด · ยังคงเป็น<b>พันธะโลหะ</b> จึงยังนำไฟฟ้าและเป็นมันวาว'],
+  ['โลหะผสม','แบบแทนที่','Substitutional alloy','อะตอมแปลกปลอม<b>ขนาดใกล้เคียง</b> (ต่างกันไม่เกินราว 15 %) เข้าไปแทนที่อะตอมเดิมในโครงผลึก · เช่น ทองเหลือง'],
+  ['โลหะผสม','แบบแทรกช่องว่าง','Interstitial alloy','อะตอมแปลกปลอมที่<b>เล็กกว่ามาก</b> มุดเข้าไปอยู่ในช่องว่างระหว่างอะตอมโลหะ · เช่น คาร์บอนในเหล็กกล้า'],
+  ['โลหะผสม','ทำไมโลหะผสมจึงแข็งกว่า','Why alloys are harder','อะตอมขนาดต่างกันทำให้ระนาบไม่เรียบ <b>ขัดขวางการเลื่อน</b>ของระนาบอะตอม โลหะจึงแข็งขึ้นและงอยากขึ้น'],
+  ['โลหะผสม','ทองเหลือง','Brass','Cu + Zn ราว 30 % · แบบ<b>แทนที่</b> · แข็งกว่าทองแดง ไม่เป็นสนิม เสียงกังวาน ใช้ทำเครื่องดนตรีและอุปกรณ์ประปา'],
+  ['โลหะผสม','บรอนซ์','Bronze','Cu + Sn · แบบ<b>แทนที่</b> · เป็นโลหะผสมชนิดแรกที่มนุษย์ใช้ ทนการกัดกร่อนของน้ำทะเล ใช้หล่อระฆังและรูปปั้น'],
+  ['โลหะผสม','เหล็กกล้า','Steel','Fe + C ไม่เกิน 2 % · แบบ<b>แทรกช่องว่าง</b> · คาร์บอนมากขึ้นยิ่งแข็งแต่ยิ่งเปราะ'],
+  ['โลหะผสม','สแตนเลส','Stainless steel','Fe + Cr อย่างน้อย 11 % + Ni · แบบ<b>แทนที่</b> · โครเมียมสร้างชั้น Cr₂O₃ บางแน่นปิดผิว จึงไม่เป็นสนิม'],
+  ['โลหะผสม','ดูราลูมิน','Duralumin','Al + Cu + Mg · เบาแต่แข็งแรงใกล้เคียงเหล็กกล้า ใช้ทำโครงเครื่องบิน'],
+  ['โลหะผสม','ชั้นฟิล์มปกป้อง','Passive layer','ชั้นออกไซด์บางที่แน่นและเกาะแน่น ปิดกั้นออกซิเจนไม่ให้เข้าถึงเนื้อโลหะ · สร้างตัวเองใหม่ได้เมื่อถูกขูด'],
+  ['โลหะผสม','สนิมเหล็ก','Rust','Fe₂O₃·xH₂O ที่<b>พรุนและหลุดร่วง</b> จึงเผยเนื้อเหล็กใหม่ให้ผุต่อไปเรื่อย ๆ ต่างจากชั้นฟิล์มปกป้อง'],
+
+  ['เปรียบเทียบ','พันธะไอออนิก','Ionic bond','แรงดึงดูดระหว่างไอออนบวกกับไอออนลบ · โลหะ<b>ถ่ายโอน</b>อิเล็กตรอนให้อโลหะ · ของแข็งไม่นำไฟฟ้า ตอกแล้วแตก'],
+  ['เปรียบเทียบ','พันธะโคเวเลนต์','Covalent bond','อโลหะ<b>ใช้อิเล็กตรอนร่วมกัน</b>เป็นคู่ ๆ · พันธะมีทิศทาง · สารที่เป็นโมเลกุลมีจุดหลอมเหลวต่ำและไม่นำไฟฟ้า'],
+  ['เปรียบเทียบ','จุดต่างที่ใช้แยกไอออนิกกับโลหะ','Key distinguishing test','ดูที่การนำไฟฟ้า<b>ตอนเป็นของแข็ง</b> — โลหะนำ ไอออนิกไม่นำ · ตอนหลอมเหลวทั้งคู่นำเหมือนกัน จึงแยกไม่ได้'],
+  ['เปรียบเทียบ','ตีแผ่ได้กับเปราะ','Malleable vs brittle','โลหะเลื่อนแล้วทะเลอิเล็กตรอนไหลตามไปยึด · ผลึกไอออนิกเลื่อนแล้วประจุเหมือนกันมาชนกันจน<b>ผลัก</b>แตก'],
+  ['เปรียบเทียบ','แข็งแรงไม่เท่ากับแข็งกระด้าง','Strength vs hardness','พันธะแข็งแรงดูที่<b>จุดหลอมเหลว</b> ส่วนเปราะหรือเหนียวดูที่<b>ทิศทางของพันธะ</b> — เป็นคนละเรื่องกัน']
+];
+function renderCards(){
+  const cats=[...new Set(CARDS.map(c=>c[0]))];
+  let cat='ทั้งหมด', deck=[], idx=0, flipped=false;
+  function build(){ deck=(cat==='ทั้งหมด'?CARDS:CARDS.filter(c=>c[0]===cat)); idx=0; flipped=false; }
+  build();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic">🃏</div>
+      <div style="flex:1;min-width:200px"><h2>การ์ดคำศัพท์</h2>
+        <div class="sub">แตะการ์ดเพื่อพลิกดูความหมาย · ${CARDS.length} คำศัพท์ ไทย–อังกฤษ</div></div>
+    </div>
+    <div class="deckbar" id="deckbar">
+      ${['ทั้งหมด',...cats].map(c=>`<button data-c="${c}" class="${c==='ทั้งหมด'?'on':''}">${c}</button>`).join('')}
+    </div>
+    <div class="fcstage"><div class="fc" id="fc"></div></div>
+    <div class="fcnav">
+      <button class="btn sm" id="prev">← ก่อนหน้า</button>
+      <span class="count" id="count"></span>
+      <button class="btn sm" id="next">ถัดไป →</button>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn ghost sm" id="shuf">🔀 สลับการ์ด</button>
+      <button class="btn primary sm" id="back">กลับแผนที่</button>
+    </div>
+    <div class="note" style="margin-top:20px">
+      💡 <b>วิธีใช้ให้ได้ผล:</b> อ่านคำศัพท์แล้ว<b>พูดนิยามออกมาเองก่อน</b> จึงค่อยพลิกดูเฉลย (active recall)
+    </div>`;
+  const fc=document.getElementById('fc'), cnt=document.getElementById('count');
+  function draw(){
+    const c=deck[idx];
+    if(!c){ fc.innerHTML='<div class="side front"><div class="term">ไม่มีการ์ดในหมวดนี้</div></div>'; return; }
+    fc.classList.remove('flip'); flipped=false;
+    fc.innerHTML = `
+      <div class="side front">
+        <div class="tag">${c[0]}</div><div class="term">${c[1]}</div><div class="en">${c[2]}</div>
+        <div class="hint">แตะเพื่อพลิก ↻</div>
+      </div>
+      <div class="side back">
+        <div class="tag">${c[1]} · ${c[2]}</div><div class="def">${c[3]}</div>
+        <div class="hint">แตะเพื่อพลิกกลับ ↻</div>
+      </div>`;
+    cnt.textContent = `${idx+1} / ${deck.length}`;
+  }
+  fc.onclick=()=>{ flipped=!flipped; fc.classList.toggle('flip',flipped); };
+  document.getElementById('prev').onclick=()=>{ idx=(idx-1+deck.length)%deck.length; draw(); };
+  document.getElementById('next').onclick=()=>{ idx=(idx+1)%deck.length; draw(); };
+  document.getElementById('shuf').onclick=()=>{ deck=shuffle(deck); idx=0; draw(); toast('สลับการ์ดแล้ว'); };
+  document.getElementById('back').onclick=renderMap;
+  document.querySelectorAll('#deckbar button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#deckbar button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); cat=b.dataset.c; build(); draw();
+    };
+  });
+  document.addEventListener('keydown', function nav(e){
+    if(!document.getElementById('fc')){ document.removeEventListener('keydown',nav); return; }
+    if(e.key==='ArrowRight') document.getElementById('next')?.click();
+    if(e.key==='ArrowLeft')  document.getElementById('prev')?.click();
+    if(e.key===' '){ e.preventDefault(); fc.click(); }
+  });
+  draw(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* =========================================================================
+   เกียรติบัตร — เรียนครบทุกด่านและได้ดาวรวมถึงเกณฑ์ แล้วใส่ชื่อรับเกียรติบัตรได้
+   ปรับตำแหน่ง/ขนาดชื่อบนเกียรติบัตรได้ที่ค่า CERT ด้านล่างจุดเดียว
+   (ค่าทุกตัวคิดเป็นสัดส่วนของภาพ 0–1 จึงใช้ไฟล์ขนาดใดก็ได้) */
+const CERT = {
+  src:'cert-bg.png',      // ไฟล์เกียรติบัตรของโรงเรียน หน่วยพันธะไอออนิก (2000 × 1414 px)
+  pass:0.6,               // เกณฑ์ผ่าน = 60% ของดาวเต็ม
+  // แบบนี้ไม่มีแคปซูล แต่เว้นช่องว่างพื้นขาวไว้กลางหน้าระหว่างบรรทัด
+  // "ขอมอบเกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า" กับ "ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์"
+  // วัดจากไฟล์จริงได้ช่องว่างที่ y 525–724 px (สูง 199 px) และกึ่งกลางเอกสารอยู่ที่ x 0.5005
+  nameX:0.5005,           // จุดกึ่งกลางชื่อแนวนอน = กึ่งกลางบล็อกข้อความของเอกสาร
+  nameY:0.4440,           // กึ่งกลางช่องว่าง เผื่อลงล่างเล็กน้อยเพราะวรรณยุกต์ไทยกินที่ด้านบน
+  nameW:0.52,             // ความกว้างสูงสุดของชื่อ เว้นขอบซ้าย-ขวาไว้พอสมควร
+  nameSize:0.040,         // = 80 px บนไฟล์จริง · สูงราว 112 px เมื่อรวมวรรณยุกต์ ยังไม่ชนขอบช่องว่าง
+  nameColor:'#004AAD',    // น้ำเงินเดียวกับชื่อโรงเรียนบนเกียรติบัตร พื้นตรงนั้นเป็นสีขาว
+  nameColorFallback:'#0A0A0A'  // สีชื่อตอนใช้กรอบสำรอง (แคปซูลพื้นอ่อน)
+};
+
+const MAX_STARS = STAGES.length * 3;
+function certNeed(){ return Math.ceil(MAX_STARS * CERT.pass); }
+function certPassed(){
+  const allPlayed = STAGES.every(st => (S.stars[st.id]||0) > 0);
+  return allPlayed && totalStars() >= certNeed();
+}
+function certName(){
+  const j = (typeof getJoin==='function') ? getJoin() : null;
+  return localStorage.getItem('met-cert-name') || (j && j.name) || '';
+}
+function certCardHtml(){
+  const need=certNeed(), got=totalStars(), ok=certPassed();
+  const pct=Math.min(100, Math.round(got/need*100));
+  return `<div class="card ${ok?'':'lockcard'}" style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      border-color:${ok?'rgba(242,103,22,.5)':'var(--line)'}">
+    <div style="font-size:2rem">${ok?'🏅':'🔒'}</div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800">เกียรติบัตร${ok?' — ผ่านเกณฑ์แล้ว!':''}</div>
+      <div class="small muted">${ok
+        ? `เรียนครบทุกด่านและได้ ${got}/${MAX_STARS} ดาว (เกณฑ์ ${Math.round(CERT.pass*100)}% = ${need} ดาว) — ใส่ชื่อแล้วบันทึกเกียรติบัตรได้เลย`
+        : `เล่นให้ครบทั้ง ${STAGES.length} ด่าน และเก็บดาวให้ถึง <b>${need}/${MAX_STARS}</b> ดาว (${Math.round(CERT.pass*100)}%) · ตอนนี้ได้ ${got} ดาว`}</div>
+      ${ok?'':`<div class="certprog"><i style="width:${pct}%"></i></div>`}
+    </div>
+    <button class="btn ${ok?'gold':''}" id="btnCert" ${ok?'':'disabled'}>รับเกียรติบัตร</button>
+  </div>`;
+}
+
+/* วาดเกียรติบัตรลงบนแคนวาส (ใช้ภาพของโรงเรียนถ้ามี ถ้าไม่มีจะวาดกรอบสำรองให้) */
+function drawCert(canvas, name, img){
+  const W = img ? img.naturalWidth : 2000, H = img ? img.naturalHeight : 1400;
+  canvas.width = W; canvas.height = H;
+  const c = canvas.getContext('2d');
+  c.fillStyle = '#fff'; c.fillRect(0,0,W,H);
+  if(img){ c.drawImage(img, 0, 0, W, H); }
+  else { certFallback(c, W, H); }
+  // ---- ชื่อผู้เรียน (ย่อขนาดอัตโนมัติจนพอดีกรอบ) ----
+  const maxW = W * CERT.nameW;
+  let size = W * CERT.nameSize;
+  const font = px => `700 ${px}px "Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai",sans-serif`;
+  c.font = font(size);
+  while(c.measureText(name).width > maxW && size > W*0.012){ size *= 0.95; c.font = font(size); }
+  c.fillStyle = img ? CERT.nameColor : (CERT.nameColorFallback || CERT.nameColor);
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillText(name, W*CERT.nameX, H*CERT.nameY);
+  return canvas;
+}
+/* กรอบสำรอง ใช้เมื่อยังไม่ได้วางไฟล์ cert-bg.png */
+function certFallback(c, W, H){
+  const g = c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#FBF8EC'); g.addColorStop(1,'#EAE4C6');
+  c.fillStyle = g; c.fillRect(0,0,W,H);
+  c.strokeStyle = '#084A24'; c.lineWidth = W*0.012; c.strokeRect(W*0.03,H*0.04,W*0.94,H*0.92);
+  c.strokeStyle = '#F26716'; c.lineWidth = W*0.004; c.strokeRect(W*0.045,H*0.062,W*0.91,H*0.876);
+  c.textAlign='center'; c.fillStyle='#084A24';
+  const f=(px,w=700)=>`${w} ${px}px "Sukhumvit Set","Noto Sans Thai",sans-serif`;
+  c.font=f(W*0.045); c.fillText('เกียรติบัตรฉบับนี้ให้ไว้เพื่อแสดงว่า', W/2, H*0.30);
+  c.fillStyle='#04261E'; c.font=f(W*0.028,400);
+  c.fillText('ได้ผ่านการเรียนรู้ผ่านสื่ออิเล็กทรอนิกส์ (e-learning)', W/2, H*0.645);
+  c.fillStyle='#D6350B'; c.font=f(W*0.022);
+  c.fillText('หน่วยที่ 3 พันธะเคมี เรื่อง “พันธะโลหะ”', W/2, H*0.70);
+  c.fillText('สำหรับนักเรียนระดับชั้นมัธยมศึกษาปีที่ 4', W/2, H*0.745);
+  c.fillStyle='#6B8A76'; c.font=f(W*0.022,400);
+  c.fillText('ให้ไว้ ณ วันที่ ' + new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}), W/2, H*0.82);
+  // กรอบใส่ชื่อ
+  const bx=W*0.5-W*0.26, by=H*CERT.nameY-H*0.055, bw=W*0.52, bh=H*0.11, r=bh/2;
+  const gg=c.createLinearGradient(bx,0,bx+bw,0); gg.addColorStop(0,'#F7A8C4'); gg.addColorStop(1,'#F7C39C');
+  c.fillStyle=gg; c.beginPath();
+  c.moveTo(bx+r,by); c.arcTo(bx+bw,by,bx+bw,by+bh,r); c.arcTo(bx+bw,by+bh,bx,by+bh,r);
+  c.arcTo(bx,by+bh,bx,by,r); c.arcTo(bx,by,bx+bw,by,r); c.closePath(); c.fill();
+  c.strokeStyle='#2F7D4F'; c.lineWidth=W*0.003; c.stroke();
+}
+
+function renderCert(){
+  if(!certPassed()){ toast('ยังไม่ผ่านเกณฑ์รับเกียรติบัตร'); return; }
+  let img = null, nameNow = certName();
+  app.innerHTML = `
+    <div class="stagehead">
+      <div class="ic" style="font-size:2rem">🏅</div>
+      <div style="flex:1;min-width:200px"><h2>เกียรติบัตร</h2>
+        <div class="sub">ผ่านเกณฑ์ ${Math.round(CERT.pass*100)}% แล้ว — ใส่ชื่อของตัวเองเพื่อรับเกียรติบัตร</div></div>
+    </div>
+    <div class="note key">🎓 ได้ <b>${totalStars()}/${MAX_STARS} ดาว</b> จากทั้ง ${STAGES.length} ด่าน
+      (เกณฑ์ผ่าน ${certNeed()} ดาว) · พิมพ์ชื่อ–นามสกุลให้ถูกต้อง แล้วกดบันทึกภาพเก็บไว้ได้เลย</div>
+    <div class="certform">
+      <input id="cname" maxlength="60" placeholder="พิมพ์ชื่อ–นามสกุลของคุณ" value="${escHtml(nameNow)}">
+      <button class="btn primary" id="cmake">ใส่ชื่อลงเกียรติบัตร</button>
+    </div>
+    <div class="certwrap"><canvas id="ccv"></canvas></div>
+    <div class="certbar">
+      <button class="btn gold" id="cdl">⬇️ บันทึกเป็นรูปภาพ</button>
+      <button class="btn" id="copen">🔍 เปิดภาพเต็ม</button>
+      <button class="btn ghost" id="cback">🗺️ กลับแผนที่</button>
+    </div>
+    <div class="note small" style="margin-top:14px">
+      📱 <b>บนมือถือ:</b> ถ้ากดบันทึกแล้วไม่มีอะไรเกิดขึ้น ให้กด “เปิดภาพเต็ม” แล้ว<b>กดค้างที่ภาพ → บันทึกรูปภาพ</b>
+    </div>`;
+  const cv = document.getElementById('ccv'), inp = document.getElementById('cname');
+  function paint(){
+    const nm = (inp.value||'').trim();
+    if(!nm){ toast('กรอกชื่อของคุณก่อน'); inp.focus(); return false; }
+    localStorage.setItem('met-cert-name', nm);
+    drawCert(cv, nm, img);
+    return true;
+  }
+  // โหลดภาพเกียรติบัตรของโรงเรียน ถ้าไม่มีก็ใช้กรอบสำรอง
+  const im = new Image();
+  im.onload = ()=>{ img = im; if(nameNow) paint(); else drawCert(cv,'',img); };
+  im.onerror = ()=>{ img = null; drawCert(cv, nameNow||'', null); };
+  im.src = CERT.src;
+
+  document.getElementById('cmake').onclick = paint;
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') paint(); });
+  document.getElementById('cdl').onclick = ()=>{
+    if(!paint()) return;
+    const nm = (inp.value||'').trim();
+    cv.toBlob(b=>{
+      const url = URL.createObjectURL(b);
+      const a = document.createElement('a');
+      a.href = url; a.download = `เกียรติบัตร-${nm}.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 4000);
+      toast('บันทึกเกียรติบัตรแล้ว 🎉');
+    }, 'image/png');
+  };
+  document.getElementById('copen').onclick = ()=>{
+    if(!paint()) return;
+    cv.toBlob(b=>{ window.open(URL.createObjectURL(b), '_blank'); }, 'image/png');
+  };
+  document.getElementById('cback').onclick = renderMap;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= ระบบชั้นเรียน =================
+   ใช้ฐานข้อมูล Supabase ชุดเดียวกับเกมอื่นในเว็บไซต์นี้ คะแนนจึงขึ้นแดชบอร์ดครูหน้าเดิม
+   นักเรียนกรอกรหัสห้อง (เช่น M401A) + ชื่อ → จบด่านแล้วคะแนนวิ่งเข้าตาราง scores
+   แถวของเกมนี้กำกับด้วยคอลัมน์ game = 'metallic' และเลขด่าน 1–6 เพื่อไม่ปนกับเกมอื่น
+   ถ้าไม่เข้าร่วมห้องหรือเน็ตหลุด เกมยังเล่นได้ปกติ คะแนนจะพักไว้แล้วส่งเองเมื่อกลับมาออนไลน์ */
+const SB_URL  = 'https://vgurqbcbovgeppvdwizr.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZndXJxYmNib3ZnZXBwdmR3aXpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MzUwMDcsImV4cCI6MjEwMjQxMTAwN30.MV-oJICUViNpDLjr7pdvxQr44XBhefHHlvlleW9bFUs';
+const GAME_KEY   = 'metallic';   // ใช้แยกคะแนนของแต่ละเกมในแดชบอร์ด
+const LEVEL_BASE = 0;            // เลขด่านในตารางคะแนน = 1–6 (ฐานข้อมูลรับเลขด่าน 0–20 · แยกเกมด้วยคอลัมน์ game)
+
+function getJoin(){ try{ return JSON.parse(localStorage.getItem('met-class')||'null'); }catch(e){ return null; } }
+function setJoin(o){ localStorage.setItem('met-class', JSON.stringify(o)); }
+function clearJoin(){ localStorage.removeItem('met-class'); }
+function newSid(){ return 'S'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---- คิวคะแนน กันเน็ตหลุด ---- */
+function outbox(){ try{ return JSON.parse(localStorage.getItem('met-outbox')||'[]'); }catch(e){ return []; } }
+function setOutbox(q){ try{ localStorage.setItem('met-outbox', JSON.stringify(q)); }catch(e){} }
+
+async function pushRow(row){
+  const r = await fetch(SB_URL+'/rest/v1/scores', {
+    method:'POST',
+    headers:{ 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON,
+              'Content-Type':'application/json', 'Prefer':'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  if(r.status===409) return;   // แถวนี้อยู่ในฐานข้อมูลแล้ว (uid ซ้ำ) ถือว่าส่งสำเร็จ เอาออกจากคิวได้
+  if(!r.ok){
+    let d=''; try{ d=(await r.text()).slice(0,140); }catch(e){}
+    if(/23505|duplicate key/i.test(d)) return;   // ซ้ำเหมือนกัน แต่ฐานข้อมูลตอบมาคนละรหัส
+    const err = new Error('http '+r.status+(d?' · '+d:'')); err.status = r.status; throw err;
+  }
+}
+/* ส่งคะแนนที่ค้างอยู่ในคิว — ถ้าส่งไม่สำเร็จจะบอกให้รู้ ไม่เงียบหาย */
+let lastSendErr = '';
+function sendErrMsg(e){
+  const s = e && e.status;
+  if(s===401) return 'คีย์ของห้องไม่ถูกต้อง — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===403) return 'ฐานข้อมูลปฏิเสธคะแนนนี้ — ห้องอาจถูกปิด หรือกฎความปลอดภัยไม่รับค่าที่ส่ง';
+  if(s===404) return 'ไม่พบตารางคะแนนในฐานข้อมูล — แจ้งครูให้ตรวจการตั้งค่า';
+  if(s===400) return 'รูปแบบข้อมูลไม่ตรงกับตารางคะแนน — แจ้งครูให้ตรวจคอลัมน์ในตาราง';
+  return (e && e.message) ? e.message : 'เครือข่ายมีปัญหา';
+}
+/* ซ่อมแถวเก่าที่ค้างในคิวให้ตรงกับกติกาปัจจุบันก่อนส่ง
+   (แถวที่ถูกเก็บไว้ตอนใช้เลขด่านชุดเก่า เช่น 21–26 จะถูกแปลงเป็น 1–6 ให้อัตโนมัติ) */
+function fixRow(row){
+  const r = Object.assign({}, row);
+  if(typeof r.level === 'number' && r.level > 20) r.level = ((r.level - 1) % 10) + 1;
+  r.stars   = Math.max(0, Math.min(3, Math.round(r.stars||0)));
+  r.percent = Math.max(0, Math.min(100, Math.round(r.percent||0)));
+  r.seconds = Math.max(0, Math.min(86400, Math.round(r.seconds||0)));
+  r.misses  = Math.max(0, Math.min(9999, Math.round(r.misses||0)));
+  r.attempt = Math.max(1, Math.min(9999, Math.round(r.attempt||1)));
+  delete r.tries;                                   // ตัวนับความพยายาม เก็บไว้ในเครื่องเท่านั้น
+  return r;
+}
+let flushing = false;
+async function flushPending(opts){
+  if(flushing) return;              // กันส่งซ้ำซ้อนตอนจบด่านพร้อมกับรอบส่งอัตโนมัติ
+  if(!outbox().length) return;
+  flushing = true;
+  const tried = {};                 // uid -> จำนวนครั้งที่พยายามส่ง
+  let failed = false, sent = 0, dropped = 0, stop = false;
+  /* วนซ้ำจนคิวหมด เพราะระหว่างกำลังส่งอาจมีคะแนนเข้าคิวเพิ่ม
+     (เช่นตอนกดเข้าร่วมห้องแล้วส่งดาวเก่าทุกด่านพร้อมกัน) */
+  while(!stop){
+    const q = outbox(); if(!q.length) break;
+    const settled = new Set();      // uid ที่ส่งสำเร็จหรือทิ้งถาวรแล้วในรอบนี้
+    let progressed = false;
+    for(const row of q){
+      if(stop) break;               // ปัญหาการตั้งค่า ส่งแถวที่เหลือต่อไปก็ไม่ผ่าน
+      try{ await pushRow(fixRow(row)); settled.add(row.uid); sent++; progressed = true; }
+      catch(e){
+        failed = true; lastSendErr = sendErrMsg(e);
+        const permanent = (e.status===400 || e.status===403 || e.status===422);
+        tried[row.uid] = (row.tries||0) + 1;
+        /* แถวที่ฐานข้อมูลไม่รับจริง ๆ จะถูกทิ้งหลังพยายาม 3 ครั้ง
+           เพื่อไม่ให้แถวเดียวค้างจนบล็อกคะแนนที่เหลือทั้งคิว */
+        if(permanent && tried[row.uid] >= 3){ settled.add(row.uid); dropped++; progressed = true; continue; }
+        if(e.status===401 || e.status===404) stop = true;
+      }
+    }
+    /* อ่านคิวใหม่อีกครั้ง แล้วเอาออกเฉพาะแถวที่จัดการเสร็จแล้ว
+       คะแนนที่เพิ่งเข้าคิวระหว่างนี้จึงไม่หายไปพร้อมกับการเคลียร์คิว */
+    const keep = outbox().filter(r=>!settled.has(r.uid));
+    keep.forEach(r=>{ if(tried[r.uid]) r.tries = tried[r.uid]; });
+    setOutbox(keep.slice(-200));
+    if(!progressed) break;          // รอบนี้ส่งไม่ผ่านเลยสักแถว วนซ้ำไปก็ไม่ผ่าน
+  }
+  const left = outbox();
+  flushing = false;
+  renderClassChip();
+  if(failed && !(opts && opts.quiet)){
+    toast('⚠️ ส่งคะแนนไม่สำเร็จ · ' + lastSendErr + (dropped?(' · ข้ามที่ส่งไม่ได้ '+dropped+' รายการ'):''));
+  }else if(!left.length && sent>1){
+    toast('✅ ส่งคะแนนที่ค้างครบแล้ว ' + sent + ' รายการ');
+  }
+}
+
+/* ---- สร้างแถวคะแนนของด่านที่เพิ่งจบ แล้วส่งให้ครู ---- */
+function sendScore(stageId, starsGot, misses, seconds){
+  const j = getJoin(); if(!j || !j.room || !j.name) return;
+  const idx = STAGES.findIndex(x=>x.id===stageId);
+  const st  = STAGES[idx] || { title: stageId };
+  const row = {
+    uid: j.sid+'-'+stageId+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),
+    room: j.room, student: String(j.name).trim().slice(0,60), sid: j.sid,
+    game: GAME_KEY,
+    level: LEVEL_BASE + (idx>=0?idx+1:9),
+    level_name: 'พันธะโลหะ · ด่าน '+(idx+1)+' '+st.title,
+    stars: starsGot, percent: Math.round(starsGot/3*100),
+    score: starsGot, max_score: 3,
+    seconds: Math.max(0, Math.min(seconds|0, 86400)),
+    misses: Math.max(0, Math.min(misses|0, 9999)),
+    total_stars: totalStars(),
+    attempt: (S.plays && S.plays[stageId]) || 1,
+    client_ts: new Date().toISOString()
+  };
+  const q = outbox(); q.push(row); setOutbox(q.slice(-200));
+  flushPending();
+}
+/* ส่งดาวที่เคยได้ทั้งหมดตอนเพิ่งเข้าร่วมห้อง (นับเป็นครั้งที่ 1) */
+function syncAllStars(){
+  STAGES.forEach(st=>{
+    const got = S.stars[st.id]||0; if(!got) return;
+    sendScore(st.id, got, (S.miss&&S.miss[st.id])||0, (S.secs&&S.secs[st.id])||0);
+  });
+}
+
+/* ---- ชิปสถานะชั้นเรียนบนหน้าแผนที่ ---- */
+function renderClassChip(){
+  const slot=document.getElementById('classSlot'); if(!slot) return;
+  const j=getJoin();
+  if(j && j.room){
+    const stuck = outbox().length;
+    slot.innerHTML = `<div class="classchip joined">🏫 ห้อง: <b>${escHtml(j.room)}</b> · 👤 ${escHtml(j.name)} <span class="x" id="leaveClass" title="ออกจากห้อง">✕</span></div>` +
+      (stuck ? `<div class="classchip stuck" id="retrySend" title="แตะเพื่อลองส่งอีกครั้ง">⚠️ คะแนนค้างส่ง ${stuck} รายการ · แตะเพื่อลองใหม่</div>` : '');
+    slot.querySelector('#leaveClass').onclick=()=>{
+      if(confirm('ออกจากชั้นเรียน? (คะแนนที่ส่งไปแล้วยังอยู่กับครู)')){ clearJoin(); renderClassChip(); toast('ออกจากห้องแล้ว'); }
+    };
+    const rs = slot.querySelector('#retrySend');
+    if(rs) rs.onclick=async ()=>{
+      toast('กำลังลองส่งอีกครั้ง…');
+      await flushPending({quiet:true});
+      const left = outbox();
+      if(!left.length){ toast('✅ ส่งคะแนนที่ค้างครบแล้ว'); return; }
+      /* ยังส่งไม่ได้ — แสดงรายละเอียดให้ครูถ่ายหน้าจอส่งต่อได้ */
+      const r0 = left[0] || {};
+      alert('ส่งคะแนนไม่สำเร็จ\n\n' +
+        'ค้างอยู่ ' + left.length + ' รายการ\n' +
+        'สาเหตุล่าสุด: ' + (lastSendErr || 'ไม่ทราบ') + '\n\n' +
+        'รายการแรกในคิว\n' +
+        '· เกม: ' + (r0.game||'-') + '\n' +
+        '· ด่าน: ' + (r0.level||'-') + ' (' + (r0.level_name||'-') + ')\n' +
+        '· ห้อง: ' + (r0.room||'-') + ' · ชื่อ: ' + (r0.student||'-') + '\n' +
+        '· พยายามส่งแล้ว: ' + (r0.tries||1) + ' ครั้ง');
+    };
+  }else{
+    slot.innerHTML = `<div class="classchip" id="joinBtn">🏫 เข้าร่วมชั้นเรียน (ส่งคะแนนให้ครู)</div>`;
+    slot.querySelector('#joinBtn').onclick=openJoinModal;
+  }
+}
+
+function openJoinModal(){
+  const j = getJoin() || {};
+  const bg=document.createElement('div'); bg.className='modalbg';
+  bg.innerHTML=`<div class="modal">
+    <h3>🏫 เข้าร่วมชั้นเรียน</h3>
+    <div class="msub">กรอกรหัสห้องที่ครูให้ และชื่อของคุณ เพื่อส่งคะแนนให้ครูเห็น</div>
+    <label>รหัสห้อง</label><input id="jcode" maxlength="12" placeholder="เช่น M401A" autocomplete="off" autocapitalize="characters" value="${escHtml(j.room||'')}">
+    <label>ชื่อของคุณ (หรือ ชื่อ-เลขที่)</label><input id="jname" maxlength="40" placeholder="เช่น สมชาย เลขที่ 12" autocomplete="off" value="${escHtml(j.name||'')}">
+    <div class="mmsg" id="jmsg"></div>
+    <div class="mrow"><button class="btn ghost" id="jcancel">ยกเลิก</button><button class="btn primary" id="jok">เข้าร่วม</button></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);text-align:center">เก็บเฉพาะรหัสห้อง ชื่อที่กรอก และผลการเล่น (ด่าน ดาว เวลา) เพื่อให้ครูติดตามความก้าวหน้าเท่านั้น<br>
+      <a href="../privacy/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700">อ่านนโยบายความเป็นส่วนตัว</a></div>
+  </div>`;
+  document.body.appendChild(bg);
+  const close=()=>bg.remove();
+  bg.addEventListener('click',e=>{ if(e.target===bg) close(); });
+  bg.querySelector('#jcancel').onclick=close;
+  const codeEl=bg.querySelector('#jcode'), nameEl=bg.querySelector('#jname'), msg=bg.querySelector('#jmsg');
+  bg.querySelector('#jok').onclick=()=>{
+    const room=(codeEl.value||'').trim().toUpperCase(); const name=(nameEl.value||'').trim();
+    if(!room){ msg.className='mmsg err'; msg.textContent='กรอกรหัสห้องที่ครูให้'; return; }
+    if(!name){ msg.className='mmsg err'; msg.textContent='กรอกชื่อของคุณ'; return; }
+    const prev=getJoin();
+    setJoin({ room, name, sid:(prev&&prev.sid)||newSid() });
+    close(); renderClassChip(); toast('เข้าร่วมห้อง '+room+' แล้ว');
+    syncAllStars();
+  };
+  setTimeout(()=>codeEl.focus(),50);
+}
+
+/* ---------- boot ---------- */
+document.getElementById('btnHome').onclick = renderMap;
+renderMap();
+flushPending();
+window.addEventListener('online', flushPending);   // กลับมาออนไลน์เมื่อไร ส่งคะแนนที่ค้างทันที
+
+/* ---------- PWA: ลงทะเบียน service worker ให้เล่นซ้ำแบบออฟไลน์ ----------
+   ทำงานเฉพาะเมื่อเปิดผ่านเว็บ (http/https) — เปิดไฟล์ตรง ๆ (file://) เกมก็ยังเล่นได้ */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
