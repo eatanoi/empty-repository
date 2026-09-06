@@ -406,6 +406,7 @@ h3{font-size:1.05rem}
 .tflow{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--muted);pointer-events:none}
 /* ผังผลึก 3 มิติท้ายด่าน 1 */
 .lat3bond{stroke:var(--muted);stroke-width:2;opacity:.42;pointer-events:none}
+.lat3bond.faint{opacity:.16;stroke-dasharray:5 4}
 .latleg text{font-size:12px;font-weight:800;fill:var(--deep);dominant-baseline:central;pointer-events:none}
 /* คำบรรยายใต้แถวไอออนตอนรวมตัวกันเป็นผลึก */
 .joincap{font-size:13px;font-weight:800;text-anchor:middle;fill:var(--deep);pointer-events:none;
@@ -851,15 +852,15 @@ const TR_SET = [
     tip:'แบบเดียวกับ Li₂O — กำมะถันขาด 2 โพแทสเซียมให้ได้ตัวละ 1' },
   { f:'Na₂O', g:'b', lat:'anti', nm:'โซเดียมออกไซด์', m:{el:'Na', v:1, n:2}, x:{el:'O', v:6, n:1},
     tip:'โลหะหมู่ 1 คู่กับอโลหะหมู่ 16 จะได้อัตราส่วน 2 : 1 เสมอ' },
-  { f:'AlF₃', g:'c', nm:'อะลูมิเนียมฟลูออไรด์', m:{el:'Al', v:3, n:1}, x:{el:'F', v:7, n:3},
+  { f:'AlF₃', g:'c', lat:'reo3', nm:'อะลูมิเนียมฟลูออไรด์', m:{el:'Al', v:3, n:1}, x:{el:'F', v:7, n:3},
     tip:'อะลูมิเนียมยกให้ถึง 3 อิเล็กตรอน จึงต้องมีฟลูออรีนมารับถึง 3 อะตอม' },
   { f:'AlN',  g:'a', lat:'rock', approx:true, nm:'อะลูมิเนียมไนไทรด์', m:{el:'Al', v:3, n:1}, x:{el:'N', v:5, n:1},
     tip:'ไนโตรเจนขาดถึง 3 อิเล็กตรอน จึงรับจากอะลูมิเนียมได้หมดในอะตอมเดียว · ประจุเป็น 3+ กับ 3−' },
-  { f:'Li₃N', g:'c', nm:'ลิเทียมไนไทรด์', m:{el:'Li', v:1, n:3}, x:{el:'N', v:5, n:1},
+  { f:'Li₃N', g:'c', lat:'coord', co:{ c:'x', geom:'hex8', cn:'N³⁻ ถูกล้อมด้วย Li⁺ 8 ตัว — 6 ตัวในระนาบเดียวกัน กับอีก 2 ตัวบน-ล่าง' }, nm:'ลิเทียมไนไทรด์', m:{el:'Li', v:1, n:3}, x:{el:'N', v:5, n:1},
     tip:'ไนโตรเจนขาด 3 แต่ลิเทียมให้ได้ตัวละ 1 จึงต้องใช้ลิเทียมถึง 3 อะตอม' },
-  { f:'Al₂O₃', g:'c', nm:'อะลูมิเนียมออกไซด์', m:{el:'Al', v:3, n:2}, x:{el:'O', v:6, n:3},
+  { f:'Al₂O₃', g:'c', lat:'coord', co:{ c:'m', geom:'oct',  cn:'Al³⁺ ล้อมด้วย O²⁻ 6 ตัว · O²⁻ ล้อมด้วย Al³⁺ 4 ตัว → 6 : 4 คือ อัตราส่วน 2 : 3' }, nm:'อะลูมิเนียมออกไซด์', m:{el:'Al', v:3, n:2}, x:{el:'O', v:6, n:3},
     tip:'อะลูมิเนียม 2 อะตอมให้ 6 อิเล็กตรอน ออกซิเจน 3 อะตอมรับ 6 พอดี — ตัวคูณร่วมน้อยของ 3 กับ 2 คือ 6' },
-  { f:'Mg₃N₂', g:'c', nm:'แมกนีเซียมไนไทรด์', m:{el:'Mg', v:2, n:3}, x:{el:'N', v:5, n:2},
+  { f:'Mg₃N₂', g:'c', lat:'coord', co:{ c:'x', geom:'oct',  cn:'N³⁻ ล้อมด้วย Mg²⁺ 6 ตัว · Mg²⁺ ล้อมด้วย N³⁻ 4 ตัว → 6 : 4 คือ อัตราส่วน 3 : 2' }, nm:'แมกนีเซียมไนไทรด์', m:{el:'Mg', v:2, n:3}, x:{el:'N', v:5, n:2},
     tip:'แมกนีเซียม 3 อะตอมให้ 6 อิเล็กตรอน ไนโตรเจน 2 อะตอมรับ 6 พอดี · สังเกตว่าเลขสลับข้างกับประจุ' }
 ];
 
@@ -878,30 +879,69 @@ const chgN = q => q===0 ? '0' : Math.abs(q) + (q>0 ? '+' : '−');
    สารที่โครงสร้างจริงซับซ้อนเกินเนื้อหา ม.4 จะไม่ใส่ lat ไว้ แล้วข้ามขั้นนี้ไปเลย */
 const LAT3D_R = { m:0.15, x:0.21 };            // รัศมีไอออนในผังผลึก เทียบกับระยะห่างระหว่างไอออน
                                                // เล็กพอให้เห็นเส้นโครงผลึกเหมือนภาพในหนังสือ
-function buildLat3D(kind){
-  const sites = [], bonds = [];
+const HEX8 = [0,1,2,3,4,5].map(i=>[Math.cos(i*Math.PI/3), 0, Math.sin(i*Math.PI/3)])
+             .concat([[0,1,0],[0,-1,0]]);       // 6 ตัวในระนาบ + 2 ตัวบน-ล่าง (โครงแบบ Li₃N)
+const OCT  = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+
+/* ผังผลึก 3 มิติของสารที่เพิ่งประกอบเสร็จ · คืน sites, bonds และสเกลที่เหมาะกับผังนั้น
+   rock     แบบเกลือหิน · ไอออนสลับกันทุกทิศในตะแกรง 3×3×3 (NaCl · KBr · MgO · CaO · BaS)
+   fluorite แบบฟลูออไรต์ · ไอออนบวกที่มุมกับกลางหน้าลูกบาศก์ ไอออนลบในช่องข้างใน 8 ช่อง (CaF₂)
+   anti     แบบแอนติฟลูออไรต์ · สลับที่กันกับฟลูออไรต์ (Li₂O · K₂S · Na₂O)
+   reo3     แบบ ReO₃ · ไอออนบวกที่มุมลูกบาศก์ ไอออนลบที่กึ่งกลางขอบทุกขอบ (AlF₃)
+            มุม 8 จุด × ⅛ = 1 · ขอบ 12 จุด × ¼ = 3 จึงได้อัตราส่วน 1 : 3 พอดี
+   coord    แบบจำลองการล้อมรอบ · ไอออนกลางหนึ่งตัวกับไอออนตรงข้ามที่ล้อมอยู่จริงตามเลขโคออร์ดิเนชัน
+            ใช้กับสารที่โครงผลึกเต็มซับซ้อนเกินเนื้อหา ม.4 (Li₃N · Al₂O₃ · Mg₃N₂)
+            ลูกจาง ๆ ถัดออกไปคือไอออนกลางของหน่วยข้างเคียง แสดงว่าไอออนที่ล้อมนั้นใช้ร่วมกัน */
+function buildLat3D(T){
+  const sites = [], bonds = [], kind = T.lat;
+  const link = (i, j, faint)=> bonds.push(faint ? [i, j, 1] : [i, j]);
+
   if(kind === 'rock'){
     for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) for(let k=-1;k<=1;k++)
       sites.push({ p:[i, j, k], kind: (((i+j+k)%2)+2)%2 === 0 ? 'm' : 'x' });
+
+  }else if(kind === 'reo3'){
+    for(const a of [-1,1]) for(const b of [-1,1]) for(const c of [-1,1])
+      sites.push({ p:[a,b,c], kind:'m' });                       // ไอออนบวกที่มุมลูกบาศก์
+    for(const a of [-1,1]) for(const b of [-1,1]){
+      sites.push({ p:[0,a,b], kind:'x' });                       // ไอออนลบที่กึ่งกลางขอบ
+      sites.push({ p:[a,0,b], kind:'x' });
+      sites.push({ p:[a,b,0], kind:'x' });
+    }
+
+  }else if(kind === 'coord'){
+    const dirs = T.co.geom === 'hex8' ? HEX8 : OCT;
+    const cK = T.co.c, sK = cK === 'm' ? 'x' : 'm';
+    sites.push({ p:[0,0,0], kind:cK });                          // ไอออนกลาง
+    dirs.forEach(d=>{
+      const si = sites.push({ p:d, kind:sK }) - 1;               // ไอออนที่ล้อมอยู่
+      link(0, si);
+      const gi = sites.push({ p:d.map(v=>v*2), kind:cK, ghost:true }) - 1;
+      link(si, gi, true);                                        // ไอออนกลางของหน่วยถัดไป
+    });
+    return { sites, bonds, scale:54 };
+
   }else{
-    // ลูกบาศก์ด้านยาว 2 · มุม 8 จุด กลางหน้า 6 จุด และช่องข้างใน 8 ช่อง
+    // ฟลูออไรต์และแอนติฟลูออไรต์ · ลูกบาศก์ด้านยาว 2 มุม 8 จุด กลางหน้า 6 จุด ช่องข้างใน 8 ช่อง
     const outer = [], inner = [];
     for(const a of [-1,1]) for(const b of [-1,1]) for(const c of [-1,1]) outer.push([a,b,c]);
-    [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]].forEach(v=>outer.push(v));
+    OCT.forEach(v=>outer.push(v));
     for(const a of [-0.5,0.5]) for(const b of [-0.5,0.5]) for(const c of [-0.5,0.5]) inner.push([a,b,c]);
-    const oKind = kind === 'fluorite' ? 'm' : 'x';   // แอนติฟลูออไรต์สลับที่กัน
+    const oKind = kind === 'fluorite' ? 'm' : 'x';               // แอนติฟลูออไรต์สลับที่กัน
     outer.forEach(p=>sites.push({ p, kind:oKind }));
     inner.forEach(p=>sites.push({ p, kind: oKind === 'm' ? 'x' : 'm' }));
   }
+
   // เส้นโครงผลึกระหว่างไอออนตรงข้ามที่อยู่ใกล้กันที่สุด
-  const near = kind === 'rock' ? 1.02 : 0.92;
+  const near = kind === 'rock' || kind === 'reo3' ? 1.02 : 0.92;
   for(let i=0;i<sites.length;i++) for(let j=i+1;j<sites.length;j++){
     if(sites[i].kind === sites[j].kind) continue;
     const d = Math.hypot(...[0,1,2].map(t=>sites[i].p[t]-sites[j].p[t]));
-    if(d <= near) bonds.push([i, j]);
+    if(d <= near) link(i, j);
   }
-  return { sites, bonds };
+  return { sites, bonds, scale:66 };
 }
+
 
 /* เล่นห้องถ่ายโอนอิเล็กตรอนจนครบทุกสาร แล้วเรียก onDone พร้อมจำนวนครั้งที่ทำผิด */
 function transferLab(hostId, pbId, SET, onDone){
@@ -1018,27 +1058,28 @@ function transferLab(hostId, pbId, SET, onDone){
     function drawLat(){
       const Q = LAT.sites.map(st=>project3(st.p, latView));
       const it = [];
-      LAT.bonds.forEach(([i, j])=>{
+      LAT.bonds.forEach(([i, j, faint])=>{
         it.push({ z:Math.min(Q[i].z, Q[j].z) - 0.01,
-          g:`<line class="lat3bond" x1="${Q[i].x.toFixed(1)}" y1="${Q[i].y.toFixed(1)}"
+          g:`<line class="lat3bond${faint ? ' faint' : ''}" x1="${Q[i].x.toFixed(1)}" y1="${Q[i].y.toFixed(1)}"
                x2="${Q[j].x.toFixed(1)}" y2="${Q[j].y.toFixed(1)}"/>` });
       });
       LAT.sites.forEach((st, i)=>{
         const el = st.kind === 'm' ? T.m.el : T.x.el;
         const r = LAT3D_R[st.kind] * latView.scale * Q[i].k;
-        it.push({ z:Q[i].z, g:`<circle class="ionb" cx="${Q[i].x.toFixed(1)}" cy="${Q[i].y.toFixed(1)}"
+        it.push({ z:Q[i].z, g:`<circle class="ionb" ${st.ghost ? 'opacity=".32" ' : ''}
+          cx="${Q[i].x.toFixed(1)}" cy="${Q[i].y.toFixed(1)}"
           r="${r.toFixed(1)}" fill="url(#g-${el})" stroke="${EL_ION[el].d}"
           stroke-width="${(1.4*Q[i].k).toFixed(1)}"/>` });
       });
       it.sort((a, b)=> a.z - b.z);
       const name = { rock:'แบบเกลือหิน (rock salt)', fluorite:'แบบฟลูออไรต์ (fluorite)',
-                     anti:'แบบแอนติฟลูออไรต์ (antifluorite)' }[T.lat];
-      // ข้อความปิดท้ายต่างกันตามชนิดผัง · แบบ 3x3x3 ไม่ใช่หน่วยเซลล์ จึงไม่ต้องเตือนเรื่องนับลูก
-      const note = T.approx
-        ? 'แบบจำลองอย่างง่าย — โครงสร้างจริงของสารนี้ซับซ้อนกว่านี้'
-        : T.lat === 'rock'
-          ? 'นี่เป็นเพียงมุมเล็ก ๆ ของผลึก ซึ่งต่อออกไปทุกทิศไม่รู้จบ'
-          : 'ไอออนที่มุมและที่หน้าลูกบาศก์ใช้ร่วมกับหน่วยเซลล์ข้างเคียง นับลูกในภาพตรง ๆ ไม่ได้';
+                     anti:'แบบแอนติฟลูออไรต์ (antifluorite)', reo3:'แบบ ReO₃',
+                     coord:'แบบจำลองการล้อมรอบ' }[T.lat];
+      // ข้อความปิดท้ายต่างกันตามชนิดผัง · แบบ 3×3×3 ไม่ใช่หน่วยเซลล์ จึงไม่ต้องเตือนเรื่องนับลูก
+      const note = T.lat === 'coord' ? T.co.cn
+        : T.approx ? 'แบบจำลองอย่างง่าย — โครงสร้างจริงของสารนี้ซับซ้อนกว่านี้'
+        : T.lat === 'rock' ? 'นี่เป็นเพียงมุมเล็ก ๆ ของผลึก ซึ่งต่อออกไปทุกทิศไม่รู้จบ'
+        : 'ไอออนที่มุมและที่ขอบใช้ร่วมกับหน่วยเซลล์ข้างเคียง นับลูกในภาพตรง ๆ ไม่ได้';
       const R = EL_ION, sc = 0.86 + 0.14*latT;
       const ion = (el, q, cy)=> `<circle cx="26" cy="${cy}" r="8" fill="url(#g-${el})"
             stroke="${R[el].d}" stroke-width="1.4"/>
@@ -1171,7 +1212,8 @@ function transferLab(hostId, pbId, SET, onDone){
       let shown = false;
       const done2 = ()=>{ if(shown) return; shown = true; latT = 1; draw(); summary(); };
       setTimeout(()=>{
-        LAT = buildLat3D(T.lat);
+        LAT = buildLat3D(T);
+        latView.scale = LAT.scale;
         svg.setAttribute('viewBox', `0 0 ${VB_W} ${LAT_H}`);
         const G0 = performance.now(), GD = 650;
         (function step(now){
@@ -1198,8 +1240,7 @@ function transferLab(hostId, pbId, SET, onDone){
             <span class="small muted">(ประจุรวมเป็นศูนย์)</span></div>
         </div>
         <div class="small muted" style="margin-top:8px">🧊 ไอออนที่เกิดขึ้น<b>ไม่ได้จับกันเป็นโมเลกุลเดี่ยว ๆ</b>
-          แต่ถูกแรงดึงดูดทางไฟฟ้าดึงให้เรียงสลับบวก-ลบต่อกันไปทุกทิศจนเป็น<b>ผลึก</b>${T.lat ? ''
-          : ' · โครงสร้างผลึกจริงของสารนี้<b>ซับซ้อนเกินเนื้อหา ม.4</b> จึงยังไม่แสดงเป็นภาพ 3 มิติ'}</div>
+          แต่ถูกแรงดึงดูดทางไฟฟ้าดึงให้เรียงสลับบวก-ลบต่อกันไปทุกทิศจนเป็น<b>ผลึก</b></div>
         <div style="margin-top:12px"><button class="btn primary sm" id="nx">
           ${idx===SET.length-1?'ไปช่วงคำถาม →':'สารถัดไป →'}</button></div>`;
       if(pb) pb.style.width = ((idx+1)/SET.length*100)+'%';
