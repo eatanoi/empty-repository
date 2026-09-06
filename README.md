@@ -13,6 +13,7 @@ education
 | ภารกิจสืบสายชีวิต | [`reproduction/index.html`](reproduction/) | การสืบพันธุ์ของมนุษย์ · ระบบสืบพันธุ์และการสร้างเซลล์สืบพันธุ์ (ม.6) — ดูรายละเอียดใน [reproduction/README.md](reproduction/README.md) |
 | โรงเชื่อมอิเล็กตรอน | [`covalent/index.html`](covalent/) | พันธะโคเวเลนต์ · เคมี ม.4 — ดูรายละเอียดใน [covalent/README.md](covalent/README.md) |
 | นครผลึกเกลือ | [`ionic/index.html`](ionic/) | พันธะไอออนิก · เคมี ม.4 — ดูรายละเอียดใน [ionic/README.md](ionic/README.md) |
+| เมืองทะเลอิเล็กตรอน | [`metallic/index.html`](metallic/) | พันธะโลหะ · เคมี ม.4 — ดูรายละเอียดใน [metallic/README.md](metallic/README.md) |
 
 แดชบอร์ดครู: [`dashboard.html`](dashboard.html) · ตัวตรวจการเชื่อมต่อ: [`check.html`](check.html)
 วิธีตั้งค่า: [SETUPSUPABASE.md](SETUPSUPABASE.md) · [SETUPCLASSROOM.md](SETUPCLASSROOM.md)
