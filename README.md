@@ -3,9 +3,11 @@ education
 
 ## เกมในรีโปนี้
 
+หน้าแรก [`index.html`](index.html) เป็น **หน้ารวมเกม** รวมลิงก์ของทุกเกมไว้ที่เดียว
+
 | เกม | ไฟล์ | เนื้อหา |
 |---|---|---|
-| ภารกิจพันธุกรรม | [`index.html`](index.html) | การถ่ายทอดลักษณะทางพันธุกรรม (ม.4) |
+| ภารกิจพันธุกรรม | [`genetics/index.html`](genetics/) | การถ่ายทอดลักษณะทางพันธุกรรม (ม.4) |
 | โรงไฟฟ้าไมโทคอนเดรีย | [`respiration/index.html`](respiration/) | การหายใจระดับเซลล์ (ม.4) — ดูรายละเอียดใน [respiration/README.md](respiration/README.md) |
 | มหานครเซลล์ | [`cell/index.html`](cell/) | โครงสร้างและหน้าที่ของเซลล์ (ม.4) — ดูรายละเอียดใน [cell/README.md](cell/README.md) |
 | ด่านศุลกากรเซลล์ | [`transport/index.html`](transport/) | การลำเลียงสารเข้าและออกจากเซลล์ (ม.4) — ดูรายละเอียดใน [transport/README.md](transport/README.md) |
