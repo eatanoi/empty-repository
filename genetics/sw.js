@@ -1,23 +1,20 @@
-/* service worker ของ "หน้ารวมเกม" (index.html ของเว็บไซต์)
-   - แคชเฉพาะไฟล์ของหน้ารวมเกม ส่วนโฟลเดอร์เกมแต่ละเกมมี service worker ของตัวเอง
+/* service worker ของเกม "ภารกิจพันธุกรรม" (พันธุศาสตร์)
+   - แคชไฟล์ของเกมไว้ให้เล่นซ้ำได้แม้ออฟไลน์
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'hub-v1';
+const CACHE = 'genetics-v5';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './icon.svg',
   './favicon-32.png',
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',
-  './og-cover.png'
+  './cert-bg.png'
 ];
-
-/* เดิมตำแหน่งนี้เคยเป็นเกมภารกิจพันธุกรรม แคช genetics-* จึงยังค้างอยู่ในเครื่องนักเรียน
-   ต้องลบทิ้งด้วย ไม่อย่างนั้นเปิดหน้าแรกตอนออฟไลน์จะได้ตัวเกมเก่าแทนหน้ารวมเกม */
-const STALE = ['hub-', 'genetics-'];
 
 self.addEventListener('install', e=>{
   e.waitUntil((async ()=>{
@@ -31,7 +28,8 @@ self.addEventListener('install', e=>{
 self.addEventListener('activate', e=>{
   e.waitUntil((async ()=>{
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k=>k!==CACHE && STALE.some(p=>k.startsWith(p))).map(k=>caches.delete(k)));
+    // ลบเฉพาะแคชรุ่นเก่าของเกมนี้ ไม่ไปยุ่งกับแคชของเกมอื่นในเว็บไซต์เดียวกัน
+    await Promise.all(keys.filter(k=>k.startsWith('genetics-') && k!==CACHE).map(k=>caches.delete(k)));
     await self.clients.claim();
   })());
 });
@@ -41,12 +39,7 @@ self.addEventListener('fetch', e=>{
   if(req.method !== 'GET') return;                       // POST ของระบบชั้นเรียน → ผ่านไปเลย
   const url = new URL(req.url);
   if(url.origin !== location.origin) return;             // ไฟล์ข้ามโดเมน → ไม่แคช
-  // ไฟล์ในโฟลเดอร์เกม ปล่อยให้ service worker ของเกมนั้นดูแลเอง
-  const BASE = new URL('./', self.location).pathname;
-  if(['genetics/','cell/','transport/','respiration/','division/','reproduction/',
-      'covalent/','ionic/','metallic/','privacy/'].some(d=>url.pathname.startsWith(BASE+d))) return;
-
-  // หน้าเว็บ: เอาจากเน็ตก่อนเสมอ เพื่อให้ได้เวอร์ชันล่าสุดทันทีที่ครูอัปเดต
+  // หน้าเว็บ (index.html): เอาจากเน็ตก่อนเสมอ เพื่อให้ได้เวอร์ชันล่าสุดทันทีที่ครูอัปเดตเกม
   if(req.mode === 'navigate' || req.destination === 'document'){
     e.respondWith((async ()=>{
       try{
