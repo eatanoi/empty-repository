@@ -3,7 +3,7 @@
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'respiration-v15';
+const CACHE = 'respiration-v16';
 const ASSETS = [
   './',
   './index.html',
@@ -17,6 +17,7 @@ const ASSETS = [
   './cert-bg.png',
   './mitochondrion.jpg',
   './mito3d.jpg',
+  './og-cai.jpg',
   './imag/bg.webp',
   './imag/stage-mito.webp',
   './imag/stage-glycolysis.webp',
