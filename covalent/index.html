@@ -473,7 +473,7 @@ h3{font-size:1.05rem}
 .bchip .gl i{display:block;height:3px;border-radius:2px;background:currentColor}
 .bchip.er{color:var(--bad)}
 .bchip.er.sel{background:var(--bad);color:#fff}
-.ghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%);
+.dragghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%);
   background:linear-gradient(135deg,var(--gold),var(--rose));color:#FFF7F0;font-weight:800;
   border-radius:12px;padding:9px 14px;box-shadow:0 12px 26px -10px rgba(231,57,13,.7)}
 @media(max-width:640px){
@@ -602,7 +602,7 @@ function renderMap(){
   const certBtn = document.getElementById('btnCert');
   if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
   document.getElementById('btnReset').onclick = ()=>{
-    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+    if(confirm('ล้างดาวและคะแนนทั้งหมดในเครื่องนี้? (ห้องเรียนที่เข้าร่วมไว้ยังอยู่)')){
       S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
     }
   };
@@ -1589,7 +1589,7 @@ function bondLab(hostId, pbId, onDone){
           moved = true;
           svg.classList.add('dragging');
           ghost = document.createElement('div');
-          ghost.className = 'ghost';
+          ghost.className = 'dragghost';
           ghost.textContent = ['✕ ลบ','— เดี่ยว','= คู่','≡ สาม'][dragging];
           document.body.appendChild(ghost);
         }

@@ -545,7 +545,7 @@ function renderMap(){
   const certBtn = document.getElementById('btnCert');
   if(certBtn && !certBtn.disabled) certBtn.onclick = renderCert;
   document.getElementById('btnReset').onclick = ()=>{
-    if(confirm('ล้างความก้าวหน้าทั้งหมดและเริ่มใหม่?')){
+    if(confirm('ล้างดาวและคะแนนทั้งหมดในเครื่องนี้? (ห้องเรียนที่เข้าร่วมไว้ยังอยู่)')){
       S=structuredClone(defaultState); save(); renderMap(); toast('เริ่มใหม่แล้ว');
     }
   };
