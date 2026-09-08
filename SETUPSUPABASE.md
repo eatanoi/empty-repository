@@ -57,7 +57,7 @@
 ## ขั้นที่ 5 · เปิดแดชบอร์ดและสร้างห้อง
 
 1. อัปโหลด `dashboard.html` ขึ้น GitHub repo เดียวกับเกม (➕ → Upload files → Commit)
-2. เปิด `https://kunkrunoi.com/dashboard.html`
+2. เปิด `https://eatanoi.github.io/empty-repository/dashboard.html`
 3. กรอก **Project URL**, **anon key**, อีเมลและรหัสผ่านครู → **เข้าสู่ระบบ**
 4. แท็บ **🏫 จัดการห้อง** → สร้างห้อง เช่น
    - รหัสห้อง `M401A` · ชื่อห้อง `ม.4/1` · ภาคเรียน `2/2569`
@@ -67,7 +67,7 @@
 
 ## ขั้นที่ 6 · สร้างลิงก์สำหรับนักเรียน
 
-1. เปิดเกมพร้อมพารามิเตอร์ตั้งค่า: `https://kunkrunoi.com/genetics/?setup=1`
+1. เปิดเกมพร้อมพารามิเตอร์ตั้งค่า: `https://eatanoi.github.io/empty-repository/genetics/?setup=1`
 2. เลือกโหมด **🗄️ Supabase** → วาง **Project URL** และ **anon key** → ใส่รหัสห้อง `M401A`
 3. กด **🔌 ทดสอบการเชื่อมต่อ** → ต้องขึ้น "✅ เชื่อมต่อสำเร็จ" และแดชบอร์ดจะเห็นแถว *"✅ ทดสอบระบบ (ครู)"* โผล่มาสด ๆ
 4. กด **🔗 สร้างลิงก์สำหรับนักเรียน** → **📋 คัดลอกลิงก์** → นำไปทำ QR
@@ -75,7 +75,7 @@
 ลิงก์จะหน้าตาแบบนี้ (ห้องละลิงก์)
 
 ```
-https://kunkrunoi.com/genetics/?sb=https%3A%2F%2Fabcdefgh.supabase.co&key=eyJhbGciOi...&room=M401A
+https://eatanoi.github.io/empty-repository/genetics/?sb=https%3A%2F%2Fabcdefgh.supabase.co&key=eyJhbGciOi...&room=M401A
 ```
 
 ---
