@@ -104,12 +104,11 @@ body{
 .game .ic{
   width:58px;height:58px;flex:0 0 58px;border-radius:15px;
   display:grid;place-items:center;font-size:1.6rem;
-  background:linear-gradient(150deg,var(--green-pale),var(--orange-pale));
+  background:rgba(255,255,255,.72);
   border:1px solid var(--line);
 }
-.game .ic svg{width:82%;height:82%;display:block}
-.game:hover .ic svg{transform:scale(1.06)}
-.game .ic svg{transition:transform .18s}
+.game .ic img{width:84%;height:84%;object-fit:contain;display:block;transition:transform .18s}
+.game:hover .ic img{transform:scale(1.07)}
 .game .body{flex:1;min-width:0}
 .game .t{font-weight:800;font-size:1.02rem;color:var(--deep);line-height:1.35}
 .game .d{font-size:.855rem;color:#4A6A58;margin-top:3px;line-height:1.55}
@@ -151,7 +150,7 @@ footer a{color:var(--lime);font-weight:700}
     <div class="games">
 
       <a class="game" href="genetics/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><path d="M8 40 q2 -22 22 -28 q22 -6 26 12 q4 18 -14 26 q-20 9 -34 -10 z"      fill="#AFD2BC" stroke="#2F7D4F" stroke-width="3" stroke-linejoin="round"/><path d="M10 38 q3 -18 21 -23" fill="none" stroke="#2F7D4F" stroke-width="2.4" opacity=".55" stroke-linecap="round"/><g fill="#DCEBE1" stroke="#2F7D4F" stroke-width="2.2">  <circle cx="22" cy="34" r="7.4"/><circle cx="36" cy="29" r="7.4"/><circle cx="49" cy="26" r="6.4"/></g><path d="M54 16 q7 -5 6 -11 q-9 0 -10 8" fill="#4E9370" stroke="#2F7D4F" stroke-width="2" stroke-linejoin="round"/><g fill="#0B3A24"><ellipse cx="21.8" cy="42.0" rx="2.3" ry="3.1"/><ellipse cx="36.2" cy="42.0" rx="2.3" ry="3.1"/></g><path d="M24.4 47.2 q4.6 4.4 9.2 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="16.0" cy="45.0" rx="3.1" ry="2.1"/><ellipse cx="42.0" cy="45.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/genetics.png" alt="" loading="lazy" onerror="this.parentNode.textContent='🧬'"></div>
         <div class="body">
           <div class="t">ภารกิจพันธุกรรม</div>
           <div class="d">การถ่ายทอดลักษณะทางพันธุกรรม — กฎของเมนเดล ตารางพันเนตต์ ไดไฮบริด และส่วนขยายของพันธุศาสตร์เมนเดล</div>
@@ -160,7 +159,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="cell/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><circle cx="32" cy="33" r="23" fill="#AFD2BC" stroke="#2F7D4F" stroke-width="3"/><circle cx="32" cy="33" r="16.5" fill="#DCEBE1"/><circle cx="44" cy="22" r="4.6" fill="#F7C39C" stroke="#C56A2A" stroke-width="1.8"/><circle cx="19" cy="44" r="3.6" fill="#F7C39C" stroke="#C56A2A" stroke-width="1.6"/><g fill="#0B3A24"><ellipse cx="25.4" cy="31.0" rx="2.3" ry="3.1"/><ellipse cx="38.6" cy="31.0" rx="2.3" ry="3.1"/></g><path d="M27.4 36.2 q4.6 4.4 9.2 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="20.0" cy="34.0" rx="3.1" ry="2.1"/><ellipse cx="44.0" cy="34.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/cell.png" alt="" loading="lazy" onerror="this.parentNode.textContent='🔬'"></div>
         <div class="body">
           <div class="t">มหานครเซลล์</div>
           <div class="d">โครงสร้างและหน้าที่ของเซลล์ — ออร์แกเนลล์ เซลล์พืช–สัตว์ ระบบเยื่อหุ้มภายใน และโพรคาริโอต–ยูคาริโอต</div>
@@ -169,7 +168,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="transport/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><rect x="6" y="14" width="10" height="36" rx="5" fill="#BCD6E0" stroke="#3E6E86" stroke-width="2.4"/><rect x="48" y="14" width="10" height="36" rx="5" fill="#BCD6E0" stroke="#3E6E86" stroke-width="2.4"/><rect x="18" y="10" width="28" height="44" rx="12" fill="#DCEBE1" stroke="#2F7D4F" stroke-width="3"/><g fill="#F26716"><circle cx="11" cy="24" r="2.6"/><circle cx="53" cy="42" r="2.6"/></g><g fill="#0B3A24"><ellipse cx="25.8" cy="30.0" rx="2.3" ry="3.1"/><ellipse cx="38.2" cy="30.0" rx="2.3" ry="3.1"/></g><path d="M27.6 35.2 q4.4 4.4 8.8 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="21.0" cy="33.0" rx="3.1" ry="2.1"/><ellipse cx="43.0" cy="33.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/transport.png" alt="" loading="lazy" onerror="this.parentNode.textContent='🛃'"></div>
         <div class="body">
           <div class="t">ด่านศุลกากรเซลล์</div>
           <div class="d">การลำเลียงสารเข้าและออกจากเซลล์ — การแพร่ ออสโมซิส การลำเลียงแบบใช้พลังงาน และเอนโด/เอกโซไซโทซิส</div>
@@ -178,7 +177,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="respiration/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><ellipse cx="32" cy="33" rx="26" ry="17" fill="#F7C39C" stroke="#C56A2A" stroke-width="3"/><g stroke="#C56A2A" stroke-width="3" fill="none" stroke-linecap="round" opacity=".75">  <path d="M14 24 q6 9 0 18"/><path d="M50 24 q-6 9 0 18"/></g><ellipse cx="32" cy="33" rx="17" ry="10.5" fill="#FBE4D2"/><path d="M50 8 l-7 10 h5.5 l-3.5 9 9.5 -12 h-5.5 z" fill="#F26716" stroke="#FBF8EC" stroke-width="1.4" stroke-linejoin="round"/><g fill="#0B3A24"><ellipse cx="23.5" cy="33.0" rx="2.3" ry="3.1"/><ellipse cx="40.5" cy="33.0" rx="2.3" ry="3.1"/></g><path d="M27.4 38.2 q4.6 4.4 9.2 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="19.0" cy="35.0" rx="3.1" ry="2.1"/><ellipse cx="45.0" cy="35.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/respiration.png" alt="" loading="lazy" onerror="this.parentNode.textContent='🔋'"></div>
         <div class="body">
           <div class="t">โรงไฟฟ้าไมโทคอนเดรีย</div>
           <div class="d">การหายใจระดับเซลล์ — ไกลโคไลซิส วัฏจักรเครบส์ การถ่ายทอดอิเล็กตรอน และการหมัก</div>
@@ -187,7 +186,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="division/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><circle cx="20" cy="33" r="17" fill="#DCEBE1" stroke="#2F7D4F" stroke-width="3"/><circle cx="44" cy="33" r="17" fill="#DCEBE1" stroke="#2F7D4F" stroke-width="3"/><circle cx="20" cy="33" r="8" fill="#AFD2BC"/><circle cx="44" cy="33" r="8" fill="#AFD2BC"/><g fill="#0B3A24"><ellipse cx="16.7" cy="31.0" rx="1.7" ry="2.2"/><ellipse cx="23.3" cy="31.0" rx="1.7" ry="2.2"/></g><path d="M17.7 34.7 q2.3 3.2 4.6 0" fill="none" stroke="#0B3A24" stroke-width="1.4" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="13.5" cy="33.2" rx="2.2" ry="1.5"/><ellipse cx="26.5" cy="33.2" rx="2.2" ry="1.5"/></g><g fill="#0B3A24"><ellipse cx="40.7" cy="31.0" rx="1.7" ry="2.2"/><ellipse cx="47.3" cy="31.0" rx="1.7" ry="2.2"/></g><path d="M41.7 34.7 q2.3 3.2 4.6 0" fill="none" stroke="#0B3A24" stroke-width="1.4" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="37.5" cy="33.2" rx="2.2" ry="1.5"/><ellipse cx="50.5" cy="33.2" rx="2.2" ry="1.5"/></g></svg></div>
+        <div class="ic"><img src="icons/division.png" alt="" loading="lazy" onerror="this.parentNode.textContent='🧫'"></div>
         <div class="body">
           <div class="t">โรงงานสร้างเซลล์</div>
           <div class="d">การแบ่งเซลล์ — โครโมโซม วัฏจักรเซลล์ ไมโทซิส ไมโอซิส และการแบ่งไซโทพลาซึม</div>
@@ -196,7 +195,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="reproduction/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><circle cx="38" cy="32" r="20" fill="#FBE4D2" stroke="#D9736B" stroke-width="3"/><circle cx="38" cy="32" r="12.5" fill="#F7C39C" opacity=".6"/><g stroke="#5C90A6" stroke-width="2.6" fill="none" stroke-linecap="round">  <path d="M4 48 q5 -5 9 -2 q4 3 8 -1"/></g><circle cx="24" cy="43" r="5.2" fill="#BCD6E0" stroke="#3E6E86" stroke-width="2"/><g fill="#0B3A24"><ellipse cx="32.6" cy="31.0" rx="2.3" ry="3.1"/><ellipse cx="45.4" cy="31.0" rx="2.3" ry="3.1"/></g><path d="M34.6 36.2 q4.4 4.4 8.8 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="27.0" cy="34.0" rx="3.1" ry="2.1"/><ellipse cx="51.0" cy="34.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/reproduction.png" alt="" loading="lazy" onerror="this.parentNode.textContent='👶'"></div>
         <div class="body">
           <div class="t">ภารกิจสืบสายชีวิต</div>
           <div class="d">การสืบพันธุ์ของมนุษย์ — ระบบสืบพันธุ์เพศชายและเพศหญิง การสร้างสเปิร์ม และการสร้างเซลล์ไข่</div>
@@ -212,7 +211,7 @@ footer a{color:var(--lime);font-weight:700}
     <div class="games">
 
       <a class="game" href="covalent/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><circle cx="21" cy="33" r="16" fill="#DCEBE1" stroke="#2F7D4F" stroke-width="3"/><circle cx="43" cy="33" r="16" fill="#FBE4D2" stroke="#C56A2A" stroke-width="3"/><g fill="#F26716" stroke="#FBF8EC" stroke-width="1.6">  <circle cx="32" cy="15" r="4"/><circle cx="32" cy="25" r="4"/></g><g fill="#0B3A24"><ellipse cx="14.8" cy="34.0" rx="1.7" ry="2.2"/><ellipse cx="21.2" cy="34.0" rx="1.7" ry="2.2"/></g><path d="M15.8 37.7 q2.2 3.2 4.5 0" fill="none" stroke="#0B3A24" stroke-width="1.4" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="11.8" cy="36.2" rx="2.2" ry="1.5"/><ellipse cx="24.2" cy="36.2" rx="2.2" ry="1.5"/></g><g fill="#0B3A24"><ellipse cx="42.8" cy="34.0" rx="1.7" ry="2.2"/><ellipse cx="49.2" cy="34.0" rx="1.7" ry="2.2"/></g><path d="M43.8 37.7 q2.2 3.2 4.5 0" fill="none" stroke="#0B3A24" stroke-width="1.4" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="39.8" cy="36.2" rx="2.2" ry="1.5"/><ellipse cx="52.2" cy="36.2" rx="2.2" ry="1.5"/></g></svg></div>
+        <div class="ic"><img src="icons/covalent.png" alt="" loading="lazy" onerror="this.parentNode.textContent='⚛️'"></div>
         <div class="body">
           <div class="t">โรงเชื่อมอิเล็กตรอน</div>
           <div class="d">พันธะโคเวเลนต์ — การเกิดพันธะ ชนิดของพันธะ สูตรและชื่อสาร ความยาวและพลังงานพันธะ และสมบัติของสาร</div>
@@ -221,7 +220,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="ionic/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><path d="M32 6 L56 18 L56 44 L32 57 L8 44 L8 18 Z" fill="#DCEBE1" stroke="#2F7D4F" stroke-width="3" stroke-linejoin="round"/><path d="M32 6 L56 18 L32 30 L8 18 Z" fill="#AFD2BC" stroke="#2F7D4F" stroke-width="2.6" stroke-linejoin="round"/><g fill="#F26716"><circle cx="20" cy="24" r="2.6"/><circle cx="44" cy="24" r="2.6"/></g><g fill="#0B3A24"><ellipse cx="25.6" cy="40.0" rx="2.3" ry="3.1"/><ellipse cx="38.4" cy="40.0" rx="2.3" ry="3.1"/></g><path d="M27.6 45.2 q4.4 4.4 8.8 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="20.0" cy="43.0" rx="3.1" ry="2.1"/><ellipse cx="44.0" cy="43.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/ionic.png" alt="" loading="lazy" onerror="this.parentNode.textContent='🧊'"></div>
         <div class="body">
           <div class="t">นครผลึกเกลือ</div>
           <div class="d">พันธะไอออนิก — การถ่ายโอนอิเล็กตรอน โครงสร้างผลึก สูตรและการเรียกชื่อ พลังงานแลตทิซ และสมบัติของสาร</div>
@@ -230,7 +229,7 @@ footer a{color:var(--lime);font-weight:700}
       </a>
 
       <a class="game" href="metallic/">
-        <div class="ic"><svg viewBox="0 0 64 64" role="img" aria-hidden="true"><rect x="5" y="12" width="54" height="40" rx="13" fill="#FBE4D2" stroke="#F26716" stroke-width="2.6" stroke-dasharray="5 4"/><circle cx="32" cy="32" r="16" fill="#F7C39C" stroke="#C56A2A" stroke-width="3"/><g fill="#F26716"><circle cx="13" cy="20" r="2.8"/><circle cx="51" cy="20" r="2.8"/><circle cx="13" cy="45" r="2.8"/><circle cx="51" cy="45" r="2.8"/></g><g fill="#0B3A24"><ellipse cx="25.8" cy="30.0" rx="2.3" ry="3.1"/><ellipse cx="38.2" cy="30.0" rx="2.3" ry="3.1"/></g><path d="M27.6 35.2 q4.4 4.4 8.8 0" fill="none" stroke="#0B3A24" stroke-width="2.0" stroke-linecap="round"/><g fill="#F2996E" opacity=".65"><ellipse cx="21.0" cy="33.0" rx="3.1" ry="2.1"/><ellipse cx="43.0" cy="33.0" rx="3.1" ry="2.1"/></g></svg></div>
+        <div class="ic"><img src="icons/metallic.png" alt="" loading="lazy" onerror="this.parentNode.textContent='⚡'"></div>
         <div class="body">
           <div class="t">เมืองทะเลอิเล็กตรอน</div>
           <div class="d">พันธะโลหะ — ทะเลอิเล็กตรอน โครงผลึกโลหะ ความแข็งแรงของพันธะ สมบัติของโลหะ และโลหะผสม</div>
