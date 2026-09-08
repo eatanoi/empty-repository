@@ -3,11 +3,11 @@
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'ionic-v8';
+const CACHE = 'ionic-v9';
 const ASSETS = [
   './',
   './index.html',
-  '../icons/brand.png',
+  '../icons/brand-chem.png',
   './manifest.webmanifest',
   './icon.svg',
   './favicon-32.png',
