@@ -3,7 +3,7 @@
    - คำขอไปยัง Supabase (ระบบชั้นเรียน) จะไม่ถูกแคช ให้วิ่งผ่านเครือข่ายตามปกติ
    หมายเหตุ: เวลาแก้ index.html แล้ว ให้เปลี่ยนเลข CACHE ด้านล่างหนึ่งครั้ง
              เพื่อให้เครื่องนักเรียนดึงเวอร์ชันใหม่ */
-const CACHE = 'hub-v2';
+const CACHE = 'hub-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -12,7 +12,16 @@ const ASSETS = [
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',
-  './og-cover.png'
+  './og-cover.png',
+  './icons/genetics.png',
+  './icons/cell.png',
+  './icons/transport.png',
+  './icons/respiration.png',
+  './icons/division.png',
+  './icons/reproduction.png',
+  './icons/covalent.png',
+  './icons/ionic.png',
+  './icons/metallic.png'
 ];
 
 /* เดิมตำแหน่งนี้เคยเป็นเกมภารกิจพันธุกรรม แคช genetics-* จึงยังค้างอยู่ในเครื่องนักเรียน
