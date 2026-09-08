@@ -104,6 +104,8 @@ button{font-family:inherit}
 .btn.ghost{background:transparent}
 .btn:disabled{opacity:.42;cursor:not-allowed}
 .btn.sm{padding:7px 14px;font-size:.85rem}
+a.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.endrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
   box-shadow:0 2px 12px rgba(8,74,36,.06)}
@@ -521,8 +523,9 @@ function renderMap(){
       <button class="btn gold" id="btnCards">เปิดสำรับ</button>
     </div>
     ${certCardHtml()}
-    <div class="center" style="margin-top:18px">
-      <button class="btn ghost sm" id="btnReset">เริ่มใหม่ทั้งหมด</button>
+    <div class="center endrow" style="margin-top:18px">
+      <a class="btn ghost sm" href="../">🏠 กลับหน้าแรก</a>
+      <button class="btn ghost sm" id="btnReset">🔄 เริ่มใหม่ทั้งหมด</button>
     </div>
   `;
   app.querySelectorAll('.node').forEach(n=>{
