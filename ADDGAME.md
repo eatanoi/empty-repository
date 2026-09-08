@@ -12,9 +12,9 @@
 
 | วางไฟล์ไว้ที่ | ลิงก์ที่ได้ |
 |---|---|
-| `index.html` (นอกสุด) | `https://eatanoi.github.io/empty-repository/` ← หน้ารวมเกม |
-| `respiration/index.html` | `https://eatanoi.github.io/empty-repository/respiration/` |
-| `photosynthesis/index.html` | `https://eatanoi.github.io/empty-repository/photosynthesis/` |
+| `index.html` (นอกสุด) | `https://kunkrunoi.com/` ← หน้ารวมเกม |
+| `respiration/index.html` | `https://kunkrunoi.com/respiration/` |
+| `photosynthesis/index.html` | `https://kunkrunoi.com/photosynthesis/` |
 | `photosynthesis/imag/bg.webp` | `.../photosynthesis/imag/bg.webp` |
 
 ถ้าตั้งชื่อไฟล์เป็นอย่างอื่น เช่น `เกมพืช.html` ลิงก์จะยาวและพิมพ์ยาก
@@ -164,16 +164,32 @@ git push
 
 1. หน้ารีโป → **Settings → Pages**
 2. **Source:** `Deploy from a branch` · **Branch:** `main` · **Folder:** `/ (root)` → **Save**
-3. รอสักครู่ จะขึ้นลิงก์ `https://eatanoi.github.io/empty-repository/`
+3. รอสักครู่ จะขึ้นลิงก์ให้ — ถ้ายังไม่ได้ผูกโดเมน จะเป็น `https://eatanoi.github.io/empty-repository/`
 
-### ผูกโดเมนของตัวเอง (เช่น gamesbiology.biologypremium.com)
+### ผูกโดเมน kunkrunoi.com
 
-1. ที่ผู้ให้บริการโดเมน เพิ่ม **CNAME record**: `gamesbiology` → `eatanoi.github.io`
-2. กลับมาที่ **Settings → Pages → Custom domain** พิมพ์ `gamesbiology.biologypremium.com` → **Save**
+เว็บนี้ใช้ **โดเมนหลัก** `kunkrunoi.com` ตั้งค่าครั้งเดียวจบ ทำตามลำดับนี้เท่านั้น
+(ถ้าใส่ Custom domain ก่อนตั้ง DNS ลิงก์ github.io จะเด้งไปหาโดเมนที่ยังไม่พร้อม)
+
+1. **ตั้ง DNS ก่อน** ที่ผู้ให้บริการโดเมน — ลบ A / AAAA / CNAME ของ `@` ที่ชี้ไปที่อื่นออก แล้วเพิ่ม
+
+   | Type | Host | Value |
+   |---|---|---|
+   | A | `@` | `185.199.108.153` |
+   | A | `@` | `185.199.109.153` |
+   | A | `@` | `185.199.110.153` |
+   | A | `@` | `185.199.111.153` |
+   | CNAME | `www` | `eatanoi.github.io` |
+
+   **อย่าแตะ MX record** ถ้าโดเมนนี้ใช้รับอีเมลอยู่ — การเปลี่ยนข้างต้นกระทบเฉพาะเว็บ
+
+2. **แล้วค่อยบอก GitHub** — **Settings → Pages → Custom domain** พิมพ์ `kunkrunoi.com` → **Save**
    (GitHub จะสร้างไฟล์ `CNAME` ในรีโปให้เอง — อย่าลบ)
 3. รอ DNS ประมาณ 10–60 นาที แล้วติ๊ก **Enforce HTTPS**
-4. เมื่อผูกโดเมนแล้ว ลิงก์เกมจะกลายเป็น `https://gamesbiology.biologypremium.com/respiration/`
-   (ตรงกับที่ตั้งไว้ใน `og:url` ของเกมการหายใจระดับเซลล์พอดี)
+4. ลิงก์เกมจะกลายเป็น `https://kunkrunoi.com/respiration/` ตรงกับที่ตั้งไว้ใน `og:url` ของทุกเกม
+
+**เวลาเพิ่มเกมใหม่ อย่าลืมแก้ที่อยู่ให้ตรงโดเมนนี้** ทั้งใน `og:url` `og:image` `twitter:image`
+และข้อความโดเมนที่วาดอยู่ใน `og-cover.png` ของเกมนั้น
 
 ---
 
@@ -221,5 +237,5 @@ empty-repository/
 
 1. เตรียมโฟลเดอร์เกมในเครื่อง ตั้งชื่ออังกฤษตัวเล็ก ข้างในมี `index.html`
 2. เข้ารีโป → **Add file → Upload files** → ลากโฟลเดอร์มาวาง → **Commit changes**
-3. รอ 1–2 นาที เปิด `https://eatanoi.github.io/empty-repository/ชื่อโฟลเดอร์/`
+3. รอ 1–2 นาที เปิด `https://kunkrunoi.com/ชื่อโฟลเดอร์/`
 4. ทำ QR จากลิงก์นั้นแจกนักเรียน
