@@ -67,7 +67,9 @@ body{
 
 /* ── หัวหน้า ── */
 .hero{text-align:center;padding:26px 12px 10px}
-.brand{font-weight:800;font-size:1.1rem;color:var(--deep);letter-spacing:.02em}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;
+  color:var(--deep);letter-spacing:.02em}
+.brand img{width:42px;height:42px;object-fit:contain;display:block}
 .brand .dot{color:var(--gold)}
 .hero h1{
   font-size:clamp(1.8rem,5.4vw,2.7rem);margin:.35em 0 .28em;line-height:1.25;
@@ -139,7 +141,7 @@ footer a{color:var(--lime);font-weight:700}
 <div class="wrap">
 
   <div class="hero">
-    <div class="brand">Biology<span class="dot">.</span></div>
+    <div class="brand"><img src="icons/brand.png" alt="" onerror="this.remove()"><span>Biology<span class="dot">.</span></span></div>
     <h1>เกมชีววิทยาและเคมี ม.4</h1>
     <p>รวมเกมประกอบการเรียนรู้ไว้ในที่เดียว — เลือกเรื่องที่กำลังเรียนแล้วกดเล่นได้เลย</p>
     <div class="tagline">🎮 เล่นบนมือถือได้ · เก็บดาวสะสม · ส่งคะแนนเข้าแดชบอร์ดครู</div>
