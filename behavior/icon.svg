@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="สถานีวิจัยพฤติกรรมสัตว์">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8EC"/><stop offset="1" stop-color="#EAE4C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- อุ้งเท้า -->
+  <ellipse cx="212" cy="338" rx="104" ry="88" fill="#F7C39C" stroke="#084A24" stroke-width="15"/>
+  <!-- นิ้วเท้าสี่นิ้ว -->
+  <ellipse cx="86"  cy="250" rx="34" ry="45" fill="#FADBC2" stroke="#084A24" stroke-width="13"/>
+  <ellipse cx="156" cy="178" rx="36" ry="48" fill="#FADBC2" stroke="#084A24" stroke-width="13"/>
+  <ellipse cx="244" cy="170" rx="36" ry="48" fill="#FADBC2" stroke="#084A24" stroke-width="13"/>
+  <ellipse cx="322" cy="214" rx="34" ry="45" fill="#FADBC2" stroke="#084A24" stroke-width="13"/>
+  <!-- คลื่นสัญญาณ: การสื่อสารระหว่างสัตว์ -->
+  <g fill="none" stroke-linecap="round" stroke-width="15">
+    <path d="M363.2 308.9 A58 58 0 0 1 440.8 308.9"  stroke="#F26716"/>
+    <path d="M335.1 277.7 A100 100 0 0 1 468.9 277.7" stroke="#F26716"/>
+    <path d="M307.0 246.5 A142 142 0 0 1 497.0 246.5" stroke="#E7390D"/>
+  </g>
+  <circle cx="402" cy="352" r="13" fill="#2F7D4F"/>
+</svg>
