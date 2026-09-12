@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ระบบจัดเก็บข้อมูล วPA | รายงานผลการปฏิบัติงานตามข้อตกลงในการพัฒนางาน</title>
+<meta name="description" content="เว็บจัดเก็บข้อมูลและรายงานผลการปฏิบัติงานตามข้อตกลงในการพัฒนางาน (วPA) สำหรับครู — แบบข้อตกลง PA1 บันทึกหลักฐานร่องรอย สรุปผลพร้อมกราฟ แบบประเมิน PA2/PA3 และพิมพ์รายงาน">
+<meta name="theme-color" content="#084A24">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<style>
+:root{
+  --cream:#F2EDD5; --cream-hi:#FBF8EC; --cream-lo:#E9E1BE;
+  --ink:#04261E; --deep:#084A24;
+  --bg0:#FBF8EC; --bg1:#F2EDD5; --bg2:#EAE4C6;
+  --surface:#FDFBF2; --surface2:#FFFFFF;
+  --line:rgba(8,74,36,.18); --line-hi:rgba(8,74,36,.34);
+  --green:#4E9370; --lime:#2F7D4F; --teal:#7CB894;
+  --gold:#F26716; --rose:#E7390D;
+  --green-pale:#DCEBE1; --orange-pale:#FBE4D2;
+  --text:#04261E; --muted:#6B8A76;
+  /* สีชุดข้อมูลสำหรับกราฟ — ผ่านการตรวจความต่างสำหรับตาบอดสีแล้ว */
+  --d1:#2a78d6; --d2:#eb6834; --d3:#1baf7a;
+  --ok:#2F7D4F; --warn:#C77700; --bad:#C8452F;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh;color:var(--text);font-size:16px;line-height:1.65;letter-spacing:.01em;
+  font-family:"Sukhumvit Set","Noto Sans Thai","IBM Plex Sans Thai","Sarabun",-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;
+  background:
+    radial-gradient(1100px 700px at 12% -8%, rgba(175,210,188,.5), transparent 62%),
+    radial-gradient(900px 600px at 92% 0%, rgba(247,195,156,.38), transparent 60%),
+    linear-gradient(170deg,var(--bg0),var(--bg1) 45%,var(--bg2));
+  background-attachment:fixed;
+}
+h1,h2,h3,h4{margin:0 0 10px;line-height:1.35;color:var(--deep)}
+h1{font-size:1.35rem}h2{font-size:1.12rem}h3{font-size:1rem}h4{font-size:.95rem}
+p{margin:0 0 10px}
+a{color:var(--lime)}
+.wrap{max-width:1100px;margin:0 auto;padding:14px 16px 72px}
+.hidden{display:none !important}
+.mini{font-size:.85rem;color:var(--muted)}
+.right{text-align:right}.center{text-align:center}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1 1 auto}
+
+/* ── หัวเว็บ ── */
+.topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 0 10px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--deep);font-size:1.05rem}
+.brand .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;
+  background:linear-gradient(150deg,var(--teal),var(--lime));color:#fff}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 13px;font-size:.84rem;
+  font-weight:700;background:var(--surface);border:1px solid var(--line);color:var(--deep)}
+.chip.ok{background:var(--green-pale);border-color:rgba(47,125,79,.45);color:#1B5C39}
+.chip.warn{background:var(--orange-pale);border-color:rgba(226,103,22,.45);color:#9A4208}
+
+/* ── แท็บ ── */
+nav.tabs{position:sticky;top:0;z-index:30;margin:0 -16px 16px;padding:8px 16px;
+  background:rgba(251,248,236,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--deep);
+  border-radius:999px;padding:9px 16px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;
+  min-height:44px;transition:.15s}
+nav.tabs button:hover{border-color:var(--line-hi)}
+nav.tabs button[aria-current="page"]{background:var(--deep);color:#fff;border-color:var(--deep)}
+nav.tabs button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ── การ์ด ── */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;
+  box-shadow:0 10px 30px -26px rgba(8,74,36,.7)}
+.card > h2:first-child,.card > h3:first-child{margin-top:0}
+.card.flat{box-shadow:none;background:rgba(255,255,255,.55)}
+.note{border-left:4px solid var(--teal);background:var(--green-pale);border-radius:10px;padding:10px 14px;
+  font-size:.9rem;margin-bottom:12px;color:#1B5C39}
+.note.warn{border-left-color:var(--gold);background:var(--orange-pale);color:#8C3D07}
+
+/* ── ฟอร์ม ── */
+label{display:block;font-weight:700;font-size:.88rem;margin-bottom:5px;color:var(--deep)}
+input,select,textarea{width:100%;border-radius:11px;border:1px solid var(--line);background:#fff;
+  padding:9px 12px;font-size:1rem;font-family:inherit;color:var(--text);min-height:44px}
+textarea{min-height:88px;line-height:1.6;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(78,147,112,.22)}
+.field{margin-bottom:12px}
+.grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:700px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:1fr 1fr 1fr}}
+.btn{min-height:44px;border-radius:12px;border:1px solid transparent;padding:9px 18px;font:inherit;font-weight:700;
+  cursor:pointer;background:var(--deep);color:#fff;display:inline-flex;align-items:center;gap:7px;justify-content:center}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn.orange{background:var(--gold)}
+.btn.ghost{background:var(--surface);color:var(--deep);border-color:var(--line-hi)}
+.btn.danger{background:var(--bad)}
+.btn.sm{min-height:38px;padding:6px 13px;font-size:.88rem}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn.wide{width:100%}
+
+/* ── ตาราง ── */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--green-pale);color:var(--deep);font-weight:800;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(220,235,225,.4)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ── KPI ── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.kpi .v{font-size:1.9rem;font-weight:800;color:var(--deep);line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:.84rem;color:var(--muted)}
+.kpi .sub{font-size:.8rem;color:var(--muted);margin-top:2px}
+
+/* ── ตัวชี้วัด ── */
+.ind{border:1px solid var(--line);border-radius:13px;background:#fff;margin-bottom:10px;overflow:hidden}
+.ind > summary{cursor:pointer;padding:12px 14px;font-weight:700;color:var(--deep);display:flex;gap:10px;align-items:center;
+  list-style:none}
+.ind > summary::-webkit-details-marker{display:none}
+.ind > summary::before{content:"▸";color:var(--green);transition:.15s;flex:0 0 auto}
+.ind[open] > summary::before{transform:rotate(90deg)}
+.ind .code{flex:0 0 auto;font-variant-numeric:tabular-nums;background:var(--green-pale);color:var(--deep);
+  border-radius:8px;padding:2px 8px;font-size:.85rem}
+.ind .body{padding:0 14px 14px;border-top:1px solid var(--line)}
+.ind .badge{margin-left:auto;flex:0 0 auto;font-size:.78rem;font-weight:700;border-radius:999px;padding:3px 10px;
+  background:var(--cream-lo);color:var(--muted)}
+.ind .badge.has{background:var(--green-pale);color:#1B5C39}
+.dimhead{display:flex;align-items:center;gap:10px;margin:18px 0 10px;font-weight:800;color:var(--deep)}
+.dimhead .bar{width:5px;height:24px;border-radius:3px;background:var(--d1)}
+.dim2 .bar{background:var(--d2)}.dim3 .bar{background:var(--d3)}
+
+/* ── กราฟ ── */
+.chart{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.chart h3{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.chart .sub{font-size:.85rem;color:var(--muted);margin-bottom:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;margin-bottom:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+svg.viz{display:block;width:100%;height:auto;overflow:visible}
+svg.viz text{font-family:inherit;fill:var(--muted);font-size:12px}
+svg.viz text.val{fill:var(--text);font-weight:700;font-variant-numeric:tabular-nums}
+svg.viz text.cat{fill:var(--text)}
+svg.viz .grid line{stroke:var(--line);stroke-width:1}
+svg.viz .mark{transition:.15s opacity}
+svg.viz .mark:hover{opacity:.78}
+.bars{display:grid;gap:9px}
+.barrow{display:grid;grid-template-columns:minmax(96px,auto) 1fr auto;gap:10px;align-items:center;font-size:.9rem}
+.barrow .track{display:block;background:var(--cream-lo);border-radius:999px;height:14px;overflow:hidden}
+.barrow .fill{display:block;height:100%;border-radius:999px;background:var(--lime)}
+.barrow .n{font-variant-numeric:tabular-nums;font-weight:700;min-width:2.4em;text-align:right}
+.barrow.zero .n{color:var(--bad)}
+
+/* ── รายการหลักฐาน ── */
+.ev{border:1px solid var(--line);border-radius:13px;background:#fff;padding:12px 14px;margin-bottom:10px}
+.ev .head{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.ev .date{font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted);flex:0 0 auto}
+.ev .tt{font-weight:700;color:var(--deep);flex:1 1 220px}
+.ev .tag{font-size:.78rem;border-radius:999px;padding:2px 9px;background:var(--cream-lo);color:var(--muted)}
+.ev .tag.d1{background:rgba(42,120,214,.14);color:#1c5399}
+.ev .tag.d2{background:rgba(235,104,52,.16);color:#a8420f}
+.ev .tag.d3{background:rgba(27,175,122,.16);color:#0f6a49}
+.ev .detail{font-size:.93rem;margin:8px 0 0;white-space:pre-wrap}
+.ev .thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ev .thumbs img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);cursor:zoom-in}
+.ev .links{margin-top:8px;font-size:.88rem;display:flex;flex-direction:column;gap:3px;word-break:break-all}
+.ev .acts{display:flex;gap:8px;margin-top:10px}
+.empty{text-align:center;color:var(--muted);padding:26px 12px;font-size:.94rem}
+
+/* ── ตัวกรอง ── */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.filters .field{margin-bottom:0;min-width:150px;flex:1 1 150px}
+
+/* ── กล่องดูรูปเต็ม ── */
+.lightbox{position:fixed;inset:0;background:rgba(4,38,30,.88);z-index:80;display:grid;place-items:center;padding:20px}
+.lightbox img{max-width:100%;max-height:88vh;border-radius:12px}
+.lightbox .close{position:absolute;top:14px;right:16px}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:90;background:var(--deep);color:#fff;
+  padding:11px 20px;border-radius:999px;font-weight:700;font-size:.92rem;box-shadow:0 12px 30px -14px rgba(4,38,30,.9)}
+
+/* ── เอกสารสำหรับพิมพ์ ── */
+.doc{background:#fff;color:#000;border:1px solid var(--line);border-radius:var(--r);padding:26px 30px;
+  font-family:"TH Sarabun New","Sarabun","Noto Sans Thai",serif}
+.doc h2,.doc h3{color:#000;text-align:center}
+.doc .sig{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:36px;text-align:center;font-size:.95rem}
+.doc table{font-size:.9rem}
+.doc th{background:#EDEDED;color:#000}
+.doc .lead{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.95rem;margin-bottom:14px}
+.doc .lead b{font-weight:700;white-space:nowrap}
+
+@media print{
+  @page{size:A4;margin:15mm}
+  body{background:#fff !important}
+  .noprint,nav.tabs,.topbar,.filters{display:none !important}
+  .wrap{max-width:none;padding:0}
+  .doc{border:none;border-radius:0;padding:0}
+  .card,.chart,.ev,.tablewrap{break-inside:avoid;box-shadow:none;border-color:#999}
+  .doc .sig{break-inside:avoid}
+  table{font-size:.85rem}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="topbar noprint">
+    <div class="brand"><span class="logo">📘</span><span>ระบบข้อมูล วPA</span></div>
+    <div class="spacer"></div>
+    <span class="chip" id="chipYear">ปีงบประมาณ —</span>
+    <span class="chip" id="chipSave">บันทึกในเครื่อง</span>
+    <span class="chip" id="chipSync">ยังไม่เชื่อม Supabase</span>
+  </header>
+
+  <nav class="tabs noprint" id="tabs" aria-label="เมนูหลัก">
+    <button data-view="home" aria-current="page">🏠 ภาพรวม</button>
+    <button data-view="pa1">📝 ข้อตกลง PA1</button>
+    <button data-view="ev">📎 หลักฐาน/ร่องรอย</button>
+    <button data-view="sum">📊 สรุปผล + กราฟ</button>
+    <button data-view="eval">✅ ประเมิน PA2/PA3</button>
+    <button data-view="print">🖨️ พิมพ์รายงาน</button>
+    <button data-view="data">⚙️ ข้อมูลและการซิงก์</button>
+  </nav>
+
+  <!-- ══════════ ภาพรวม ══════════ -->
+  <section id="view-home" class="view">
+    <h1>ภาพรวมการพัฒนางานตามข้อตกลง (วPA)</h1>
+    <p class="mini" id="homeSub">รอบการประเมิน —</p>
+    <div class="kpis" id="homeKpis"></div>
+    <div class="card">
+      <h2>สิ่งที่ควรทำต่อ</h2>
+      <div id="homeTodo"></div>
+    </div>
+    <div class="card">
+      <h2>หลักฐานล่าสุด</h2>
+      <div id="homeRecent"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ PA1 ══════════ -->
+  <section id="view-pa1" class="view hidden">
+    <h1>แบบข้อตกลงในการพัฒนางาน (PA1)</h1>
+    <div class="note">กรอกแล้วระบบบันทึกอัตโนมัติทุกครั้งที่พิมพ์เสร็จ ไม่ต้องกดบันทึก</div>
+
+    <div class="card">
+      <h2>ข้อมูลผู้จัดทำข้อตกลง</h2>
+      <div class="grid c2" id="profileForm"></div>
+    </div>
+
+    <div class="card">
+      <h2>ภาระงานที่ปฏิบัติ</h2>
+      <p class="mini">ชั่วโมงสอนตามตารางสอน งานส่งเสริมสนับสนุน งานพัฒนาคุณภาพการศึกษา และงานตอบสนองนโยบาย</p>
+      <div class="tablewrap"><table id="loadTable"></table></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnAddLoad">➕ เพิ่มรายการภาระงาน</button>
+        <span class="spacer"></span>
+        <span class="chip" id="loadTotal">รวม — ชั่วโมง/สัปดาห์</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>ส่วนที่ 1 · ข้อตกลงในการพัฒนางานตามมาตรฐานตำแหน่ง</h2>
+      <p class="mini">ระบุงานที่จะปฏิบัติและผลลัพธ์ที่คาดหวังของแต่ละตัวชี้วัด · ตัวชี้วัดใดมีหลักฐานบันทึกไว้แล้วจะขึ้นป้ายจำนวนชิ้น</p>
+      <div id="part1Form"></div>
+    </div>
+
+    <div class="card">
+      <h2>ส่วนที่ 2 · ข้อตกลงในการพัฒนางานที่เสนอเป็นประเด็นท้าทาย</h2>
+      <div id="challengeForm"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ หลักฐาน ══════════ -->
+  <section id="view-ev" class="view hidden">
+    <h1>บันทึกหลักฐาน / ร่องรอยการปฏิบัติงาน</h1>
+    <div class="card" id="evFormCard">
+      <h2 id="evFormTitle">เพิ่มหลักฐานใหม่</h2>
+      <div class="grid c2">
+        <div class="field"><label for="evDate">วันที่ปฏิบัติงาน</label><input type="date" id="evDate"></div>
+        <div class="field"><label for="evInd">ตัวชี้วัดที่เกี่ยวข้อง</label><select id="evInd"></select></div>
+      </div>
+      <div class="field"><label for="evTitle">ชื่อกิจกรรม / ชิ้นงาน</label>
+        <input id="evTitle" placeholder="เช่น จัดกิจกรรมการเรียนรู้เรื่องการแบ่งเซลล์ด้วยเกมโรงงานสร้างเซลล์"></div>
+      <div class="field"><label for="evDetail">รายละเอียด / ผลที่เกิดกับผู้เรียน</label>
+        <textarea id="evDetail" placeholder="สิ่งที่ทำ ผลที่เกิดขึ้น จำนวนผู้เรียน ผลคะแนน ฯลฯ"></textarea></div>
+      <div class="grid c2">
+        <div class="field"><label for="evTags">คำค้น (คั่นด้วยจุลภาค)</label><input id="evTags" placeholder="ม.4, ชีววิทยา, PLC"></div>
+        <div class="field"><label for="evLinks">ลิงก์หลักฐาน (บรรทัดละ 1 ลิงก์)</label><textarea id="evLinks" style="min-height:44px" placeholder="https://drive.google.com/..."></textarea></div>
+      </div>
+      <div class="field"><label for="evImg">แนบภาพ (ย่อขนาดอัตโนมัติ)</label><input type="file" id="evImg" accept="image/*" multiple></div>
+      <div class="thumbs" id="evDraftThumbs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <div class="row">
+        <button class="btn" id="btnEvSave">💾 บันทึกหลักฐาน</button>
+        <button class="btn ghost hidden" id="btnEvCancel">ยกเลิกการแก้ไข</button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="field"><label for="fDim">ด้าน</label><select id="fDim"></select></div>
+      <div class="field"><label for="fInd">ตัวชี้วัด</label><select id="fInd"></select></div>
+      <div class="field" style="flex:2 1 220px"><label for="fText">ค้นหา</label><input id="fText" placeholder="ชื่อกิจกรรม รายละเอียด หรือคำค้น"></div>
+      <button class="btn ghost sm" id="btnClearFilter">ล้างตัวกรอง</button>
+    </div>
+    <p class="mini" id="evCount"></p>
+    <div id="evList"></div>
+  </section>
+
+  <!-- ══════════ สรุปผล ══════════ -->
+  <section id="view-sum" class="view hidden">
+    <h1>สรุปผลการปฏิบัติงาน</h1>
+    <div class="kpis" id="sumKpis"></div>
+    <div class="chart">
+      <h3>หลักฐานแยกตามด้านการปฏิบัติงาน</h3>
+      <div class="sub">จำนวนชิ้นงานที่บันทึกไว้ในแต่ละด้านของมาตรฐานตำแหน่ง</div>
+      <div class="legend" id="legDim"></div>
+      <svg class="viz" id="chartDim" role="img" aria-label="กราฟแท่งจำนวนหลักฐานแยกตามด้าน"></svg>
+      <div class="row noprint" style="margin-top:8px"><button class="btn ghost sm" data-table="tblDim">ดูเป็นตาราง</button></div>
+      <div class="tablewrap hidden" id="tblDim" style="margin-top:10px"></div>
+    </div>
+    <div class="chart">
+      <h3>ความเคลื่อนไหวรายเดือน</h3>
+      <div class="sub">จำนวนหลักฐานที่บันทึกในแต่ละเดือนของรอบการประเมิน</div>
+      <svg class="viz" id="chartMonth" role="img" aria-label="กราฟแท่งจำนวนหลักฐานรายเดือน"></svg>
+      <div class="row noprint" style="margin-top:8px"><button class="btn ghost sm" data-table="tblMonth">ดูเป็นตาราง</button></div>
+      <div class="tablewrap hidden" id="tblMonth" style="margin-top:10px"></div>
+    </div>
+    <div class="chart">
+      <h3>ความครอบคลุมรายตัวชี้วัด</h3>
+      <div class="sub">ตัวชี้วัดที่ยังไม่มีหลักฐานจะแสดงเป็นเลขสีแดง ควรเติมให้ครบก่อนรับการประเมิน</div>
+      <div class="bars" id="chartInd"></div>
+    </div>
+    <div class="card">
+      <h2>ตารางสรุปหลักฐานทั้งหมด</h2>
+      <div class="tablewrap"><table id="sumTable"></table></div>
+      <div class="row noprint" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnCsv">⬇️ ดาวน์โหลด CSV</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ ประเมิน ══════════ -->
+  <section id="view-eval" class="view hidden">
+    <h1>แบบประเมิน PA2 และสรุปผล PA3</h1>
+    <div class="note warn">คะแนนเต็มและน้ำหนักตั้งค่าได้ที่ท้ายหน้า ให้ตรวจสอบกับแบบประเมินจริงของสถานศึกษาก่อนใช้งาน</div>
+    <div class="card">
+      <h2>คณะกรรมการประเมิน</h2>
+      <div class="grid c3" id="committeeForm"></div>
+    </div>
+    <div class="card">
+      <h2>องค์ประกอบที่ 1 · การปฏิบัติงานตามมาตรฐานตำแหน่ง</h2>
+      <p class="mini">ให้คะแนนตัวชี้วัดละ 1–4 คะแนน · ระบบเฉลี่ยคะแนนของกรรมการทั้งสามคนให้อัตโนมัติ</p>
+      <div class="tablewrap"><table id="evalTable1"></table></div>
+    </div>
+    <div class="card">
+      <h2>องค์ประกอบที่ 2 · ผลลัพธ์ในการพัฒนาการเรียนรู้ตามประเด็นท้าทาย</h2>
+      <div class="tablewrap"><table id="evalTable2"></table></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost sm" id="btnAddEval2">➕ เพิ่มรายการประเมิน</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>สรุปผลการประเมิน (PA3)</h2>
+      <div class="kpis" id="evalKpis"></div>
+      <div id="evalGauge"></div>
+      <div class="field" style="margin-top:14px"><label for="evalNote">ข้อสังเกต / ข้อเสนอแนะของคณะกรรมการ</label>
+        <textarea id="evalNote"></textarea></div>
+      <div class="grid c2">
+        <div class="field"><label for="evalDate">วันที่ประเมิน</label><input type="date" id="evalDate"></div>
+        <div class="field"><label for="evalPass">เกณฑ์ผ่าน (คะแนน)</label><input type="number" id="evalPass" min="0" max="100" step="1"></div>
+      </div>
+    </div>
+    <div class="card flat">
+      <h3>ตั้งค่าคะแนนเต็ม</h3>
+      <div class="grid c3">
+        <div class="field"><label for="rbMax1">องค์ประกอบที่ 1 (คะแนน)</label><input type="number" id="rbMax1" min="0" step="1"></div>
+        <div class="field"><label for="rbMax2">องค์ประกอบที่ 2 (คะแนน)</label><input type="number" id="rbMax2" min="0" step="1"></div>
+        <div class="field"><label for="rbLevels">ระดับคะแนนต่อตัวชี้วัด</label><input type="number" id="rbLevels" min="1" max="10" step="1"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ พิมพ์ ══════════ -->
+  <section id="view-print" class="view hidden">
+    <h1 class="noprint">พิมพ์รายงาน</h1>
+    <div class="row noprint" style="margin-bottom:14px">
+      <label for="printPick" class="hidden">เลือกเอกสาร</label>
+      <select id="printPick" style="max-width:340px">
+        <option value="pa1">แบบข้อตกลงในการพัฒนางาน (PA1)</option>
+        <option value="report">รายงานผลการปฏิบัติงานพร้อมหลักฐาน</option>
+        <option value="pa2">แบบประเมิน PA2 / สรุปผล PA3</option>
+      </select>
+      <button class="btn" id="btnPrint">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+    </div>
+    <div class="doc" id="printDoc"></div>
+  </section>
+
+  <!-- ══════════ ข้อมูล ══════════ -->
+  <section id="view-data" class="view hidden">
+    <h1>ข้อมูลและการซิงก์</h1>
+    <div class="card">
+      <h2>รอบการประเมิน</h2>
+      <div class="grid c3">
+        <div class="field"><label for="cfgYear">ปีงบประมาณ (พ.ศ.)</label><input id="cfgYear" inputmode="numeric" placeholder="2569"></div>
+        <div class="field"><label for="cfgFrom">ตั้งแต่วันที่</label><input type="date" id="cfgFrom"></div>
+        <div class="field"><label for="cfgTo">ถึงวันที่</label><input type="date" id="cfgTo"></div>
+      </div>
+      <p class="mini">ข้อมูลแต่ละปีงบประมาณเก็บแยกกัน เปลี่ยนปีแล้วจะเริ่มชุดข้อมูลใหม่ ของเดิมยังอยู่ครบ</p>
+      <div class="row"><span class="spacer"></span><div id="yearList" class="row"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>สำรองและย้ายข้อมูล</h2>
+      <p class="mini">ข้อมูลทั้งหมดเก็บอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น ควรส่งออกไฟล์เก็บไว้เป็นระยะ</p>
+      <div class="row">
+        <button class="btn" id="btnExport">⬇️ ส่งออกไฟล์ JSON</button>
+        <button class="btn ghost" id="btnImport">⬆️ นำเข้าไฟล์ JSON</button>
+        <input type="file" id="fileImport" accept="application/json,.json" class="hidden">
+        <span class="spacer"></span>
+        <button class="btn danger sm" id="btnWipe">ล้างข้อมูลปีนี้</button>
+      </div>
+      <p class="mini" id="storageMeter" style="margin-top:10px"></p>
+    </div>
+
+    <div class="card">
+      <h2>ซิงก์ขึ้น Supabase (ไม่บังคับ)</h2>
+      <p class="mini">ตั้งค่าแล้วจะเก็บข้อมูลไว้บนฐานข้อมูลด้วย เปิดจากเครื่องอื่นหรือมือถือได้ ต้องรันไฟล์
+        <code>supabase/vpa-schema.sql</code> ในโปรเจกต์ Supabase ก่อนหนึ่งครั้ง</p>
+      <div id="sbLogin">
+        <div class="grid c2">
+          <div class="field"><label for="sbUrl">Project URL</label><input id="sbUrl" placeholder="https://abcdefgh.supabase.co" autocomplete="off"></div>
+          <div class="field"><label for="sbKey">anon public key</label><input id="sbKey" placeholder="eyJhbGciOi..." autocomplete="off"></div>
+          <div class="field"><label for="sbMail">อีเมลครู</label><input id="sbMail" type="email" autocomplete="username"></div>
+          <div class="field"><label for="sbPass">รหัสผ่าน</label><input id="sbPass" type="password" autocomplete="current-password"></div>
+        </div>
+        <button class="btn" id="btnSbLogin">🔌 เชื่อมต่อ</button>
+      </div>
+      <div id="sbPanel" class="hidden">
+        <div class="row">
+          <button class="btn" id="btnPush">⬆️ ส่งข้อมูลขึ้นเซิร์ฟเวอร์</button>
+          <button class="btn ghost" id="btnPull">⬇️ ดึงข้อมูลจากเซิร์ฟเวอร์</button>
+          <span class="spacer"></span>
+          <button class="btn ghost sm" id="btnSbOut">ออกจากระบบ</button>
+        </div>
+        <p class="mini" id="sbInfo" style="margin-top:10px"></p>
+      </div>
+      <div id="sbMsg"></div>
+    </div>
+
+    <div class="card flat">
+      <h3>เกี่ยวกับความเป็นส่วนตัว</h3>
+      <p class="mini">หน้านี้ไม่ส่งข้อมูลไปที่ใดทั้งสิ้นถ้าไม่ได้ตั้งค่า Supabase เอง · ข้อมูลและรูปภาพอยู่ในเบราว์เซอร์ของคุณ
+        การล้างข้อมูลเบราว์เซอร์จะลบข้อมูลนี้ด้วย จึงควรส่งออกไฟล์สำรองไว้เสมอ</p>
+    </div>
+  </section>
+
+</div>
+<script>
+/* ==========================================================================
+   ระบบจัดเก็บข้อมูล วPA — ทำงานได้ด้วยไฟล์เดียว ไม่ใช้ไลบรารีภายนอก
+   เก็บข้อมูลใน localStorage ของเบราว์เซอร์ และซิงก์ขึ้น Supabase ได้ถ้าตั้งค่าไว้
+   ========================================================================== */
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+/* ---------- ตัวชี้วัดตามมาตรฐานตำแหน่งครู (ว9/2564) ---------- */
+const DIMS=[
+ {id:1,name:'ด้านการจัดการเรียนรู้',cls:'',inds:[
+   ['1.1','สร้างและหรือพัฒนาหลักสูตร'],
+   ['1.2','ออกแบบการจัดการเรียนรู้'],
+   ['1.3','จัดกิจกรรมการเรียนรู้'],
+   ['1.4','สร้างและหรือพัฒนาสื่อ นวัตกรรม เทคโนโลยี และแหล่งเรียนรู้'],
+   ['1.5','วัดและประเมินผลการเรียนรู้'],
+   ['1.6','ศึกษา วิเคราะห์ และสังเคราะห์ เพื่อแก้ปัญหาหรือพัฒนาการเรียนรู้'],
+   ['1.7','จัดบรรยากาศที่ส่งเสริมและพัฒนาผู้เรียน'],
+   ['1.8','อบรมและพัฒนาคุณลักษณะที่ดีของผู้เรียน']]},
+ {id:2,name:'ด้านการส่งเสริมและสนับสนุนการจัดการเรียนรู้',cls:'dim2',inds:[
+   ['2.1','จัดทำข้อมูลสารสนเทศของผู้เรียนและรายวิชา'],
+   ['2.2','ดำเนินการตามระบบดูแลช่วยเหลือผู้เรียน'],
+   ['2.3','ปฏิบัติงานวิชาการและงานอื่น ๆ ของสถานศึกษา'],
+   ['2.4','ประสานความร่วมมือกับผู้ปกครอง ภาคีเครือข่าย และหรือสถานประกอบการ']]},
+ {id:3,name:'ด้านการพัฒนาตนเองและวิชาชีพ',cls:'dim3',inds:[
+   ['3.1','พัฒนาตนเองอย่างเป็นระบบและต่อเนื่อง'],
+   ['3.2','มีส่วนร่วมในการแลกเปลี่ยนเรียนรู้ทางวิชาชีพ (PLC)'],
+   ['3.3','นำความรู้ ความสามารถ ทักษะที่ได้จากการพัฒนาตนเองและวิชาชีพมาใช้']]}
+];
+const IND_ALL=DIMS.flatMap(d=>d.inds.map(i=>({code:i[0],name:i[1],dim:d.id})));
+const IND_NAME=Object.fromEntries(IND_ALL.map(i=>[i.code,i.name]));
+const DIM_COLOR={1:'#2a78d6',2:'#eb6834',3:'#1baf7a'};
+const PROFILE_FIELDS=[
+ ['name','ชื่อ–สกุล'],['position','ตำแหน่ง'],['rank','วิทยฐานะ'],['school','สถานศึกษา'],
+ ['office','สังกัด / เขตพื้นที่การศึกษา'],['subject','กลุ่มสาระการเรียนรู้'],
+ ['level','ระดับชั้นที่สอน'],['boss','ผู้อำนวยการสถานศึกษา']
+];
+const THMONTH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+/* ---------- ที่เก็บข้อมูล ---------- */
+const KEY='vpa_store_v1', SBKEY='vpa_sb_v1';
+function defaultYear(){const d=new Date();let be=d.getFullYear()+543;if(d.getMonth()>=9)be+=1;return String(be);}
+function blankDoc(year){
+  const be=parseInt(year,10)||parseInt(defaultYear(),10);
+  return {year:String(year),from:(be-544)+'-10-01',to:(be-543)+'-09-30',
+    profile:Object.fromEntries(PROFILE_FIELDS.map(f=>[f[0],''])),
+    load:[{type:'ชั่วโมงสอนตามตารางสอน',detail:'',hours:''}],
+    part1:Object.fromEntries(IND_ALL.map(i=>[i.code,{work:'',result:''}])),
+    challenge:{title:'',problem:'',method:'',qty:'',qual:''},
+    evidence:[],
+    eval:{committee:[{name:'',role:'ประธานกรรมการ'},{name:'',role:'กรรมการ'},{name:'',role:'กรรมการ'}],
+      s1:{},items2:[{id:uid(),name:'ผลลัพธ์เชิงปริมาณตามที่ระบุในประเด็นท้าทาย',weight:20,scores:['','','']},
+                   {id:uid(),name:'ผลลัพธ์เชิงคุณภาพตามที่ระบุในประเด็นท้าทาย',weight:20,scores:['','','']}],
+      note:'',date:'',pass:70},
+    rubric:{max1:60,max2:40,levels:4},
+    updated:new Date().toISOString()};
+}
+let STORE={current:defaultYear(),years:{}};
+try{const raw=JSON.parse(localStorage.getItem(KEY)||'null');if(raw&&raw.years)STORE=raw;}catch(e){}
+if(!STORE.years[STORE.current])STORE.years[STORE.current]=blankDoc(STORE.current);
+let D=STORE.years[STORE.current];
+/* เติมคีย์ที่อาจหายไปในข้อมูลเก่า */
+function normalize(d){
+  const b=blankDoc(d.year||defaultYear());
+  d.profile=Object.assign({},b.profile,d.profile||{});
+  d.part1=Object.assign({},b.part1,d.part1||{});
+  IND_ALL.forEach(i=>{if(!d.part1[i.code])d.part1[i.code]={work:'',result:''};});
+  d.challenge=Object.assign({},b.challenge,d.challenge||{});
+  d.eval=Object.assign({},b.eval,d.eval||{});
+  d.rubric=Object.assign({},b.rubric,d.rubric||{});
+  if(!Array.isArray(d.load))d.load=b.load;
+  if(!Array.isArray(d.evidence))d.evidence=[];
+  if(!Array.isArray(d.eval.items2))d.eval.items2=b.eval.items2;
+  if(!Array.isArray(d.eval.committee))d.eval.committee=b.eval.committee;
+  if(!d.eval.s1||typeof d.eval.s1!=='object')d.eval.s1={};
+  return d;
+}
+D=normalize(D);
+
+let SAVE_T=null;
+function save(quiet){
+  D.updated=new Date().toISOString();
+  STORE.years[STORE.current]=D;
+  try{
+    localStorage.setItem(KEY,JSON.stringify(STORE));
+    $('#chipSave').textContent='บันทึกแล้ว '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    $('#chipSave').className='chip ok';
+  }catch(e){
+    $('#chipSave').textContent='บันทึกไม่สำเร็จ — พื้นที่เต็ม';
+    $('#chipSave').className='chip warn';
+    if(!quiet)toast('พื้นที่เก็บข้อมูลของเบราว์เซอร์เต็ม ลองลบภาพบางส่วนหรือส่งออกไฟล์แล้วล้างข้อมูล');
+  }
+  updateMeter();
+}
+function saveSoon(){clearTimeout(SAVE_T);SAVE_T=setTimeout(()=>save(true),500);}
+function toast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3200);
+}
+function thDate(s){
+  if(!s)return '—';
+  const d=new Date(s+'T00:00:00');
+  if(isNaN(d))return s;
+  return d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
+}
+function inRange(dateStr){
+  if(!dateStr)return true;
+  if(D.from&&dateStr<D.from)return false;
+  if(D.to&&dateStr>D.to)return false;
+  return true;
+}
+
+/* ---------- แท็บ ---------- */
+const VIEWS={home:renderHome,pa1:renderPA1,ev:renderEv,sum:renderSum,eval:renderEval,print:renderPrint,data:renderData};
+let VIEW='home';
+function go(v){
+  VIEW=v;
+  $$('.view').forEach(s=>s.classList.add('hidden'));
+  $('#view-'+v).classList.remove('hidden');
+  $$('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===v?'page':'false'));
+  (VIEWS[v]||function(){})();
+  window.scrollTo({top:0,behavior:'smooth'});
+  location.hash=v;
+}
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(b.dataset.view);});
+/* ปุ่มย้อนกลับของเบราว์เซอร์ให้สลับแท็บตามไปด้วย */
+window.addEventListener('hashchange',()=>{
+  const h=(location.hash||'').replace('#','');
+  if(VIEWS[h]&&h!==VIEW)go(h);
+});
+
+/* ---------- ตัวช่วยผูกช่องกรอกกับข้อมูล ---------- */
+function bind(el,get,set){
+  el.value=get()==null?'':get();
+  el.addEventListener('input',()=>{set(el.value);saveSoon();if(el.dataset.live)refreshLive();});
+}
+function refreshLive(){
+  $('#chipYear').textContent='ปีงบประมาณ '+D.year;
+  if(VIEW==='home')renderHome();
+}
+function evCountBy(){
+  const m={};D.evidence.forEach(e=>{m[e.ind]=(m[e.ind]||0)+1;});return m;
+}
+function filledPart1(){return IND_ALL.filter(i=>(D.part1[i.code].work||'').trim()||(D.part1[i.code].result||'').trim()).length;}
+function totalHours(){return D.load.reduce((s,l)=>s+(parseFloat(l.hours)||0),0);}
+
+/* ══════════ ภาพรวม ══════════ */
+function renderHome(){
+  const cnt=evCountBy(), covered=Object.keys(cnt).length, ev=D.evidence.length;
+  const sc=scoreSummary();
+  $('#homeSub').textContent='รอบการประเมิน '+thDate(D.from)+' ถึง '+thDate(D.to)+
+    (D.profile.name?' · '+D.profile.name:'');
+  $('#homeKpis').innerHTML=[
+    kpi(ev,'หลักฐานที่บันทึกไว้','ชิ้นงาน/ร่องรอย'),
+    kpi(covered+'/'+IND_ALL.length,'ตัวชี้วัดที่มีหลักฐาน',covered===IND_ALL.length?'ครบทุกตัวชี้วัด':'ยังขาด '+(IND_ALL.length-covered)+' ตัวชี้วัด'),
+    kpi(filledPart1()+'/'+IND_ALL.length,'ตัวชี้วัดที่เขียนข้อตกลงแล้ว','ส่วนที่ 1 ของ PA1'),
+    kpi(totalHours().toLocaleString('th-TH'),'ชั่วโมงสอน/สัปดาห์','ตามภาระงานที่บันทึก'),
+    kpi(sc.any?sc.total.toFixed(2):'—','คะแนนประเมินรวม',sc.any?(sc.pass?'ผ่านเกณฑ์':'ยังไม่ถึงเกณฑ์ '+D.eval.pass+' คะแนน'):'ยังไม่ได้กรอกคะแนน')
+  ].join('');
+
+  const todo=[];
+  if(!D.profile.name)todo.push('กรอกข้อมูลผู้จัดทำข้อตกลงในหน้า <b>ข้อตกลง PA1</b>');
+  const blank=IND_ALL.filter(i=>!((D.part1[i.code].work||'').trim()));
+  if(blank.length)todo.push('เขียนข้อตกลงของตัวชี้วัดที่ยังว่าง '+blank.length+' ตัวชี้วัด ('+blank.slice(0,5).map(i=>i.code).join(', ')+(blank.length>5?' …':'')+')');
+  if(!D.challenge.title)todo.push('ระบุชื่อประเด็นท้าทายในส่วนที่ 2');
+  const noEv=IND_ALL.filter(i=>!cnt[i.code]);
+  if(noEv.length)todo.push('บันทึกหลักฐานของตัวชี้วัดที่ยังไม่มี '+noEv.length+' ตัวชี้วัด ('+noEv.slice(0,5).map(i=>i.code).join(', ')+(noEv.length>5?' …':'')+')');
+  if(!sc.any)todo.push('กรอกคะแนนในหน้า <b>ประเมิน PA2/PA3</b> เมื่อคณะกรรมการประเมินเสร็จแล้ว');
+  $('#homeTodo').innerHTML=todo.length
+    ? '<ul style="margin:0;padding-left:20px">'+todo.map(t=>'<li>'+t+'</li>').join('')+'</ul>'
+    : '<p class="mini">ข้อมูลครบถ้วนทุกส่วนแล้ว พร้อมพิมพ์รายงาน</p>';
+
+  const recent=D.evidence.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,5);
+  $('#homeRecent').innerHTML=recent.length
+    ? recent.map(evCardHTML).join('')
+    : '<div class="empty">ยังไม่มีหลักฐาน — ไปที่แท็บ “หลักฐาน/ร่องรอย” เพื่อเพิ่มชิ้นแรก</div>';
+  $('#chipYear').textContent='ปีงบประมาณ '+D.year;
+}
+function kpi(v,l,sub){return '<div class="kpi"><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div>'+
+  (sub?'<div class="sub">'+esc(sub)+'</div>':'')+'</div>';}
+
+/* ══════════ PA1 ══════════ */
+function renderPA1(){
+  /* ข้อมูลผู้จัดทำ */
+  const pf=$('#profileForm');
+  if(!pf.dataset.built){
+    pf.innerHTML=PROFILE_FIELDS.map(f=>'<div class="field"><label for="pf_'+f[0]+'">'+esc(f[1])+
+      '</label><input id="pf_'+f[0]+'"></div>').join('');
+    PROFILE_FIELDS.forEach(f=>bind($('#pf_'+f[0]),()=>D.profile[f[0]],v=>D.profile[f[0]]=v));
+    pf.dataset.built='1';
+  }else{
+    PROFILE_FIELDS.forEach(f=>{$('#pf_'+f[0]).value=D.profile[f[0]]||'';});
+  }
+  renderLoad();
+  renderPart1();
+  renderChallenge();
+}
+function renderLoad(){
+  const t=$('#loadTable');
+  t.innerHTML='<thead><tr><th style="width:34%">ประเภทงาน</th><th>รายละเอียด</th><th class="num" style="width:120px">ชม./สัปดาห์</th><th style="width:56px"></th></tr></thead><tbody>'+
+    D.load.map((l,i)=>'<tr>'+
+      '<td><input data-l="'+i+'" data-k="type" value="'+esc(l.type)+'"></td>'+
+      '<td><input data-l="'+i+'" data-k="detail" value="'+esc(l.detail)+'"></td>'+
+      '<td><input data-l="'+i+'" data-k="hours" inputmode="decimal" value="'+esc(l.hours)+'" class="num"></td>'+
+      '<td><button class="btn ghost sm" data-del-l="'+i+'" aria-label="ลบแถว">✕</button></td></tr>').join('')+
+    '</tbody>';
+  t.oninput=e=>{
+    const el=e.target;if(el.dataset.l==null)return;
+    D.load[+el.dataset.l][el.dataset.k]=el.value;
+    $('#loadTotal').textContent='รวม '+totalHours().toLocaleString('th-TH')+' ชั่วโมง/สัปดาห์';
+    saveSoon();
+  };
+  t.onclick=e=>{
+    const b=e.target.closest('[data-del-l]');if(!b)return;
+    D.load.splice(+b.dataset.delL,1);save();renderLoad();
+  };
+  $('#loadTotal').textContent='รวม '+totalHours().toLocaleString('th-TH')+' ชั่วโมง/สัปดาห์';
+}
+$('#btnAddLoad').onclick=()=>{D.load.push({type:'',detail:'',hours:''});save();renderLoad();};
+
+function renderPart1(){
+  const cnt=evCountBy();
+  $('#part1Form').innerHTML=DIMS.map(d=>
+    '<div class="dimhead '+d.cls+'"><span class="bar"></span>ด้านที่ '+d.id+' · '+esc(d.name)+'</div>'+
+    d.inds.map(i=>{
+      const v=D.part1[i[0]], n=cnt[i[0]]||0;
+      return '<details class="ind"><summary><span class="code">'+i[0]+'</span><span>'+esc(i[1])+'</span>'+
+        '<span class="badge'+(n?' has':'')+'">'+(n?n+' หลักฐาน':'ยังไม่มีหลักฐาน')+'</span></summary>'+
+        '<div class="body">'+
+          '<div class="field"><label>งาน (Tasks) ที่จะดำเนินการพัฒนา</label>'+
+            '<textarea data-p1="'+i[0]+'" data-k="work">'+esc(v.work)+'</textarea></div>'+
+          '<div class="field"><label>ผลลัพธ์ (Outcomes) ที่คาดหวังให้เกิดกับผู้เรียน</label>'+
+            '<textarea data-p1="'+i[0]+'" data-k="result">'+esc(v.result)+'</textarea></div>'+
+        '</div></details>';
+    }).join('')).join('');
+  $('#part1Form').oninput=e=>{
+    const el=e.target;if(!el.dataset.p1)return;
+    D.part1[el.dataset.p1][el.dataset.k]=el.value;saveSoon();
+  };
+}
+const CH_FIELDS=[
+ ['title','ประเด็นท้าทาย (ชื่อเรื่อง)','เช่น การพัฒนาผลสัมฤทธิ์ทางการเรียนวิชาชีววิทยาโดยใช้เกมการเรียนรู้ดิจิทัล','input'],
+ ['problem','1. สภาพปัญหาการจัดการเรียนรู้และคุณภาพการเรียนรู้ของผู้เรียน','',''],
+ ['method','2. วิธีการดำเนินการให้บรรลุผล','',''],
+ ['qty','3. ผลลัพธ์การพัฒนาที่คาดหวัง — เชิงปริมาณ','เช่น ผู้เรียนร้อยละ 80 มีผลสัมฤทธิ์ไม่ต่ำกว่าร้อยละ 70',''],
+ ['qual','4. ผลลัพธ์การพัฒนาที่คาดหวัง — เชิงคุณภาพ','','']
+];
+function renderChallenge(){
+  const c=$('#challengeForm');
+  if(!c.dataset.built){
+    c.innerHTML=CH_FIELDS.map(f=>'<div class="field"><label for="ch_'+f[0]+'">'+esc(f[1])+'</label>'+
+      (f[3]==='input'?'<input id="ch_'+f[0]+'" placeholder="'+esc(f[2])+'">'
+                     :'<textarea id="ch_'+f[0]+'" placeholder="'+esc(f[2])+'"></textarea>')+'</div>').join('');
+    CH_FIELDS.forEach(f=>bind($('#ch_'+f[0]),()=>D.challenge[f[0]],v=>D.challenge[f[0]]=v));
+    c.dataset.built='1';
+  }else{
+    CH_FIELDS.forEach(f=>{$('#ch_'+f[0]).value=D.challenge[f[0]]||'';});
+  }
+}
+
+/* ══════════ หลักฐาน / ร่องรอย ══════════ */
+let DRAFT_IMGS=[], EDIT_ID=null;
+function indOptions(sel,all){
+  return (all?'<option value="">ทุกตัวชี้วัด</option>':'')+DIMS.map(d=>
+    '<optgroup label="ด้านที่ '+d.id+' · '+esc(d.name)+'">'+
+    d.inds.map(i=>'<option value="'+i[0]+'"'+(sel===i[0]?' selected':'')+'>'+i[0]+' '+esc(i[1])+'</option>').join('')+
+    '</optgroup>').join('');
+}
+function buildSelects(){
+  $('#evInd').innerHTML=indOptions('',false);
+  $('#fInd').innerHTML=indOptions('',true);
+  $('#fDim').innerHTML='<option value="">ทุกด้าน</option>'+DIMS.map(d=>'<option value="'+d.id+'">ด้านที่ '+d.id+' · '+esc(d.name)+'</option>').join('');
+}
+function evCardHTML(e){
+  const dim=e.ind?e.ind[0]:'1';
+  return '<article class="ev" data-id="'+e.id+'">'+
+    '<div class="head">'+
+      '<span class="date">'+esc(thDate(e.date))+'</span>'+
+      '<span class="tt">'+esc(e.title||'(ไม่มีชื่อกิจกรรม)')+'</span>'+
+      '<span class="tag d'+dim+'">'+esc(e.ind+' '+(IND_NAME[e.ind]||''))+'</span>'+
+    '</div>'+
+    (e.detail?'<p class="detail">'+esc(e.detail)+'</p>':'')+
+    ((e.tags&&e.tags.length)?'<div class="row" style="margin-top:8px">'+e.tags.map(t=>'<span class="tag">#'+esc(t)+'</span>').join('')+'</div>':'')+
+    ((e.links&&e.links.length)?'<div class="links">'+e.links.map(l=>'<a href="'+esc(l)+'" target="_blank" rel="noopener">'+esc(l)+'</a>').join('')+'</div>':'')+
+    ((e.imgs&&e.imgs.length)?'<div class="thumbs">'+e.imgs.map((s,i)=>'<img src="'+s+'" alt="ภาพหลักฐาน '+(i+1)+'" data-zoom="'+s.slice(0,0)+'">').join('')+'</div>':'')+
+    '<div class="acts noprint"><button class="btn ghost sm" data-edit="'+e.id+'">✏️ แก้ไข</button>'+
+      '<button class="btn ghost sm" data-del="'+e.id+'">🗑️ ลบ</button></div>'+
+  '</article>';
+}
+function renderEv(){
+  if(!$('#evInd').options.length)buildSelects();
+  if(!$('#evDate').value)$('#evDate').value=new Date().toISOString().slice(0,10);
+  applyFilter();
+}
+function applyFilter(){
+  const dim=$('#fDim').value, ind=$('#fInd').value, q=($('#fText').value||'').trim().toLowerCase();
+  let list=D.evidence.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(dim)list=list.filter(e=>String(e.ind).charAt(0)===dim);
+  if(ind)list=list.filter(e=>e.ind===ind);
+  if(q)list=list.filter(e=>((e.title||'')+' '+(e.detail||'')+' '+((e.tags||[]).join(' '))).toLowerCase().includes(q));
+  $('#evCount').textContent='แสดง '+list.length+' จาก '+D.evidence.length+' รายการ';
+  $('#evList').innerHTML=list.length?list.map(evCardHTML).join(''):'<div class="empty">ไม่พบหลักฐานตามเงื่อนไขที่เลือก</div>';
+}
+['#fDim','#fInd','#fText'].forEach(s=>$(s).addEventListener('input',applyFilter));
+$('#btnClearFilter').onclick=()=>{$('#fDim').value='';$('#fInd').value='';$('#fText').value='';applyFilter();};
+
+/* ย่อภาพก่อนเก็บ เพื่อไม่ให้พื้นที่ localStorage เต็มเร็ว */
+function shrink(file,max){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const sc=Math.min(1,max/Math.max(img.width,img.height));
+        const c=document.createElement('canvas');
+        c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        res(c.toDataURL('image/jpeg',0.72));
+      };
+      img.onerror=rej;img.src=fr.result;
+    };
+    fr.onerror=rej;fr.readAsDataURL(file);
+  });
+}
+$('#evImg').addEventListener('change',async e=>{
+  for(const f of e.target.files){
+    if(DRAFT_IMGS.length>=6){toast('แนบได้สูงสุด 6 ภาพต่อหนึ่งหลักฐาน');break;}
+    try{DRAFT_IMGS.push(await shrink(f,1200));}catch(err){toast('อ่านไฟล์ภาพไม่สำเร็จ');}
+  }
+  e.target.value='';drawDraft();
+});
+function drawDraft(){
+  $('#evDraftThumbs').innerHTML=DRAFT_IMGS.map((s,i)=>
+    '<span style="position:relative;display:inline-block">'+
+    '<img src="'+s+'" alt="ภาพที่แนบ '+(i+1)+'" style="width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line)">'+
+    '<button class="btn danger sm" data-rmimg="'+i+'" style="position:absolute;top:-6px;right:-6px;min-height:26px;padding:0 8px;border-radius:999px">✕</button></span>').join('');
+}
+$('#evDraftThumbs').onclick=e=>{
+  const b=e.target.closest('[data-rmimg]');if(!b)return;
+  DRAFT_IMGS.splice(+b.dataset.rmimg,1);drawDraft();
+};
+function resetEvForm(){
+  EDIT_ID=null;DRAFT_IMGS=[];
+  $('#evTitle').value='';$('#evDetail').value='';$('#evTags').value='';$('#evLinks').value='';
+  $('#evDate').value=new Date().toISOString().slice(0,10);
+  $('#evFormTitle').textContent='เพิ่มหลักฐานใหม่';
+  $('#btnEvSave').textContent='💾 บันทึกหลักฐาน';
+  $('#btnEvCancel').classList.add('hidden');
+  drawDraft();
+}
+$('#btnEvSave').onclick=()=>{
+  const title=$('#evTitle').value.trim();
+  if(!title){toast('กรุณากรอกชื่อกิจกรรม/ชิ้นงาน');$('#evTitle').focus();return;}
+  const rec={
+    id:EDIT_ID||uid(),
+    date:$('#evDate').value,
+    ind:$('#evInd').value,
+    title:title,
+    detail:$('#evDetail').value.trim(),
+    tags:$('#evTags').value.split(',').map(s=>s.trim()).filter(Boolean),
+    links:$('#evLinks').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    imgs:DRAFT_IMGS.slice()
+  };
+  if(EDIT_ID){const i=D.evidence.findIndex(x=>x.id===EDIT_ID);if(i>=0)D.evidence[i]=rec;}
+  else D.evidence.unshift(rec);
+  save();resetEvForm();applyFilter();
+  toast('บันทึกหลักฐานแล้ว');
+  if(rec.date&&!inRange(rec.date))toast('หมายเหตุ: วันที่อยู่นอกรอบการประเมินที่ตั้งไว้');
+};
+$('#btnEvCancel').onclick=resetEvForm;
+document.addEventListener('click',e=>{
+  const ed=e.target.closest('[data-edit]'), dl=e.target.closest('[data-del]'), im=e.target.closest('.ev .thumbs img');
+  if(ed){
+    const r=D.evidence.find(x=>x.id===ed.dataset.edit);if(!r)return;
+    EDIT_ID=r.id;DRAFT_IMGS=(r.imgs||[]).slice();
+    $('#evDate').value=r.date||'';$('#evInd').value=r.ind||'';$('#evTitle').value=r.title||'';
+    $('#evDetail').value=r.detail||'';$('#evTags').value=(r.tags||[]).join(', ');
+    $('#evLinks').value=(r.links||[]).join('\n');
+    $('#evFormTitle').textContent='แก้ไขหลักฐาน';
+    $('#btnEvSave').textContent='💾 บันทึกการแก้ไข';
+    $('#btnEvCancel').classList.remove('hidden');
+    drawDraft();
+    if(VIEW!=='ev')go('ev');
+    $('#evFormCard').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  if(dl){
+    const r=D.evidence.find(x=>x.id===dl.dataset.del);if(!r)return;
+    if(!confirm('ลบหลักฐาน “'+(r.title||'')+'” ใช่หรือไม่ การลบนี้ย้อนกลับไม่ได้'))return;
+    D.evidence=D.evidence.filter(x=>x.id!==dl.dataset.del);
+    save();applyFilter();if(VIEW==='home')renderHome();
+    toast('ลบแล้ว');
+  }
+  if(im&&im.closest('.ev')){
+    const box=document.createElement('div');box.className='lightbox';
+    box.innerHTML='<button class="btn ghost close">ปิด ✕</button><img src="'+im.src+'" alt="ภาพหลักฐานขนาดเต็ม">';
+    box.onclick=()=>box.remove();document.body.appendChild(box);
+  }
+});
+
+/* ══════════ สรุปผล + กราฟ ══════════ */
+function topRect(x,y,w,h,r){
+  r=Math.min(r,w/2,h);
+  return 'M'+x+' '+(y+h)+'V'+(y+r)+'a'+r+' '+r+' 0 0 1 '+r+' '+(-r)+'h'+(w-2*r)+
+         'a'+r+' '+r+' 0 0 1 '+r+' '+r+'V'+(y+h)+'Z';
+}
+let TIP=null;
+function tipOn(svg){
+  svg.addEventListener('mousemove',e=>{
+    const m=e.target.closest('[data-tip]');
+    if(!m){if(TIP){TIP.remove();TIP=null;}return;}
+    if(!TIP){TIP=document.createElement('div');
+      TIP.style.cssText='position:fixed;z-index:70;pointer-events:none;background:#04261E;color:#fff;'+
+        'padding:6px 11px;border-radius:9px;font-size:.85rem;font-weight:600;box-shadow:0 8px 20px -10px rgba(0,0,0,.6)';
+      document.body.appendChild(TIP);}
+    TIP.textContent=m.dataset.tip;
+    TIP.style.left=Math.min(e.clientX+14,window.innerWidth-TIP.offsetWidth-10)+'px';
+    TIP.style.top=(e.clientY-38)+'px';
+  });
+  svg.addEventListener('mouseleave',()=>{if(TIP){TIP.remove();TIP=null;}});
+}
+function monthsOfRange(){
+  const out=[];
+  const a=new Date((D.from||'2000-01-01')+'T00:00:00'), b=new Date((D.to||'2000-12-31')+'T00:00:00');
+  if(isNaN(a)||isNaN(b)||b<a)return out;
+  let y=a.getFullYear(),m=a.getMonth(),guard=0;
+  while((y<b.getFullYear()||(y===b.getFullYear()&&m<=b.getMonth()))&&guard++<48){
+    out.push({key:y+'-'+String(m+1).padStart(2,'0'),label:THMONTH[m],year:y});
+    m++;if(m>11){m=0;y++;}
+  }
+  return out;
+}
+function renderSum(){
+  const cnt=evCountBy(), covered=Object.keys(cnt).length;
+  const withImg=D.evidence.filter(e=>(e.imgs||[]).length).length;
+  const withLink=D.evidence.filter(e=>(e.links||[]).length).length;
+  $('#sumKpis').innerHTML=[
+    kpi(D.evidence.length,'หลักฐานทั้งหมด','ชิ้นงาน/ร่องรอย'),
+    kpi(covered+'/'+IND_ALL.length,'ตัวชี้วัดที่มีหลักฐาน',Math.round(covered/IND_ALL.length*100)+'% ของตัวชี้วัดทั้งหมด'),
+    kpi(withImg,'หลักฐานที่มีภาพประกอบ',''),
+    kpi(withLink,'หลักฐานที่มีลิงก์อ้างอิง','')
+  ].join('');
+
+  /* กราฟที่ 1 — รายด้าน */
+  const byDim=DIMS.map(d=>({id:d.id,name:'ด้านที่ '+d.id,full:d.name,
+    n:D.evidence.filter(e=>String(e.ind).charAt(0)===String(d.id)).length,color:DIM_COLOR[d.id]}));
+  $('#legDim').innerHTML=byDim.map(d=>'<span><i style="background:'+d.color+'"></i>'+esc(d.name+' · '+d.full)+'</span>').join('');
+  drawColumns($('#chartDim'),byDim.map(d=>({label:d.name,v:d.n,color:d.color,tip:d.full+' — '+d.n+' ชิ้น'})));
+  $('#tblDim').innerHTML='<table><thead><tr><th>ด้าน</th><th class="num">จำนวนหลักฐาน</th></tr></thead><tbody>'+
+    byDim.map(d=>'<tr><td>'+esc(d.name+' · '+d.full)+'</td><td class="num">'+d.n+'</td></tr>').join('')+'</tbody></table>';
+
+  /* กราฟที่ 2 — รายเดือน */
+  const ms=monthsOfRange();
+  const byMonth=ms.map(m=>({label:m.label,v:D.evidence.filter(e=>(e.date||'').slice(0,7)===m.key).length,
+    color:'#2F7D4F',tip:m.label+' '+(m.year+543)+' — '+D.evidence.filter(e=>(e.date||'').slice(0,7)===m.key).length+' ชิ้น'}));
+  drawColumns($('#chartMonth'),byMonth,true);
+  $('#tblMonth').innerHTML='<table><thead><tr><th>เดือน</th><th class="num">จำนวนหลักฐาน</th></tr></thead><tbody>'+
+    byMonth.map((m,i)=>'<tr><td>'+esc(m.label+' '+(ms[i].year+543))+'</td><td class="num">'+m.v+'</td></tr>').join('')+'</tbody></table>';
+
+  /* กราฟที่ 3 — รายตัวชี้วัด */
+  const max=Math.max(1,...IND_ALL.map(i=>cnt[i.code]||0));
+  $('#chartInd').innerHTML=IND_ALL.map(i=>{
+    const n=cnt[i.code]||0;
+    return '<div class="barrow'+(n?'':' zero')+'" title="'+esc(i.code+' '+i.name)+'">'+
+      '<span>'+i.code+' <span class="mini">'+esc(i.name.length>26?i.name.slice(0,26)+'…':i.name)+'</span></span>'+
+      '<span class="track"><span class="fill" style="width:'+(n?Math.max(3,n/max*100):0)+'%;background:'+DIM_COLOR[i.dim]+'"></span></span>'+
+      '<span class="n">'+n+'</span></div>';
+  }).join('');
+
+  /* ตารางรวม */
+  $('#sumTable').innerHTML='<thead><tr><th>วันที่</th><th>ตัวชี้วัด</th><th>ชื่อกิจกรรม/ชิ้นงาน</th><th class="num">ภาพ</th><th class="num">ลิงก์</th></tr></thead><tbody>'+
+    (D.evidence.length?D.evidence.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e=>
+      '<tr><td>'+esc(thDate(e.date))+'</td><td>'+esc(e.ind)+'</td><td>'+esc(e.title)+'</td>'+
+      '<td class="num">'+((e.imgs||[]).length||'—')+'</td><td class="num">'+((e.links||[]).length||'—')+'</td></tr>').join('')
+     :'<tr><td colspan="5" class="center mini">ยังไม่มีข้อมูล</td></tr>')+'</tbody>';
+}
+function drawColumns(svg,data,rotate){
+  /* ใช้ความกว้างจริงของกล่องเป็น viewBox เพื่อให้ตัวอักษรบนมือถือมีขนาดเท่าเนื้อหาอื่น */
+  const W=Math.max(300,Math.round(svg.getBoundingClientRect().width||760));
+  const H=W<520?210:240,padL=32,padR=8,padT=18,padB=rotate?46:34;
+  const raw=Math.max(1,...data.map(d=>d.v));
+  const ticks=Math.min(4,raw);
+  const max=Math.ceil(raw/ticks)*ticks;   /* ให้เส้นแกนเป็นจำนวนเต็มและไม่ซ้ำกัน */
+  const step=(W-padL-padR)/Math.max(1,data.length);
+  const bw=Math.min(54,step-10);
+  let g='';
+  for(let t=0;t<=ticks;t++){
+    const y=padT+(H-padT-padB)*(t/ticks);
+    g+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'"/>'+
+       '<text x="'+(padL-8)+'" y="'+(y+4)+'" text-anchor="end">'+Math.round(max*(1-t/ticks))+'</text>';
+  }
+  const bars=data.map((d,i)=>{
+    const h=(H-padT-padB)*(d.v/max), x=padL+step*i+(step-bw)/2, y=H-padB-h;
+    const thin=step<38, show=!thin||!rotate||i%2===0;
+    const label=show?'<text class="cat" x="'+(x+bw/2)+'" y="'+(H-padB+(rotate?14:18))+'" text-anchor="middle"'+
+      (rotate?' transform="rotate(-40 '+(x+bw/2)+' '+(H-padB+14)+')"':'')+'>'+esc(d.label)+'</text>':'';
+    const val=d.v>0?'<text class="val" x="'+(x+bw/2)+'" y="'+(y-7)+'" text-anchor="middle">'+d.v+'</text>':'';
+    const bar=d.v>0?'<path class="mark" d="'+topRect(x,y,bw,h,4)+'" fill="'+d.color+'" data-tip="'+esc(d.tip||'')+'"/>'
+                   :'<rect x="'+x+'" y="'+(H-padB-2)+'" width="'+bw+'" height="2" fill="var(--line)"/>';
+    return bar+val+label;
+  }).join('');
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.innerHTML='<g class="grid">'+g+'</g>'+bars;
+  if(!svg.dataset.tip){tipOn(svg);svg.dataset.tip='1';}
+}
+let RS_T=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(RS_T);RS_T=setTimeout(()=>{if(VIEW==='sum')renderSum();},250);
+});
+$$('[data-table]').forEach(b=>b.onclick=()=>{
+  const t=$('#'+b.dataset.table);t.classList.toggle('hidden');
+  b.textContent=t.classList.contains('hidden')?'ดูเป็นตาราง':'ซ่อนตาราง';
+});
+$('#btnCsv').onclick=()=>{
+  const rows=[['วันที่','ตัวชี้วัด','ชื่อตัวชี้วัด','ชื่อกิจกรรม','รายละเอียด','คำค้น','ลิงก์','จำนวนภาพ']];
+  D.evidence.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).forEach(e=>rows.push([
+    e.date||'',e.ind||'',IND_NAME[e.ind]||'',e.title||'',(e.detail||'').replace(/\n/g,' '),
+    (e.tags||[]).join(' '),(e.links||[]).join(' '),(e.imgs||[]).length]));
+  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  dl(new Blob([csv],{type:'text/csv;charset=utf-8'}),'vpa-'+D.year+'-หลักฐาน.csv');
+};
+function dl(blob,name){
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},400);
+}
+
+/* ══════════ ประเมิน PA2 / PA3 ══════════ */
+function avgOf(arr){
+  const v=(arr||[]).map(x=>parseFloat(x)).filter(x=>!isNaN(x));
+  return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;
+}
+function scoreSummary(){
+  const lv=Math.max(1,parseFloat(D.rubric.levels)||4);
+  const w1=(parseFloat(D.rubric.max1)||0)/IND_ALL.length;
+  let s1=0,any=false;
+  IND_ALL.forEach(i=>{
+    const a=avgOf(D.eval.s1[i.code]);
+    if(a!=null){any=true;s1+=a/lv*w1;}
+  });
+  let s2=0;
+  D.eval.items2.forEach(it=>{
+    const a=avgOf(it.scores);
+    if(a!=null){any=true;s2+=a/lv*(parseFloat(it.weight)||0);}
+  });
+  const total=s1+s2, pass=total>=(parseFloat(D.eval.pass)||70);
+  return {s1:s1,s2:s2,total:total,pass:pass,any:any,
+    max1:parseFloat(D.rubric.max1)||0,max2:parseFloat(D.rubric.max2)||0};
+}
+function scoreSelect(val,lv,attrs){
+  let o='<option value="">–</option>';
+  for(let i=1;i<=lv;i++)o+='<option value="'+i+'"'+(String(val)===String(i)?' selected':'')+'>'+i+'</option>';
+  return '<select '+attrs+' style="min-height:38px;padding:4px 6px">'+o+'</select>';
+}
+function renderEval(){
+  const lv=Math.max(1,parseFloat(D.rubric.levels)||4);
+  /* คณะกรรมการ */
+  const cf=$('#committeeForm');
+  cf.innerHTML=D.eval.committee.map((c,i)=>
+    '<div class="field"><label for="cm'+i+'">'+esc(c.role||('กรรมการคนที่ '+(i+1)))+'</label>'+
+    '<input id="cm'+i+'" data-cm="'+i+'" value="'+esc(c.name)+'" placeholder="ชื่อ–สกุล"></div>').join('');
+  cf.oninput=e=>{const el=e.target;if(el.dataset.cm==null)return;
+    D.eval.committee[+el.dataset.cm].name=el.value;saveSoon();};
+
+  /* องค์ประกอบที่ 1 */
+  const w1=(parseFloat(D.rubric.max1)||0)/IND_ALL.length;
+  let rows='';
+  DIMS.forEach(d=>{
+    rows+='<tr><th colspan="6" style="background:var(--cream-lo)">ด้านที่ '+d.id+' · '+esc(d.name)+'</th></tr>';
+    d.inds.forEach(i=>{
+      const sc=D.eval.s1[i[0]]||['','',''];
+      const a=avgOf(sc);
+      rows+='<tr><td><b>'+i[0]+'</b> '+esc(i[1])+'</td>'+
+        sc.map((v,k)=>'<td class="num">'+scoreSelect(v,lv,'data-s1="'+i[0]+'" data-k="'+k+'"')+'</td>').join('')+
+        '<td class="num">'+(a==null?'—':a.toFixed(2))+'</td>'+
+        '<td class="num">'+(a==null?'—':(a/lv*w1).toFixed(2))+'</td></tr>';
+    });
+  });
+  const s=scoreSummary();
+  $('#evalTable1').innerHTML='<thead><tr><th>ตัวชี้วัด</th><th class="num">ก.1</th><th class="num">ก.2</th><th class="num">ก.3</th>'+
+    '<th class="num">เฉลี่ย</th><th class="num">คะแนน</th></tr></thead><tbody>'+rows+
+    '<tr><th colspan="5" class="num">รวมองค์ประกอบที่ 1 (เต็ม '+s.max1+')</th><th class="num">'+s.s1.toFixed(2)+'</th></tr></tbody>';
+  $('#evalTable1').onchange=e=>{
+    const el=e.target;if(!el.dataset.s1)return;
+    if(!D.eval.s1[el.dataset.s1])D.eval.s1[el.dataset.s1]=['','',''];
+    D.eval.s1[el.dataset.s1][+el.dataset.k]=el.value;
+    save();renderEval();
+  };
+
+  /* องค์ประกอบที่ 2 */
+  $('#evalTable2').innerHTML='<thead><tr><th>รายการประเมิน</th><th class="num" style="width:92px">น้ำหนัก</th>'+
+    '<th class="num">ก.1</th><th class="num">ก.2</th><th class="num">ก.3</th><th class="num">เฉลี่ย</th><th class="num">คะแนน</th><th></th></tr></thead><tbody>'+
+    D.eval.items2.map((it,i)=>{
+      const a=avgOf(it.scores);
+      return '<tr><td><input data-i2="'+i+'" data-k="name" value="'+esc(it.name)+'"></td>'+
+        '<td class="num"><input data-i2="'+i+'" data-k="weight" class="num" inputmode="decimal" value="'+esc(it.weight)+'" style="min-height:38px"></td>'+
+        it.scores.map((v,k)=>'<td class="num">'+scoreSelect(v,lv,'data-i2s="'+i+'" data-k="'+k+'"')+'</td>').join('')+
+        '<td class="num">'+(a==null?'—':a.toFixed(2))+'</td>'+
+        '<td class="num">'+(a==null?'—':(a/lv*(parseFloat(it.weight)||0)).toFixed(2))+'</td>'+
+        '<td><button class="btn ghost sm" data-del2="'+i+'" aria-label="ลบรายการ">✕</button></td></tr>';
+    }).join('')+
+    '<tr><th colspan="6" class="num">รวมองค์ประกอบที่ 2 (เต็ม '+s.max2+')</th><th class="num">'+s.s2.toFixed(2)+'</th><th></th></tr></tbody>';
+  $('#evalTable2').oninput=e=>{
+    const el=e.target;if(el.dataset.i2==null)return;
+    D.eval.items2[+el.dataset.i2][el.dataset.k]=el.value;saveSoon();
+  };
+  $('#evalTable2').onchange=e=>{
+    const el=e.target;
+    if(el.dataset.i2s!=null){D.eval.items2[+el.dataset.i2s].scores[+el.dataset.k]=el.value;save();renderEval();}
+  };
+  $('#evalTable2').onclick=e=>{
+    const b=e.target.closest('[data-del2]');if(!b)return;
+    D.eval.items2.splice(+b.dataset.del2,1);save();renderEval();
+  };
+
+  /* สรุป PA3 */
+  $('#evalKpis').innerHTML=[
+    kpi(s.s1.toFixed(2),'องค์ประกอบที่ 1','เต็ม '+s.max1+' คะแนน'),
+    kpi(s.s2.toFixed(2),'องค์ประกอบที่ 2','เต็ม '+s.max2+' คะแนน'),
+    kpi(s.total.toFixed(2),'คะแนนรวม','เต็ม '+(s.max1+s.max2)+' คะแนน'),
+    kpi(s.any?(s.pass?'ผ่าน':'ไม่ผ่าน'):'—','ผลการประเมิน','เกณฑ์ '+(D.eval.pass||70)+' คะแนน')
+  ].join('');
+  const full=Math.max(1,s.max1+s.max2), pct=Math.min(100,s.total/full*100), mark=Math.min(100,(parseFloat(D.eval.pass)||70)/full*100);
+  $('#evalGauge').innerHTML='<div style="position:relative;height:26px;border-radius:999px;background:var(--cream-lo);overflow:hidden">'+
+    '<div style="height:100%;width:'+pct+'%;background:'+(s.pass?'var(--ok)':'var(--gold)')+';border-radius:999px"></div></div>'+
+    '<div style="position:relative;height:18px"><span style="position:absolute;left:'+mark+'%;transform:translateX(-50%);font-size:.78rem;color:var(--muted)">▲ เกณฑ์ '+(D.eval.pass||70)+'</span></div>';
+
+  bindOnce('#evalNote',()=>D.eval.note,v=>D.eval.note=v);
+  bindOnce('#evalDate',()=>D.eval.date,v=>D.eval.date=v);
+  bindOnce('#evalPass',()=>D.eval.pass,v=>{D.eval.pass=v;},true);
+  bindOnce('#rbMax1',()=>D.rubric.max1,v=>{D.rubric.max1=v;},true);
+  bindOnce('#rbMax2',()=>D.rubric.max2,v=>{D.rubric.max2=v;},true);
+  bindOnce('#rbLevels',()=>D.rubric.levels,v=>{D.rubric.levels=v;},true);
+}
+function bindOnce(sel,get,set,rerender){
+  const el=$(sel);
+  el.value=get()==null?'':get();
+  if(el.dataset.bound)return;
+  el.dataset.bound='1';
+  el.addEventListener('input',()=>{set(el.value);saveSoon();});
+  if(rerender)el.addEventListener('change',()=>{save();renderEval();});
+}
+$('#btnAddEval2').onclick=()=>{
+  D.eval.items2.push({id:uid(),name:'',weight:0,scores:['','','']});save();renderEval();
+};
+
+/* ══════════ เอกสารสำหรับพิมพ์ ══════════ */
+function leadBlock(){
+  return '<div class="lead">'+PROFILE_FIELDS.map(f=>'<b>'+esc(f[1])+'</b><span>'+esc(D.profile[f[0]]||'—')+'</span>').join('')+
+    '<b>รอบการประเมิน</b><span>'+esc(thDate(D.from))+' ถึง '+esc(thDate(D.to))+'</span></div>';
+}
+function sigBlock(){
+  return '<div class="sig"><div>ลงชื่อ ....................................................<br>('+esc(D.profile.name||'............................')+')<br>ผู้จัดทำข้อตกลง</div>'+
+    '<div>ลงชื่อ ....................................................<br>('+esc(D.profile.boss||'............................')+')<br>ผู้อำนวยการสถานศึกษา</div></div>';
+}
+function docPA1(){
+  let h='<h2>แบบข้อตกลงในการพัฒนางาน (PA1)</h2><h3>ประจำปีงบประมาณ พ.ศ. '+esc(D.year)+'</h3>'+leadBlock();
+  h+='<h3 style="text-align:left">ภาระงาน</h3><table><thead><tr><th>ประเภทงาน</th><th>รายละเอียด</th><th class="num">ชม./สัปดาห์</th></tr></thead><tbody>'+
+    D.load.map(l=>'<tr><td>'+esc(l.type)+'</td><td>'+esc(l.detail)+'</td><td class="num">'+esc(l.hours)+'</td></tr>').join('')+
+    '<tr><th colspan="2" class="num">รวม</th><th class="num">'+totalHours()+'</th></tr></tbody></table>';
+  h+='<h3 style="text-align:left;margin-top:18px">ส่วนที่ 1 ข้อตกลงในการพัฒนางานตามมาตรฐานตำแหน่ง</h3>';
+  DIMS.forEach(d=>{
+    h+='<p style="margin:12px 0 6px"><b>ด้านที่ '+d.id+' '+esc(d.name)+'</b></p>'+
+      '<table><thead><tr><th style="width:24%">ตัวชี้วัด</th><th>งานที่จะดำเนินการพัฒนา</th><th>ผลลัพธ์ที่คาดหวัง</th></tr></thead><tbody>'+
+      d.inds.map(i=>'<tr><td>'+i[0]+' '+esc(i[1])+'</td><td>'+esc(D.part1[i[0]].work||'—')+'</td><td>'+esc(D.part1[i[0]].result||'—')+'</td></tr>').join('')+
+      '</tbody></table>';
+  });
+  h+='<h3 style="text-align:left;margin-top:18px">ส่วนที่ 2 ข้อตกลงในการพัฒนางานที่เสนอเป็นประเด็นท้าทาย</h3>'+
+    '<p><b>ประเด็นท้าทาย:</b> '+esc(D.challenge.title||'—')+'</p>'+
+    CH_FIELDS.slice(1).map(f=>'<p><b>'+esc(f[1])+'</b><br>'+esc(D.challenge[f[0]]||'—').replace(/\n/g,'<br>')+'</p>').join('');
+  return h+sigBlock();
+}
+function docReport(){
+  const cnt=evCountBy();
+  let h='<h2>รายงานผลการปฏิบัติงานตามข้อตกลงในการพัฒนางาน (วPA)</h2><h3>ประจำปีงบประมาณ พ.ศ. '+esc(D.year)+'</h3>'+leadBlock();
+  h+='<h3 style="text-align:left">สรุปจำนวนหลักฐานรายตัวชี้วัด</h3><table><thead><tr><th>ตัวชี้วัด</th><th class="num">จำนวนหลักฐาน</th></tr></thead><tbody>'+
+    IND_ALL.map(i=>'<tr><td>'+i.code+' '+esc(i.name)+'</td><td class="num">'+(cnt[i.code]||0)+'</td></tr>').join('')+
+    '<tr><th class="num">รวม</th><th class="num">'+D.evidence.length+'</th></tr></tbody></table>';
+  h+='<h3 style="text-align:left;margin-top:18px">รายละเอียดหลักฐาน/ร่องรอยการปฏิบัติงาน</h3>';
+  const sorted=D.evidence.slice().sort((a,b)=>(a.ind||'').localeCompare(b.ind||'')||(a.date||'').localeCompare(b.date||''));
+  h+=sorted.length?sorted.map((e,n)=>
+    '<div style="break-inside:avoid;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #CCC">'+
+    '<p style="margin:0"><b>'+(n+1)+'. '+esc(e.title)+'</b> <span style="font-size:.9em">('+esc(e.ind)+' '+esc(IND_NAME[e.ind]||'')+' · '+esc(thDate(e.date))+')</span></p>'+
+    (e.detail?'<p style="margin:4px 0">'+esc(e.detail).replace(/\n/g,'<br>')+'</p>':'')+
+    ((e.links||[]).length?'<p style="margin:4px 0;font-size:.88em">แหล่งหลักฐาน: '+e.links.map(l=>esc(l)).join(' · ')+'</p>':'')+
+    ((e.imgs||[]).length?'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">'+
+      e.imgs.map(s=>'<img src="'+s+'" style="width:170px;border:1px solid #CCC;border-radius:6px" alt="">').join('')+'</div>':'')+
+    '</div>').join(''):'<p>— ยังไม่มีข้อมูลหลักฐาน —</p>';
+  return h+sigBlock();
+}
+function docPA2(){
+  const s=scoreSummary(), lv=Math.max(1,parseFloat(D.rubric.levels)||4), w1=(parseFloat(D.rubric.max1)||0)/IND_ALL.length;
+  let h='<h2>แบบประเมินผลการพัฒนางานตามข้อตกลง (PA2) และแบบสรุปผลการประเมิน (PA3)</h2>'+
+    '<h3>ประจำปีงบประมาณ พ.ศ. '+esc(D.year)+'</h3>'+leadBlock();
+  h+='<h3 style="text-align:left">องค์ประกอบที่ 1 การปฏิบัติงานตามมาตรฐานตำแหน่ง (เต็ม '+s.max1+' คะแนน)</h3>'+
+    '<table><thead><tr><th>ตัวชี้วัด</th><th class="num">ก.1</th><th class="num">ก.2</th><th class="num">ก.3</th><th class="num">เฉลี่ย</th><th class="num">คะแนน</th></tr></thead><tbody>'+
+    IND_ALL.map(i=>{const sc=D.eval.s1[i.code]||['','',''],a=avgOf(sc);
+      return '<tr><td>'+i.code+' '+esc(i.name)+'</td>'+sc.map(v=>'<td class="num">'+esc(v||'—')+'</td>').join('')+
+        '<td class="num">'+(a==null?'—':a.toFixed(2))+'</td><td class="num">'+(a==null?'—':(a/lv*w1).toFixed(2))+'</td></tr>';}).join('')+
+    '<tr><th colspan="5" class="num">รวม</th><th class="num">'+s.s1.toFixed(2)+'</th></tr></tbody></table>';
+  h+='<h3 style="text-align:left;margin-top:16px">องค์ประกอบที่ 2 ผลลัพธ์ในการพัฒนาการเรียนรู้ตามประเด็นท้าทาย (เต็ม '+s.max2+' คะแนน)</h3>'+
+    '<p><b>ประเด็นท้าทาย:</b> '+esc(D.challenge.title||'—')+'</p>'+
+    '<table><thead><tr><th>รายการประเมิน</th><th class="num">น้ำหนัก</th><th class="num">ก.1</th><th class="num">ก.2</th><th class="num">ก.3</th><th class="num">เฉลี่ย</th><th class="num">คะแนน</th></tr></thead><tbody>'+
+    D.eval.items2.map(it=>{const a=avgOf(it.scores);
+      return '<tr><td>'+esc(it.name)+'</td><td class="num">'+esc(it.weight)+'</td>'+
+        it.scores.map(v=>'<td class="num">'+esc(v||'—')+'</td>').join('')+
+        '<td class="num">'+(a==null?'—':a.toFixed(2))+'</td><td class="num">'+(a==null?'—':(a/lv*(parseFloat(it.weight)||0)).toFixed(2))+'</td></tr>';}).join('')+
+    '<tr><th colspan="6" class="num">รวม</th><th class="num">'+s.s2.toFixed(2)+'</th></tr></tbody></table>';
+  h+='<h3 style="text-align:left;margin-top:16px">สรุปผลการประเมิน</h3>'+
+    '<table><tbody><tr><td>องค์ประกอบที่ 1</td><td class="num">'+s.s1.toFixed(2)+' / '+s.max1+'</td></tr>'+
+    '<tr><td>องค์ประกอบที่ 2</td><td class="num">'+s.s2.toFixed(2)+' / '+s.max2+'</td></tr>'+
+    '<tr><th>คะแนนรวม</th><th class="num">'+s.total.toFixed(2)+' / '+(s.max1+s.max2)+'</th></tr>'+
+    '<tr><th>ผลการประเมิน (เกณฑ์ '+(D.eval.pass||70)+' คะแนน)</th><th class="num">'+(s.any?(s.pass?'ผ่าน':'ไม่ผ่าน'):'—')+'</th></tr></tbody></table>'+
+    '<p style="margin-top:12px"><b>ข้อสังเกต/ข้อเสนอแนะของคณะกรรมการ</b><br>'+esc(D.eval.note||'—').replace(/\n/g,'<br>')+'</p>'+
+    '<p>วันที่ประเมิน '+esc(thDate(D.eval.date))+'</p>';
+  h+='<div class="sig" style="grid-template-columns:1fr 1fr 1fr">'+D.eval.committee.map(c=>
+    '<div>ลงชื่อ ..................................<br>('+esc(c.name||'..........................')+')<br>'+esc(c.role)+'</div>').join('')+'</div>';
+  return h;
+}
+function renderPrint(){
+  const k=$('#printPick').value;
+  $('#printDoc').innerHTML=k==='pa1'?docPA1():k==='pa2'?docPA2():docReport();
+}
+$('#printPick').onchange=renderPrint;
+$('#btnPrint').onclick=()=>window.print();
+
+/* ══════════ ข้อมูล · ปีงบประมาณ · สำรอง ══════════ */
+function updateMeter(){
+  let bytes=0;try{bytes=new Blob([localStorage.getItem(KEY)||'']).size;}catch(e){}
+  const mb=(bytes/1048576).toFixed(2);
+  const el=$('#storageMeter');
+  if(el)el.textContent='ใช้พื้นที่ในเบราว์เซอร์ '+mb+' MB · เบราว์เซอร์ส่วนใหญ่จำกัดราว 5 MB ต่อเว็บไซต์ '+
+    (bytes>3.6e6?'— ใกล้เต็มแล้ว ควรส่งออกไฟล์และลดจำนวนภาพ':'');
+}
+function renderData(){
+  bindOnce('#cfgYear',()=>D.year,v=>{});
+  bindOnce('#cfgFrom',()=>D.from,v=>{D.from=v;});
+  bindOnce('#cfgTo',()=>D.to,v=>{D.to=v;});
+  $('#cfgYear').value=D.year;$('#cfgFrom').value=D.from||'';$('#cfgTo').value=D.to||'';
+  $('#yearList').innerHTML=Object.keys(STORE.years).sort().map(y=>
+    '<button class="btn '+(y===STORE.current?'':'ghost')+' sm" data-year="'+y+'">'+y+'</button>').join('');
+  updateMeter();
+  updateSbChip();
+}
+$('#cfgYear').addEventListener('change',()=>{
+  const y=($('#cfgYear').value||'').trim();
+  if(!/^\d{4}$/.test(y)){toast('ปีงบประมาณต้องเป็นตัวเลข 4 หลัก เช่น 2569');$('#cfgYear').value=D.year;return;}
+  if(y===D.year)return;
+  if(!STORE.years[y]){
+    if(confirm('ยังไม่มีข้อมูลของปี '+y+' ต้องการสร้างชุดข้อมูลใหม่หรือไม่\n(ข้อมูลปี '+D.year+' จะยังอยู่ครบ)'))
+      STORE.years[y]=blankDoc(y);
+    else{$('#cfgYear').value=D.year;return;}
+  }
+  switchYear(y);
+});
+function switchYear(y){
+  save(true);
+  STORE.current=y;D=normalize(STORE.years[y]);
+  save();
+  ['#profileForm','#challengeForm'].forEach(s=>{const el=$(s);if(el)delete el.dataset.built;});
+  renderData();refreshLive();go(VIEW);
+  toast('เปลี่ยนเป็นปีงบประมาณ '+y+' แล้ว');
+}
+$('#yearList').onclick=e=>{const b=e.target.closest('[data-year]');if(b&&b.dataset.year!==STORE.current)switchYear(b.dataset.year);};
+
+$('#btnExport').onclick=()=>{
+  save(true);
+  const out={app:'vpa',v:1,exported:new Date().toISOString(),current:STORE.current,years:STORE.years};
+  dl(new Blob([JSON.stringify(out)],{type:'application/json'}),'vpa-backup-'+new Date().toISOString().slice(0,10)+'.json');
+  toast('ส่งออกไฟล์สำรองแล้ว');
+};
+$('#btnImport').onclick=()=>$('#fileImport').click();
+$('#fileImport').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const j=JSON.parse(fr.result);
+      if(!j||!j.years)throw new Error('รูปแบบไฟล์ไม่ถูกต้อง');
+      const names=Object.keys(j.years);
+      if(!confirm('ไฟล์นี้มีข้อมูล '+names.length+' ปีงบประมาณ ('+names.join(', ')+')\nการนำเข้าจะเขียนทับข้อมูลปีเดียวกันที่มีอยู่ ต้องการดำเนินการต่อหรือไม่'))return;
+      names.forEach(y=>{STORE.years[y]=normalize(j.years[y]);});
+      STORE.current=j.current&&STORE.years[j.current]?j.current:names[0];
+      D=normalize(STORE.years[STORE.current]);
+      save();['#profileForm','#challengeForm'].forEach(s=>{const el=$(s);if(el)delete el.dataset.built;});
+      renderData();refreshLive();go('home');
+      toast('นำเข้าข้อมูลสำเร็จ');
+    }catch(err){toast('นำเข้าไม่สำเร็จ: '+err.message);}
+  };
+  fr.readAsText(f);e.target.value='';
+});
+$('#btnWipe').onclick=()=>{
+  if(!confirm('ล้างข้อมูลทั้งหมดของปีงบประมาณ '+D.year+' ใช่หรือไม่\nการลบนี้ย้อนกลับไม่ได้ ควรส่งออกไฟล์สำรองก่อน'))return;
+  if(!confirm('ยืนยันอีกครั้ง: ข้อตกลง หลักฐาน และคะแนนของปี '+D.year+' จะถูกลบทั้งหมด'))return;
+  STORE.years[D.year]=blankDoc(D.year);D=STORE.years[D.year];
+  save();['#profileForm','#challengeForm'].forEach(s=>{const el=$(s);if(el)delete el.dataset.built;});
+  renderData();refreshLive();go('home');toast('ล้างข้อมูลปี '+D.year+' แล้ว');
+};
+
+/* ══════════ Supabase (ไม่บังคับ) ══════════ */
+const SB_RE=/^https:\/\/[a-z0-9-]+\.supabase\.co$/;
+let SB={url:'',key:'',token:'',refresh:'',email:''};
+try{Object.assign(SB,JSON.parse(localStorage.getItem(SBKEY)||'{}'));}catch(e){}
+function sbSave(){try{localStorage.setItem(SBKEY,JSON.stringify(SB));}catch(e){}}
+function updateSbChip(){
+  const on=!!(SB.url&&SB.token);
+  $('#chipSync').textContent=on?('ซิงก์: '+SB.email):'ยังไม่เชื่อม Supabase';
+  $('#chipSync').className='chip'+(on?' ok':'');
+  $('#sbLogin').classList.toggle('hidden',on);
+  $('#sbPanel').classList.toggle('hidden',!on);
+  $('#sbUrl').value=SB.url||'';$('#sbKey').value=SB.key||'';$('#sbMail').value=SB.email||'';
+}
+async function sbApi(path,opts){
+  opts=opts||{};
+  const headers=Object.assign({apikey:SB.key,Authorization:'Bearer '+(SB.token||SB.key),
+    'Content-Type':'application/json'},opts.headers||{});
+  const r=await fetch(SB.url+path,Object.assign({},opts,{headers}));
+  if(r.status===401&&SB.refresh&&!opts._retry){
+    if(await sbRefresh())return sbApi(path,Object.assign({},opts,{_retry:1}));
+  }
+  if(!r.ok){let d='';try{d=(await r.text()).slice(0,220);}catch(e){}throw new Error('HTTP '+r.status+(d?' · '+d:''));}
+  if(r.status===204)return null;
+  const t=await r.text();return t?JSON.parse(t):null;
+}
+async function sbRefresh(){
+  try{
+    const r=await fetch(SB.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',
+      headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:SB.refresh})});
+    if(!r.ok)return false;
+    const d=await r.json();SB.token=d.access_token;SB.refresh=d.refresh_token||SB.refresh;sbSave();return true;
+  }catch(e){return false;}
+}
+function sbMsg(html,bad){
+  $('#sbMsg').innerHTML='<div class="note'+(bad?' warn':'')+'" style="margin-top:12px">'+html+'</div>';
+}
+$('#btnSbLogin').onclick=async()=>{
+  const url=$('#sbUrl').value.trim().replace(/\/+$/,''),key=$('#sbKey').value.trim();
+  const email=$('#sbMail').value.trim(),pass=$('#sbPass').value;
+  if(!SB_RE.test(url))return sbMsg('Project URL ต้องอยู่ในรูปแบบ https://ชื่อโปรเจกต์.supabase.co',1);
+  if(!key)return sbMsg('กรุณาใส่ anon public key',1);
+  const b=$('#btnSbLogin');b.disabled=true;b.textContent='กำลังเชื่อมต่อ...';
+  try{
+    const r=await fetch(url+'/auth/v1/token?grant_type=password',{method:'POST',
+      headers:{apikey:key,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error_description||d.msg||d.message||('HTTP '+r.status));
+    SB={url:url,key:key,token:d.access_token,refresh:d.refresh_token,email:email};sbSave();
+    $('#sbPass').value='';updateSbChip();sbMsg('เชื่อมต่อสำเร็จ กด “ส่งข้อมูลขึ้นเซิร์ฟเวอร์” เพื่อสำรองข้อมูลครั้งแรก');
+  }catch(e){sbMsg('<b>เชื่อมต่อไม่สำเร็จ</b><br>'+esc(e.message)+'<br>ตรวจสอบว่าสร้างผู้ใช้ไว้ที่ Authentication → Users แล้ว',1);}
+  b.disabled=false;b.textContent='🔌 เชื่อมต่อ';
+};
+$('#btnSbOut').onclick=()=>{SB.token='';SB.refresh='';sbSave();updateSbChip();sbMsg('ออกจากระบบแล้ว ข้อมูลในเครื่องยังอยู่ครบ');};
+$('#btnPush').onclick=async()=>{
+  save(true);
+  const b=$('#btnPush');b.disabled=true;b.textContent='กำลังส่ง...';
+  try{
+    await sbApi('/rest/v1/vpa_docs?on_conflict=owner,fiscal_year',{method:'POST',
+      headers:{Prefer:'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify({fiscal_year:D.year,data:D,updated_at:new Date().toISOString()})});
+    sbMsg('ส่งข้อมูลปีงบประมาณ '+D.year+' ขึ้นเซิร์ฟเวอร์เรียบร้อย เมื่อ '+new Date().toLocaleString('th-TH'));
+  }catch(e){sbMsg('<b>ส่งข้อมูลไม่สำเร็จ</b><br>'+esc(e.message)+'<br>ถ้าเป็นข้อความเกี่ยวกับตาราง vpa_docs ให้รันไฟล์ supabase/vpa-schema.sql ก่อน',1);}
+  b.disabled=false;b.textContent='⬆️ ส่งข้อมูลขึ้นเซิร์ฟเวอร์';
+};
+$('#btnPull').onclick=async()=>{
+  const b=$('#btnPull');b.disabled=true;b.textContent='กำลังดึง...';
+  try{
+    const rows=await sbApi('/rest/v1/vpa_docs?select=fiscal_year,data,updated_at&order=fiscal_year.asc');
+    if(!rows||!rows.length){sbMsg('ยังไม่มีข้อมูลบนเซิร์ฟเวอร์',1);}
+    else if(confirm('พบข้อมูล '+rows.length+' ปีงบประมาณบนเซิร์ฟเวอร์\nการดึงจะเขียนทับข้อมูลปีเดียวกันในเครื่อง ต้องการดำเนินการต่อหรือไม่')){
+      rows.forEach(r=>{if(r.data)STORE.years[r.fiscal_year]=normalize(r.data);});
+      if(!STORE.years[STORE.current])STORE.current=rows[0].fiscal_year;
+      D=normalize(STORE.years[STORE.current]);save();
+      ['#profileForm','#challengeForm'].forEach(s=>{const el=$(s);if(el)delete el.dataset.built;});
+      renderData();refreshLive();go('home');
+      sbMsg('ดึงข้อมูลจากเซิร์ฟเวอร์เรียบร้อย');
+    }
+  }catch(e){sbMsg('<b>ดึงข้อมูลไม่สำเร็จ</b><br>'+esc(e.message),1);}
+  b.disabled=false;b.textContent='⬇️ ดึงข้อมูลจากเซิร์ฟเวอร์';
+};
+
+/* ══════════ เริ่มทำงาน ══════════ */
+buildSelects();
+resetEvForm();
+updateSbChip();
+$('#chipYear').textContent='ปีงบประมาณ '+D.year;
+$('#chipSave').textContent='บันทึกอัตโนมัติในเครื่อง';
+updateMeter();
+const start=(location.hash||'').replace('#','');
+go(VIEWS[start]?start:'home');
+window.addEventListener('beforeunload',()=>{if(SAVE_T)save(true);});
+</script>
+</body>
+</html>

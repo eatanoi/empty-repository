@@ -18,5 +18,11 @@ education
 | เมืองทะเลอิเล็กตรอน | [`metallic/index.html`](metallic/) | พันธะโลหะ · เคมี ม.4 — ดูรายละเอียดใน [metallic/README.md](metallic/README.md) |
 
 แดชบอร์ดครู: [`dashboard.html`](dashboard.html) · ตัวตรวจการเชื่อมต่อ: [`check.html`](check.html)
+
+## เครื่องมือสำหรับครู
+
+| เครื่องมือ | ไฟล์ | ใช้ทำอะไร |
+|---|---|---|
+| ระบบข้อมูล วPA | [`vpa/index.html`](vpa/) | จัดเก็บข้อตกลง PA1 หลักฐานร่องรอย สรุปผลพร้อมกราฟ แบบประเมิน PA2/PA3 และพิมพ์รายงาน — ดูรายละเอียดใน [vpa/README.md](vpa/README.md) |
 วิธีตั้งค่า: [SETUPSUPABASE.md](SETUPSUPABASE.md) · [SETUPCLASSROOM.md](SETUPCLASSROOM.md)
 วิธีนำเกมอื่น ๆ ขึ้น GitHub: [ADDGAME.md](ADDGAME.md)
