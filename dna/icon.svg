@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ศูนย์ถอดรหัสชีวิต">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8EC"/><stop offset="1" stop-color="#EAE4C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- แขนโครโมโซมสี่แขน: เส้นหนาสีเข้มเป็นขอบ แล้วทับด้วยไส้สีอ่อน -->
+  <g stroke-linecap="round" fill="none">
+    <g stroke="#084A24" stroke-width="74">
+      <path d="M146 104 L240 240"/><path d="M366 104 L272 240"/>
+      <path d="M146 408 L240 272"/><path d="M366 408 L272 272"/>
+    </g>
+    <g stroke="#BAD0F0" stroke-width="48">
+      <path d="M146 104 L240 240"/><path d="M366 104 L272 240"/>
+      <path d="M146 408 L240 272"/><path d="M366 408 L272 272"/>
+    </g>
+  </g>
+  <!-- เซนโทรเมียร์ -->
+  <circle cx="256" cy="256" r="44" fill="#084A24"/>
+  <circle cx="256" cy="256" r="29" fill="#3D6CB9"/>
+</svg>
