@@ -500,6 +500,75 @@ h3{font-size:1.05rem}
   font-size:.74rem;font-weight:700;color:var(--muted);background:rgba(255,255,255,.5)}
 .nb-chip.done{border-style:solid;border-color:var(--ok);color:var(--deep);background:var(--green-pale)}
 .nb-chip img{height:40px;width:auto;display:block;margin:0 auto 4px}
+/* ── เครื่องจำลองดีเอ็นเอ 3 มิติ (ด่าน 4) ─────────────────────────── */
+.dh-lab{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--panel2)}
+.dh-row{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:760px){.dh-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.dh-panel{border:1px solid var(--line);border-radius:14px;padding:10px 12px 12px;background:#fff}
+.dh-panel h4{margin:0 0 8px;font-size:.88rem;color:var(--deep)}
+.dh-stage{position:relative;height:336px;perspective:1000px;perspective-origin:50% 46%;
+  border-radius:12px;overflow:hidden;border:2px dashed transparent;transition:.15s;
+  background:radial-gradient(120% 90% at 50% 0%,rgba(124,184,148,.18),rgba(124,184,148,.04) 70%)}
+.dh-stage.armed{border-color:var(--gold)}
+.dh-stage.hot{border-color:var(--lime);background:rgba(47,125,79,.10)}
+.dh{position:absolute;left:50%;top:22px;width:0;height:0;transform-style:preserve-3d;
+  animation:dh-rock 9s ease-in-out infinite alternate}
+.dh.dh-spin{animation:dh-turn 15s linear infinite}
+@keyframes dh-rock{from{transform:rotateY(-30deg)}to{transform:rotateY(30deg)}}
+@keyframes dh-turn{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+.dh-rung{position:absolute;left:-86px;top:0;width:172px;height:20px;
+  display:flex;align-items:center;gap:3px;transform-style:preserve-3d}
+.dh-bb{width:21px;height:21px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 34% 28%,#fff,var(--bb) 78%);
+  border:1px solid rgba(4,38,30,.3);box-shadow:0 2px 5px -2px rgba(4,38,30,.5)}
+.dh-bb.old{--bb:#5C90A6}
+.dh-bb.new{--bb:#F26716}
+.dh-bb.gone{opacity:0;transform:translateX(26px)}
+.dh-base{position:relative;flex:1 1 0;height:14px;border-radius:3px;border:1px solid rgba(4,38,30,.3);
+  transform-style:preserve-3d;font-size:.58rem;font-weight:800;color:#12251A}
+.dh-base span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden}
+.dh-base span.bk{transform:rotateY(180deg)}
+.dh-half{position:absolute;left:-86px;top:0;width:172px;height:15px;
+  display:flex;align-items:center;justify-content:space-between;transform-style:preserve-3d;
+  pointer-events:none}
+.dh-half .dh-bb{width:15px;height:15px}
+.dh-base.empty{background:repeating-linear-gradient(45deg,rgba(8,74,36,.09) 0 4px,transparent 4px 8px);
+  border-style:dashed;color:transparent}
+.dh-seq{margin-top:10px;font-size:.74rem;line-height:2.1;color:var(--deep)}
+.dh-seq b{display:inline-block;min-width:66px;font-size:.72rem}
+.dh-seq i{display:inline-block;width:19px;text-align:center;font-style:normal;font-weight:800;
+  border-radius:4px;border:1px solid rgba(4,38,30,.22);margin:0 1px}
+.dh-seq i.blank{border-style:dashed;color:transparent;background:rgba(8,74,36,.05)}
+.dh-seq i.now{border-color:var(--gold);box-shadow:0 0 0 2px rgba(242,103,22,.25)}
+@media(max-width:430px){
+  .dh-seq{font-size:.68rem}
+  .dh-seq b{min-width:54px}
+  .dh-seq i{width:16px;margin:0}
+}
+.dh-base.gone{opacity:0}
+.dh-rung.active .dh-base.empty{border-color:var(--gold);border-style:solid;
+  box-shadow:0 0 0 3px rgba(242,103,22,.3);animation:dh-pulse 1.1s ease-in-out infinite}
+@keyframes dh-pulse{0%,100%{box-shadow:0 0 0 2px rgba(242,103,22,.25)}
+  50%{box-shadow:0 0 0 6px rgba(242,103,22,.12)}}
+.dh-base.fresh{box-shadow:0 0 0 2px rgba(242,103,22,.5)}
+.dh-end{position:absolute;left:50%;transform:translateX(-50%);font-size:.66rem;font-weight:800;
+  color:var(--muted);white-space:nowrap}
+.dh-tray{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.dh-tok{cursor:grab;touch-action:none;border:1.5px solid var(--line);border-radius:12px;background:#fff;
+  padding:8px 4px 6px;text-align:center;transition:border-color .15s,box-shadow .15s}
+.dh-tok:hover{border-color:rgba(8,74,36,.35)}
+.dh-tok.sel{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.dh-chip{display:block;height:26px;border-radius:5px;border:1px solid rgba(4,38,30,.3);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:#12251A}
+.dh-tok .gl-cap{display:block;font-size:.64rem;font-weight:700;margin-top:5px;color:var(--deep)}
+.dh-ghost{width:56px}
+.dh-ghost .dh-chip{box-shadow:0 12px 24px -10px rgba(4,38,30,.65)}
+.dh-step{background:var(--green-pale);border:1px solid var(--line);border-radius:12px;
+  padding:9px 12px;font-size:.88rem;line-height:1.6;margin-bottom:10px}
+.dh-legend{font-size:.72rem;color:var(--muted);margin-top:8px;line-height:1.7}
+.dh-dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;
+  border:1px solid rgba(4,38,30,.3)}
 </style>
 </head>
 <body>
@@ -1072,6 +1141,7 @@ function pickDrag(host, o){
   host.querySelectorAll(o.drop).forEach(d=>{
     d.onclick = ()=>{ if(!busy()) o.onDrop(d, armed); };
   });
+  return { arm };          /* ผู้เรียกใช้ล้างชิ้นที่เลือกเองได้ เช่น หลังวางสำเร็จ */
 }
 /* =========================================================================
    ห้องทดลองของ Griffith — ลากหลอดทดลองใส่เข็มฉีดยา ทำนายผล แล้วฉีดให้หนู
@@ -1795,15 +1865,196 @@ function stageBuilder(){
 }
 
 /* =========================================================================
+   เครื่องจำลองดีเอ็นเอ 3 มิติ — เฮลิเคสคลายเกลียว แล้วลากนิวคลีโอไทด์
+   มาเข้าคู่กับสายแม่แบบจนได้เกลียวคู่กลับมาเป็น DNA สองโมเลกุล
+   เกลียวสร้างด้วย CSS 3D: แต่ละขั้นบันไดหมุนรอบแกน Y ทีละ DH_ANG องศา
+   ========================================================================= */
+const DH_SEQ  = ['T','A','C','G','G','A','T','C','A','T'];   /* สายแม่แบบ 3′(บน) → 5′(ล่าง) */
+const DH_PAIR = { A:'T', T:'A', C:'G', G:'C' };
+const DH_COLOR= { A:'#9CC78A', T:'#EE9A9A', C:'#F5DC8E', G:'#9CC2DE' };
+const DH_NAME = { A:'อะดีนีน (A)', T:'ไทมีน (T)', C:'ไซโทซีน (C)', G:'กวานีน (G)' };
+const DH_HB   = { A:2, T:2, C:3, G:3 };
+const DH_STEP = 26, DH_ANG = 36;
+
+/* hostId = กล่องเครื่องจำลอง · onDone(จำนวนที่เข้าคู่ผิด) */
+function helixLab(hostId, onDone){
+  const host = document.getElementById(hostId);
+  let phase = 'intro', at = 0, wrong = 0, busy = false, pd = null;
+  const made = [];
+
+  const faces = k => `<span>${k}</span><span class="bk">${k}</span>`;
+  function rungHTML(i){
+    const t = DH_SEQ[i], n = made[i];
+    const open = phase!=='intro';
+    const right = n || (open ? null : DH_PAIR[t]);
+    return `<div class="dh-rung${open && i===at && phase==='fill' ? ' active':''}" data-i="${i}"
+        style="transform:translateY(${i*DH_STEP}px) rotateY(${i*DH_ANG}deg)">
+      <div class="dh-bb old"></div>
+      <div class="dh-base" style="background:${DH_COLOR[t]}">${faces(t)}</div>
+      <div class="dh-base ${right ? (n?'fresh':'') : 'empty'}"
+        style="${right ? `background:${DH_COLOR[right]}` : ''}">${right ? faces(right) : ''}</div>
+      <div class="dh-bb ${right?'new':'new gone'}"></div>
+    </div>`;
+  }
+  /* ลูกปัดแกนคั่นระหว่างขั้น ทำให้เห็นเป็นเกลียวต่อเนื่องแทนที่จะเป็นแท่งลอย ๆ */
+  function halfHTML(i){
+    const linked = phase==='intro' || (made[i] && made[i+1]);
+    return [1/3, 2/3].map(f=>`<div class="dh-half"
+        style="transform:translateY(${(i+f)*DH_STEP}px) rotateY(${(i+f)*DH_ANG}deg)">
+      <div class="dh-bb old"></div>
+      <div class="dh-bb new${linked?'':' gone'}"></div>
+    </div>`).join('');
+  }
+
+  function helixInner(){
+    return DH_SEQ.slice(0,-1).map((_,i)=>halfHTML(i)).join('')
+         + DH_SEQ.map((_,i)=>rungHTML(i)).join('');
+  }
+  function stageHTML(){
+    return `<div class="dh-stage" id="dhStage">
+      <div class="dh ${phase==='final'?'dh-spin':''}" id="dhHelix">${helixInner()}</div>
+      <div class="dh-end" style="top:2px">${phase==='intro'?'ปลายสายแม่แบบ 3′':'3′ แม่แบบ · 5′ สายใหม่'}</div>
+      <div class="dh-end" style="bottom:4px">${phase==='intro'?'ปลายสายแม่แบบ 5′':'5′ แม่แบบ · 3′ สายใหม่'}</div>
+    </div>`;
+  }
+
+  function stepText(){
+    const steps = {
+      intro:'🔓 <b>ขั้นที่ 1 · เฮลิเคส</b> — เอนไซม์เฮลิเคสจะทำลาย<b>พันธะไฮโดรเจน</b>ระหว่างคู่เบส คลายเกลียวและแยกสองสายออกจากกัน',
+      fill :`✍️ <b>ขั้นที่ 3 · ดีเอ็นเอพอลิเมอเรส</b> — ต่อนิวคลีโอไทด์ทีละตัวจาก<b>ปลาย 5′ ลงไปหา 3′</b> ของสายใหม่
+              · ตำแหน่งที่ ${at+1} จาก ${DH_SEQ.length} · แม่แบบตรงนี้คือ <b>${DH_NAME[DH_SEQ[at]]||''}</b>`,
+      seal :'🧷 <b>ขั้นที่ 4 · ดีเอ็นเอไลเกส</b> — เข้าคู่ครบทุกตำแหน่งแล้ว เหลือให้ไลเกส<b>เชื่อมสายใหม่</b>ให้ต่อเนื่อง',
+      final:'🎉 <b>ขั้นที่ 5</b> — ได้ DNA ที่มี<b>สายเดิม 1 สาย และสายใหม่ 1 สาย</b> นี่คือ<b>การจำลองแบบกึ่งอนุรักษ์</b>'
+    };
+    return steps[phase];
+  }
+
+  /* อัปเดตเฉพาะส่วนที่เปลี่ยน ไม่แตะ #dhHelix ทั้งก้อน เพื่อไม่ให้อนิเมชันหมุนเริ่มใหม่ */
+  function refresh(){
+    const h = document.getElementById('dhHelix'); if(h) h.innerHTML = helixInner();
+    const st = host.querySelector('.dh-step'); if(st) st.innerHTML = stepText();
+    const sq = host.querySelector('.dh-seq'); if(sq) sq.outerHTML = seqHTML();
+  }
+
+  function draw(){
+    const acts = {
+      intro:'<button class="btn" id="dhGo">🔓 ใช้เอนไซม์เฮลิเคสคลายเกลียว</button>',
+      seal :'<button class="btn" id="dhSeal">🧷 ใช้ไลเกสเชื่อมสายใหม่</button>',
+      final:'<div class="small muted">เกลียวคู่กำลังหมุนให้ดูรอบด้าน — สายส้มคือสายที่เพิ่งสร้างขึ้นใหม่</div>',
+      fill :`<div class="dh-tray">
+          ${['A','T','C','G'].map(k=>`<div class="dh-tok" data-k="${k}" role="button" tabindex="0"
+              aria-label="${DH_NAME[k]}">
+            <span class="dh-chip" style="background:${DH_COLOR[k]}">${k}</span>
+            <span class="gl-cap">${DH_NAME[k]}</span></div>`).join('')}
+        </div>
+        <div class="small muted" style="margin-top:8px">ลากนิวคลีโอไทด์ไปวางบนเกลียว หรือแตะนิวคลีโอไทด์แล้วแตะเกลียวก็ได้</div>`
+    };
+    host.innerHTML = `
+      <div class="dh-lab">
+        <div class="dh-step">${stepText()}</div>
+        <div class="dh-row">
+          <div class="dh-panel">
+            <h4>🧬 แบบจำลอง 3 มิติ</h4>
+            ${stageHTML()}
+          </div>
+          <div class="dh-panel">
+            <h4>🧰 โต๊ะทำงานของเอนไซม์</h4>
+            ${acts[phase]}
+            ${seqHTML()}
+            <div class="dh-legend">
+              <span class="dh-dot" style="background:#5C90A6"></span> แกนน้ำตาล–ฟอสเฟต<b>สายเดิม</b> ·
+              <span class="dh-dot" style="background:#F26716"></span> แกน<b>สายใหม่</b><br>
+              ${['A','T','C','G'].map(k=>
+                `<span class="dh-dot" style="background:${DH_COLOR[k]}"></span> ${k}`).join(' · ')}
+              — <b>A–T ใช้ 2 พันธะไฮโดรเจน · C–G ใช้ 3 พันธะ</b>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    bind();
+  }
+
+  function seqHTML(){
+    const cell = (k, cls)=> k
+      ? `<i class="${cls}" style="background:${DH_COLOR[k]}">${k}</i>`
+      : `<i class="blank ${cls}">·</i>`;
+    const newRow = DH_SEQ.map((t,i)=>{
+      const k = phase==='intro' ? DH_PAIR[t] : made[i];
+      return cell(k, phase==='fill' && i===at ? 'now' : '');
+    }).join('');
+    return `<div class="dh-seq">
+      <div><b>สายแม่แบบ</b> 3′ ${DH_SEQ.map(t=>cell(t,'')).join('')} 5′</div>
+      <div><b>สายใหม่</b> 5′ ${newRow} 3′</div>
+    </div>`;
+  }
+
+  function say(cls, html){
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show ' + cls; fb.innerHTML = html;
+  }
+
+  function unwind(){
+    if(busy) return;
+    busy = true; phase = 'fill'; at = 0; draw();
+    say('good', `🔓 <b>เฮลิเคสคลายเกลียวแล้ว</b> — พันธะไฮโดรเจนถูกทำลาย เหลือ<b>สายแม่แบบ</b>ให้สร้างสายใหม่<br>
+      <span class="small">ขั้นที่ 2 · <b>ไพรเมอร์</b>เกาะที่จุดเริ่มต้นเรียบร้อยแล้ว พอลิเมอเรสจึงเริ่มต่อนิวคลีโอไทด์ได้</span>`);
+    busy = false;
+  }
+
+  function place(k){
+    if(busy || phase!=='fill') return;
+    const want = DH_PAIR[DH_SEQ[at]];
+    if(k !== want){
+      wrong++;
+      say('bad', `❌ ${DH_NAME[k]} เข้าคู่กับ<b>${DH_NAME[DH_PAIR[k]]}</b> ไม่ใช่${DH_NAME[DH_SEQ[at]]}<br>
+        แม่แบบตำแหน่งนี้เป็น<b>${DH_NAME[DH_SEQ[at]]}</b> จึงต้องเข้าคู่กับ<b>${DH_NAME[want]}</b>
+        ด้วยพันธะไฮโดรเจน <b>${DH_HB[want]} พันธะ</b>`);
+      return;
+    }
+    made[at] = k;
+    say('good', `✅ ตำแหน่งที่ ${at+1} — <b>${DH_NAME[DH_SEQ[at]]}</b> เข้าคู่กับ<b>${DH_NAME[k]}</b>
+      ด้วยพันธะไฮโดรเจน <b>${DH_HB[k]} พันธะ</b>`);
+    at++;
+    const pb = document.getElementById('pb');
+    if(pb) pb.style.width = (made.filter(Boolean).length/DH_SEQ.length*100)+'%';
+    if(at >= DH_SEQ.length){ phase = 'seal'; at = DH_SEQ.length-1; draw(); }
+    else refresh();
+  }
+
+  function seal(){
+    if(busy) return;
+    busy = true; phase = 'final'; draw();
+    say('good', `🎉 <b>ไลเกสเชื่อมสายใหม่เรียบร้อย</b> — ได้ DNA <b>2 โมเลกุลที่เหมือนต้นแบบทุกประการ</b><br>
+      แต่ละโมเลกุลมี<b>สายเดิม 1 สาย (สีฟ้า) และสายใหม่ 1 สาย (สีส้ม)</b> จึงเรียกว่า<b>การจำลองแบบกึ่งอนุรักษ์</b>`);
+    setTimeout(()=>onDone(wrong), 2600);
+  }
+
+  function bind(){
+    const go = document.getElementById('dhGo'); if(go) go.onclick = unwind;
+    const sl = document.getElementById('dhSeal'); if(sl) sl.onclick = seal;
+    if(phase !== 'fill') return;
+    pd = pickDrag(host, {
+      tok:'.dh-tok', drop:'.dh-stage', ghostClass:'gl-ghost dh-ghost',
+      key: el=>el.dataset.k,
+      busy: ()=>busy,
+      ghost: el=>`<span class="dh-chip" style="background:${DH_COLOR[el.dataset.k]}">${el.dataset.k}</span>`,
+      onArm: k=>{
+        host.querySelectorAll('.dh-tok').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
+        const st = document.getElementById('dhStage'); if(st) st.classList.toggle('armed', !!k);
+      },
+      onDrop: (d,k)=>{
+        if(!k){ say('bad', '❌ ยังไม่ได้เลือกนิวคลีโอไทด์ — <b>แตะนิวคลีโอไทด์ด้านล่างก่อน</b> แล้วค่อยแตะเกลียว'); return; }
+        place(k);
+        if(pd) pd.arm(null);      /* ล้างการเลือก เพื่อให้แตะตัวเดิมซ้ำได้ทันที */
+      }
+    });
+  }
+
+  draw();
+}
+/* =========================================================================
    ด่าน 4 — ห้องจำลองดีเอ็นเอ: DNA replication (4.3.1)
    ========================================================================= */
-const REP_STEPS = [
-  { n:'เอนไซม์คลายเกลียวแยกสองสายออกจากกัน', e:'<b>เฮลิเคส (helicase)</b> คลายเกลียวและแยกพันธะไฮโดรเจนระหว่างคู่เบส ทำให้ได้<b>สายแม่แบบสองสาย</b>' },
-  { n:'สร้างไพรเมอร์เป็นจุดเริ่มต้น', e:'<b>ไพรเมอร์ (primer)</b> เป็นสายสั้น ๆ ที่มาเกาะสายแม่แบบก่อน เพราะ DNA polymerase <b>เริ่มสร้างสายใหม่จากศูนย์ไม่ได้</b>' },
-  { n:'ต่อนิวคลีโอไทด์ใหม่จากปลาย 3′', e:'<b>DNA polymerase</b> นำนิวคลีโอไทด์มาต่อที่<b>ปลาย 3′</b> ของสายที่กำลังสร้าง ทิศทางการสร้างจึงเป็น <b>5′ → 3′ เสมอ</b> โดยเข้าคู่ตามเบสคู่สม' },
-  { n:'เชื่อมชิ้นส่วนของแลกกิงสแทรนด์', e:'<b>DNA ligase</b> เชื่อมชิ้นส่วนสั้น ๆ ของ<b>แลกกิงสแทรนด์</b>ให้ต่อกันเป็นสายเดียว' },
-  { n:'ได้ DNA 2 โมเลกุลที่เหมือนเดิม', e:'แต่ละโมเลกุลมี<b>สายเดิม 1 สาย และสายใหม่ 1 สาย</b> จึงเรียกว่า<b>การจำลองแบบกึ่งอนุรักษ์</b> (semiconservative)' }
-];
 const REP_PAIRS = [
   { k:'heli', n:'เฮลิเคส', em:'🔓',
     h:'คลายเกลียวและแยกสองสายออกจากกัน',
@@ -1850,14 +2101,15 @@ function stageCopy(){
 
   function drawOrder(){
     app.innerHTML = stageShell('copy', `
-      <div class="note">🎯 <b>ช่วงที่ 1:</b> ก่อนแบ่งเซลล์ DNA ต้องเพิ่มจาก 1 เป็น 2 โมเลกุล —
-        แตะการ์ดเรียงตามลำดับขั้นตอน</div>
+      <div class="note">🎯 <b>ช่วงที่ 1 · เครื่องจำลองดีเอ็นเอ 3 มิติ:</b> ก่อนแบ่งเซลล์ DNA ต้องเพิ่มจาก 1 เป็น 2 โมเลกุล —
+        <b>คลายเกลียว → ลากนิวคลีโอไทด์มาเข้าคู่กับสายแม่แบบ → เชื่อมด้วยไลเกส</b>
+        <span class="small muted">(แตะนิวคลีโอไทด์แล้วแตะเกลียวก็ได้)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      ${orderBoard(REP_STEPS, 'แตะการ์ดเรียงจากขั้นแรกไปจนได้ DNA สองโมเลกุล')}
+      <div id="dhhost"></div>
       <div class="feedback" id="fb"></div>
     `);
-    bindOrder(REP_STEPS, wrong=>{
-      orderWrong = wrong; toast('ถูกทั้งลำดับ! ไปช่วงที่ 2'); setTimeout(drawMatch,900);
+    helixLab('dhhost', wrong=>{
+      orderWrong = wrong; toast('ได้ DNA สองโมเลกุลแล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,900);
     });
   }
 
