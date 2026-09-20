@@ -458,6 +458,42 @@ h3{font-size:1.05rem}
 @keyframes gl-shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .gl-bench.gl-inject{animation:gl-shake .4s}
 
+/* ── แท่นประกอบนิวคลีโอไทด์ (ด่าน 3) ─────────────────────────────── */
+.nb-lab{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--panel2)}
+.nb-task{background:var(--green-pale);border:1px solid var(--line);border-radius:12px;
+  padding:10px 12px;font-size:.92rem;line-height:1.65}
+.nb-bench{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:12px 0;
+  padding:14px 8px;border-radius:14px;
+  background:repeating-linear-gradient(90deg,rgba(124,184,148,.10) 0 22px,rgba(124,184,148,.03) 22px 44px)}
+.nb-slot{flex:0 0 auto;width:118px;min-height:116px;border:2px dashed rgba(8,74,36,.3);border-radius:14px;
+  background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;padding:8px 6px;text-align:center;transition:border-color .15s,box-shadow .15s}
+.nb-slot.armed{border-color:var(--gold)}
+.nb-slot.hot{border-color:var(--lime);box-shadow:0 0 0 5px rgba(47,125,79,.16)}
+.nb-slot.full{border-style:solid;border-color:var(--ok);background:var(--green-pale)}
+.nb-slot img{max-width:100%;height:auto;display:block}
+.nb-slot .nb-num{font-size:1.3rem;font-weight:800;color:rgba(8,74,36,.35);line-height:1}
+.nb-cap{font-size:.67rem;font-weight:700;line-height:1.35;color:var(--deep)}
+.nb-link{font-weight:800;font-size:1.3rem;color:rgba(8,74,36,.4);padding:0 2px}
+@media(max-width:520px){   /* บีบให้สามช่องอยู่แถวเดียวกันบนจอมือถือ */
+  .nb-bench{gap:2px;padding:10px 4px}
+  .nb-slot{width:94px;min-height:104px;padding:6px 4px}
+  .nb-link{font-size:1rem;padding:0}
+}
+.nb-tray{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.nb-piece{cursor:grab;touch-action:none;border:1.5px solid var(--line);border-radius:12px;background:#fff;
+  padding:8px 6px 6px;text-align:center;transition:border-color .15s,box-shadow .15s,opacity .2s}
+.nb-piece:hover{border-color:rgba(8,74,36,.35)}
+.nb-piece.sel{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.nb-piece.used{opacity:.35;cursor:default}
+.nb-piece img{max-width:100%;height:auto;display:block;margin:0 auto 4px}
+.nb-ghost img{height:56px;width:auto;filter:drop-shadow(0 10px 18px rgba(4,38,30,.4))}
+.nb-shelf{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+@media(min-width:620px){.nb-shelf{grid-template-columns:repeat(4,1fr)}}
+.nb-chip{border:1px dashed var(--line);border-radius:12px;padding:8px 6px;text-align:center;
+  font-size:.74rem;font-weight:700;color:var(--muted);background:rgba(255,255,255,.5)}
+.nb-chip.done{border-style:solid;border-color:var(--ok);color:var(--deep);background:var(--green-pale)}
+.nb-chip img{height:40px;width:auto;display:block;margin:0 auto 4px}
 </style>
 </head>
 <body>
@@ -980,6 +1016,58 @@ function stageChromosome(){
 
 
 /* =========================================================================
+   ลากวางชิ้นส่วน — ใช้ร่วมกันระหว่างห้องทดลอง Griffith และแท่นประกอบนิวคลีโอไทด์
+   รองรับทั้งลาก (มีเงาตามนิ้ว) และแตะเลือกชิ้นแล้วแตะปลายทาง
+   o.tok/o.drop = ตัวเลือก CSS · o.key(el) = คีย์ของชิ้น · o.ghost(el) = HTML ของเงา
+   o.busy() = true เมื่อห้ามแตะ · o.onArm(key) = ไฮไลต์ · o.onDrop(ปลายทาง, คีย์)
+   ========================================================================= */
+function pickDrag(host, o){
+  let armed = null;
+  const busy = ()=> !!(o.busy && o.busy());
+  const arm = k=>{ armed = k; if(o.onArm) o.onArm(k); };
+  const dropAt = (x,y)=>{ const el = document.elementFromPoint(x,y); return el ? el.closest(o.drop) : null; };
+  host.querySelectorAll(o.tok).forEach(el=>{
+    let ghost = null, moved = false, sx = 0, sy = 0;
+    const key = ()=>o.key(el);
+    el.addEventListener('pointerdown', ev=>{
+      if(busy()) return;
+      ev.preventDefault(); moved = false; sx = ev.clientX; sy = ev.clientY;
+      el.setPointerCapture(ev.pointerId);
+    });
+    el.addEventListener('pointermove', ev=>{
+      if(busy() || !el.hasPointerCapture(ev.pointerId)) return;
+      if(!moved && Math.hypot(ev.clientX-sx, ev.clientY-sy) < 8) return;
+      if(!moved){
+        moved = true; arm(key());
+        ghost = document.createElement('div');
+        ghost.className = o.ghostClass || 'gl-ghost';
+        ghost.innerHTML = o.ghost(el);
+        document.body.appendChild(ghost);
+      }
+      ghost.style.left = ev.clientX+'px'; ghost.style.top = (ev.clientY-24)+'px';
+      const over = dropAt(ev.clientX, ev.clientY);
+      host.querySelectorAll(o.drop).forEach(d=>d.classList.toggle('hot', d===over));
+    });
+    el.addEventListener('pointerup', ev=>{
+      if(ghost){ ghost.remove(); ghost = null; }
+      host.querySelectorAll(o.drop).forEach(d=>d.classList.remove('hot'));
+      if(busy()) return;
+      if(moved){
+        const over = dropAt(ev.clientX, ev.clientY);
+        if(over) o.onDrop(over, key()); else arm(null);
+      }else{
+        arm(armed===key() ? null : key());
+      }
+    });
+    el.addEventListener('keydown', ev=>{
+      if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); arm(key()); }
+    });
+  });
+  host.querySelectorAll(o.drop).forEach(d=>{
+    d.onclick = ()=>{ if(!busy()) o.onDrop(d, armed); };
+  });
+}
+/* =========================================================================
    ห้องทดลองของ Griffith — ลากหลอดทดลองใส่เข็มฉีดยา ทำนายผล แล้วฉีดให้หนู
    ใช้ได้ทั้งลากวางและแตะเลือก (มือถือลากบางเครื่องไม่ถนัด)
    ========================================================================= */
@@ -1035,7 +1123,7 @@ function glMouseSvg(state){
 /* hostId = ชั้นวาง+โต๊ะทดลอง · logId = ตารางสรุปผล (วางใต้กล่องคำอธิบาย) · onDone(จำนวนที่ทำนายผิด) */
 function griffithLab(hostId, logId, onDone){
   const host = document.getElementById(hostId), logHost = document.getElementById(logId);
-  let loaded = null, done = 0, wrong = 0, armed = null, busy = false;
+  let loaded = null, done = 0, wrong = 0, busy = false;
   const results = {};
 
   function draw(){
@@ -1081,8 +1169,7 @@ function griffithLab(hostId, logId, onDone){
     bind();
   }
 
-  function setArmed(k){
-    armed = k;
+  function setArmed(k){          /* pickDrag เก็บสถานะชิ้นที่เลือกไว้เอง ที่นี่แค่ไฮไลต์ */
     host.querySelectorAll('.gl-tube').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
     const syr = document.getElementById('glSyr');
     if(syr) syr.classList.toggle('armed', !!k);
@@ -1128,49 +1215,15 @@ function griffithLab(hostId, logId, onDone){
     }, 700);
   }
 
-  /* ลากวาง: สร้างเงาตามนิ้ว แล้วดูว่าปล่อยทับปลายทางใด · ถ้าไม่ได้ลากถือเป็นการแตะเลือก */
   function bind(){
-    host.querySelectorAll('.gl-tube:not(.used)').forEach(el=>{
-      let ghost=null, moved=false, sx=0, sy=0;
-      el.addEventListener('pointerdown', ev=>{
-        if(busy) return;
-        ev.preventDefault(); moved=false; sx=ev.clientX; sy=ev.clientY;
-        el.setPointerCapture(ev.pointerId);
-      });
-      el.addEventListener('pointermove', ev=>{
-        if(busy || !el.hasPointerCapture(ev.pointerId)) return;
-        if(!moved && Math.hypot(ev.clientX-sx, ev.clientY-sy) < 8) return;
-        if(!moved){
-          moved = true; setArmed(el.dataset.k);
-          ghost = document.createElement('div');
-          ghost.className = 'gl-ghost';
-          ghost.innerHTML = glTubeSvg(GRIF_TRIALS.find(t=>t.k===el.dataset.k).liquid, true);
-          document.body.appendChild(ghost);
-        }
-        ghost.style.left = ev.clientX+'px'; ghost.style.top = (ev.clientY-24)+'px';
-        const over = dropAt(ev.clientX, ev.clientY);
-        host.querySelectorAll('.gl-drop').forEach(d=>d.classList.toggle('hot', d===over));
-      });
-      el.addEventListener('pointerup', ev=>{
-        if(ghost){ ghost.remove(); ghost=null; }
-        host.querySelectorAll('.gl-drop').forEach(d=>d.classList.remove('hot'));
-        if(busy) return;
-        if(moved){
-          const over = dropAt(ev.clientX, ev.clientY);
-          if(over && over.dataset.drop==='syr') loadSyringe(el.dataset.k);
-          else if(over && over.dataset.drop==='cage') nudgeCage();
-          else setArmed(null);
-        }else{
-          setArmed(armed===el.dataset.k ? null : el.dataset.k);
-        }
-      });
-      el.addEventListener('keydown', ev=>{
-        if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); setArmed(el.dataset.k); }
-      });
+    pickDrag(host, {
+      tok:'.gl-tube:not(.used)', drop:'.gl-drop', ghostClass:'gl-ghost',
+      key: el=>el.dataset.k,
+      busy: ()=>busy,
+      ghost: el=>glTubeSvg(GRIF_TRIALS.find(t=>t.k===el.dataset.k).liquid, true),
+      onArm: setArmed,
+      onDrop: (d,k)=>{ if(d.dataset.drop==='syr' && k) loadSyringe(k); else nudgeCage(); }
     });
-    const syr = document.getElementById('glSyr'), cage = document.getElementById('glCage');
-    if(syr) syr.onclick = ()=>{ if(armed) loadSyringe(armed); };
-    if(cage) cage.onclick = ()=>{ if(!loaded && !busy) nudgeCage(); };
   }
   function nudgeCage(){
     const fb = document.getElementById('fb');
@@ -1179,11 +1232,6 @@ function griffithLab(hostId, logId, onDone){
       ? '❌ ยังฉีดไม่ได้ — <b>ทายผลก่อน</b>ว่าหนูจะเป็นอย่างไร แล้วเข็มจะฉีดให้เอง'
       : '❌ เข็มฉีดยายังว่างอยู่ — ต้อง<b>ลากหลอดทดลองมาใส่เข็ม</b>ก่อน';
   }
-  function dropAt(x, y){
-    const el = document.elementFromPoint(x, y);
-    return el ? el.closest('.gl-drop') : null;
-  }
-
   draw();
 }
 
@@ -1292,16 +1340,159 @@ function stageDiscover(){
 }
 
 /* =========================================================================
+   แท่นประกอบนิวคลีโอไทด์ — ลากภาพหมู่ฟอสเฟต น้ำตาล และเบส มาต่อกัน
+   ภาพประกอบตัดจากแผนภาพในหนังสือเรียน (หมู่ฟอสเฟต · ดีออกซีไรโบส · เบส 4 ชนิด)
+   ========================================================================= */
+const NUC_BASES = {
+  A:{ n:'อะดีนีน (A)', img:'parts/base-a.png', g:'pur', pair:'T', hb:2 },
+  G:{ n:'กวานีน (G)',  img:'parts/base-g.png', g:'pur', pair:'C', hb:3 },
+  C:{ n:'ไซโทซีน (C)', img:'parts/base-c.png', g:'pyr', pair:'G', hb:3 },
+  T:{ n:'ไทมีน (T)',   img:'parts/base-t.png', g:'pyr', pair:'A', hb:2 }
+};
+const NUC_GROUP = { pur:'พิวรีน — วงแหวนคู่', pyr:'ไพริมิดีน — วงแหวนเดี่ยว' };
+const NUC_BACK = {
+  p:{ n:'หมู่ฟอสเฟต', img:'parts/phosphate.png', num:'1',
+      hit:'มีอะตอม <b>P</b> อยู่ตรงกลาง ล้อมด้วยออกซิเจน' },
+  s:{ n:'น้ำตาลดี⁠ออก⁠ซี⁠ไร⁠โบส', img:'parts/sugar.png', num:'2',
+      hit:'<b>วงแหวนห้าเหลี่ยม</b> มีคาร์บอนหมายเลข 1–5' }
+};
+const NUC_ROUNDS = [
+  { b:'A', clue:'เบส<b>พิวรีน</b> (วงแหวนคู่) ที่เข้าคู่กับ<b>ไทมีน</b>ด้วยพันธะไฮโดรเจน <b>2 พันธะ</b>' },
+  { b:'T', clue:'เบส<b>ไพริมิดีน</b> (วงแหวนเดี่ยว) ที่มี<b>หมู่เมทิล (—CH<sub>3</sub>)</b> ยื่นออกมาจากวง' },
+  { b:'C', clue:'เบส<b>ไพริมิดีน</b> ที่เข้าคู่กับ<b>กวานีน</b>ด้วยพันธะไฮโดรเจน <b>3 พันธะ</b>' },
+  { b:'G', clue:'เบส<b>พิวรีน</b>ที่เหลือ — เข้าคู่กับ<b>ไซโทซีน</b>' }
+];
+/* hostId = แท่นประกอบ · shelfId = ชั้นเก็บนิวคลีโอไทด์ที่สร้างเสร็จ · onDone(จำนวนที่ผิด) */
+function nucleoLab(hostId, shelfId, onDone){
+  const host = document.getElementById(hostId), shelf = document.getElementById(shelfId);
+  let ri = 0, wrong = 0, busy = false;
+  let filled = { p:false, s:false, b:null };
+  const built = [];
+
+  function slotHTML(key){
+    if(key==='b'){
+      const b = filled.b && NUC_BASES[filled.b];
+      return b ? `<img src="${b.img}" alt="${b.n}"><span class="nb-cap">${b.n}</span>`
+               : `<span class="nb-num">3</span><span class="nb-cap">ไนโตรจีนัสเบส</span>`;
+    }
+    const part = NUC_BACK[key];
+    return filled[key] ? `<img src="${part.img}" alt="${part.n}"><span class="nb-cap">${part.n}</span>`
+                       : `<span class="nb-num">${part.num}</span><span class="nb-cap">${part.n}</span>`;
+  }
+
+  function draw(){
+    const R = NUC_ROUNDS[ri], carry = ri>0;
+    const pieces = [];
+    if(!carry){
+      pieces.push({ k:'p', n:NUC_BACK.p.n, img:NUC_BACK.p.img, used:filled.p });
+      pieces.push({ k:'s', n:NUC_BACK.s.n, img:NUC_BACK.s.img, used:filled.s });
+    }
+    Object.keys(NUC_BASES).forEach(k=>pieces.push({
+      k, n:NUC_BASES[k].n, img:NUC_BASES[k].img, used:built.includes(k) || filled.b===k }));
+    host.innerHTML = `
+      <div class="nb-lab">
+        <div class="nb-task">🧬 <b>นิวคลีโอไทด์ชุดที่ ${ri+1} จาก 4</b> — ประกอบให้ได้นิวคลีโอไทด์ที่มี${R.clue}
+          ${carry ? '<br><span class="small muted">แกนน้ำตาล–ฟอสเฟตใช้ชุดเดิมได้เลย เปลี่ยนเฉพาะเบส</span>' : ''}</div>
+        <div class="nb-bench" id="nbBench">
+          <div class="nb-slot ${filled.p?'full':''}" data-slot="p">${slotHTML('p')}</div>
+          <span class="nb-link">–</span>
+          <div class="nb-slot ${filled.s?'full':''}" data-slot="s">${slotHTML('s')}</div>
+          <span class="nb-link">–</span>
+          <div class="nb-slot ${filled.b?'full':''}" data-slot="b">${slotHTML('b')}</div>
+        </div>
+        <div class="nb-tray">
+          ${pieces.map(p=>`<div class="nb-piece${p.used?' used':''}" data-k="${p.k}"
+              role="button" tabindex="0" aria-label="${p.n}">
+            <img src="${p.img}" alt=""><span class="nb-cap">${p.n}</span></div>`).join('')}
+        </div>
+        <div class="small muted" style="margin-top:8px">ลากชิ้นส่วนไปวางในช่อง หรือแตะชิ้นส่วนแล้วแตะช่องก็ได้</div>
+      </div>`;
+    shelf.innerHTML = `
+      <div class="nb-shelf">
+        ${NUC_ROUNDS.map((r,i)=>{
+          const done = built.includes(r.b), b = NUC_BASES[r.b];
+          return `<div class="nb-chip ${done?'done':''}">
+            ${done ? `<img src="${b.img}" alt="">` : ''}
+            ${done ? `นิวคลีโอไทด์ ${b.n}` : `ชุดที่ ${i+1} · ยังไม่ประกอบ`}</div>`;
+        }).join('')}
+      </div>`;
+    bind();
+  }
+
+  function setArmed(k){
+    host.querySelectorAll('.nb-piece').forEach(e=>e.classList.toggle('sel', e.dataset.k===k));
+    host.querySelectorAll('.nb-slot').forEach(e=>e.classList.toggle('armed', !!k && !e.classList.contains('full')));
+  }
+
+  function say(cls, html){
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show ' + cls; fb.innerHTML = html;
+  }
+
+  function place(slot, k){
+    if(busy || !k) return;
+    const isBase = !!NUC_BASES[k];
+    if(slot==='b'){
+      if(!isBase){ wrong++; say('bad',
+        `❌ ช่องที่ 3 ต้องเป็น<b>ไนโตรจีนัสเบส</b> — ${NUC_BACK[k].n}เป็นส่วนของ<b>แกนน้ำตาล–ฟอสเฟต</b>`); return; }
+      if(built.includes(k)){ say('bad', `❌ ใช้${NUC_BASES[k].n}ไปแล้วในชุดก่อนหน้า — เหลือเบสอื่นอีก`); return; }
+      const want = NUC_ROUNDS[ri].b;
+      if(k !== want){
+        wrong++;
+        const w = NUC_BASES[k], t = NUC_BASES[want];
+        say('bad', w.g !== t.g
+          ? `❌ ${w.n} เป็น<b>${NUC_GROUP[w.g]}</b> แต่โจทย์ต้องการ<b>${NUC_GROUP[t.g]}</b>`
+          : `❌ ${w.n} เป็น<b>${NUC_GROUP[w.g]}</b> ถูกแล้ว แต่เข้าคู่กับ<b>${NUC_BASES[w.pair].n}</b> ไม่ใช่${NUC_BASES[t.pair].n}`);
+        return;
+      }
+      filled.b = k;
+    }else{
+      if(isBase){ wrong++; say('bad',
+        `❌ ${NUC_BASES[k].n} เป็น<b>ไนโตรจีนัสเบส</b> — ต้องวางในช่องที่ 3`); return; }
+      if(k !== slot){ wrong++; say('bad',
+        `❌ ช่องที่ ${NUC_BACK[slot].num} ต้องเป็น<b>${NUC_BACK[slot].n}</b> — ${NUC_BACK[slot].hit}`); return; }
+      filled[slot] = true;
+      say('good', `✅ วาง<b>${NUC_BACK[k].n}</b>ถูกช่องแล้ว`);
+    }
+    draw();
+    if(filled.p && filled.s && filled.b) complete();
+  }
+
+  function complete(){
+    busy = true;
+    const b = NUC_BASES[filled.b];
+    built.push(filled.b); draw();           // อัปเดตชั้นเก็บทันทีที่ประกอบเสร็จ
+    const pb = document.getElementById('pb');
+    if(pb) pb.style.width = (built.length/NUC_ROUNDS.length*100)+'%';
+    say('good', `✅ ได้<b>นิวคลีโอไทด์</b>ที่มี${b.n} แล้ว · เบสนี้เป็น<b>${NUC_GROUP[b.g]}</b>
+      เข้าคู่กับ<b>${NUC_BASES[b.pair].n}</b> ด้วยพันธะไฮโดรเจน <b>${b.hb} พันธะ</b><br>
+      ทุกนิวคลีโอไทด์ใช้<b>หมู่ฟอสเฟตและน้ำตาลดีออกซีไรโบสชุดเดียวกัน</b> ต่างกันที่<b>ชนิดของเบส</b>เท่านั้น`);
+    setTimeout(()=>{
+      if(built.length === NUC_ROUNDS.length){ onDone(wrong); return; }
+      ri++; filled = { p:true, s:true, b:null }; busy = false; draw();
+    }, 1800);
+  }
+
+  function bind(){
+    pickDrag(host, {
+      tok:'.nb-piece:not(.used)', drop:'.nb-slot', ghostClass:'gl-ghost nb-ghost',
+      key: el=>el.dataset.k,
+      busy: ()=>busy,
+      ghost: el=>`<img src="${el.querySelector('img').src}" alt="">`,
+      onArm: setArmed,
+      onDrop: (d,k)=>{
+        if(!k){ say('bad', '❌ ยังไม่ได้เลือกชิ้นส่วน — <b>แตะชิ้นส่วนด้านล่างก่อน</b> แล้วค่อยแตะช่อง'); return; }
+        if(d.classList.contains('full')){ say('bad', '❌ ช่องนี้มีชิ้นส่วนอยู่แล้ว'); return; }
+        place(d.dataset.slot, k);
+      }
+    });
+  }
+
+  draw();
+}
+/* =========================================================================
    ด่าน 3 — ห้องประกอบเกลียวคู่: องค์ประกอบทางเคมีและโครงสร้างของ DNA (4.2.2–4.2.3)
    ========================================================================= */
-const BASE_ITEMS = [
-  { n:'อะดีนีน (A)', g:'pur', e:'<b>พิวรีน</b> — วงแหวนคู่ · จับคู่กับ <b>ไทมีน (T)</b> ด้วยพันธะไฮโดรเจน <b>2 พันธะ</b>' },
-  { n:'กวานีน (G)', g:'pur', e:'<b>พิวรีน</b> — วงแหวนคู่ · จับคู่กับ <b>ไซโทซีน (C)</b> ด้วยพันธะไฮโดรเจน <b>3 พันธะ</b>' },
-  { n:'ไซโทซีน (C)', g:'pyr', e:'<b>ไพริมิดีน</b> — วงแหวนเดี่ยว · จับคู่กับ <b>กวานีน (G)</b>' },
-  { n:'ไทมีน (T)', g:'pyr', e:'<b>ไพริมิดีน</b> — วงแหวนเดี่ยว · จับคู่กับ <b>อะดีนีน (A)</b>' },
-  { n:'น้ำตาลดีออกซีไรโบส', g:'other', e:'<b>ไม่ใช่เบส</b> — เป็น<b>น้ำตาล</b>ที่เป็นแกนของนิวคลีโอไทด์ ต่อกับหมู่ฟอสเฟตและไนโตรจีนัสเบส' },
-  { n:'หมู่ฟอสเฟต', g:'other', e:'<b>ไม่ใช่เบส</b> — เชื่อมน้ำตาลของนิวคลีโอไทด์ถัดไปด้วย<b>พันธะฟอสโฟไดเอสเทอร์</b>' }
-];
 const DNA_PAIRS = [
   { k:'nucleotide', n:'นิวคลีโอไทด์', em:'🧱',
     h:'หน่วยย่อย (monomer) ของ DNA',
@@ -1353,28 +1544,23 @@ function stageBuilder(){
   drawSort();
 
   function drawSort(){
-    const B = { pur:{ t:'🅰️ พิวรีน<br><span class="small muted">purine · เบสวงแหวนคู่</span>' },
-                pyr:{ t:'🅾️ ไพริมิดีน<br><span class="small muted">pyrimidine · เบสวงแหวนเดี่ยว</span>' },
-                other:{ t:'🧱 ไม่ใช่ไนโตรจีนัสเบส<br><span class="small muted">เป็นน้ำตาลหรือหมู่ฟอสเฟต</span>' } };
     app.innerHTML = stageShell('builder', `
-      <div class="note">🎯 <b>ช่วงที่ 1:</b> นิวคลีโอไทด์ประกอบด้วย <b>น้ำตาลดีออกซีไรโบส · ไนโตรจีนัสเบส · หมู่ฟอสเฟต</b>
-        — แตะชิ้นส่วน แล้วแตะกล่องที่ถูกต้อง</div>
+      <div class="note">🎯 <b>ช่วงที่ 1 · แท่นประกอบนิวคลีโอไทด์:</b> นิวคลีโอไทด์ 1 หน่วยประกอบด้วย
+        <b>หมู่ฟอสเฟต · น้ำตาลดีออกซีไรโบส · ไนโตรจีนัสเบส</b><br>
+        <b>ลากภาพชิ้นส่วนมาวางในช่องให้ถูกต้อง</b> แล้วประกอบให้ครบทั้ง 4 ชนิดของเบส
+        <span class="small muted">(แตะชิ้นส่วนแล้วแตะช่องก็ได้)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      <div class="bank" id="pool">
-        ${shuffle(BASE_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
-      </div>
-      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
-          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
-      </div>
+      <div id="nbhost"></div>
       <div class="feedback" id="fb"></div>
+      <div id="nbshelf"></div>
       <div class="note" style="margin-top:16px">
         🔵 <b>ตัวช่วยจำ:</b> <b>พิวรีนตัวใหญ่</b> มีสองตัวคือ <b>A กับ G</b> ·
-        <b>ไพริมิดีนตัวเล็ก</b> คือ <b>C กับ T</b> — ทุกคู่เบสจึงเป็น<b>ตัวใหญ่จับกับตัวเล็ก</b> ความกว้างของเกลียวจึงเท่ากันตลอด
+        <b>ไพริมิดีนตัวเล็ก</b> คือ <b>C กับ T</b> — ทุกคู่เบสจึงเป็น<b>ตัวใหญ่จับกับตัวเล็ก</b>
+        ความกว้างของเกลียวจึงเท่ากันตลอด
       </div>
     `);
-    bindBuckets(BASE_ITEMS, B, 'pb', 'fb', wrong=>{
-      sortWrong = wrong; toast('แยกครบแล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,700);
+    nucleoLab('nbhost', 'nbshelf', wrong=>{
+      sortWrong = wrong; toast('ประกอบครบสี่ชนิดแล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,1200);
     });
   }
 
