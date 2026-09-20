@@ -446,6 +446,7 @@ h3{font-size:1.05rem}
 .gl-drop.armed{border-color:var(--gold);background:rgba(242,103,22,.08)}
 .gl-drop.hot{border-color:var(--lime);background:rgba(47,125,79,.12)}
 .gl-drop svg{width:100%;max-width:150px;height:auto;display:block;margin:0 auto}
+#avTube svg{max-width:76px}   /* หลอดทดลองทรงสูง ไม่ให้กว้างเท่าเข็มฉีดยา */
 .gl-drop .gl-cap{display:block;font-size:.72rem;font-weight:700;margin-top:4px;color:var(--muted)}
 .gl-ghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%);width:54px}
 .gl-predict{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
@@ -455,6 +456,11 @@ h3{font-size:1.05rem}
 .gl-log td.gl-res{font-weight:800;white-space:nowrap}
 .gl-log tr.gl-todo td{color:var(--muted)}
 .gl-dead{color:var(--bad)} .gl-alive{color:var(--ok)}
+@media(max-width:430px){   /* ตารางสรุปผลต้องพอดีจอแคบ */
+  .gl-log{font-size:.74rem}
+  .gl-log th,.gl-log td{padding:6px 4px}
+  .gl-log td.gl-res{white-space:normal}
+}
 @keyframes gl-shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .gl-bench.gl-inject{animation:gl-shake .4s}
 
@@ -1156,6 +1162,11 @@ function griffithLab(hostId, logId, onDone){
           </div>
         </div>
       </div>`;
+    drawLog();
+    bind();
+  }
+
+  function drawLog(){
     logHost.innerHTML = `
       <table class="gl-log">
         <tr><th>ชุด</th><th>สิ่งที่ฉีด</th><th>ผล</th><th>ตรวจเลือด</th></tr>
@@ -1166,7 +1177,6 @@ function griffithLab(hostId, logId, onDone){
             <td>${r ? t.blood : '—'}</td></tr>`;
         }).join('')}
       </table>`;
-    bind();
   }
 
   function setArmed(k){          /* pickDrag เก็บสถานะชิ้นที่เลือกไว้เอง ที่นี่แค่ไฮไลต์ */
@@ -1200,7 +1210,7 @@ function griffithLab(hostId, logId, onDone){
     bench.classList.add('gl-inject');
     document.getElementById('glAct').innerHTML = '';
     setTimeout(()=>{
-      results[t.k] = true; done++;
+      results[t.k] = true; done++; drawLog();
       const cage = document.getElementById('glCage');
       cage.innerHTML = `${glMouseSvg(t.dies?'dead':'alive')}<span class="gl-cap">${t.dies?'หนูตาย':'หนูไม่ตาย'}</span>`;
       const fb = document.getElementById('fb');
@@ -1235,6 +1245,173 @@ function griffithLab(hostId, logId, onDone){
   draw();
 }
 
+/* =========================================================================
+   ห้องทดลองของ Avery · MacLeod · McCarty (พ.ศ. 2487)
+   เติมเอนไซม์ย่อยทีละชนิดลงในสารสกัดจาก S ที่ต้มฆ่าแล้ว + R ที่มีชีวิต
+   แล้วดูว่ายังเปลี่ยนสายพันธุ์ได้หรือไม่
+   ========================================================================= */
+const AVERY_TRIALS = [
+  { k:'ctrl', no:1, name:'ไม่เติมเอนไซม์ (ชุดควบคุม)', short:'บัฟเฟอร์', liquid:'#C8CDD6',
+    digest:'—', trans:true, plate:'พบทั้ง S และ R', dish:'พบโคโลนีผิวเรียบ (S) ปนกับผิวขรุขระ (R)',
+    why:'ยังไม่ได้ย่อยอะไรเลย สารสกัดจาก S ที่ตายแล้วจึง<b>เปลี่ยน R ให้เป็น S ได้</b> — ชุดนี้เป็น<b>ชุดควบคุม</b>ที่ยืนยันว่าการทดลองใช้ได้จริง' },
+  { k:'prot', no:2, name:'โปรตีเอส', short:'โปรตีเอส', liquid:'#F7C39C',
+    digest:'โปรตีน', trans:true, plate:'พบทั้ง S และ R', dish:'พบโคโลนีผิวเรียบ (S) ปนกับผิวขรุขระ (R)',
+    why:'<b>โปรตีนถูกย่อยหมดแล้วแต่ยังเปลี่ยนสายพันธุ์ได้</b> → <b>โปรตีนไม่ใช่</b>สารที่เปลี่ยนสายพันธุ์' },
+  { k:'rna',  no:3, name:'RNase (ไรโบนิวคลีเอส)', short:'RNase', liquid:'#AFD2BC',
+    digest:'RNA', trans:true, plate:'พบทั้ง S และ R', dish:'พบโคโลนีผิวเรียบ (S) ปนกับผิวขรุขระ (R)',
+    why:'<b>RNA ถูกย่อยหมดแล้วแต่ยังเปลี่ยนสายพันธุ์ได้</b> → <b>RNA ก็ไม่ใช่</b>เช่นกัน' },
+  { k:'dna',  no:4, name:'DNase (ดีออกซีไรโบนิวคลีเอส)', short:'DNase', liquid:'#F4B7A6',
+    digest:'DNA', trans:false, plate:'พบเฉพาะ R', dish:'พบเฉพาะโคโลนีผิวขรุขระ (R)',
+    why:'พอ<b>ย่อย DNA ทิ้ง การเปลี่ยนสายพันธุ์ก็หยุดทันที</b> → <b>DNA คือสารที่เปลี่ยนสายพันธุ์</b> นั่นคือ<b>สารพันธุกรรม</b>' }
+];
+function avBottleSvg(fill, lit){
+  return `<svg viewBox="0 0 60 116" aria-hidden="true">
+    <rect x="23" y="4" width="14" height="12" rx="3" fill="#B9C4D2"/>
+    <rect x="26" y="16" width="8" height="14" fill="#DCE3EB" stroke="#7E8CA0" stroke-width="2"/>
+    <rect x="12" y="30" width="36" height="76" rx="11" fill="#F4FAFF" stroke="#7E8CA0" stroke-width="3"/>
+    <path d="M16 62 h28 v40 a7 7 0 0 1-7 7 h-14 a7 7 0 0 1-7-7 z" fill="${fill}" opacity=".95"/>
+    ${lit?'<circle cx="30" cy="80" r="3.2" fill="#fff" opacity=".85"/>':''}
+  </svg>`;
+}
+/* จานเพาะเชื้อ · state: 'none' ยังไม่เพาะ · 'R' พบเฉพาะ R · 'SR' พบทั้ง S และ R */
+function avDishSvg(state){
+  const rough = [[54,56],[98,46],[64,98],[116,62],[88,104],[124,94],[78,72]];
+  const smooth = [[86,62],[110,82],[62,80]];
+  return `<svg viewBox="0 0 170 140" aria-hidden="true">
+    <ellipse cx="85" cy="74" rx="74" ry="60" fill="#E4EADF" stroke="#A9B4A5" stroke-width="3"/>
+    <ellipse cx="85" cy="74" rx="64" ry="51" fill="#F7F3DE" stroke="#C3CCBA" stroke-width="2"/>
+    ${state==='none' ? '' : rough.map(([x,y])=>
+      `<circle cx="${x}" cy="${y}" r="4.2" fill="#C2AF8C" stroke="#A3906D" stroke-width="1"/>`).join('')}
+    ${state==='SR' ? smooth.map(([x,y])=>
+      `<g><circle cx="${x}" cy="${y}" r="9" fill="#9CC2DE" stroke="#5E8FB0" stroke-width="1.6"/>
+         <circle cx="${x-3}" cy="${y-3.4}" r="2.6" fill="#fff" opacity=".85"/></g>`).join('') : ''}
+  </svg>`;
+}
+/* hostId = โต๊ะทดลอง · logId = ตารางสรุปผล · onDone(จำนวนที่ทำนายผิด) */
+function averyLab(hostId, logId, onDone){
+  const host = document.getElementById(hostId), logHost = document.getElementById(logId);
+  let loaded = null, done = 0, wrong = 0, busy = false;
+  const results = {};
+
+  function draw(){
+    host.innerHTML = `
+      <div class="gl-lab">
+        <div class="gl-benchrow">
+          <div class="gl-panel">
+            <h4>🧴 ชั้นวางเอนไซม์</h4>
+            <div class="gl-rack" id="avRack">
+              ${AVERY_TRIALS.map(t=>`<div class="gl-tube gl-bottle${results[t.k]?' used':''}" data-k="${t.k}"
+                  role="button" tabindex="0" aria-label="${t.name}">
+                ${avBottleSvg(t.liquid, !results[t.k])}
+                <span class="gl-cap">${t.no}. ${t.short}</span></div>`).join('')}
+            </div>
+            <div class="small muted" style="margin-top:8px">ลากขวดเอนไซม์ไปเทใส่หลอด หรือแตะขวดแล้วแตะหลอดก็ได้</div>
+          </div>
+          <div class="gl-panel">
+            <h4>🔬 โต๊ะทดลอง</h4>
+            <div class="gl-bench" id="avBench">
+              <div class="gl-drop" id="avTube" data-drop="tube">
+                ${glTubeSvg(loaded ? loaded.liquid : '#B39DDB', true)}
+                <span class="gl-cap">${loaded
+                  ? 'เติม ' + loaded.short + ' แล้ว'
+                  : 'สารสกัดจาก S ที่ต้มฆ่าแล้ว<br>+ R ที่มีชีวิต'}</span>
+              </div>
+              <div class="gl-drop" id="avDish" data-drop="dish">
+                ${avDishSvg('none')}
+                <span class="gl-cap">จานเพาะเชื้อ</span>
+              </div>
+            </div>
+            <div id="avAct"></div>
+            <div class="small muted" style="margin-top:8px">
+              🔵 โคโลนีผิวเรียบเป็นมัน = <b>S</b> · 🟤 โคโลนีผิวขรุขระด้าน = <b>R</b></div>
+          </div>
+        </div>
+      </div>`;
+    drawLog();
+    bind();
+  }
+
+  function drawLog(){
+    logHost.innerHTML = `
+      <table class="gl-log">
+        <tr><th>ชุด</th><th>เอนไซม์ที่เติม</th><th>สารที่ถูกย่อย</th><th>ผลบนจานเพาะเชื้อ</th></tr>
+        ${AVERY_TRIALS.map(t=>{
+          const r = results[t.k];
+          return `<tr class="${r?'':'gl-todo'}"><th>${t.no}</th><td>${t.name}</td><td>${r?t.digest:'—'}</td>
+            <td class="gl-res ${r ? (t.trans?'gl-alive':'gl-dead') : ''}">${r ? t.plate : '—'}</td></tr>`;
+        }).join('')}
+      </table>`;
+  }
+
+  function setArmed(k){                /* pickDrag เก็บสถานะชิ้นที่เลือกไว้เอง ที่นี่แค่ไฮไลต์ */
+    host.querySelectorAll('.gl-bottle').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
+    const tube = document.getElementById('avTube');
+    if(tube) tube.classList.toggle('armed', !!k);
+  }
+
+  function pour(k){
+    const t = AVERY_TRIALS.find(x=>x.k===k);
+    if(!t || results[k]) return;
+    loaded = t; setArmed(null); draw();
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show';
+    fb.innerHTML = `${t.k==='ctrl'
+        ? '🧴 <b>ชุดควบคุม</b> — เติมเฉพาะบัฟเฟอร์ ไม่ย่อยอะไรเลย'
+        : `🧴 เติม<b>${t.name}</b> ลงในหลอดแล้ว — ${t.digest}ในสารสกัดจะถูกย่อยจนหมด`}
+      · ลองทายก่อนเพาะเลี้ยงว่า <b>R จะเปลี่ยนเป็น S ได้หรือไม่</b>`;
+    document.getElementById('avAct').innerHTML = `
+      <div class="gl-predict">
+        <button class="btn sm" data-guess="trans">🔵 ทายว่ายังเปลี่ยนเป็น S ได้</button>
+        <button class="btn sm" data-guess="stop">🟤 ทายว่าเปลี่ยนไม่ได้ พบเฉพาะ R</button>
+      </div>`;
+    document.getElementById('avDish').classList.add('armed');
+    host.querySelectorAll('[data-guess]').forEach(b=>b.onclick = ()=>incubate(b.dataset.guess));
+  }
+
+  function incubate(guess){
+    if(!loaded || busy) return;
+    busy = true;
+    const t = loaded, ok = (guess==='trans') === t.trans;
+    if(!ok) wrong++;
+    document.getElementById('avBench').classList.add('gl-inject');
+    document.getElementById('avAct').innerHTML = '<div class="small muted">⏳ กำลังเพาะเลี้ยงบนอาหารเลี้ยงเชื้อ…</div>';
+    setTimeout(()=>{
+      results[t.k] = true; done++; drawLog();
+      document.getElementById('avAct').innerHTML = '';
+      const dish = document.getElementById('avDish');
+      dish.innerHTML = `${avDishSvg(t.trans?'SR':'R')}<span class="gl-cap">${t.dish}</span>`;
+      const fb = document.getElementById('fb');
+      fb.className = 'feedback show ' + (ok?'good':'bad');
+      fb.innerHTML = `${ok?'✅ ทายถูก':'❌ ทายผิด'} — ชุดที่ ${t.no} “<b>${t.name}</b>” →
+        <b class="${t.trans?'gl-alive':'gl-dead'}">${t.trans?'ยังเปลี่ยน R เป็น S ได้':'เปลี่ยนไม่ได้ พบเฉพาะ R'}</b><br>${t.why}`;
+      const pb = document.getElementById('pb'); if(pb) pb.style.width = (done/AVERY_TRIALS.length*100)+'%';
+      setTimeout(()=>{
+        loaded = null; busy = false; draw();
+        if(done === AVERY_TRIALS.length) setTimeout(()=>onDone(wrong), 1400);
+      }, 1900);
+    }, 900);
+  }
+
+  function bind(){
+    pickDrag(host, {
+      tok:'.gl-bottle:not(.used)', drop:'.gl-drop', ghostClass:'gl-ghost',
+      key: el=>el.dataset.k,
+      busy: ()=>busy,
+      ghost: el=>avBottleSvg(AVERY_TRIALS.find(t=>t.k===el.dataset.k).liquid, true),
+      onArm: setArmed,
+      onDrop: (d,k)=>{ if(d.dataset.drop==='tube' && k) pour(k); else nudge(); }
+    });
+  }
+  function nudge(){
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show bad';
+    fb.innerHTML = loaded
+      ? '❌ ยังเพาะเลี้ยงไม่ได้ — <b>ทายผลก่อน</b>ว่า R จะเปลี่ยนเป็น S ได้หรือไม่'
+      : '❌ ยังไม่ได้เติมเอนไซม์ — ต้อง<b>ลากขวดเอนไซม์มาเทใส่หลอด</b>ก่อน';
+  }
+
+  draw();
+}
 /* =========================================================================
    ด่าน 2 — ห้องสืบคดี DNA: การค้นพบว่า DNA เป็นสารพันธุกรรม (4.2.1)
    ========================================================================= */
@@ -1282,7 +1459,7 @@ const DISC_Q = [
     e:'<b>พบสายพันธุ์ R</b> — เมื่อ <b>DNase</b> ย่อย DNA ที่ทำหน้าที่เปลี่ยนสายพันธุ์ไปแล้ว R จึงเปลี่ยนเป็น S ไม่ได้<br>เอนไซม์เหล่านี้ย่อยเฉพาะสารที่เติมลงไป <b>ไม่ได้ฆ่าแบคทีเรีย R</b> ที่มีชีวิตอยู่' }
 ];
 function stageDiscover(){
-  let sortWrong = 0, matchWrong = 0;
+  let sortWrong = 0, averyWrong = 0, matchWrong = 0;
   drawLab();
 
   function drawLab(){
@@ -1298,32 +1475,49 @@ function stageDiscover(){
       <div id="labtable"></div>
     `);
     griffithLab('labhost', 'labtable', wrong=>{
-      sortWrong = wrong; toast('ครบสี่ชุดแล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,700);
+      sortWrong = wrong; toast('ครบสี่ชุดแล้ว! ไปช่วงที่ 2'); setTimeout(drawAvery,700);
+    });
+  }
+
+  function drawAvery(){
+    app.innerHTML = stageShell('discover', `
+      <div class="note">🎯 <b>ช่วงที่ 2 · ห้องทดลองของ Avery, MacLeod และ McCarty (พ.ศ. 2487):</b>
+        Griffith รู้แค่ว่า<b>มีสารบางอย่าง</b>เปลี่ยนสายพันธุ์ได้ แต่ยังไม่รู้ว่าคืออะไร —
+        สามคนนี้จึง<b>ย่อยทิ้งทีละชนิด</b>แล้วดูว่าการเปลี่ยนสายพันธุ์ยังเกิดอยู่ไหม<br>
+        <b>ลากขวดเอนไซม์ไปเทใส่หลอด → ทายผล → เพาะเลี้ยงดูโคโลนี</b> ให้ครบทั้ง 4 ชุด
+        <span class="small muted">(แตะขวดแล้วแตะหลอดก็ได้)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="avhost"></div>
+      <div class="feedback" id="fb"></div>
+      <div id="avtable"></div>
+    `);
+    averyLab('avhost', 'avtable', wrong=>{
+      averyWrong = wrong; toast('ครบสี่ชุดแล้ว! ไปช่วงที่ 3'); setTimeout(drawMatch,700);
     });
   }
 
   function drawMatch(){
     app.innerHTML = stageShell('discover', `
-      <div class="note">🎯 <b>ช่วงที่ 2:</b> กว่าจะรู้ว่า DNA เป็นสารพันธุกรรม ใช้เวลาเกือบร้อยปี —
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> กว่าจะรู้ว่า DNA เป็นสารพันธุกรรม ใช้เวลาเกือบร้อยปี —
         แตะชื่อนักวิทยาศาสตร์ แล้วแตะการ์ดผลงานที่ตรงกัน</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       ${matchBoard(SCI_PAIRS)}
       <div class="feedback" id="fb"></div>
     `);
     bindMatch(SCI_PAIRS, wrong=>{
-      matchWrong = wrong; toast('จับคู่ครบแล้ว! ไปช่วงที่ 3'); setTimeout(drawQuiz,900);
+      matchWrong = wrong; toast('จับคู่ครบแล้ว! ไปช่วงที่ 4'); setTimeout(drawQuiz,900);
     });
   }
 
   function drawQuiz(){
     app.innerHTML = stageShell('discover', `
-      <div class="note">🎯 <b>ช่วงที่ 3:</b> วิเคราะห์การทดลองให้ครบ ${DISC_Q.length} ข้อ</div>
+      <div class="note">🎯 <b>ช่วงที่ 4:</b> วิเคราะห์การทดลองให้ครบ ${DISC_Q.length} ข้อ</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       <div id="qhost"></div>
     `);
     quizRun(DISC_Q, 'qhost', qWrong=>{
-      const miss = sortWrong + matchWrong + qWrong;
-      const got = miss<=2?3:miss<=4?2:1;
+      const miss = sortWrong + averyWrong + matchWrong + qWrong;
+      const got = miss<=2?3:miss<=5?2:1;
       stageMiss = miss;
       finishStage('discover', got, 80-Math.min(miss*7,50), `
         <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
