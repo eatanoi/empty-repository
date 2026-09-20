@@ -423,6 +423,41 @@ h3{font-size:1.05rem}
 .cellbox h4{margin:0 0 6px;font-size:.92rem}
 .cellbox .big{font-size:1.7rem;font-weight:800;color:var(--deep);font-variant-numeric:tabular-nums}
 .cellbox .lbl{font-size:.78rem;color:var(--muted)}
+/* ---- ห้องทดลองของ Griffith (ด่าน 2) — ใช้คำนำหน้า gl- ทั้งหมดกันชนกับคลาสอื่น ---- */
+.gl-lab{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.62));
+  border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px;
+  box-shadow:0 10px 30px -22px rgba(8,74,36,.6)}
+.gl-benchrow{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:760px){.gl-benchrow{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}}
+.gl-panel{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:12px}
+.gl-panel h4{margin:0 0 8px;font-size:.9rem;color:var(--deep);display:flex;align-items:center;gap:6px}
+.gl-rack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gl-tube{cursor:grab;touch-action:none;text-align:center;border-radius:12px;padding:8px 4px 6px;
+  border:2px solid transparent;background:rgba(255,255,255,.7);transition:.15s}
+.gl-tube:hover{border-color:var(--line)}
+.gl-tube.sel{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.gl-tube.used{opacity:.42;cursor:default}
+.gl-tube svg{width:100%;max-width:54px;height:auto;display:block;margin:0 auto}
+.gl-tube .gl-cap{display:block;font-size:.68rem;font-weight:700;line-height:1.35;margin-top:4px;color:var(--deep)}
+.gl-bench{position:relative;display:flex;align-items:center;justify-content:space-around;gap:10px;
+  min-height:170px;border-radius:14px;padding:10px;
+  background:repeating-linear-gradient(90deg,rgba(175,210,188,.22) 0 22px,rgba(175,210,188,.10) 22px 44px)}
+.gl-drop{border:2px dashed transparent;border-radius:14px;padding:8px;transition:.15s;text-align:center}
+.gl-drop.armed{border-color:var(--gold);background:rgba(242,103,22,.08)}
+.gl-drop.hot{border-color:var(--lime);background:rgba(47,125,79,.12)}
+.gl-drop svg{width:100%;max-width:150px;height:auto;display:block;margin:0 auto}
+.gl-drop .gl-cap{display:block;font-size:.72rem;font-weight:700;margin-top:4px;color:var(--muted)}
+.gl-ghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%);width:54px}
+.gl-predict{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.gl-log{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:10px}
+.gl-log th,.gl-log td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+.gl-log th{color:var(--deep);font-weight:800;white-space:nowrap}
+.gl-log td.gl-res{font-weight:800;white-space:nowrap}
+.gl-log tr.gl-todo td{color:var(--muted)}
+.gl-dead{color:var(--bad)} .gl-alive{color:var(--ok)}
+@keyframes gl-shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.gl-bench.gl-inject{animation:gl-shake .4s}
+
 </style>
 </head>
 <body>
@@ -943,19 +978,218 @@ function stageChromosome(){
   }
 }
 
+
+/* =========================================================================
+   ห้องทดลองของ Griffith — ลากหลอดทดลองใส่เข็มฉีดยา ทำนายผล แล้วฉีดให้หนู
+   ใช้ได้ทั้งลากวางและแตะเลือก (มือถือลากบางเครื่องไม่ถนัด)
+   ========================================================================= */
+const GRIF_TRIALS = [
+  { k:'R',   no:1, name:'สายพันธุ์ R ที่มีชีวิต',            short:'R มีชีวิต',      liquid:'#E8A87C', dies:false,
+    blood:'ไม่พบแบคทีเรียในเลือด',
+    why:'สายพันธุ์ R ผิว<b>ขรุขระ ไม่มีแคปซูล</b> จึงไม่ก่อโรคปอดบวม — ชุดนี้เป็น<b>ชุดควบคุมแบบลบ</b>' },
+  { k:'S',   no:2, name:'สายพันธุ์ S ที่มีชีวิต',            short:'S มีชีวิต',      liquid:'#7FB3D5', dies:true,
+    blood:'พบสายพันธุ์ S จำนวนมาก',
+    why:'สายพันธุ์ S ผิว<b>เรียบ มีแคปซูล</b> จึงก่อโรคปอดบวมรุนแรง — ชุดนี้เป็น<b>ชุดควบคุมแบบบวก</b>' },
+  { k:'Sh',  no:3, name:'สายพันธุ์ S ที่ต้มฆ่าด้วยความร้อน', short:'S ต้มฆ่าแล้ว',   liquid:'#C8CDD6', dies:false,
+    blood:'ไม่พบแบคทีเรียในเลือด',
+    why:'แบคทีเรีย<b>ตายแล้ว</b>จึงก่อโรคไม่ได้และเพิ่มจำนวนในตัวหนูไม่ได้' },
+  { k:'mix', no:4, name:'S ที่ต้มฆ่าแล้ว + R ที่มีชีวิต',    short:'S ต้ม + R มีชีวิต', liquid:'#B39DDB', dies:true,
+    blood:'พบทั้งสายพันธุ์ S และสายพันธุ์ R',
+    why:'<b>สารบางอย่างจาก S ที่ตายแล้ว</b>เข้าไปเปลี่ยน R ให้กลายเป็น S ที่มีชีวิต และถ่ายทอดลักษณะต่อไปยังรุ่นลูกหลานได้' }
+];
+function glTubeSvg(fill, lit){
+  return `<svg viewBox="0 0 60 116" aria-hidden="true">
+    <path d="M18 8 h24 v78 a12 12 0 0 1-24 0 z" fill="#F4FAFF" stroke="#7E8CA0" stroke-width="3"/>
+    <path d="M21 56 h18 v30 a9 9 0 0 1-18 0 z" fill="${fill}" opacity=".95"/>
+    <rect x="14" y="2" width="32" height="10" rx="4" fill="#B9C4D2"/>
+    ${lit?'<circle cx="30" cy="70" r="3.4" fill="#fff" opacity=".85"/>':''}
+  </svg>`;
+}
+function glSyringeSvg(fill){
+  return `<svg viewBox="0 0 210 74" aria-hidden="true">
+    <rect x="26" y="22" width="120" height="30" rx="7" fill="#F4FAFF" stroke="#7E8CA0" stroke-width="3"/>
+    ${fill?`<rect x="30" y="26" width="112" height="22" rx="5" fill="${fill}" opacity=".95"/>`:''}
+    <rect x="6" y="18" width="22" height="38" rx="5" fill="#B9C4D2"/>
+    <rect x="146" y="32" width="22" height="10" rx="3" fill="#B9C4D2"/>
+    <path d="M168 37 h34" stroke="#8E9AAB" stroke-width="5" stroke-linecap="round"/>
+  </svg>`;
+}
+function glMouseSvg(state){
+  const body = state==='dead' ? '#D9CFC4' : '#CDBBA7';
+  return `<svg viewBox="0 0 190 130" aria-hidden="true">
+    <rect x="6" y="14" width="178" height="110" rx="14" fill="#FBF8EC" stroke="#A9B4A5" stroke-width="3"/>
+    <g stroke="#A9B4A5" stroke-width="2.4" opacity=".55">
+      ${[34,62,90,118,146].map(x=>`<path d="M${x} 16 V122"/>`).join('')}
+    </g>
+    <ellipse cx="96" cy="88" rx="46" ry="27" fill="${body}" stroke="#8C7A67" stroke-width="3"/>
+    <circle cx="58" cy="74" r="20" fill="${body}" stroke="#8C7A67" stroke-width="3"/>
+    <circle cx="52" cy="57" r="9" fill="#E7C6C6" stroke="#8C7A67" stroke-width="2.4"/>
+    <circle cx="72" cy="55" r="9" fill="#E7C6C6" stroke="#8C7A67" stroke-width="2.4"/>
+    <path d="M140 92 q26 6 34 -14" fill="none" stroke="#8C7A67" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="41" cy="72" r="2.6" fill="#4A3B2E"/>
+    ${state==='dead'
+      ? '<g stroke="#D6350B" stroke-width="3" stroke-linecap="round"><path d="M37 68 l8 8"/><path d="M45 68 l-8 8"/></g>'
+      : ''}
+  </svg>`;
+}
+/* hostId = ชั้นวาง+โต๊ะทดลอง · logId = ตารางสรุปผล (วางใต้กล่องคำอธิบาย) · onDone(จำนวนที่ทำนายผิด) */
+function griffithLab(hostId, logId, onDone){
+  const host = document.getElementById(hostId), logHost = document.getElementById(logId);
+  let loaded = null, done = 0, wrong = 0, armed = null, busy = false;
+  const results = {};
+
+  function draw(){
+    host.innerHTML = `
+      <div class="gl-lab">
+        <div class="gl-benchrow">
+          <div class="gl-panel">
+            <h4>🧪 ชั้นวางหลอดทดลอง</h4>
+            <div class="gl-rack" id="glRack">
+              ${GRIF_TRIALS.map(t=>`<div class="gl-tube${results[t.k]?' used':''}" data-k="${t.k}"
+                  role="button" tabindex="0" aria-label="${t.name}">
+                ${glTubeSvg(t.liquid, !results[t.k])}
+                <span class="gl-cap">${t.no}. ${t.short}</span></div>`).join('')}
+            </div>
+            <div class="small muted" style="margin-top:8px">ลากหลอดไปใส่เข็มฉีดยา หรือแตะหลอดแล้วแตะเข็มก็ได้</div>
+          </div>
+          <div class="gl-panel">
+            <h4>🔬 โต๊ะทดลอง</h4>
+            <div class="gl-bench" id="glBench">
+              <div class="gl-drop" id="glSyr" data-drop="syr">
+                ${glSyringeSvg(loaded ? loaded.liquid : null)}
+                <span class="gl-cap">${loaded ? loaded.short : 'เข็มฉีดยา (ยังว่าง)'}</span>
+              </div>
+              <div class="gl-drop" id="glCage" data-drop="cage">
+                ${glMouseSvg('alive')}
+                <span class="gl-cap">หนูทดลอง</span>
+              </div>
+            </div>
+            <div id="glAct"></div>
+          </div>
+        </div>
+      </div>`;
+    logHost.innerHTML = `
+      <table class="gl-log">
+        <tr><th>ชุด</th><th>สิ่งที่ฉีด</th><th>ผล</th><th>ตรวจเลือด</th></tr>
+        ${GRIF_TRIALS.map(t=>{
+          const r = results[t.k];
+          return `<tr class="${r?'':'gl-todo'}"><th>${t.no}</th><td>${t.name}</td>
+            <td class="gl-res ${r ? (t.dies?'gl-dead':'gl-alive') : ''}">${r ? (t.dies?'💀 หนูตาย':'😀 หนูไม่ตาย') : '—'}</td>
+            <td>${r ? t.blood : '—'}</td></tr>`;
+        }).join('')}
+      </table>`;
+    bind();
+  }
+
+  function setArmed(k){
+    armed = k;
+    host.querySelectorAll('.gl-tube').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
+    const syr = document.getElementById('glSyr');
+    if(syr) syr.classList.toggle('armed', !!k);
+  }
+
+  function loadSyringe(k){
+    const t = GRIF_TRIALS.find(x=>x.k===k);
+    if(!t || results[k]) return;
+    loaded = t; setArmed(null); draw();
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show';
+    fb.innerHTML = `💉 ดูดของเหลวจากหลอดที่ ${t.no} — <b>${t.name}</b> ใส่เข็มแล้ว · ลองทายก่อนฉีดว่าหนูจะเป็นอย่างไร`;
+    document.getElementById('glAct').innerHTML = `
+      <div class="gl-predict">
+        <button class="btn sm" data-guess="alive">😀 ทายว่าหนูไม่ตาย</button>
+        <button class="btn sm" data-guess="dead">💀 ทายว่าหนูตาย</button>
+      </div>`;
+    document.getElementById('glCage').classList.add('armed');
+    host.querySelectorAll('[data-guess]').forEach(b=>b.onclick = ()=>inject(b.dataset.guess));
+  }
+
+  function inject(guess){
+    if(!loaded || busy) return;
+    busy = true;
+    const t = loaded, ok = (guess==='dead') === t.dies;
+    if(!ok) wrong++;
+    const bench = document.getElementById('glBench');
+    bench.classList.add('gl-inject');
+    document.getElementById('glAct').innerHTML = '';
+    setTimeout(()=>{
+      results[t.k] = true; done++;
+      const cage = document.getElementById('glCage');
+      cage.innerHTML = `${glMouseSvg(t.dies?'dead':'alive')}<span class="gl-cap">${t.dies?'หนูตาย':'หนูไม่ตาย'}</span>`;
+      const fb = document.getElementById('fb');
+      fb.className = 'feedback show ' + (ok?'good':'bad');
+      fb.innerHTML = `${ok?'✅ ทายถูก':'❌ ทายผิด'} — ชุดที่ ${t.no} ฉีด“<b>${t.name}</b>” แล้ว
+        <b class="${t.dies?'gl-dead':'gl-alive'}">${t.dies?'หนูตาย':'หนูไม่ตาย'}</b> · ตรวจเลือดพบ: ${t.blood}<br>${t.why}`;
+      const pb = document.getElementById('pb'); if(pb) pb.style.width = (done/GRIF_TRIALS.length*100)+'%';
+      setTimeout(()=>{
+        loaded = null; busy = false; draw();
+        if(done === GRIF_TRIALS.length) setTimeout(()=>onDone(wrong), 1400);
+      }, 1700);
+    }, 700);
+  }
+
+  /* ลากวาง: สร้างเงาตามนิ้ว แล้วดูว่าปล่อยทับปลายทางใด · ถ้าไม่ได้ลากถือเป็นการแตะเลือก */
+  function bind(){
+    host.querySelectorAll('.gl-tube:not(.used)').forEach(el=>{
+      let ghost=null, moved=false, sx=0, sy=0;
+      el.addEventListener('pointerdown', ev=>{
+        if(busy) return;
+        ev.preventDefault(); moved=false; sx=ev.clientX; sy=ev.clientY;
+        el.setPointerCapture(ev.pointerId);
+      });
+      el.addEventListener('pointermove', ev=>{
+        if(busy || !el.hasPointerCapture(ev.pointerId)) return;
+        if(!moved && Math.hypot(ev.clientX-sx, ev.clientY-sy) < 8) return;
+        if(!moved){
+          moved = true; setArmed(el.dataset.k);
+          ghost = document.createElement('div');
+          ghost.className = 'gl-ghost';
+          ghost.innerHTML = glTubeSvg(GRIF_TRIALS.find(t=>t.k===el.dataset.k).liquid, true);
+          document.body.appendChild(ghost);
+        }
+        ghost.style.left = ev.clientX+'px'; ghost.style.top = (ev.clientY-24)+'px';
+        const over = dropAt(ev.clientX, ev.clientY);
+        host.querySelectorAll('.gl-drop').forEach(d=>d.classList.toggle('hot', d===over));
+      });
+      el.addEventListener('pointerup', ev=>{
+        if(ghost){ ghost.remove(); ghost=null; }
+        host.querySelectorAll('.gl-drop').forEach(d=>d.classList.remove('hot'));
+        if(busy) return;
+        if(moved){
+          const over = dropAt(ev.clientX, ev.clientY);
+          if(over && over.dataset.drop==='syr') loadSyringe(el.dataset.k);
+          else if(over && over.dataset.drop==='cage') nudgeCage();
+          else setArmed(null);
+        }else{
+          setArmed(armed===el.dataset.k ? null : el.dataset.k);
+        }
+      });
+      el.addEventListener('keydown', ev=>{
+        if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); setArmed(el.dataset.k); }
+      });
+    });
+    const syr = document.getElementById('glSyr'), cage = document.getElementById('glCage');
+    if(syr) syr.onclick = ()=>{ if(armed) loadSyringe(armed); };
+    if(cage) cage.onclick = ()=>{ if(!loaded && !busy) nudgeCage(); };
+  }
+  function nudgeCage(){
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show bad';
+    fb.innerHTML = loaded
+      ? '❌ ยังฉีดไม่ได้ — <b>ทายผลก่อน</b>ว่าหนูจะเป็นอย่างไร แล้วเข็มจะฉีดให้เอง'
+      : '❌ เข็มฉีดยายังว่างอยู่ — ต้อง<b>ลากหลอดทดลองมาใส่เข็ม</b>ก่อน';
+  }
+  function dropAt(x, y){
+    const el = document.elementFromPoint(x, y);
+    return el ? el.closest('.gl-drop') : null;
+  }
+
+  draw();
+}
+
 /* =========================================================================
    ด่าน 2 — ห้องสืบคดี DNA: การค้นพบว่า DNA เป็นสารพันธุกรรม (4.2.1)
    ========================================================================= */
-const GRIF_ITEMS = [
-  { n:'ชุดที่ 1 · ฉีดสายพันธุ์ R ที่มีชีวิต', g:'live',
-    e:'<b>หนูไม่ตาย</b> — สายพันธุ์ R ผิวขรุขระ ไม่มีแคปซูล จึงไม่ทำให้เกิดโรคปอดบวม (เป็นชุดควบคุมแบบลบ)' },
-  { n:'ชุดที่ 2 · ฉีดสายพันธุ์ S ที่มีชีวิต', g:'dead',
-    e:'<b>หนูตาย</b> — สายพันธุ์ S ผิวเรียบ มี<b>แคปซูล</b> ทำให้เกิดโรคปอดบวมรุนแรง (เป็นชุดควบคุมแบบบวก)' },
-  { n:'ชุดที่ 3 · ฉีดสายพันธุ์ S ที่ทำให้ตายด้วยความร้อน', g:'live',
-    e:'<b>หนูไม่ตาย</b> — แบคทีเรียตายแล้วจึงก่อโรคไม่ได้ และตรวจเลือดก็<b>ไม่พบแบคทีเรีย</b>' },
-  { n:'ชุดที่ 4 · ฉีดสายพันธุ์ S ที่ตายด้วยความร้อน + R ที่มีชีวิต', g:'dead',
-    e:'<b>หนูตาย</b> และพบทั้ง S และ R ในเลือด — <b>สารบางอย่างจาก S ที่ตายแล้วเข้าไปเปลี่ยน R ให้กลายเป็น S ที่มีชีวิต</b> และถ่ายทอดต่อไปยังรุ่นลูกหลานได้' }
-];
 const SCI_PAIRS = [
   { k:'miescher', n:'Friedrich Miescher', em:'🧪',
     h:'พ.ศ. 2412 · แยกสารจากนิวเคลียสที่มีทั้งไนโตรเจนและฟอสฟอรัส',
@@ -1001,25 +1235,21 @@ const DISC_Q = [
 ];
 function stageDiscover(){
   let sortWrong = 0, matchWrong = 0;
-  drawSort();
+  drawLab();
 
-  function drawSort(){
-    const B = { live:{ t:'🐭 หนูไม่ตาย' }, dead:{ t:'💀 หนูตาย' } };
+  function drawLab(){
     app.innerHTML = stageShell('discover', `
-      <div class="note">🎯 <b>ช่วงที่ 1 · การทดลองของ Griffith:</b>
-        แบคทีเรีย <i>Streptococcus pneumoniae</i> มีสองสายพันธุ์ — <b>R</b> ผิวขรุขระไม่มีแคปซูล
-        และ <b>S</b> ผิวเรียบมีแคปซูล · แตะชุดการทดลอง แล้วแตะผลที่เกิดขึ้น</div>
+      <div class="note">🎯 <b>ช่วงที่ 1 · ห้องทดลองของ Griffith:</b>
+        แบคทีเรีย <i>Streptococcus pneumoniae</i> มีสองสายพันธุ์ — <b>R</b> ผิวขรุขระ<b>ไม่มีแคปซูล</b>
+        และ <b>S</b> ผิวเรียบ<b>มีแคปซูล</b><br>
+        <b>ลากหลอดทดลองไปใส่เข็มฉีดยา → ทายผล → ดูว่าหนูเป็นอย่างไร</b> ให้ครบทั้ง 4 ชุด
+        <span class="small muted">(แตะหลอดแล้วแตะเข็มก็ได้)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      <div class="bank" id="pool">
-        ${shuffle(GRIF_ITEMS).map(it=>`<div class="tok" data-n="${it.n}">${it.n}</div>`).join('')}
-      </div>
-      <div class="buckets" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-        ${Object.entries(B).map(([k,v])=>`<div class="bucket" data-g="${k}">
-          <h4>${v.t}</h4><div class="items" id="items-${k}"></div></div>`).join('')}
-      </div>
+      <div id="labhost"></div>
       <div class="feedback" id="fb"></div>
+      <div id="labtable"></div>
     `);
-    bindBuckets(GRIF_ITEMS, B, 'pb', 'fb', wrong=>{
+    griffithLab('labhost', 'labtable', wrong=>{
       sortWrong = wrong; toast('ครบสี่ชุดแล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,700);
     });
   }
