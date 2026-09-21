@@ -569,6 +569,74 @@ h3{font-size:1.05rem}
 .dh-legend{font-size:.72rem;color:var(--muted);margin-top:8px;line-height:1.7}
 .dh-dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;
   border:1px solid rgba(4,38,30,.3)}
+/* ── ห้องถอดรหัส–แปลรหัส (ด่าน 5) ───────────────────────────────── */
+.tx-lab{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--panel2)}
+.tx-step{background:var(--green-pale);border:1px solid var(--line);border-radius:12px;
+  padding:9px 12px;font-size:.88rem;line-height:1.6;margin-bottom:10px}
+.tx-row{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:880px){.tx-row{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
+.tx-panel{border:1px solid var(--line);border-radius:14px;padding:10px 12px 12px;background:#fff}
+.tx-panel h4{margin:0 0 8px;font-size:.88rem;color:var(--deep)}
+.tx-gene{width:100%;height:auto;display:block;margin-bottom:6px}
+.tx-line{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:2px 0}
+.tx-tag{flex:0 0 auto;font-size:.7rem;font-weight:800;color:var(--deep);min-width:74px}
+.tx-p{flex:0 0 auto;font-size:.68rem;font-weight:800;color:var(--muted)}
+.tx-cells{display:flex;gap:2px;flex:0 1 auto}
+.tx-c{width:25px;height:24px;border-radius:4px;border:1px solid rgba(4,38,30,.26);
+  display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;color:#12251A}
+.tx-c.blank{border-style:dashed;background:rgba(8,74,36,.05);color:transparent}
+.tx-c.now{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.25)}
+.tx-arrow{font-size:.74rem;font-weight:800;color:var(--muted);margin:7px 0 5px;padding-left:4px}
+.tx-drop{border:2px dashed transparent;border-radius:10px;padding:4px 4px 5px;transition:.15s}
+.tx-drop.armed{border-color:var(--gold)}
+.tx-drop.hot{border-color:var(--lime);background:rgba(47,125,79,.10)}
+.tx-cod{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
+.tx-codon{border:1px solid rgba(4,38,30,.2);border-radius:8px;padding:3px;background:rgba(8,74,36,.04)}
+.tx-codon.now{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,103,22,.22)}
+.tx-pep{display:flex;align-items:center;gap:3px;flex-wrap:wrap;min-height:46px}
+.tx-aa{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.75);
+  box-shadow:0 3px 8px -3px rgba(4,38,30,.5);
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff}
+.tx-aa.blank{background:rgba(8,74,36,.06);border:2px dashed rgba(8,74,36,.3);box-shadow:none}
+.tx-aa.now{outline:3px solid rgba(242,103,22,.45);outline-offset:2px}
+.tx-bond{width:14px;height:3px;border-radius:2px;background:rgba(8,74,36,.35);flex:0 0 auto}
+.tx-tray{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}
+.tx-tray.aa{grid-template-columns:repeat(3,1fr)}
+.tx-tok{cursor:grab;touch-action:none;border:1.5px solid var(--line);border-radius:12px;background:#fff;
+  padding:7px 4px 6px;text-align:center;transition:border-color .15s,box-shadow .15s}
+.tx-tok:hover{border-color:rgba(8,74,36,.35)}
+.tx-tok.sel{border-color:var(--gold);box-shadow:0 0 0 4px rgba(242,103,22,.18)}
+.tx-tok.used{opacity:.35;cursor:default}
+.tx-chip{display:flex;align-items:center;justify-content:center;height:26px;border-radius:5px;
+  border:1px solid rgba(4,38,30,.28);font-weight:800;font-size:.86rem;color:#12251A}
+.tx-tok .gl-cap{display:block;font-size:.62rem;font-weight:700;margin-top:4px;color:var(--deep)}
+.tx-ghost{width:52px}
+.tx-code{width:100%;border-collapse:collapse;font-size:.74rem;margin-top:8px}
+.tx-code th,.tx-code td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left}
+.tx-code th{color:var(--deep);font-weight:800}
+.tx-code td.cod{font-weight:800;letter-spacing:.06em}
+.tx-why{margin-top:10px;font-size:.76rem;line-height:1.85;color:var(--deep)}
+.tx-why div{display:flex;align-items:center;gap:6px}
+.tx-why b.n{display:inline-block;min-width:54px;text-align:center;border-radius:7px;padding:1px 6px;
+  background:var(--orange-pale);border:1px solid var(--line);font-size:.76rem}
+.tx-why .ok{background:var(--green-pale)}
+.tx-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:2px 0 8px;max-width:260px}
+.tx-g{display:flex;align-items:center;justify-content:center;height:24px;border-radius:5px;
+  border:1px solid rgba(4,38,30,.22);font-size:.72rem;font-weight:800;color:#12251A;
+  background:var(--cream-hi);letter-spacing:.04em}
+.tx-grid.g16{border:1.5px solid var(--rose);border-radius:9px;padding:5px;max-width:270px}
+@media(max-width:470px){
+  .tx-c{width:20px;height:22px;font-size:.68rem}
+  .tx-tag{min-width:0;flex:1 0 100%}
+  .tx-aa{width:40px;height:40px;font-size:.64rem}
+}
+@media(max-width:360px){   /* จอแคบมาก บีบช่องเบสให้พอดีแถวเดียว */
+  .tx-panel{padding:8px 8px 10px}
+  .tx-c{width:17px;height:20px;font-size:.6rem}
+  .tx-cells{gap:1px}
+  .tx-p{font-size:.6rem}
+  .tx-line{gap:3px}
+}
 </style>
 </head>
 <body>
@@ -2148,15 +2216,244 @@ function stageCopy(){
 }
 
 /* =========================================================================
+   ห้องถอดรหัส–แปลรหัส — จำลองตามแผนภาพในหนังสือเรียน
+   ช่วงถอดรหัส: ลากไรโบนิวคลีโอไทด์มาเข้าคู่กับ DNA สายแม่แบบจนได้ mRNA
+   ช่วงแปลรหัส: อ่าน mRNA ทีละโคดอน (3 เบส) แล้วลากกรดแอมิโนตามตารางรหัสพันธุกรรม
+   ========================================================================= */
+const TX_TPL  = ['T','A','C','A','A','A','C','C','G','A','T','G'];   /* สายแม่แบบ 3′→5′ */
+const TX_DNA2 = ['A','T','G','T','T','T','G','G','C','T','A','C'];   /* สายคู่สม  5′→3′ */
+const TX_RNA  = { T:'A', A:'U', C:'G', G:'C' };                      /* แม่แบบ → RNA (A จับกับ U) */
+const TX_MRNA = TX_TPL.map(b=>TX_RNA[b]);                            /* A U G U U U G G C U A C */
+const TX_BC   = { A:'#9CC78A', T:'#EE9A9A', U:'#EE9A9A', C:'#F5DC8E', G:'#9CC2DE' };
+const TX_BN   = { A:'อะดีนีน (A)', U:'ยูราซิล (U)', C:'ไซโทซีน (C)', G:'กวานีน (G)', T:'ไทมีน (T)' };
+const TX_AAS = [
+  { c:'AUG', aa:'Met', th:'เมไทโอนีน',    col:'#2F3E8F', note:'รหัสเริ่มต้น' },
+  { c:'UUU', aa:'Phe', th:'ฟีนิลแอลานีน', col:'#D97FA8' },
+  { c:'GGC', aa:'Gly', th:'ไกลซีน',       col:'#A98457' },
+  { c:'UAC', aa:'Tyr', th:'ไทโรซีน',      col:'#7E77C4' },
+  { c:'UUG', aa:'Leu', th:'ลิวซีน',       col:'#4E9370' },
+  { c:'GCU', aa:'Ala', th:'แอลานีน',      col:'#C77F2E' }
+];
+const TX_CODONS = [0,3,6,9].map(i=>TX_MRNA.slice(i,i+3).join(''));    /* AUG UUU GGC UAC */
+
+/* ภาพเกลียวคู่ย่อด้านบน พร้อมกรอบยีนที่กำลังถอดรหัส */
+function txGeneSvg(){
+  const W = 600, H = 66, mid = 33, amp = 17, per = 66;
+  const wave = sh => Array.from({length:61}, (_,i)=>{
+    const x = i*W/60, y = mid + sh*amp*Math.sin(2*Math.PI*x/per);
+    return (i?'L':'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }).join(' ');
+  const rungs = Array.from({length:40}, (_,i)=>{
+    const x = 6 + i*(W-12)/39, d = amp*Math.sin(2*Math.PI*x/per);
+    const g1 = x>=132 && x<=276, g2 = x>=312 && x<=456;
+    return `<path d="M${x.toFixed(1)} ${(mid+d).toFixed(1)} L${x.toFixed(1)} ${(mid-d).toFixed(1)}"
+      stroke="${g1?'#5CB8E6':g2?'#7CB894':'#9FB6CF'}" stroke-width="3" stroke-linecap="round" opacity=".9"/>`;
+  }).join('');
+  return `<svg class="tx-gene" viewBox="0 0 ${W} ${H+22}" role="img" aria-label="ยีนบนดีเอ็นเอ">
+    ${rungs}
+    <path d="${wave(1)}" fill="none" stroke="#2F4E8F" stroke-width="5" stroke-linecap="round"/>
+    <path d="${wave(-1)}" fill="none" stroke="#2F4E8F" stroke-width="5" stroke-linecap="round"/>
+    <rect x="130" y="4" width="148" height="58" rx="4" fill="none" stroke="#3E3E3E" stroke-width="1.6"/>
+    <text x="204" y="${H+16}" text-anchor="middle" font-size="15" font-weight="700" fill="#084A24">ยีน 1</text>
+    <text x="384" y="${H+16}" text-anchor="middle" font-size="15" font-weight="700" fill="#4E9370">ยีน 2</text>
+  </svg>`;
+}
+
+/* hostId = กล่องเครื่องจำลอง · onDone(จำนวนที่ผิด) */
+function codeLab(hostId, onDone){
+  const host = document.getElementById(hostId);
+  let phase = 'tx', at = 0, wrong = 0, pd = null;
+  const rna = [], pep = [];
+
+  const cell = (b, cls='') => b
+    ? `<span class="tx-c ${cls}" style="background:${TX_BC[b]}">${b}</span>`
+    : `<span class="tx-c blank ${cls}">·</span>`;
+
+  function mrnaHTML(){
+    if(phase === 'tx'){
+      return `<div class="tx-cells">${TX_MRNA.map((b,i)=>cell(rna[i], i===at?'now':'')).join('')}</div>`;
+    }
+    return `<div class="tx-cod">${TX_CODONS.map((c,ci)=>
+      `<span class="tx-codon ${phase==='tl'&&ci===at?'now':''}"><span class="tx-cells">${
+        c.split('').map(b=>cell(b)).join('')}</span></span>`).join('')}</div>`;
+  }
+
+  function pepHTML(){
+    return TX_CODONS.map((c,i)=>{
+      const a = pep[i] && TX_AAS.find(x=>x.aa===pep[i]);
+      const dot = a ? `<span class="tx-aa ${phase==='tl'&&i===at?'now':''}" style="background:${a.col}">${a.aa}</span>`
+                    : `<span class="tx-aa blank ${phase==='tl'&&i===at?'now':''}">·</span>`;
+      return (i?'<span class="tx-bond"></span>':'') + dot;
+    }).join('');
+  }
+
+  function stepText(){
+    if(phase === 'tx') return `📝 <b>การถอดรหัส (transcription)</b> — สร้าง mRNA ที่มีเบส<b>คู่สมกับสายแม่แบบ</b>
+      โดยใน RNA ใช้ <b>ยูราซิล (U) แทนไทมีน (T)</b> · ตำแหน่งที่ ${at+1} จาก ${TX_MRNA.length} ·
+      แม่แบบตรงนี้คือ <b>${TX_BN[TX_TPL[at]]}</b>`;
+    if(phase === 'tl') return `🔤 <b>การแปลรหัส (translation)</b> — อ่าน mRNA <b>ทีละ 3 เบส (โคดอน)</b>
+      แล้วนำกรดแอมิโนที่ตรงกันมาต่อเป็นสายพอลิเพปไทด์ · โคดอนที่ ${at+1} คือ <b>${TX_CODONS[at]}</b>`;
+    return `🎉 <b>ได้สายพอลิเพปไทด์แล้ว</b> — ข้อมูลเดินทางจาก <b>DNA → mRNA → โปรตีน</b> ครบเส้นทาง`;
+  }
+
+  function sideHTML(){
+    if(phase === 'tx'){
+      return `<h4>🧪 ไรโบนิวคลีโอไทด์</h4>
+        <div class="tx-tray">
+          ${['A','U','C','G'].map(k=>`<div class="tx-tok" data-k="${k}" role="button" tabindex="0"
+              aria-label="${TX_BN[k]}">
+            <span class="tx-chip" style="background:${TX_BC[k]}">${k}</span>
+            <span class="gl-cap">${TX_BN[k].replace(/ \(.\)$/,'')}</span></div>`).join('')}
+        </div>
+        <div class="small muted" style="margin-top:8px">ลากไรโบนิวคลีโอไทด์ไปวางบนแถบ mRNA หรือแตะแล้วแตะแถบก็ได้</div>
+        <div class="tx-why">
+          <div><b class="n">A–U</b> ใน RNA ไม่มีไทมีน เบสคู่สมของ <b>A บนแม่แบบ</b> จึงเป็น <b>U</b></div>
+          <div><b class="n">C–G</b> เข้าคู่กันเหมือนเดิมทั้งใน DNA และ RNA</div>
+        </div>`;
+    }
+    if(phase === 'tl'){
+      return `<h4>🔑 ตารางรหัสพันธุกรรม</h4>
+        <table class="tx-code">
+          <tr><th>โคดอน</th><th>กรดแอมิโน</th></tr>
+          ${TX_AAS.map(a=>`<tr><td class="cod">${a.c}</td>
+            <td>${a.th} (${a.aa})${a.note?` · <b>${a.note}</b>`:''}</td></tr>`).join('')}
+          <tr><td class="cod">UAA</td><td>ไม่กำหนดกรดแอมิโน · <b>รหัสหยุด</b></td></tr>
+        </table>
+        <div class="tx-tray aa">
+          ${shuffle(TX_AAS.slice()).map(a=>`<div class="tx-tok${pep.includes(a.aa)?' used':''}" data-k="${a.aa}"
+              role="button" tabindex="0" aria-label="${a.th}">
+            <span class="tx-chip" style="background:${a.col};color:#fff;border-color:rgba(255,255,255,.4)">${a.aa}</span>
+            <span class="gl-cap">${a.th}</span></div>`).join('')}
+        </div>
+        <div class="small muted" style="margin-top:8px">เปิดตารางแล้วลากกรดแอมิโนไปต่อที่สายพอลิเพปไทด์</div>`;
+    }
+    const bases = ['A','G','C','U'];
+    const pairs = bases.flatMap(x=>bases.map(y=>x+y));
+    return `<h4>🧠 ทำไมรหัสต้องเป็น 3 เบส</h4>
+      <div class="tx-why">
+        <div><b class="n">4 รหัส</b> 1 นิวคลีโอไทด์ ⇨ 1 รหัส — น้อยกว่ากรดแอมิโน 20 ชนิด</div>
+      </div>
+      <div class="tx-grid">${bases.map(x=>
+        `<span class="tx-g" style="background:${TX_BC[x]}">${x}</span>`).join('')}</div>
+      <div class="tx-why">
+        <div><b class="n">16 รหัส</b> 2 นิวคลีโอไทด์ ⇨ 1 รหัส — ยังไม่พอ</div>
+      </div>
+      <div class="tx-grid g16">${pairs.map(c=>`<span class="tx-g">${c}</span>`).join('')}</div>
+      <div class="tx-why">
+        <div><b class="n ok">64 รหัส</b> 3 นิวคลีโอไทด์ ⇨ 1 รหัส — <b>พอสำหรับกรดแอมิโน 20 ชนิด</b></div>
+      </div>
+      <div class="small muted" style="margin-top:8px">รหัสพันธุกรรม 64 รหัส มี <b>61 รหัส</b>ที่กำหนดชนิดของกรดแอมิโน
+        และอีก <b>3 รหัส</b>เป็นรหัสหยุด</div>`;
+  }
+
+  function draw(){
+    host.innerHTML = `
+      <div class="tx-lab">
+        <div class="tx-step">${stepText()}</div>
+        <div class="tx-row">
+          <div class="tx-panel">
+            <h4>🧬 ยีนบนดีเอ็นเอ</h4>
+            ${txGeneSvg()}
+            <div class="tx-line"><span class="tx-tag">สายแม่แบบ</span><span class="tx-p">3′</span>
+              <span class="tx-cells">${TX_TPL.map((b,i)=>cell(b, phase==='tx'&&i===at?'now':'')).join('')}</span>
+              <span class="tx-p">5′</span></div>
+            <div class="tx-line"><span class="tx-tag">สายคู่สม</span><span class="tx-p">5′</span>
+              <span class="tx-cells">${TX_DNA2.map(b=>cell(b)).join('')}</span><span class="tx-p">3′</span></div>
+            <div class="tx-arrow">↓ ถอดรหัส (transcription)</div>
+            <div class="tx-line tx-drop" id="txMrna" data-zone="tx"><span class="tx-tag">mRNA</span>
+              <span class="tx-p">5′</span>${mrnaHTML()}<span class="tx-p">3′</span></div>
+            <div class="tx-arrow">↓ แปลรหัส (translation)</div>
+            <div class="tx-line tx-drop" id="txPep" data-zone="tl"><span class="tx-tag">พอลิเพปไทด์</span>
+              <span class="tx-pep">${pepHTML()}</span></div>
+          </div>
+          <div class="tx-panel" id="txSide">${sideHTML()}</div>
+        </div>
+      </div>`;
+    bind();
+  }
+
+  function say(cls, html){
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show ' + cls; fb.innerHTML = html;
+  }
+
+  function place(k){
+    if(phase === 'tx'){
+      const want = TX_MRNA[at];
+      if(k !== want){
+        wrong++;
+        say('bad', `❌ แม่แบบตำแหน่งนี้เป็น<b>${TX_BN[TX_TPL[at]]}</b> จึงต้องเข้าคู่กับ<b>${TX_BN[want]}</b>
+          ${TX_TPL[at]==='A' ? ' — อย่าลืมว่าใน RNA <b>ไม่มีไทมีน</b> ใช้ <b>ยูราซิล (U)</b> แทน' : ''}`);
+        return;
+      }
+      rna[at] = k; at++;
+      const pb = document.getElementById('pb');
+      if(pb) pb.style.width = (at/(TX_MRNA.length+TX_CODONS.length)*100)+'%';
+      if(at >= TX_MRNA.length){
+        phase = 'tl'; at = 0;
+        say('good', `✅ ถอดรหัสครบแล้ว — ได้ mRNA <b>5′ ${TX_MRNA.join(' ')} 3′</b><br>
+          ต่อไปไรโบโซมจะอ่าน mRNA <b>ทีละ 3 เบส</b> แล้วให้ tRNA นำกรดแอมิโนมาต่อกัน`);
+      }else{
+        say('good', `✅ ตำแหน่งที่ ${at} — <b>${TX_BN[TX_TPL[at-1]]}</b> บนแม่แบบ เข้าคู่กับ<b>${TX_BN[k]}</b>`);
+      }
+      draw();
+      return;
+    }
+    if(phase !== 'tl') return;
+    const want = TX_AAS.find(a=>a.c === TX_CODONS[at]);
+    if(k !== want.aa){
+      wrong++;
+      const got = TX_AAS.find(a=>a.aa === k);
+      say('bad', `❌ ${got.th} (${got.aa}) ตรงกับโคดอน <b>${got.c}</b> แต่โคดอนที่ ${at+1} คือ <b>${TX_CODONS[at]}</b>
+        — ลองเทียบกับตารางรหัสพันธุกรรมอีกครั้ง`);
+      return;
+    }
+    pep[at] = k; at++;
+    const pb = document.getElementById('pb');
+    if(pb) pb.style.width = ((TX_MRNA.length+at)/(TX_MRNA.length+TX_CODONS.length)*100)+'%';
+    if(at >= TX_CODONS.length){
+      phase = 'done';
+      say('good', `🎉 <b>ได้สายพอลิเพปไทด์ ${TX_AAS.slice(0,4).map(a=>a.aa).join('–')}</b> —
+        ลำดับเบสบน DNA จึงกำหนด<b>ลำดับกรดแอมิโน</b> และกำหนดชนิดของโปรตีนในที่สุด`);
+      draw();
+      setTimeout(()=>onDone(wrong), 2600);
+      return;
+    }
+    say('good', `✅ โคดอน <b>${TX_CODONS[at-1]}</b> → <b>${want.th} (${want.aa})</b>${
+      want.note ? ` · ${want.note}` : ''}`);
+    draw();
+  }
+
+  function bind(){
+    if(phase === 'done') return;
+    pd = pickDrag(host, {
+      tok:'.tx-tok:not(.used)', drop:'.tx-drop', ghostClass:'gl-ghost tx-ghost',
+      key: el=>el.dataset.k,
+      busy: ()=>false,
+      ghost: el=>el.querySelector('.tx-chip').outerHTML,
+      onArm: k=>{
+        host.querySelectorAll('.tx-tok').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
+        host.querySelectorAll('.tx-drop').forEach(d=>d.classList.toggle('armed', !!k && d.dataset.zone===phase));
+      },
+      onDrop: (d,k)=>{
+        if(!k){ say('bad', '❌ ยังไม่ได้เลือกชิ้นส่วน — <b>แตะชิ้นส่วนทางขวาก่อน</b> แล้วค่อยแตะแถบ'); return; }
+        if(d.dataset.zone !== phase){
+          say('bad', phase==='tx'
+            ? '❌ ตอนนี้อยู่ขั้น<b>ถอดรหัส</b> — ต้องวางไรโบนิวคลีโอไทด์บน<b>แถบ mRNA</b> ก่อน'
+            : '❌ ตอนนี้อยู่ขั้น<b>แปลรหัส</b> — ต้องนำกรดแอมิโนไปต่อที่<b>สายพอลิเพปไทด์</b>');
+          return;
+        }
+        place(k);
+        if(pd) pd.arm(null);
+      }
+    });
+  }
+
+  draw();
+}
+/* =========================================================================
    ด่าน 5 — ห้องถอดรหัส–แปลรหัส: การสังเคราะห์โปรตีน (4.3.2)
    ========================================================================= */
-const SYN_STEPS = [
-  { n:'DNA สายแม่แบบ', e:'ยีนคือช่วงของ DNA ที่เก็บข้อมูล โดยใช้<b>พอลินิวคลีโอไทด์สายที่เป็นแม่แบบ</b>เพียงสายเดียวเป็นต้นแบบ' },
-  { n:'การถอดรหัส', e:'<b>การถอดรหัส (transcription)</b> — สร้าง <b>mRNA</b> ที่มีลำดับเบสคู่สมกับสายแม่แบบ (ใน RNA ใช้ <b>U</b> แทน T)' },
-  { n:'mRNA เคลื่อนไปยังไรโบโซม', e:'<b>mRNA</b> ทำหน้าที่<b>นำรหัสจาก DNA ไปยังไรโบโซม</b> ซึ่งมี <b>rRNA</b> เป็นองค์ประกอบ' },
-  { n:'tRNA นำกรดแอมิโนมาเข้าคู่', e:'<b>tRNA</b> ที่มี<b>แอนติโคดอน</b>เข้าคู่กับ<b>โคดอน</b>บน mRNA แล้ว<b>นำกรดแอมิโนที่จำเพาะ</b>มาส่ง' },
-  { n:'ได้สายพอลิเพปไทด์', e:'<b>การแปลรหัส (translation)</b> สิ้นสุดเมื่อถึง<b>โคดอนหยุด</b> ได้สายพอลิเพปไทด์ที่จะม้วนเป็นโปรตีนโครงสร้างหรือเอนไซม์' }
-];
 const RNA_PAIRS = [
   { k:'mrna', n:'mRNA', em:'📨',
     h:'นำรหัสการสังเคราะห์โปรตีนจาก DNA ไปยังไรโบโซม',
@@ -2200,14 +2497,15 @@ function stageFactory(){
 
   function drawOrder(){
     app.innerHTML = stageShell('factory', `
-      <div class="note">🎯 <b>ช่วงที่ 1:</b> ข้อมูลใน DNA กลายเป็นโปรตีนได้อย่างไร —
-        แตะการ์ดเรียงตามลำดับ <b>DNA → โปรตีน</b></div>
+      <div class="note">🎯 <b>ช่วงที่ 1 · เครื่องถอดรหัส–แปลรหัส:</b> ข้อมูลใน DNA กลายเป็นโปรตีนได้อย่างไร —
+        <b>ลากไรโบนิวคลีโอไทด์มาสร้าง mRNA → อ่านทีละโคดอน → ต่อกรดแอมิโนเป็นพอลิเพปไทด์</b>
+        <span class="small muted">(แตะชิ้นส่วนแล้วแตะแถบก็ได้)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
-      ${orderBoard(SYN_STEPS, 'แตะการ์ดเรียงจาก DNA ไปจนได้สายพอลิเพปไทด์')}
+      <div id="txhost"></div>
       <div class="feedback" id="fb"></div>
     `);
-    bindOrder(SYN_STEPS, wrong=>{
-      orderWrong = wrong; toast('ถูกทั้งเส้นทาง! ไปช่วงที่ 2'); setTimeout(drawMatch,900);
+    codeLab('txhost', wrong=>{
+      orderWrong = wrong; toast('ได้สายพอลิเพปไทด์แล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,900);
     });
   }
 
