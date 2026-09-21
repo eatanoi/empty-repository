@@ -518,6 +518,7 @@ h3{font-size:1.05rem}
 @keyframes dh-turn{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
 .dh-rung{position:absolute;left:-86px;top:0;width:172px;height:20px;
   display:flex;align-items:center;gap:3px;transform-style:preserve-3d}
+.dh-rung .dh-flag{pointer-events:none}
 .dh-bb{width:21px;height:21px;border-radius:50%;flex:0 0 auto;
   background:radial-gradient(circle at 34% 28%,#fff,var(--bb) 78%);
   border:1px solid rgba(4,38,30,.3);box-shadow:0 2px 5px -2px rgba(4,38,30,.5)}
@@ -648,10 +649,6 @@ h3{font-size:1.05rem}
 .lg-line{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:3px 0}
 .lg-tag{flex:0 0 auto;font-size:.68rem;font-weight:800;color:var(--deep);min-width:92px}
 .lg-p{flex:0 0 auto;font-size:.66rem;font-weight:800;color:var(--muted)}
-.lg-bar{flex:1 1 auto;min-width:120px;height:22px;border-radius:5px;display:flex;align-items:center;
-  justify-content:center;font-size:.66rem;font-weight:800;color:#fff}
-.lg-bar.tpl{background:linear-gradient(90deg,#7E9BB8,#5C90A6)}
-.lg-bar.lead{background:linear-gradient(90deg,#F2A06E,#F26716)}
 .lg-fork{margin:6px 0 2px}
 .lg-frags{display:flex;gap:5px;flex:0 1 auto;flex-wrap:wrap}
 .lg-frag{position:relative;display:flex;gap:2px;padding:3px;border-radius:9px;
@@ -664,13 +661,12 @@ h3{font-size:1.05rem}
 .lg-frag.tpl{border-color:transparent;background:none}
 .lg-flag{position:absolute;right:-3px;top:-11px;font-size:.66rem;line-height:1}
 .lg-mark{position:absolute;right:-5px;top:-2px;color:var(--gold);font-weight:800;font-size:.86rem}
+.dh-flag{position:absolute;right:-16px;top:-7px;font-size:.62rem;line-height:1}
+.lg-read{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .lg-dir{font-size:.68rem;font-weight:800;color:var(--gold);margin-left:96px}
 .lg-note{font-size:.74rem;line-height:1.85;color:var(--deep);margin-top:10px}
 .lg-note b.n{display:inline-block;min-width:66px;text-align:center;border-radius:7px;padding:1px 6px;
   background:var(--orange-pale);border:1px solid var(--line);font-size:.72rem;margin-right:4px}
-.lg-drop{border:2px dashed transparent;border-radius:10px;padding:4px;transition:.15s}
-.lg-drop.armed{border-color:var(--gold)}
-.lg-drop.hot{border-color:var(--lime);background:rgba(47,125,79,.10)}
 @media(max-width:470px){
   .lg-tag{min-width:0;flex:1 0 100%}
   .lg-dir{margin-left:2px}
@@ -2170,15 +2166,16 @@ function helixLab(hostId, onDone){
   draw();
 }
 /* =========================================================================
-   แลกกิงสแทรนด์ — สร้างเป็นท่อนสั้น ๆ (โอกาซากิ) ทวนทิศการเคลื่อนของส้อมจำลอง
-   แม่แบบวางซ้าย→ขวาเป็น 5′→3′ สายใหม่จึงเป็น 3′→5′ ในภาพ
-   แต่ละท่อนยัง "สร้าง" 5′→3′ ตามเดิม คือไล่จาก<ขวาไปซ้าย>ภายในท่อน
-   ท่อนที่ 1 อยู่ซ้ายสุดและสร้างก่อน เพราะส้อมจำลองเปิดแม่แบบจากซ้ายไปขวา
+   แลกกิงสแทรนด์ 3 มิติ — สร้างเป็นท่อนสั้น ๆ (โอกาซากิ) ทวนทิศส้อมจำลอง
+   แม่แบบวางจากบนลงล่างเป็น 5′→3′ สายใหม่จึงเป็น 3′(บน) → 5′(ล่าง)
+   แต่ละท่อนยังสร้าง 5′→3′ ตามเดิม คือไล่จาก<ล่างขึ้นบน>ภายในท่อน
+   ท่อนที่ 1 อยู่บนสุดและสร้างก่อน เพราะส้อมจำลองเปิดแม่แบบจากบนลงล่าง
    ========================================================================= */
 const LG_TPL  = ['A','T','G','C','A','T','G','G','C'];   /* แม่แบบแลกกิง 5′→3′ */
 const LG_SIZE = 3;                                       /* ท่อนละ 3 เบส */
 const LG_N    = LG_TPL.length / LG_SIZE;                 /* จำนวนท่อน */
-/* ลำดับการเติม: ในแต่ละท่อนไล่จากขวาไปซ้าย (ทิศ 5′→3′ ของสายใหม่) */
+const LG_ANG  = 40;                                      /* 9 ขั้น × 40° = ครบหนึ่งรอบพอดี */
+/* ลำดับการเติม: ในแต่ละท่อนไล่จากล่างขึ้นบน (ทิศ 5′→3′ ของสายใหม่) */
 const LG_ORDER = Array.from({length:LG_N}, (_,f)=>
   Array.from({length:LG_SIZE}, (_,j)=>f*LG_SIZE + (LG_SIZE-1-j))).flat();
 
@@ -2190,7 +2187,39 @@ function laggingLab(hostId, onDone){
   const fragOf = i => Math.floor(i/LG_SIZE);
   const at = () => LG_ORDER[step];
   const fragDone = f => made.slice(f*LG_SIZE, f*LG_SIZE+LG_SIZE).filter(Boolean).length === LG_SIZE;
+  const isPrimer = i => (i % LG_SIZE) === LG_SIZE-1;      /* ปลาย 5′ ของแต่ละท่อน */
+  const faces = k => `<span>${k}</span><span class="bk">${k}</span>`;
 
+  /* ── แบบจำลอง 3 มิติ ─────────────────────────────────────────── */
+  function rungHTML(i){
+    const t = LG_TPL[i], n = made[i];
+    const open = phase !== 'fork';
+    const right = n || (open ? null : DH_PAIR[t]);
+    const flag = open && phase !== 'sealed' && isPrimer(i)
+      ? '<b class="dh-flag" title="ไพรเมอร์ที่ปลาย 5′ ของท่อน">🚩</b>' : '';
+    return `<div class="dh-rung${phase==='build' && i===at() ? ' active':''}" data-i="${i}"
+        style="transform:translateY(${i*DH_STEP}px) rotateY(${i*LG_ANG}deg)">
+      <div class="dh-bb old"></div>
+      <div class="dh-base" style="background:${DH_COLOR[t]}">${faces(t)}</div>
+      <div class="dh-base ${right ? (n?'fresh':'') : 'empty'}"
+        style="${right ? `background:${DH_COLOR[right]}` : ''}">${right ? faces(right) : ''}</div>
+      <div class="dh-bb ${right?'new':'new gone'}"></div>${flag}
+    </div>`;
+  }
+  /* ลูกปัดแกนคั่นระหว่างขั้น — ฝั่งสายใหม่จะ "ขาด" ตรงรอยต่อระหว่างท่อนจนกว่าไลเกสจะเชื่อม */
+  function halfHTML(i){
+    const joined = phase==='fork' || phase==='sealed'
+      || (made[i] && made[i+1] && fragOf(i)===fragOf(i+1));
+    return [1/3, 2/3].map(f=>`<div class="dh-half"
+        style="transform:translateY(${(i+f)*DH_STEP}px) rotateY(${(i+f)*LG_ANG}deg)">
+      <div class="dh-bb old"></div>
+      <div class="dh-bb new${joined?'':' gone'}"></div>
+    </div>`).join('');
+  }
+  const helixInner = ()=> LG_TPL.slice(0,-1).map((_,i)=>halfHTML(i)).join('')
+                        + LG_TPL.map((_,i)=>rungHTML(i)).join('');
+
+  /* ── แถบสรุปท่อนโอกาซากิ (อ่านซ้าย→ขวา = บน→ล่างของแบบจำลอง) ── */
   const cell = (b, cls='') => b
     ? `<span class="tx-c ${cls}" style="background:${DH_COLOR[b]}">${b}</span>`
     : `<span class="tx-c blank ${cls}">·</span>`;
@@ -2205,10 +2234,9 @@ function laggingLab(hostId, onDone){
       }).join('');
       const flag = phase==='prime' || phase==='build' || phase==='seal'
         ? '<span class="lg-flag" title="ไพรเมอร์ที่ปลาย 5′ ของท่อน">🚩</span>' : '';
-      return `<span class="lg-frag ${cls}">${cells}${phase==='sealed'?'':flag}</span>`;
+      return `<span class="lg-frag ${cls}">${cells}${flag}</span>`;
     }).join('')}</div>`;
   }
-
   function tplHTML(opened){
     return `<div class="lg-frags">${Array.from({length:LG_N}, (_,f)=>
       `<span class="lg-frag tpl">${Array.from({length:LG_SIZE}, (_,j)=>{
@@ -2216,16 +2244,27 @@ function laggingLab(hostId, onDone){
         return cell(opened?LG_TPL[i]:null, phase==='build'&&i===at()?'now':'');
       }).join('')}</span>`).join('')}</div>`;
   }
-  /* หมุด ▶ ชี้ขอบขวาของท่อนที่กำลังสร้าง — ส้อมจำลองเคลื่อนไปทางขวาทีละท่อน */
   function forkHTML(opened){
     const idx = !opened ? -1 : (phase==='build' ? fragOf(at()) : LG_N-1);
-    return `<div class="lg-line lg-fork"><span class="lg-tag">ส้อมจำลอง ▶</span>
+    return `<div class="lg-line lg-fork"><span class="lg-tag">ส้อมจำลอง ▼</span>
       <span class="lg-p" style="visibility:hidden">5′</span>
       <div class="lg-frags">${Array.from({length:LG_N}, (_,f)=>
         `<span class="lg-frag tpl">${Array.from({length:LG_SIZE},()=>
           '<span class="tx-c" style="visibility:hidden"></span>').join('')}${
-          f===idx ? '<b class="lg-mark">▶</b>' : ''}</span>`).join('')}</div>
+          f===idx ? '<b class="lg-mark">▼</b>' : ''}</span>`).join('')}</div>
       <span class="lg-p" style="visibility:hidden">3′</span></div>`;
+  }
+  function readoutHTML(opened){
+    return `<div class="lg-read">
+      <div class="small muted" style="margin-bottom:4px">ซ้าย = ด้านบนของแบบจำลอง</div>
+      ${forkHTML(opened)}
+      <div class="lg-line"><span class="lg-tag">แลกกิงสแทรนด์</span><span class="lg-p">3′</span>
+        ${fragsHTML()}<span class="lg-p">5′</span></div>
+      ${phase==='build' ? `<div class="lg-dir">◀ ทิศการสร้างของท่อนนี้ 5′→3′
+        <span class="small">(ในแบบจำลอง 3 มิติคือไล่จากล่างขึ้นบน สวนทางกับส้อมจำลอง)</span></div>` : ''}
+      <div class="lg-line"><span class="lg-tag">แม่แบบแลกกิง</span><span class="lg-p">5′</span>
+        ${tplHTML(opened)}<span class="lg-p">3′</span></div>
+    </div>`;
   }
 
   function stepText(){
@@ -2233,26 +2272,26 @@ function laggingLab(hostId, onDone){
       fork :'🔓 <b>ขั้นที่ 1 · ส้อมจำลองเคลื่อนไป</b> — เฮลิเคสคลายเกลียวต่อ เปิด<b>สายแม่แบบของแลกกิงสแทรนด์</b>ออกมาเรื่อย ๆ',
       prime:`🚩 <b>ขั้นที่ 2 · ไพรเมอร์</b> — แลกกิงสแทรนด์สร้างเป็นท่อน ๆ จึงต้องมี<b>ไพรเมอร์ของตัวเองทุกท่อน</b> รวม ${LG_N} อัน`,
       build:`✍️ <b>ขั้นที่ 3 · สร้างท่อนสั้น ๆ</b> — ท่อนที่ ${fragOf(at())+1} จาก ${LG_N} ·
-              แต่ละท่อนยังสร้าง <b>5′→3′</b> เหมือนเดิม แต่<b>ไล่จากขวาไปซ้าย</b> คือ<b>สวนทางกับส้อมจำลอง</b>
+              แต่ละท่อนยังสร้าง <b>5′→3′</b> เหมือนเดิม แต่<b>ไล่จากล่างขึ้นบน</b> คือ<b>สวนทางกับส้อมจำลอง</b>
               · แม่แบบตรงนี้คือ <b>${DH_NAME[LG_TPL[at()]]}</b>`,
-      seal :'🧷 <b>ขั้นที่ 4 · ดีเอ็นเอไลเกส</b> — ได้ท่อนสั้น ๆ ครบแล้ว เหลือให้ไลเกส<b>เชื่อมรอยต่อระหว่างท่อน</b>ให้เป็นสายเดียว',
+      seal :'🧷 <b>ขั้นที่ 4 · ดีเอ็นเอไลเกส</b> — ได้ท่อนสั้น ๆ ครบแล้ว แต่ยังมี<b>รอยต่อระหว่างท่อน</b> ให้ไลเกสเชื่อมเป็นสายเดียว',
       sealed:'🎉 <b>เสร็จตอนที่ 2</b> — แลกกิงสแทรนด์<b>ต่อกันเป็นสายเดียวแล้ว</b> จึงได้ DNA ครบทั้งสองโมเลกุล'
     };
     return steps[phase];
   }
 
   function actHTML(){
-    if(phase === 'fork')  return '<button class="btn" id="lgGo">🔓 ให้ส้อมจำลองเคลื่อนไปทางขวา</button>';
+    if(phase === 'fork')  return '<button class="btn" id="lgGo">🔓 ให้ส้อมจำลองเคลื่อนลงไป</button>';
     if(phase === 'prime') return `<button class="btn" id="lgPrime">🚩 วางไพรเมอร์ให้ครบทั้ง ${LG_N} ท่อน</button>`;
     if(phase === 'seal')  return '<button class="btn" id="lgSeal">🧷 ใช้ไลเกสเชื่อมท่อนสั้น ๆ</button>';
-    if(phase === 'sealed') return '<div class="small muted">รอยต่อระหว่างท่อนหายไปแล้ว — สายใหม่ต่อเนื่องทั้งสาย</div>';
+    if(phase === 'sealed') return '<div class="small muted">ลูกปัดแกนตรงรอยต่อเติมเต็มแล้ว — สายใหม่ต่อเนื่องทั้งสาย</div>';
     return `<div class="dh-tray">
         ${['A','T','C','G'].map(k=>`<div class="dh-tok" data-k="${k}" role="button" tabindex="0"
             aria-label="${DH_NAME[k]}">
           <span class="dh-chip" style="background:${DH_COLOR[k]}">${k}</span>
           <span class="gl-cap">${DH_NAME[k]}</span></div>`).join('')}
       </div>
-      <div class="small muted" style="margin-top:8px">ลากนิวคลีโอไทด์ไปวางบนแถบแลกกิงสแทรนด์ หรือแตะแล้วแตะแถบก็ได้</div>`;
+      <div class="small muted" style="margin-top:8px">ลากนิวคลีโอไทด์ไปวางบนเกลียว หรือแตะนิวคลีโอไทด์แล้วแตะเกลียวก็ได้</div>`;
   }
 
   function draw(){
@@ -2262,21 +2301,17 @@ function laggingLab(hostId, onDone){
         <div class="lg-step">${stepText()}</div>
         <div class="lg-row">
           <div class="lg-panel">
-            <h4>🍴 ส้อมจำลอง (replication fork)</h4>
-            <div class="lg-line"><span class="lg-tag">แม่แบบลีดดิง</span><span class="lg-p">3′</span>
-              <span class="lg-bar tpl"></span><span class="lg-p">5′</span></div>
-            <div class="lg-line"><span class="lg-tag">ลีดดิงสแทรนด์</span><span class="lg-p">5′</span>
-              <span class="lg-bar lead">สร้างต่อเนื่อง ตามส้อมจำลอง ▶</span><span class="lg-p">3′</span></div>
-            ${forkHTML(opened)}
-            <div class="lg-line lg-drop" id="lgLag"><span class="lg-tag">แลกกิงสแทรนด์</span>
-              <span class="lg-p">3′</span>${fragsHTML()}<span class="lg-p">5′</span></div>
-            ${phase==='build' ? '<div class="lg-dir">◀ ทิศการสร้างของท่อนนี้ 5′→3′ (สวนทางกับส้อมจำลอง)</div>' : ''}
-            <div class="lg-line"><span class="lg-tag">แม่แบบแลกกิง</span><span class="lg-p">5′</span>
-              ${tplHTML(opened)}<span class="lg-p">3′</span></div>
+            <h4>🧬 แบบจำลอง 3 มิติ · ส้อมจำลอง</h4>
+            <div class="dh-stage" id="lgStage">
+              <div class="dh ${phase==='sealed'?'dh-spin':''}" id="lgHelix">${helixInner()}</div>
+              <div class="dh-end" style="top:2px">${opened?'5′ แม่แบบ · 3′ สายใหม่':'ปลายสายแม่แบบ 5′'}</div>
+              <div class="dh-end" style="bottom:4px">${opened?'3′ แม่แบบ · 5′ สายใหม่':'ปลายสายแม่แบบ 3′'}</div>
+            </div>
           </div>
           <div class="lg-panel">
             <h4>🧰 โต๊ะทำงานของเอนไซม์</h4>
             ${actHTML()}
+            ${readoutHTML(opened)}
             <div class="lg-note">
               <div><b class="n">ลีดดิง</b> สร้าง<b>ต่อเนื่อง</b>ไปทางเดียวกับที่เกลียวคลายออก</div>
               <div><b class="n">แลกกิง</b> แม่แบบวางทิศตรงข้าม จึงต้อง<b>สร้างถอยหลังทีละท่อน</b></div>
@@ -2286,6 +2321,13 @@ function laggingLab(hostId, onDone){
         </div>
       </div>`;
     bind();
+  }
+
+  /* อัปเดตเฉพาะส่วนที่เปลี่ยน ไม่แตะ #lgHelix ทั้งก้อน อนิเมชันจะได้ไม่เริ่มใหม่ */
+  function refresh(){
+    const h = document.getElementById('lgHelix'); if(h) h.innerHTML = helixInner();
+    const st = host.querySelector('.lg-step'); if(st) st.innerHTML = stepText();
+    const rd = host.querySelector('.lg-read'); if(rd) rd.outerHTML = readoutHTML(true);
   }
 
   function say(cls, html){
@@ -2308,14 +2350,15 @@ function laggingLab(hostId, onDone){
     if(step >= LG_ORDER.length){
       phase = 'seal';
       say('good', `✅ ได้ท่อนสั้น ๆ ครบ <b>${LG_N} ท่อน</b> แต่ยัง<b>ไม่ต่อกัน</b> —
-        สังเกตว่าทุกท่อนสร้าง <b>5′→3′</b> เหมือนกัน แต่ท่อนเรียงไล่ไปทางขวาตามส้อมจำลอง`);
-    }else{
-      const f = fragOf(i), nf = fragOf(at());
-      say('good', nf !== f
-        ? `✅ ปิดท่อนที่ ${f+1} แล้ว — ขึ้น<b>ท่อนใหม่</b>ที่ไพรเมอร์ถัดไป เพราะส้อมจำลองเปิดแม่แบบเพิ่ม`
-        : `✅ <b>${DH_NAME[LG_TPL[i]]}</b> บนแม่แบบ เข้าคู่กับ<b>${DH_NAME[k]}</b>`);
+        สังเกตว่าแกนสายใหม่<b>ขาดเป็นช่วง ๆ ตรงรอยต่อระหว่างท่อน</b>`);
+      draw();
+      return;
     }
-    draw();
+    const f = fragOf(i), nf = fragOf(at());
+    say('good', nf !== f
+      ? `✅ ปิดท่อนที่ ${f+1} แล้ว — ขึ้น<b>ท่อนใหม่</b>ที่ไพรเมอร์ถัดไป เพราะส้อมจำลองเปิดแม่แบบเพิ่ม`
+      : `✅ <b>${DH_NAME[LG_TPL[i]]}</b> บนแม่แบบ เข้าคู่กับ<b>${DH_NAME[k]}</b>`);
+    refresh();
   }
 
   function bind(){
@@ -2328,26 +2371,27 @@ function laggingLab(hostId, onDone){
     const pr = document.getElementById('lgPrime');
     if(pr) pr.onclick = ()=>{
       phase = 'build'; step = 0; draw();
-      say('good', `🚩 <b>วางไพรเมอร์ครบ ${LG_N} อันแล้ว</b> — ท่อนละหนึ่งอัน
+      say('good', `🚩 <b>วางไพรเมอร์ครบ ${LG_N} อันแล้ว</b> — ท่อนละหนึ่งอันที่<b>ปลาย 5′</b> ของท่อน
         เพราะแต่ละท่อนต้องมี<b>ปลาย 3′</b> ของตัวเองให้พอลิเมอเรสเริ่มต่อ`);
     };
     const sl = document.getElementById('lgSeal');
     if(sl) sl.onclick = ()=>{
       phase = 'sealed'; draw();
-      say('good', `🎉 <b>ไลเกสเชื่อมรอยต่อเรียบร้อย</b> — แลกกิงสแทรนด์กลายเป็น<b>สายเดียวต่อเนื่อง</b><br>
+      say('good', `🎉 <b>ไลเกสเชื่อมรอยต่อเรียบร้อย</b> — ไพรเมอร์ถูกแทนที่ด้วย DNA
+        และแกนสายใหม่<b>ต่อกันเป็นสายเดียว</b><br>
         ทั้งสองสายใหม่สร้าง <b>5′→3′ เหมือนกัน</b> ต่างกันแค่<b>ลีดดิงสร้างตามส้อม ส่วนแลกกิงสร้างสวนทาง</b>
         จึงต้องแบ่งเป็นท่อน`);
       setTimeout(()=>onDone(wrong), 2800);
     };
     if(phase !== 'build') return;
     pd = pickDrag(host, {
-      tok:'.dh-tok', drop:'.lg-drop', ghostClass:'gl-ghost dh-ghost',
+      tok:'.dh-tok', drop:'.dh-stage', ghostClass:'gl-ghost dh-ghost',
       key: el=>el.dataset.k,
       busy: ()=>false,
       ghost: el=>`<span class="dh-chip" style="background:${DH_COLOR[el.dataset.k]}">${el.dataset.k}</span>`,
       onArm: k=>{
         host.querySelectorAll('.dh-tok').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
-        const z = document.getElementById('lgLag'); if(z) z.classList.toggle('armed', !!k);
+        const z = document.getElementById('lgStage'); if(z) z.classList.toggle('armed', !!k);
       },
       onDrop: (d,k)=>{
         if(!k){ say('bad', '❌ ยังไม่ได้เลือกนิวคลีโอไทด์ — <b>แตะนิวคลีโอไทด์ทางขวาก่อน</b>'); return; }
@@ -2359,6 +2403,7 @@ function laggingLab(hostId, onDone){
 
   draw();
 }
+
 /* =========================================================================
    ด่าน 4 — ห้องจำลองดีเอ็นเอ: DNA replication (4.3.1)
    ========================================================================= */
