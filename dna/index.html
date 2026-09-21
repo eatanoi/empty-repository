@@ -637,6 +637,44 @@ h3{font-size:1.05rem}
   .tx-p{font-size:.6rem}
   .tx-line{gap:3px}
 }
+/* ── แลกกิงสแทรนด์: สร้างเป็นท่อนสั้น ๆ ทวนทิศส้อมจำลอง (ด่าน 4 ตอนที่ 2) ─ */
+.lg-lab{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--panel2)}
+.lg-step{background:var(--green-pale);border:1px solid var(--line);border-radius:12px;
+  padding:9px 12px;font-size:.88rem;line-height:1.6;margin-bottom:10px}
+.lg-row{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:860px){.lg-row{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}}
+.lg-panel{border:1px solid var(--line);border-radius:14px;padding:10px 12px 12px;background:#fff}
+.lg-panel h4{margin:0 0 8px;font-size:.88rem;color:var(--deep)}
+.lg-line{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:3px 0}
+.lg-tag{flex:0 0 auto;font-size:.68rem;font-weight:800;color:var(--deep);min-width:92px}
+.lg-p{flex:0 0 auto;font-size:.66rem;font-weight:800;color:var(--muted)}
+.lg-bar{flex:1 1 auto;min-width:120px;height:22px;border-radius:5px;display:flex;align-items:center;
+  justify-content:center;font-size:.66rem;font-weight:800;color:#fff}
+.lg-bar.tpl{background:linear-gradient(90deg,#7E9BB8,#5C90A6)}
+.lg-bar.lead{background:linear-gradient(90deg,#F2A06E,#F26716)}
+.lg-fork{margin:6px 0 2px}
+.lg-frags{display:flex;gap:5px;flex:0 1 auto;flex-wrap:wrap}
+.lg-frag{position:relative;display:flex;gap:2px;padding:3px;border-radius:9px;
+  border:1.5px dashed rgba(8,74,36,.25);background:rgba(8,74,36,.03);transition:.15s}
+.lg-frag.now{border-color:var(--gold);border-style:solid;box-shadow:0 0 0 3px rgba(242,103,22,.2)}
+.lg-frag.done{border-color:var(--ok);border-style:solid;background:var(--green-pale)}
+.lg-frag.sealed{border-radius:0;border-left-width:0;border-right-width:0;margin:0 -3px}
+.lg-frag.sealed:first-child{border-radius:9px 0 0 9px;border-left-width:1.5px;margin-left:0}
+.lg-frag.sealed:last-child{border-radius:0 9px 9px 0;border-right-width:1.5px;margin-right:0}
+.lg-frag.tpl{border-color:transparent;background:none}
+.lg-flag{position:absolute;right:-3px;top:-11px;font-size:.66rem;line-height:1}
+.lg-mark{position:absolute;right:-5px;top:-2px;color:var(--gold);font-weight:800;font-size:.86rem}
+.lg-dir{font-size:.68rem;font-weight:800;color:var(--gold);margin-left:96px}
+.lg-note{font-size:.74rem;line-height:1.85;color:var(--deep);margin-top:10px}
+.lg-note b.n{display:inline-block;min-width:66px;text-align:center;border-radius:7px;padding:1px 6px;
+  background:var(--orange-pale);border:1px solid var(--line);font-size:.72rem;margin-right:4px}
+.lg-drop{border:2px dashed transparent;border-radius:10px;padding:4px;transition:.15s}
+.lg-drop.armed{border-color:var(--gold)}
+.lg-drop.hot{border-color:var(--lime);background:rgba(47,125,79,.10)}
+@media(max-width:470px){
+  .lg-tag{min-width:0;flex:1 0 100%}
+  .lg-dir{margin-left:2px}
+}
 </style>
 </head>
 <body>
@@ -1953,7 +1991,7 @@ function helixLab(hostId, onDone){
   const faces = k => `<span>${k}</span><span class="bk">${k}</span>`;
   function rungHTML(i){
     const t = DH_SEQ[i], n = made[i];
-    const open = phase!=='intro';
+    const open = phase!=='intro';   /* คลายเกลียวแล้วตั้งแต่ขั้นไพรเมอร์ */
     const right = n || (open ? null : DH_PAIR[t]);
     return `<div class="dh-rung${open && i===at && phase==='fill' ? ' active':''}" data-i="${i}"
         style="transform:translateY(${i*DH_STEP}px) rotateY(${i*DH_ANG}deg)">
@@ -1989,10 +2027,12 @@ function helixLab(hostId, onDone){
   function stepText(){
     const steps = {
       intro:'🔓 <b>ขั้นที่ 1 · เฮลิเคส</b> — เอนไซม์เฮลิเคสจะทำลาย<b>พันธะไฮโดรเจน</b>ระหว่างคู่เบส คลายเกลียวและแยกสองสายออกจากกัน',
-      fill :`✍️ <b>ขั้นที่ 3 · ดีเอ็นเอพอลิเมอเรส</b> — ต่อนิวคลีโอไทด์ทีละตัวจาก<b>ปลาย 5′ ลงไปหา 3′</b> ของสายใหม่
-              · ตำแหน่งที่ ${at+1} จาก ${DH_SEQ.length} · แม่แบบตรงนี้คือ <b>${DH_NAME[DH_SEQ[at]]||''}</b>`,
-      seal :'🧷 <b>ขั้นที่ 4 · ดีเอ็นเอไลเกส</b> — เข้าคู่ครบทุกตำแหน่งแล้ว เหลือให้ไลเกส<b>เชื่อมสายใหม่</b>ให้ต่อเนื่อง',
-      final:'🎉 <b>ขั้นที่ 5</b> — ได้ DNA ที่มี<b>สายเดิม 1 สาย และสายใหม่ 1 สาย</b> นี่คือ<b>การจำลองแบบกึ่งอนุรักษ์</b>'
+      prime:'🚩 <b>ขั้นที่ 2 · ไพรเมอร์</b> — DNA polymerase <b>เริ่มสร้างสายใหม่จากที่ว่างเปล่าไม่ได้</b> ต้องมีไพรเมอร์มาเกาะให้<b>ปลาย 3′</b> สำหรับต่อก่อน',
+      fill :`✍️ <b>ขั้นที่ 3 · ดีเอ็นเอพอลิเมอเรส</b> — ต่อนิวคลีโอไทด์ทีละตัวจาก<b>ปลาย 5′ ไปหา 3′</b> ของสายใหม่
+              <b>ต่อเนื่องไม่ต้องหยุด</b> (ลีดดิงสแทรนด์) · ตำแหน่งที่ ${at+1} จาก ${DH_SEQ.length}
+              · แม่แบบตรงนี้คือ <b>${DH_NAME[DH_SEQ[at]]||''}</b>`,
+      seal :'🌀 <b>ขั้นที่ 4</b> — ได้<b>สายใหม่ที่ต่อเนื่องทั้งสาย</b> ลองหมุนดูเกลียวคู่ที่สร้างเสร็จแล้ว',
+      final:'🎉 <b>เสร็จตอนที่ 1</b> — DNA ใหม่มี<b>สายเดิม 1 สาย และสายใหม่ 1 สาย</b> นี่คือ<b>การจำลองแบบกึ่งอนุรักษ์</b>'
     };
     return steps[phase];
   }
@@ -2007,7 +2047,8 @@ function helixLab(hostId, onDone){
   function draw(){
     const acts = {
       intro:'<button class="btn" id="dhGo">🔓 ใช้เอนไซม์เฮลิเคสคลายเกลียว</button>',
-      seal :'<button class="btn" id="dhSeal">🧷 ใช้ไลเกสเชื่อมสายใหม่</button>',
+      prime:'<button class="btn" id="dhPrime">🚩 วางไพรเมอร์ที่จุดเริ่มต้น</button>',
+      seal :'<button class="btn" id="dhSeal">🌀 ดูเกลียวคู่ที่สร้างเสร็จ</button>',
       final:'<div class="small muted">เกลียวคู่กำลังหมุนให้ดูรอบด้าน — สายส้มคือสายที่เพิ่งสร้างขึ้นใหม่</div>',
       fill :`<div class="dh-tray">
           ${['A','T','C','G'].map(k=>`<div class="dh-tok" data-k="${k}" role="button" tabindex="0"
@@ -2047,7 +2088,7 @@ function helixLab(hostId, onDone){
       ? `<i class="${cls}" style="background:${DH_COLOR[k]}">${k}</i>`
       : `<i class="blank ${cls}">·</i>`;
     const newRow = DH_SEQ.map((t,i)=>{
-      const k = phase==='intro' ? DH_PAIR[t] : made[i];
+      const k = phase==='intro' ? DH_PAIR[t] : made[i];   /* ก่อนคลายเกลียวแสดงคู่เบสเดิมไว้ */
       return cell(k, phase==='fill' && i===at ? 'now' : '');
     }).join('');
     return `<div class="dh-seq">
@@ -2063,10 +2104,16 @@ function helixLab(hostId, onDone){
 
   function unwind(){
     if(busy) return;
-    busy = true; phase = 'fill'; at = 0; draw();
-    say('good', `🔓 <b>เฮลิเคสคลายเกลียวแล้ว</b> — พันธะไฮโดรเจนถูกทำลาย เหลือ<b>สายแม่แบบ</b>ให้สร้างสายใหม่<br>
-      <span class="small">ขั้นที่ 2 · <b>ไพรเมอร์</b>เกาะที่จุดเริ่มต้นเรียบร้อยแล้ว พอลิเมอเรสจึงเริ่มต่อนิวคลีโอไทด์ได้</span>`);
-    busy = false;
+    phase = 'prime'; at = 0; draw();
+    say('good', `🔓 <b>เฮลิเคสคลายเกลียวแล้ว</b> — พันธะไฮโดรเจนถูกทำลาย
+      เหลือ<b>สายแม่แบบ</b>สองสายให้สร้างสายใหม่`);
+  }
+
+  function prime(){
+    if(busy) return;
+    phase = 'fill'; at = 0; draw();
+    say('good', `🚩 <b>ไพรเมอร์เกาะที่จุดเริ่มต้นแล้ว</b> — พอลิเมอเรสมี<b>ปลาย 3′</b> ให้ต่อ
+      จึงเริ่มสร้างสายใหม่ได้`);
   }
 
   function place(k){
@@ -2092,13 +2139,15 @@ function helixLab(hostId, onDone){
   function seal(){
     if(busy) return;
     busy = true; phase = 'final'; draw();
-    say('good', `🎉 <b>ไลเกสเชื่อมสายใหม่เรียบร้อย</b> — ได้ DNA <b>2 โมเลกุลที่เหมือนต้นแบบทุกประการ</b><br>
+    say('good', `🎉 <b>สร้างลีดดิงสแทรนด์เสร็จแล้ว</b> — สายใหม่<b>ต่อเนื่องตลอดทั้งสาย</b>
+      เพราะทิศการสร้าง 5′→3′ ไปทางเดียวกับที่เกลียวคลายออก<br>
       แต่ละโมเลกุลมี<b>สายเดิม 1 สาย (สีฟ้า) และสายใหม่ 1 สาย (สีส้ม)</b> จึงเรียกว่า<b>การจำลองแบบกึ่งอนุรักษ์</b>`);
     setTimeout(()=>onDone(wrong), 2600);
   }
 
   function bind(){
     const go = document.getElementById('dhGo'); if(go) go.onclick = unwind;
+    const pr = document.getElementById('dhPrime'); if(pr) pr.onclick = prime;
     const sl = document.getElementById('dhSeal'); if(sl) sl.onclick = seal;
     if(phase !== 'fill') return;
     pd = pickDrag(host, {
@@ -2114,6 +2163,196 @@ function helixLab(hostId, onDone){
         if(!k){ say('bad', '❌ ยังไม่ได้เลือกนิวคลีโอไทด์ — <b>แตะนิวคลีโอไทด์ด้านล่างก่อน</b> แล้วค่อยแตะเกลียว'); return; }
         place(k);
         if(pd) pd.arm(null);      /* ล้างการเลือก เพื่อให้แตะตัวเดิมซ้ำได้ทันที */
+      }
+    });
+  }
+
+  draw();
+}
+/* =========================================================================
+   แลกกิงสแทรนด์ — สร้างเป็นท่อนสั้น ๆ (โอกาซากิ) ทวนทิศการเคลื่อนของส้อมจำลอง
+   แม่แบบวางซ้าย→ขวาเป็น 5′→3′ สายใหม่จึงเป็น 3′→5′ ในภาพ
+   แต่ละท่อนยัง "สร้าง" 5′→3′ ตามเดิม คือไล่จาก<ขวาไปซ้าย>ภายในท่อน
+   ท่อนที่ 1 อยู่ซ้ายสุดและสร้างก่อน เพราะส้อมจำลองเปิดแม่แบบจากซ้ายไปขวา
+   ========================================================================= */
+const LG_TPL  = ['A','T','G','C','A','T','G','G','C'];   /* แม่แบบแลกกิง 5′→3′ */
+const LG_SIZE = 3;                                       /* ท่อนละ 3 เบส */
+const LG_N    = LG_TPL.length / LG_SIZE;                 /* จำนวนท่อน */
+/* ลำดับการเติม: ในแต่ละท่อนไล่จากขวาไปซ้าย (ทิศ 5′→3′ ของสายใหม่) */
+const LG_ORDER = Array.from({length:LG_N}, (_,f)=>
+  Array.from({length:LG_SIZE}, (_,j)=>f*LG_SIZE + (LG_SIZE-1-j))).flat();
+
+/* hostId = กล่องเครื่องจำลอง · onDone(จำนวนที่เข้าคู่ผิด) */
+function laggingLab(hostId, onDone){
+  const host = document.getElementById(hostId);
+  let phase = 'fork', step = 0, wrong = 0, pd = null;
+  const made = [];
+  const fragOf = i => Math.floor(i/LG_SIZE);
+  const at = () => LG_ORDER[step];
+  const fragDone = f => made.slice(f*LG_SIZE, f*LG_SIZE+LG_SIZE).filter(Boolean).length === LG_SIZE;
+
+  const cell = (b, cls='') => b
+    ? `<span class="tx-c ${cls}" style="background:${DH_COLOR[b]}">${b}</span>`
+    : `<span class="tx-c blank ${cls}">·</span>`;
+
+  function fragsHTML(){
+    return `<div class="lg-frags">${Array.from({length:LG_N}, (_,f)=>{
+      const cur = phase==='build' && fragOf(at())===f;
+      const cls = phase==='sealed' ? 'sealed done' : (fragDone(f) ? 'done' : (cur ? 'now' : ''));
+      const cells = Array.from({length:LG_SIZE}, (_,j)=>{
+        const i = f*LG_SIZE + j;
+        return cell(made[i], phase==='build' && i===at() ? 'now' : '');
+      }).join('');
+      const flag = phase==='prime' || phase==='build' || phase==='seal'
+        ? '<span class="lg-flag" title="ไพรเมอร์ที่ปลาย 5′ ของท่อน">🚩</span>' : '';
+      return `<span class="lg-frag ${cls}">${cells}${phase==='sealed'?'':flag}</span>`;
+    }).join('')}</div>`;
+  }
+
+  function tplHTML(opened){
+    return `<div class="lg-frags">${Array.from({length:LG_N}, (_,f)=>
+      `<span class="lg-frag tpl">${Array.from({length:LG_SIZE}, (_,j)=>{
+        const i = f*LG_SIZE + j;
+        return cell(opened?LG_TPL[i]:null, phase==='build'&&i===at()?'now':'');
+      }).join('')}</span>`).join('')}</div>`;
+  }
+  /* หมุด ▶ ชี้ขอบขวาของท่อนที่กำลังสร้าง — ส้อมจำลองเคลื่อนไปทางขวาทีละท่อน */
+  function forkHTML(opened){
+    const idx = !opened ? -1 : (phase==='build' ? fragOf(at()) : LG_N-1);
+    return `<div class="lg-line lg-fork"><span class="lg-tag">ส้อมจำลอง ▶</span>
+      <span class="lg-p" style="visibility:hidden">5′</span>
+      <div class="lg-frags">${Array.from({length:LG_N}, (_,f)=>
+        `<span class="lg-frag tpl">${Array.from({length:LG_SIZE},()=>
+          '<span class="tx-c" style="visibility:hidden"></span>').join('')}${
+          f===idx ? '<b class="lg-mark">▶</b>' : ''}</span>`).join('')}</div>
+      <span class="lg-p" style="visibility:hidden">3′</span></div>`;
+  }
+
+  function stepText(){
+    const steps = {
+      fork :'🔓 <b>ขั้นที่ 1 · ส้อมจำลองเคลื่อนไป</b> — เฮลิเคสคลายเกลียวต่อ เปิด<b>สายแม่แบบของแลกกิงสแทรนด์</b>ออกมาเรื่อย ๆ',
+      prime:`🚩 <b>ขั้นที่ 2 · ไพรเมอร์</b> — แลกกิงสแทรนด์สร้างเป็นท่อน ๆ จึงต้องมี<b>ไพรเมอร์ของตัวเองทุกท่อน</b> รวม ${LG_N} อัน`,
+      build:`✍️ <b>ขั้นที่ 3 · สร้างท่อนสั้น ๆ</b> — ท่อนที่ ${fragOf(at())+1} จาก ${LG_N} ·
+              แต่ละท่อนยังสร้าง <b>5′→3′</b> เหมือนเดิม แต่<b>ไล่จากขวาไปซ้าย</b> คือ<b>สวนทางกับส้อมจำลอง</b>
+              · แม่แบบตรงนี้คือ <b>${DH_NAME[LG_TPL[at()]]}</b>`,
+      seal :'🧷 <b>ขั้นที่ 4 · ดีเอ็นเอไลเกส</b> — ได้ท่อนสั้น ๆ ครบแล้ว เหลือให้ไลเกส<b>เชื่อมรอยต่อระหว่างท่อน</b>ให้เป็นสายเดียว',
+      sealed:'🎉 <b>เสร็จตอนที่ 2</b> — แลกกิงสแทรนด์<b>ต่อกันเป็นสายเดียวแล้ว</b> จึงได้ DNA ครบทั้งสองโมเลกุล'
+    };
+    return steps[phase];
+  }
+
+  function actHTML(){
+    if(phase === 'fork')  return '<button class="btn" id="lgGo">🔓 ให้ส้อมจำลองเคลื่อนไปทางขวา</button>';
+    if(phase === 'prime') return `<button class="btn" id="lgPrime">🚩 วางไพรเมอร์ให้ครบทั้ง ${LG_N} ท่อน</button>`;
+    if(phase === 'seal')  return '<button class="btn" id="lgSeal">🧷 ใช้ไลเกสเชื่อมท่อนสั้น ๆ</button>';
+    if(phase === 'sealed') return '<div class="small muted">รอยต่อระหว่างท่อนหายไปแล้ว — สายใหม่ต่อเนื่องทั้งสาย</div>';
+    return `<div class="dh-tray">
+        ${['A','T','C','G'].map(k=>`<div class="dh-tok" data-k="${k}" role="button" tabindex="0"
+            aria-label="${DH_NAME[k]}">
+          <span class="dh-chip" style="background:${DH_COLOR[k]}">${k}</span>
+          <span class="gl-cap">${DH_NAME[k]}</span></div>`).join('')}
+      </div>
+      <div class="small muted" style="margin-top:8px">ลากนิวคลีโอไทด์ไปวางบนแถบแลกกิงสแทรนด์ หรือแตะแล้วแตะแถบก็ได้</div>`;
+  }
+
+  function draw(){
+    const opened = phase !== 'fork';
+    host.innerHTML = `
+      <div class="lg-lab">
+        <div class="lg-step">${stepText()}</div>
+        <div class="lg-row">
+          <div class="lg-panel">
+            <h4>🍴 ส้อมจำลอง (replication fork)</h4>
+            <div class="lg-line"><span class="lg-tag">แม่แบบลีดดิง</span><span class="lg-p">3′</span>
+              <span class="lg-bar tpl"></span><span class="lg-p">5′</span></div>
+            <div class="lg-line"><span class="lg-tag">ลีดดิงสแทรนด์</span><span class="lg-p">5′</span>
+              <span class="lg-bar lead">สร้างต่อเนื่อง ตามส้อมจำลอง ▶</span><span class="lg-p">3′</span></div>
+            ${forkHTML(opened)}
+            <div class="lg-line lg-drop" id="lgLag"><span class="lg-tag">แลกกิงสแทรนด์</span>
+              <span class="lg-p">3′</span>${fragsHTML()}<span class="lg-p">5′</span></div>
+            ${phase==='build' ? '<div class="lg-dir">◀ ทิศการสร้างของท่อนนี้ 5′→3′ (สวนทางกับส้อมจำลอง)</div>' : ''}
+            <div class="lg-line"><span class="lg-tag">แม่แบบแลกกิง</span><span class="lg-p">5′</span>
+              ${tplHTML(opened)}<span class="lg-p">3′</span></div>
+          </div>
+          <div class="lg-panel">
+            <h4>🧰 โต๊ะทำงานของเอนไซม์</h4>
+            ${actHTML()}
+            <div class="lg-note">
+              <div><b class="n">ลีดดิง</b> สร้าง<b>ต่อเนื่อง</b>ไปทางเดียวกับที่เกลียวคลายออก</div>
+              <div><b class="n">แลกกิง</b> แม่แบบวางทิศตรงข้าม จึงต้อง<b>สร้างถอยหลังทีละท่อน</b></div>
+              <div><b class="n">กฎเดียว</b> พอลิเมอเรสต่อได้เฉพาะที่<b>ปลาย 3′</b> การสร้างจึงเป็น <b>5′→3′ เสมอ</b></div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    bind();
+  }
+
+  function say(cls, html){
+    const fb = document.getElementById('fb');
+    fb.className = 'feedback show ' + cls; fb.innerHTML = html;
+  }
+
+  function place(k){
+    if(phase !== 'build') return;
+    const i = at(), want = DH_PAIR[LG_TPL[i]];
+    if(k !== want){
+      wrong++;
+      say('bad', `❌ แม่แบบตำแหน่งนี้เป็น<b>${DH_NAME[LG_TPL[i]]}</b> จึงต้องเข้าคู่กับ<b>${DH_NAME[want]}</b>
+        ด้วยพันธะไฮโดรเจน <b>${DH_HB[want]} พันธะ</b>`);
+      return;
+    }
+    made[i] = k; step++;
+    const pb = document.getElementById('pb');
+    if(pb) pb.style.width = (step/LG_ORDER.length*100)+'%';
+    if(step >= LG_ORDER.length){
+      phase = 'seal';
+      say('good', `✅ ได้ท่อนสั้น ๆ ครบ <b>${LG_N} ท่อน</b> แต่ยัง<b>ไม่ต่อกัน</b> —
+        สังเกตว่าทุกท่อนสร้าง <b>5′→3′</b> เหมือนกัน แต่ท่อนเรียงไล่ไปทางขวาตามส้อมจำลอง`);
+    }else{
+      const f = fragOf(i), nf = fragOf(at());
+      say('good', nf !== f
+        ? `✅ ปิดท่อนที่ ${f+1} แล้ว — ขึ้น<b>ท่อนใหม่</b>ที่ไพรเมอร์ถัดไป เพราะส้อมจำลองเปิดแม่แบบเพิ่ม`
+        : `✅ <b>${DH_NAME[LG_TPL[i]]}</b> บนแม่แบบ เข้าคู่กับ<b>${DH_NAME[k]}</b>`);
+    }
+    draw();
+  }
+
+  function bind(){
+    const go = document.getElementById('lgGo');
+    if(go) go.onclick = ()=>{
+      phase = 'prime'; draw();
+      say('good', `🔓 <b>ส้อมจำลองเคลื่อนไปแล้ว</b> — แม่แบบของแลกกิงสแทรนด์ถูกเปิดออก
+        แต่ทิศของมัน<b>สวนทางกับลีดดิงสแทรนด์</b>`);
+    };
+    const pr = document.getElementById('lgPrime');
+    if(pr) pr.onclick = ()=>{
+      phase = 'build'; step = 0; draw();
+      say('good', `🚩 <b>วางไพรเมอร์ครบ ${LG_N} อันแล้ว</b> — ท่อนละหนึ่งอัน
+        เพราะแต่ละท่อนต้องมี<b>ปลาย 3′</b> ของตัวเองให้พอลิเมอเรสเริ่มต่อ`);
+    };
+    const sl = document.getElementById('lgSeal');
+    if(sl) sl.onclick = ()=>{
+      phase = 'sealed'; draw();
+      say('good', `🎉 <b>ไลเกสเชื่อมรอยต่อเรียบร้อย</b> — แลกกิงสแทรนด์กลายเป็น<b>สายเดียวต่อเนื่อง</b><br>
+        ทั้งสองสายใหม่สร้าง <b>5′→3′ เหมือนกัน</b> ต่างกันแค่<b>ลีดดิงสร้างตามส้อม ส่วนแลกกิงสร้างสวนทาง</b>
+        จึงต้องแบ่งเป็นท่อน`);
+      setTimeout(()=>onDone(wrong), 2800);
+    };
+    if(phase !== 'build') return;
+    pd = pickDrag(host, {
+      tok:'.dh-tok', drop:'.lg-drop', ghostClass:'gl-ghost dh-ghost',
+      key: el=>el.dataset.k,
+      busy: ()=>false,
+      ghost: el=>`<span class="dh-chip" style="background:${DH_COLOR[el.dataset.k]}">${el.dataset.k}</span>`,
+      onArm: k=>{
+        host.querySelectorAll('.dh-tok').forEach(t=>t.classList.toggle('sel', t.dataset.k===k));
+        const z = document.getElementById('lgLag'); if(z) z.classList.toggle('armed', !!k);
+      },
+      onDrop: (d,k)=>{
+        if(!k){ say('bad', '❌ ยังไม่ได้เลือกนิวคลีโอไทด์ — <b>แตะนิวคลีโอไทด์ทางขวาก่อน</b>'); return; }
+        place(k);
+        if(pd) pd.arm(null);
       }
     });
   }
@@ -2164,44 +2403,60 @@ const REP_Q = [
     e:'<b>กลายเป็นแม่แบบของแลกกิงสแทรนด์</b> — เพราะกฎที่ตายตัวคือ<b>สายใหม่ต้องสร้าง 5′→3′ เสมอ</b><br>เมื่อเกลียวคลายไปคนละทิศ ความสัมพันธ์ระหว่างทิศของแม่แบบกับทิศการคลายเกลียวก็กลับด้าน สายเดิมจึงเปลี่ยนบทบาท' }
 ];
 function stageCopy(){
-  let orderWrong = 0, matchWrong = 0;
+  let orderWrong = 0, lagWrong = 0, matchWrong = 0;
   drawOrder();
 
   function drawOrder(){
     app.innerHTML = stageShell('copy', `
-      <div class="note">🎯 <b>ช่วงที่ 1 · เครื่องจำลองดีเอ็นเอ 3 มิติ:</b> ก่อนแบ่งเซลล์ DNA ต้องเพิ่มจาก 1 เป็น 2 โมเลกุล —
-        <b>คลายเกลียว → ลากนิวคลีโอไทด์มาเข้าคู่กับสายแม่แบบ → เชื่อมด้วยไลเกส</b>
-        <span class="small muted">(แตะนิวคลีโอไทด์แล้วแตะเกลียวก็ได้)</span></div>
+      <div class="note">🎯 <b>ตอนที่ 1 · สายยาวที่สร้างต่อเนื่อง (ลีดดิงสแทรนด์):</b>
+        ก่อนแบ่งเซลล์ DNA ต้องเพิ่มจาก 1 เป็น 2 โมเลกุล — ทำตามขั้นที่ <b>1 คลายเกลียว → 2 วางไพรเมอร์ →
+        3 ต่อนิวคลีโอไทด์ 5′→3′ → 4 ได้เกลียวคู่</b>
+        <span class="small muted">(ลากนิวคลีโอไทด์ไปวางบนเกลียว หรือแตะแล้วแตะเกลียวก็ได้)</span></div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       <div id="dhhost"></div>
       <div class="feedback" id="fb"></div>
     `);
     helixLab('dhhost', wrong=>{
-      orderWrong = wrong; toast('ได้ DNA สองโมเลกุลแล้ว! ไปช่วงที่ 2'); setTimeout(drawMatch,900);
+      orderWrong = wrong; toast('เสร็จตอนที่ 1! ไปตอนที่ 2'); setTimeout(drawLagging,900);
+    });
+  }
+
+  function drawLagging(){
+    app.innerHTML = stageShell('copy', `
+      <div class="note">🎯 <b>ตอนที่ 2 · สายสั้นที่สร้างสวนทาง (แลกกิงสแทรนด์):</b>
+        สายแม่แบบอีกสายวางทิศตรงข้าม แต่พอลิเมอเรสยังต่อได้เฉพาะปลาย 3′ —
+        จึงต้อง<b>สร้างถอยหลังทีละท่อนสั้น ๆ</b> แล้วให้ไลเกสเชื่อม
+        <span class="small muted">(แตะนิวคลีโอไทด์แล้วแตะแถบก็ได้)</span></div>
+      <div class="bar"><i id="pb" style="width:0%"></i></div>
+      <div id="lghost"></div>
+      <div class="feedback" id="fb"></div>
+    `);
+    laggingLab('lghost', wrong=>{
+      lagWrong = wrong; toast('เชื่อมท่อนครบแล้ว! ไปช่วงที่ 3'); setTimeout(drawMatch,900);
     });
   }
 
   function drawMatch(){
     app.innerHTML = stageShell('copy', `
-      <div class="note">🎯 <b>ช่วงที่ 2:</b> แตะชื่อเอนไซม์หรือสายใหม่ แล้วแตะการ์ดหน้าที่ที่ตรงกัน</div>
+      <div class="note">🎯 <b>ช่วงที่ 3:</b> แตะชื่อเอนไซม์หรือสายใหม่ แล้วแตะการ์ดหน้าที่ที่ตรงกัน</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       ${matchBoard(REP_PAIRS)}
       <div class="feedback" id="fb"></div>
     `);
     bindMatch(REP_PAIRS, wrong=>{
-      matchWrong = wrong; toast('จับคู่ครบแล้ว! ไปช่วงที่ 3'); setTimeout(drawQuiz,900);
+      matchWrong = wrong; toast('จับคู่ครบแล้ว! ไปช่วงที่ 4'); setTimeout(drawQuiz,900);
     });
   }
 
   function drawQuiz(){
     app.innerHTML = stageShell('copy', `
-      <div class="note">🎯 <b>ช่วงที่ 3:</b> ตอบคำถามเรื่องการจำลองดีเอ็นเอให้ครบ ${REP_Q.length} ข้อ</div>
+      <div class="note">🎯 <b>ช่วงที่ 4:</b> ตอบคำถามเรื่องการจำลองดีเอ็นเอให้ครบ ${REP_Q.length} ข้อ</div>
       <div class="bar"><i id="pb" style="width:0%"></i></div>
       <div id="qhost"></div>
     `);
     quizRun(REP_Q, 'qhost', qWrong=>{
-      const miss = orderWrong + matchWrong + qWrong;
-      const got = miss<=2?3:miss<=4?2:1;
+      const miss = orderWrong + lagWrong + matchWrong + qWrong;
+      const got = miss<=2?3:miss<=5?2:1;
       stageMiss = miss;
       finishStage('copy', got, 85-Math.min(miss*7,55), `
         <div class="note key">🟡 <b>สรุปที่ต้องจำ</b><br>
